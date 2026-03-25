@@ -5473,6 +5473,25 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 async function loadDynamicSegments() {
   const segmentNodes = Array.from(document.querySelectorAll('[data-segment-src]'));
+  const loadedSegmentStyles = new Set();
+
+  const applySegmentStyles = (doc, src) => {
+    const styleNodes = Array.from(doc.querySelectorAll('style'));
+    for (const styleNode of styleNodes) {
+      const styleText = styleNode.textContent || '';
+      const styleKey = src + '::' + styleText;
+      if (loadedSegmentStyles.has(styleKey)) {
+        continue;
+      }
+
+      const injectedStyle = document.createElement('style');
+      injectedStyle.setAttribute('data-segment-style', src);
+      injectedStyle.textContent = styleText;
+      document.head.appendChild(injectedStyle);
+      loadedSegmentStyles.add(styleKey);
+    }
+  };
+
   const loadOne = async (node) => {
     const src = node.getAttribute('data-segment-src');
     if (!src) {
@@ -5485,10 +5504,16 @@ async function loadDynamicSegments() {
         throw new Error('HTTP ' + response.status + ' while loading ' + src);
       }
 
-      let html = await response.text();
-      html = html.replaceAll('src="MustangOutline.svg"', 'src="../MustangOutline.svg"');
-      html = html.replaceAll('src="MustangLogo.svg"', 'src="../MustangLogo.svg"');
-      node.innerHTML = html;
+      const rawHtml = await response.text();
+      const parser = new DOMParser();
+      const segmentDoc = parser.parseFromString(rawHtml, 'text/html');
+
+      applySegmentStyles(segmentDoc, src);
+
+      const bodyHtml = (segmentDoc.body.innerHTML || '')
+        .replaceAll('src="MustangOutline.svg"', 'src="../MustangOutline.svg"')
+        .replaceAll('src="MustangLogo.svg"', 'src="../MustangLogo.svg"');
+      node.innerHTML = bodyHtml;
     } catch (error) {
       node.innerHTML = '<div style="padding:16px 24px;border:1px solid rgba(255,107,53,0.35);background:rgba(255,107,53,0.08);color:#FF6B35;font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;">Failed to load section: ' + src + '</div>';
       console.error(error);
