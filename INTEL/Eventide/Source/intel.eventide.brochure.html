@@ -5505,6 +5505,57 @@ async function loadDynamicSegments() {
     }
   };
 
+  const injectSegmentMarkup = (rawHtml, src, node) => {
+    const parser = new DOMParser();
+    const segmentDoc = parser.parseFromString(rawHtml, 'text/html');
+
+    applySegmentStyles(segmentDoc, src);
+
+    const bodyHtml = (segmentDoc.body.innerHTML || '')
+      .replaceAll('src="MustangOutline.svg"', 'src="../MustangOutline.svg"')
+      .replaceAll('src="MustangLogo.svg"', 'src="../MustangLogo.svg"');
+    node.innerHTML = bodyHtml;
+  };
+
+  const loadWithIframeFallback = (src, node) => new Promise((resolve) => {
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.setAttribute('aria-hidden', 'true');
+    iframe.src = src;
+
+    const cleanup = () => {
+      iframe.remove();
+    };
+
+    iframe.onload = () => {
+      try {
+        const iframeDoc = iframe.contentDocument || (iframe.contentWindow && iframe.contentWindow.document);
+        if (!iframeDoc) {
+          throw new Error('Iframe document unavailable for ' + src);
+        }
+
+        applySegmentStyles(iframeDoc, src);
+        const bodyHtml = ((iframeDoc.body && iframeDoc.body.innerHTML) || '')
+          .replaceAll('src="MustangOutline.svg"', 'src="../MustangOutline.svg"')
+          .replaceAll('src="MustangLogo.svg"', 'src="../MustangLogo.svg"');
+        node.innerHTML = bodyHtml;
+        cleanup();
+        resolve(true);
+      } catch (error) {
+        console.warn(error);
+        cleanup();
+        resolve(false);
+      }
+    };
+
+    iframe.onerror = () => {
+      cleanup();
+      resolve(false);
+    };
+
+    document.body.appendChild(iframe);
+  });
+
   const loadOne = async (node) => {
     const src = node.getAttribute('data-segment-src');
     if (!src) {
@@ -5518,18 +5569,13 @@ async function loadDynamicSegments() {
       }
 
       const rawHtml = await response.text();
-      const parser = new DOMParser();
-      const segmentDoc = parser.parseFromString(rawHtml, 'text/html');
-
-      applySegmentStyles(segmentDoc, src);
-
-      const bodyHtml = (segmentDoc.body.innerHTML || '')
-        .replaceAll('src="MustangOutline.svg"', 'src="../MustangOutline.svg"')
-        .replaceAll('src="MustangLogo.svg"', 'src="../MustangLogo.svg"');
-      node.innerHTML = bodyHtml;
+      injectSegmentMarkup(rawHtml, src, node);
     } catch (error) {
-      node.innerHTML = '<div style="padding:16px 24px;border:1px solid rgba(255,107,53,0.35);background:rgba(255,107,53,0.08);color:#FF6B35;font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;">Failed to load section: ' + src + '</div>';
-      console.error(error);
+      const loadedFromIframe = await loadWithIframeFallback(src, node);
+      if (!loadedFromIframe) {
+        node.innerHTML = '<div style="padding:16px 24px;border:1px solid rgba(255,107,53,0.35);background:rgba(255,107,53,0.08);color:#FF6B35;font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;">Failed to load section: ' + src + '</div>';
+        console.error(error);
+      }
     }
   };
 
