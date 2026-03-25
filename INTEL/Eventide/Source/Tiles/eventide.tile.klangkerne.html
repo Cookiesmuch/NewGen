@@ -4,13 +4,20 @@
         /* ====== KLANGKERNE DEEP-DIVE WRAPPER ====== */
         .klang-dd-wrap {
             position: relative;
-            padding: 120px 40px;
-            max-width: 1400px;
-            margin: 0 auto;
-            background: linear-gradient(180deg, rgba(5, 3, 0, 0.5) 0%, rgba(10, 6, 0, 0.3) 100%);
-            border-top: 1px solid rgba(240, 184, 72, 0.22);
-            border-bottom: 1px solid rgba(240, 184, 72, 0.22);
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 120px 0;
+            background: linear-gradient(135deg, #050300 0%, #0A0600 100%);
             overflow: hidden;
+        }
+
+        .klang-dd-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 2;
         }
 
         /* Subtle animated grid background */
@@ -679,8 +686,9 @@
 
     <div class="klang-dd-wrap">
         <!-- ====== HERO SECTION ====== -->
+        <div class="klang-dd-inner">
         <div class="klang-dd-section klang-dd-hero">
-            <div class="klang-dd-eyebrow">Intel 14A-E · Audio Engine</div>
+            <div class="klang-dd-eyebrow">Audio Engine · Klangkerne™ · Intel × Bang & Olufsen · Intel 14A-E</div>
             <h1>Klangkerne™ Audio Engine</h1>
             <p style="font-family: var(--font-display); font-size: 32px; line-height: 1.4; color: #F0B848; margin: 20px 0 40px 0; letter-spacing: 0.5px;">Where Silicon Meets Sound.</p>
             <p class="klang-dd-hero-subhead">
@@ -693,7 +701,7 @@
                 <div class="klang-dd-badge">B&O Beosonic</div>
                 <div class="klang-dd-badge">14A-E Node</div>
                 <div class="klang-dd-badge">No External Codec</div>
-                <div class="klang-dd-badge">Sonica™ Audio Interface</div>
+                <div class="klang-dd-badge">Intel × B&O Sound API</div>
             </div>
         </div>
 
@@ -713,7 +721,7 @@
             </div>
             <div class="klang-dd-stat-cell">
                 <div class="klang-dd-stat-number">Hardware Native</div>
-                <div class="klang-dd-stat-label">Sonica™ Audio Interface</div>
+                <div class="klang-dd-stat-label">Intel × B&O Sound API</div>
             </div>
         </div>
 
@@ -1000,6 +1008,7 @@
                     <p>Dolby Vision 2 + Atmos content audition, real-time object mixing, and B&O spatial audio validation. Full creative metadata awareness.</p>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 

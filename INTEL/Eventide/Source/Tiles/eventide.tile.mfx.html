@@ -18,12 +18,21 @@
        MFX DEEP-DIVE WRAPPER
        ======================================== */
     .mfx-dd-wrap {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 80px 40px;
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: 80px 0;
       background: linear-gradient(135deg, var(--mfx-bg-dark) 0%, var(--mfx-bg-base) 100%);
       position: relative;
       overflow: hidden;
+    }
+
+    .mfx-dd-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      position: relative;
+      z-index: 1;
     }
 
     /* Subtle grid background */
@@ -525,6 +534,7 @@
     }
   </style>
   <div class="mfx-dd-wrap">
+    <div class="mfx-dd-inner">
     <!-- COLLAB BADGE -->
     <div class="mfx-dd-collab-badge">Intel — Sole Partner</div>
 
@@ -749,4 +759,5 @@
 
     <!-- SECTION DIVIDER -->
     <div class="mfx-dd-divider"></div>
+    </div>
   </div>

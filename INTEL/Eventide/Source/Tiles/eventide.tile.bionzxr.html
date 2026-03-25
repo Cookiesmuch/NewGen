@@ -5,11 +5,19 @@
            ============================================ */
         .bionz-dd-wrap {
             width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 80px 40px;
+            max-width: none;
+            margin: 0;
+            padding: 80px 0;
             background: linear-gradient(135deg, #080000 0%, #120000 100%);
             position: relative;
+        }
+
+        .bionz-dd-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 1;
         }
 
         .bionz-dd-wrap::before {
@@ -537,6 +545,7 @@
     <!-- INSERT LOCATION: After the GNA 5.0 deep-dive section and its divider -->
 
     <div class="bionz-dd-wrap">
+        <div class="bionz-dd-inner">
         <!-- ============================================
              HERO SECTION
              ============================================ -->
@@ -893,6 +902,7 @@
                     <div class="bionz-dd-usecase-desc">Tethered α7R V RAW workflows with on-the-fly ProRes encoding for color grading preview — monitor on Arc GPU, record to SSD.</div>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 
