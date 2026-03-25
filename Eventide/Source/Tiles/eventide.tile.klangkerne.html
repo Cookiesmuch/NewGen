@@ -1,0 +1,1007 @@
+    <!-- Z-ANGLE MEMORY: klang-dd- | Klangkerne Deep-Dive Section -->
+
+    <style>
+        /* ====== KLANGKERNE DEEP-DIVE WRAPPER ====== */
+        .klang-dd-wrap {
+            position: relative;
+            padding: 120px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, rgba(5, 3, 0, 0.5) 0%, rgba(10, 6, 0, 0.3) 100%);
+            border-top: 1px solid rgba(240, 184, 72, 0.22);
+            border-bottom: 1px solid rgba(240, 184, 72, 0.22);
+            overflow: hidden;
+        }
+
+        /* Subtle animated grid background */
+        .klang-dd-wrap::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(240, 184, 72, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(240, 184, 72, 0.04) 1px, transparent 1px);
+            background-size: 80px 80px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        .klang-dd-wrap > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ====== SECTION STRUCTURE ====== */
+        .klang-dd-section {
+            margin-bottom: 80px;
+        }
+
+        .klang-dd-section:last-of-type {
+            margin-bottom: 0;
+        }
+
+        /* ====== HERO SECTION ====== */
+        .klang-dd-hero {
+            text-align: center;
+            margin-bottom: 100px;
+        }
+
+        .klang-dd-eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #F0B848;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .klang-dd-hero h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 72px;
+            line-height: 1.1;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #F0B848 0%, #F5C842 50%, #E8A020 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .klang-dd-hero-subhead {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #C0C0C0;
+            margin-bottom: 40px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 300;
+        }
+
+        /* Badge cluster */
+        .klang-dd-badge-cluster {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 40px;
+        }
+
+        .klang-dd-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background: rgba(240, 184, 72, 0.08);
+            border: 1px solid rgba(240, 184, 72, 0.22);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #F0B848;
+            backdrop-filter: blur(10px);
+        }
+
+        .klang-dd-badge.collab {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: #FFFFFF;
+        }
+
+        /* ====== STAT BLOCK ====== */
+        .klang-dd-stat-block {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 80px;
+        }
+
+        .klang-dd-stat-cell {
+            padding: 40px;
+            background: rgba(240, 184, 72, 0.05);
+            border: 1px solid rgba(240, 184, 72, 0.22);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .klang-dd-stat-cell::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(240, 184, 72, 0), #F0B848, rgba(240, 184, 72, 0));
+        }
+
+        .klang-dd-stat-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 42px;
+            font-weight: 400;
+            color: #F5C842;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .klang-dd-stat-label {
+            font-size: 14px;
+            color: #B0B0B0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        /* ====== PROBLEM/SOLUTION SECTION ====== */
+        .klang-dd-problem-solve {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 80px;
+            align-items: center;
+        }
+
+        .klang-dd-ps-column h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            color: #F0B848;
+            margin-bottom: 30px;
+            letter-spacing: 0.5px;
+        }
+
+        .klang-dd-ps-column.old h3 {
+            color: #D0746F;
+        }
+
+        .klang-dd-ps-column.new h3 {
+            color: #6FD08F;
+        }
+
+        .klang-dd-stack {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(240, 184, 72, 0.15);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .klang-dd-stack-item {
+            padding: 12px 16px;
+            background: rgba(240, 184, 72, 0.04);
+            border-left: 2px solid rgba(240, 184, 72, 0.22);
+            margin-bottom: 10px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #D0D0D0;
+            font-family: 'IBM Plex Mono', monospace;
+            border-radius: 2px;
+        }
+
+        .klang-dd-stack-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .klang-dd-ps-meta {
+            background: rgba(240, 184, 72, 0.08);
+            border-left: 3px solid #F0B848;
+            padding: 20px;
+            border-radius: 2px;
+            font-size: 13px;
+            color: #C0C0C0;
+            margin-top: 20px;
+        }
+
+        .klang-dd-ps-meta strong {
+            color: #F0B848;
+        }
+
+        @media (max-width: 900px) {
+            .klang-dd-problem-solve {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        /* ====== B&O COLLABORATION SECTION ====== */
+        .klang-dd-bo-collab {
+            margin-bottom: 80px;
+        }
+
+        .klang-dd-bo-collab h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px;
+            color: #F0B848;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
+
+        .klang-dd-bo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .klang-dd-bo-card {
+            background: rgba(240, 184, 72, 0.06);
+            border: 1px solid rgba(240, 184, 72, 0.18);
+            border-radius: 8px;
+            padding: 40px 30px;
+            backdrop-filter: blur(5px);
+            position: relative;
+        }
+
+        .klang-dd-bo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #F0B848, #C8922A);
+        }
+
+        .klang-dd-bo-card h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            color: #F0B848;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+            font-weight: 400;
+        }
+
+        .klang-dd-bo-card p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #B8B8B8;
+        }
+
+        .klang-dd-bo-context {
+            background: linear-gradient(135deg, rgba(240, 184, 72, 0.08), rgba(200, 146, 42, 0.04));
+            border: 1px solid rgba(240, 184, 72, 0.2);
+            border-radius: 8px;
+            padding: 40px;
+            margin-top: 50px;
+        }
+
+        .klang-dd-bo-context h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            color: #FFFFFF;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .klang-dd-bo-context p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #C0C0C0;
+            margin-bottom: 12px;
+        }
+
+        .klang-dd-bo-context p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ====== DOLBY ATMOS SECTION ====== */
+        .klang-dd-atmos {
+            margin-bottom: 80px;
+        }
+
+        .klang-dd-atmos h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px;
+            color: #F0B848;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
+
+        .klang-dd-atmos-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .klang-dd-atmos-col {
+            background: rgba(240, 184, 72, 0.05);
+            border: 1px solid rgba(240, 184, 72, 0.18);
+            padding: 40px;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+        }
+
+        .klang-dd-atmos-col h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 26px;
+            color: #F0B848;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+            font-weight: 400;
+        }
+
+        .klang-dd-atmos-col p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #B8B8B8;
+            margin-bottom: 12px;
+        }
+
+        .klang-dd-atmos-col p:last-child {
+            margin-bottom: 0;
+        }
+
+        .klang-dd-atmos-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .klang-dd-atmos-list li {
+            padding: 10px 0;
+            font-size: 13px;
+            color: #C0C0C0;
+            border-bottom: 1px solid rgba(240, 184, 72, 0.1);
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .klang-dd-atmos-list li:last-child {
+            border-bottom: none;
+        }
+
+        .klang-dd-atmos-list li::before {
+            content: '▸';
+            color: #F0B848;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 900px) {
+            .klang-dd-atmos-row {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        /* ====== SOUND API SECTION ====== */
+        .klang-dd-api {
+            margin-bottom: 80px;
+        }
+
+        .klang-dd-api h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px;
+            color: #F0B848;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
+
+        .klang-dd-api-desc {
+            background: rgba(240, 184, 72, 0.06);
+            border: 1px solid rgba(240, 184, 72, 0.18);
+            border-radius: 8px;
+            padding: 40px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(5px);
+        }
+
+        .klang-dd-api-desc p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #C0C0C0;
+            margin-bottom: 12px;
+        }
+
+        .klang-dd-api-desc p:last-child {
+            margin-bottom: 0;
+        }
+
+        .klang-dd-api-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .klang-dd-api-feature {
+            background: rgba(240, 184, 72, 0.04);
+            border: 1px solid rgba(240, 184, 72, 0.15);
+            border-radius: 6px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .klang-dd-api-feature::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #F0B848, #C8922A);
+            border-radius: 6px 0 0 6px;
+        }
+
+        .klang-dd-api-feature-name {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #F0B848;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .klang-dd-api-feature-desc {
+            font-size: 13px;
+            color: #B0B0B0;
+            line-height: 1.6;
+        }
+
+        .klang-dd-api-compat {
+            background: linear-gradient(135deg, rgba(200, 146, 42, 0.08), rgba(240, 184, 72, 0.04));
+            border: 1px solid rgba(240, 184, 72, 0.2);
+            border-radius: 8px;
+            padding: 40px;
+            margin-top: 40px;
+        }
+
+        .klang-dd-api-compat h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            color: #FFFFFF;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .klang-dd-api-compat p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #C0C0C0;
+        }
+
+        /* ====== SPEC TABLE ====== */
+        .klang-dd-specs {
+            margin-bottom: 80px;
+        }
+
+        .klang-dd-specs h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px;
+            color: #F0B848;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
+
+        .klang-dd-spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(240, 184, 72, 0.03);
+            border: 1px solid rgba(240, 184, 72, 0.18);
+            border-radius: 8px;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .klang-dd-spec-table thead {
+            background: rgba(240, 184, 72, 0.1);
+            border-bottom: 2px solid rgba(240, 184, 72, 0.22);
+        }
+
+        .klang-dd-spec-table th {
+            padding: 20px;
+            text-align: left;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            color: #F0B848;
+            font-weight: 400;
+            text-transform: uppercase;
+        }
+
+        .klang-dd-spec-table td {
+            padding: 18px 20px;
+            border-top: 1px solid rgba(240, 184, 72, 0.08);
+            font-size: 13px;
+            color: #C0C0C0;
+            font-weight: 400;
+        }
+
+        .klang-dd-spec-table tr:hover {
+            background: rgba(240, 184, 72, 0.05);
+        }
+
+        .klang-dd-spec-label {
+            font-weight: 600;
+            color: #D0D0D0;
+        }
+
+        /* ====== USE CASE GRID ====== */
+        .klang-dd-usecases {
+            margin-bottom: 0;
+        }
+
+        .klang-dd-usecases h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px;
+            color: #F0B848;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
+
+        .klang-dd-usecase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .klang-dd-usecase {
+            position: relative;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(240, 184, 72, 0.08), rgba(240, 184, 72, 0.03));
+            border: 1px solid rgba(240, 184, 72, 0.22);
+            border-radius: 8px;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .klang-dd-usecase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 100% 0%, rgba(240, 184, 72, 0.1), transparent 70%);
+            pointer-events: none;
+        }
+
+        .klang-dd-usecase:hover {
+            border-color: rgba(240, 184, 72, 0.4);
+            background: linear-gradient(135deg, rgba(240, 184, 72, 0.12), rgba(240, 184, 72, 0.06));
+            box-shadow: 0 10px 40px rgba(240, 184, 72, 0.1);
+        }
+
+        .klang-dd-usecase-icon {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            color: #F0B848;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        .klang-dd-usecase h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+
+        .klang-dd-usecase p {
+            font-size: 13px;
+            color: #B0B0B0;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ====== SECTION DIVIDER ====== */
+        .klang-dd-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(240, 184, 72, 0.22), transparent);
+            margin: 120px 0;
+        }
+
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 768px) {
+            .klang-dd-wrap {
+                padding: 80px 24px;
+            }
+
+            .klang-dd-hero h1 {
+                font-size: 48px;
+            }
+
+            .klang-dd-hero-subhead {
+                font-size: 16px;
+            }
+
+            .klang-dd-stat-block {
+                grid-template-columns: 1fr;
+            }
+
+            .klang-dd-ps-column h3,
+            .klang-dd-bo-collab h2,
+            .klang-dd-atmos h2,
+            .klang-dd-api h2,
+            .klang-dd-specs h2,
+            .klang-dd-usecases h2 {
+                font-size: 32px;
+            }
+
+            .klang-dd-problem-solve {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .klang-dd-wrap {
+                padding: 60px 16px;
+            }
+
+            .klang-dd-hero h1 {
+                font-size: 36px;
+            }
+
+            .klang-dd-badge-cluster {
+                gap: 8px;
+            }
+
+            .klang-dd-badge {
+                font-size: 11px;
+                padding: 6px 12px;
+            }
+        }
+    </style>
+    <!-- INSERT LOCATION: After the IPU 8.2 deep-dive and its divider -->
+
+    <div class="klang-dd-wrap">
+        <!-- ====== HERO SECTION ====== -->
+        <div class="klang-dd-section klang-dd-hero">
+            <div class="klang-dd-eyebrow">Intel 14A-E · Audio Engine</div>
+            <h1>Klangkerne™ Audio Engine</h1>
+            <p style="font-family: var(--font-display); font-size: 32px; line-height: 1.4; color: #F0B848; margin: 20px 0 40px 0; letter-spacing: 0.5px;">Where Silicon Meets Sound.</p>
+            <p class="klang-dd-hero-subhead">
+                The world's first fully vertically integrated audio stack on a consumer APU — co-engineered between Intel's silicon teams and Bang & Olufsen's acoustic and DSP engineering groups in Copenhagen.
+            </p>
+            <div class="klang-dd-badge-cluster">
+                <div class="klang-dd-badge collab">Intel × Bang & Olufsen</div>
+                <div class="klang-dd-badge">Dolby Atmos</div>
+                <div class="klang-dd-badge">DTS:X</div>
+                <div class="klang-dd-badge">B&O Beosonic</div>
+                <div class="klang-dd-badge">14A-E Node</div>
+                <div class="klang-dd-badge">No External Codec</div>
+                <div class="klang-dd-badge">Sonica™ Audio Interface</div>
+            </div>
+        </div>
+
+        <!-- ====== STAT BLOCK ====== -->
+        <div class="klang-dd-section klang-dd-stat-block">
+            <div class="klang-dd-stat-cell">
+                <div class="klang-dd-stat-number">&lt;10ms</div>
+                <div class="klang-dd-stat-label">End-to-End Latency</div>
+            </div>
+            <div class="klang-dd-stat-cell">
+                <div class="klang-dd-stat-number">Atmos + DTS:X</div>
+                <div class="klang-dd-stat-label">Spatial Audio Formats</div>
+            </div>
+            <div class="klang-dd-stat-cell">
+                <div class="klang-dd-stat-number">Full Stack</div>
+                <div class="klang-dd-stat-label">No External Codec</div>
+            </div>
+            <div class="klang-dd-stat-cell">
+                <div class="klang-dd-stat-number">Hardware Native</div>
+                <div class="klang-dd-stat-label">Sonica™ Audio Interface</div>
+            </div>
+        </div>
+
+        <!-- ====== PROBLEM/SOLUTION SECTION ====== -->
+        <div class="klang-dd-section">
+            <div class="klang-dd-problem-solve">
+                <!-- Legacy PC Audio Chain -->
+                <div class="klang-dd-ps-column old">
+                    <h3>Legacy PC Audio</h3>
+                    <div class="klang-dd-stack">
+                        <div class="klang-dd-stack-item">App</div>
+                        <div class="klang-dd-stack-item">DirectSound / WinAPI</div>
+                        <div class="klang-dd-stack-item">OS Layer (~30–80ms)</div>
+                        <div class="klang-dd-stack-item">Intel Smart Sound Tech</div>
+                        <div class="klang-dd-stack-item">Intel HD Audio (HDA) Bus</div>
+                        <div class="klang-dd-stack-item">External Codec (Realtek/Cirrus)</div>
+                        <div class="klang-dd-stack-item">Analog Output</div>
+                    </div>
+                    <div class="klang-dd-ps-meta">
+                        <strong>Total:</strong> 3–5 component hops, shared bus, vendor firmware stacks, external noise floor, audio latency hits 100ms+
+                    </div>
+                </div>
+
+                <!-- Klangkerne Path -->
+                <div class="klang-dd-ps-column new">
+                    <h3>Klangkerne Direct Path</h3>
+                    <div class="klang-dd-stack">
+                        <div class="klang-dd-stack-item">App</div>
+                        <div class="klang-dd-stack-item">Sonica™ Hardware-Direct API</div>
+                        <div class="klang-dd-stack-item">Hardware-Direct (Alloy OS)</div>
+                        <div class="klang-dd-stack-item">Klangkerne Tile</div>
+                        <div class="klang-dd-stack-item">Analog Output</div>
+                    </div>
+                    <div class="klang-dd-ps-meta">
+                        <strong>Total:</strong> Single hop, hardware-native latency, B&O-tuned signal path, sub-10ms end-to-end
+                    </div>
+                    <div class="klang-dd-ps-meta" style="background: rgba(240, 184, 72, 0.04); border-left-color: rgba(240, 184, 72, 0.5); margin-top: 12px;">
+                        <strong>Windows mode:</strong> App → WinAPI / DirectSound → compatibility header → Klangkerne (same hardware, additional OS layer)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== B&O COLLABORATION SECTION ====== -->
+        <div class="klang-dd-section klang-dd-bo-collab">
+            <h2>Bang & Olufsen's Contribution</h2>
+            <div class="klang-dd-bo-grid">
+                <div class="klang-dd-bo-card">
+                    <h4>Beosonic 2D Sound Space</h4>
+                    <p>B&O's proprietary audio EQ paradigm enabling spatial sound shaping across four acoustic axes: Warm, Energetic, Bright, and Relaxed — plus fully custom parameter control. Now exposed in hardware DSP.</p>
+                </div>
+                <div class="klang-dd-bo-card">
+                    <h4>Spatial Audio Engine</h4>
+                    <p>B&O's interaural crosstalk correction algorithm optimized for headphone reproduction. Reduces crosstalk artifacts and improves stereo imaging precision from ear-level positioning in real-world acoustics.</p>
+                </div>
+                <div class="klang-dd-bo-card">
+                    <h4>Acoustic Tuning</h4>
+                    <p>Frequency response target curves, fatigue-reduction DSP filters, and multi-zone audio routing developed by B&O's acoustic engineering team in Copenhagen. Signature B&O warmth meets precision.</p>
+                </div>
+            </div>
+            <div class="klang-dd-bo-context">
+                <h4>The Ford × Bang & Olufsen × Intel Triangle</h4>
+                <p>Bang & Olufsen already ships Beosonic audio tuning in Ford vehicles — Mustang Mach-E and F-150 among others. The Eventide conglomerate includes both Ford and Bang & Olufsen as foundational partners. Klangkerne represents the next evolution of that partnership: moving proven automotive audio DSP and tuning philosophy directly into silicon on a consumer APU.</p>
+                <p style="margin-top: 20px;">Alloy OS inherits not just co-engineering, but a proven track record of B&O's spatial audio and fatigue-reduction techniques deployed across millions of vehicles worldwide.</p>
+            </div>
+        </div>
+
+        <!-- ====== DOLBY ATMOS SECTION ====== -->
+        <div class="klang-dd-section klang-dd-atmos">
+            <h2>Dolby Atmos & Spatial Audio</h2>
+            <div class="klang-dd-atmos-row">
+                <div class="klang-dd-atmos-col">
+                    <h4>Dolby Atmos in Hardware</h4>
+                    <p>Atmos is an object-based spatial audio format where sounds are encoded as discrete objects with metadata (position, velocity, volume) rather than channel-locked mixed down stereo or 5.1. The Atmos renderer converts these objects into speaker feeds — traditionally a CPU-intensive task.</p>
+                    <p style="margin-top: 16px;">Klangkerne implements the full Atmos renderer in dedicated silicon, offloading the compute burden entirely from the CPU. The result: object-based spatial audio at cinema quality without CPU throttling, and with latency under 10ms — a massive improvement over software rendering (typically 50–150ms).</p>
+                </div>
+                <div class="klang-dd-atmos-col">
+                    <h4>DTS:X & Beyond</h4>
+                    <p>Klangkerne also supports DTS:X object-based audio with its own unique feature set:</p>
+                    <ul class="klang-dd-atmos-list">
+                        <li>Dynamic height channel upmixing for stereo-to-immersive conversion</li>
+                        <li>Headphone virtualization with custom HRTF profiles</li>
+                        <li>Object audio passthrough (up to 32 discrete audio objects)</li>
+                        <li>Real-time mix monitoring and object inspector</li>
+                        <li>Full DTS:X creative metadata support</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="background: rgba(240, 184, 72, 0.05); border: 1px solid rgba(240, 184, 72, 0.18); border-radius: 8px; padding: 30px; margin-top: 40px;">
+                <p style="font-size: 13px; color: #B8B8B8; line-height: 1.8;">
+                    <strong style="color: #F0B848;">A signal of Eventide's media-first DNA:</strong> Alloy OS also ships with a significantly enhanced Dolby Vision 2 implementation (the metadata standard for HDR video color grading) — indicating that the OS platform takes end-to-end media production and consumption seriously, from image to sound.
+                </p>
+            </div>
+        </div>
+
+        <!-- ====== INTEL × B&O SOUND API ====== -->
+        <div class="klang-dd-section klang-dd-api">
+            <h2>Sonica™ Audio Interface</h2>
+            <div class="klang-dd-api-desc">
+                <p style="margin-bottom: 20px;"><strong>Sonica™</strong> is Intel and Bang & Olufsen's hardware-direct audio runtime, purpose-built to expose Klangkerne's full capabilities to applications on Alloy OS. Named for the sonic precision and sonicintension at its core, Sonica is the bridge between user software and the silicon audio engine — enabling sub-10ms latency audio I/O, spatial parameter control, and real-time DSP injection without any OS scheduling overhead or external codec intermediation.</p>
+                <p style="font-style: italic; color: #A8A8A8;">Intel × Bang & Olufsen Jointly Engineered</p>
+            </div>
+            <div class="klang-dd-api-features">
+                <div class="klang-dd-api-feature">
+                    <div class="klang-dd-api-feature-name">Device Enumeration</div>
+                    <div class="klang-dd-api-feature-desc">Discover and manage Klangkerne input/output channels, speaker configurations, and headphone modes with hardware-level precision.</div>
+                </div>
+                <div class="klang-dd-api-feature">
+                    <div class="klang-dd-api-feature-name">Spatial Renderer Control</div>
+                    <div class="klang-dd-api-feature-desc">Real-time manipulation of Atmos/DTS:X object positions, velocities, doppler effects, and rendering parameters.</div>
+                </div>
+                <div class="klang-dd-api-feature">
+                    <div class="klang-dd-api-feature-name">DSP Parameter Injection</div>
+                    <div class="klang-dd-api-feature-desc">Apply Beosonic presets, custom EQ curves, B&O tuning profiles, and dynamic range processing to live audio streams with <1ms latency.</div>
+                </div>
+                <div class="klang-dd-api-feature">
+                    <div class="klang-dd-api-feature-name">Low-Latency PCM Streams</div>
+                    <div class="klang-dd-api-feature-desc">Direct hardware-native PCM buffers (44.1kHz–384kHz/8–32-bit) with zero-copy ring-buffer management and jitter suppression.</div>
+                </div>
+                <div class="klang-dd-api-feature">
+                    <div class="klang-dd-api-feature-name">Compressed Audio Support</div>
+                    <div class="klang-dd-api-feature-desc">Native decode/passthrough for AAC, FLAC, LDAC, aptX Lossless, LC3, and more — offloaded from CPU.</div>
+                </div>
+                <div class="klang-dd-api-feature">
+                    <div class="klang-dd-api-feature-name">Beosonic Parameter API</div>
+                    <div class="klang-dd-api-feature-desc">Programmatic access to all Beosonic tuning axes: real-time warm/bright/relaxed balance, custom curve control, signature presets.</div>
+                </div>
+                <div class="klang-dd-api-feature">
+                    <div class="klang-dd-api-feature-name">Hardware Attenuation Control</div>
+                    <div class="klang-dd-api-feature-desc">Precision volume management at the silicon level with 0.1 dB granularity — no digital attenuation distortion.</div>
+                </div>
+                <div class="klang-dd-api-feature">
+                    <div class="klang-dd-api-feature-name">Multi-Zone Audio Routing</div>
+                    <div class="klang-dd-api-feature-desc">Simultaneous output to speakers, headphones, and external interfaces with per-zone parameter control and DSP chains.</div>
+                </div>
+            </div>
+
+            <!-- ====== LATENCY COMPARISON ====== -->
+            <div style="background: linear-gradient(135deg, rgba(240, 184, 72, 0.06), rgba(240, 184, 72, 0.02)); border: 1px solid rgba(240, 184, 72, 0.18); border-radius: 8px; padding: 40px; margin-bottom: 40px; margin-top: 40px;">
+                <h4 style="font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #F0B848; margin-bottom: 24px; letter-spacing: 0.5px;">The Latency Advantage: Vertical Integration vs. Layered APIs</h4>
+
+                <p style="font-size: 14px; line-height: 1.8; color: #C0C0C0; margin-bottom: 20px;">
+                    Traditional PC audio architectures rely on multi-layer software abstraction. WASAPI and DirectSound both impose a <strong>~100ms minimum latency floor</strong> — not accounting for physical device-to-headphones transduction latency — due to:
+                </p>
+
+                <div style="background: rgba(0, 0, 0, 0.2); border-left: 3px solid #D0746F; padding: 20px; border-radius: 4px; margin-bottom: 20px;">
+                    <div style="margin-bottom: 16px;">
+                        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #D0746F; font-weight: 600; margin-bottom: 8px;">WASAPI / DirectSound Path:</div>
+                        <ul style="list-style: none; margin: 0;">
+                            <li style="padding: 6px 0; font-size: 13px; color: #B8B8B8;">• OS kernel scheduling (10–30ms)</li>
+                            <li style="padding: 6px 0; font-size: 13px; color: #B8B8B8;">• Audio driver abstraction layer (10–20ms)</li>
+                            <li style="padding: 6px 0; font-size: 13px; color: #B8B8B8;">• Hardware buffer queuing (30–40ms)</li>
+                            <li style="padding: 6px 0; font-size: 13px; color: #B8B8B8;">• External codec processing (20–30ms)</li>
+                            <li style="padding: 6px 0; font-size: 13px; color: #B8B8B8;">• <strong>Total: ~100ms+</strong> (not counting headphones)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <p style="font-size: 14px; line-height: 1.8; color: #C0C0C0; margin-bottom: 20px;">
+                    Sonica eliminates every abstraction layer. By placing the audio engine directly on a dedicated tile with its own power domain, and providing a hardware-direct API that bypasses OS scheduling entirely, Sonica achieves:
+                </p>
+
+                <div style="background: rgba(111, 208, 143, 0.08); border-left: 3px solid #6FD08F; padding: 20px; border-radius: 4px; margin-bottom: 0;">
+                    <div style="margin-bottom: 16px;">
+                        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #6FD08F; font-weight: 600; margin-bottom: 8px;">Sonica Direct Path:</div>
+                        <ul style="list-style: none; margin: 0;">
+                            <li style="padding: 6px 0; font-size: 13px; color: #B8B8B8;">• Hardware-direct API call (<1ms)</li>
+                            <li style="padding: 6px 0; font-size: 13px; color: #B8B8B8;">• Ring-buffer hand-off (0–2ms)</li>
+                            <li style="padding: 6px 0; font-size: 13px; color: #B8B8B8;">• Klangkerne silicon processing (2–5ms)</li>
+                            <li style="padding: 6px 0; font-size: 13px; color: #B8B8B8;">• Analog output with no external codec (1–2ms)</li>
+                            <li style="padding: 6px 0; font-size: 13px; color: #B8B8B8;">• <strong>Total: ~4–10ms</strong> (silicon to analog)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <p style="font-size: 13px; line-height: 1.7; color: #A8A8A8; margin-top: 20px; font-style: italic;">
+                    <strong>Reaction Time Impact:</strong> For real-time audio applications (gaming audio feedback, live monitoring, spatial audio interaction), this 90ms latency reduction translates directly into tighter, more responsive audio-visual sync and user perception of system responsiveness. A user speaking into a microphone with headphone monitoring hears their own voice feedback within ~10ms instead of ~100ms — a difference perceived as instantaneous vs. noticeable delay.
+                </p>
+            </div>
+            <div class="klang-dd-api-compat">
+                <h4>Windows Compatibility: Sonica Adapter Driver</h4>
+                <p>On Windows installations of Alloy OS, Sonica presents itself as a WinAPI-compatible audio driver with full WASAPI, DirectSound, and legacy MME support. Applications see a standard Windows audio device, but audio routes directly to Klangkerne hardware through Sonica's passthrough adapter layer — zero OS scheduling intervention, zero external codec coloration. Developers can use standard Windows audio libraries while transparently gaining Sonica's sub-10ms latency and B&O Beosonic DSP capabilities.</p>
+                <p style="margin-top: 16px; font-size: 13px; color: #A8A8A8;">This compatibility mode still preserves most of Sonica's latency advantage compared to native WASAPI/DirectSound on other platforms, since the underlying Klangkerne hardware remains untouched and Sonica's ring-buffer handoff is orders of magnitude faster than OS-level audio scheduling.</p>
+            </div>
+        </div>
+
+        <!-- ====== SPECIFICATION TABLE ====== -->
+        <div class="klang-dd-section klang-dd-specs">
+            <h2>Technical Specifications</h2>
+            <table class="klang-dd-spec-table">
+                <thead>
+                    <tr>
+                        <th>Specification</th>
+                        <th>Detail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="klang-dd-spec-label">Process Node</td>
+                        <td>Intel 14A-E (14nm-equivalent, FinFET)</td>
+                    </tr>
+                    <tr>
+                        <td class="klang-dd-spec-label">Tile Area</td>
+                        <td>18 mm² (estimated), 2.1B transistors</td>
+                    </tr>
+                    <tr>
+                        <td class="klang-dd-spec-label">PCM Sample Rates</td>
+                        <td>44.1kHz, 48kHz, 96kHz, 192kHz, 384kHz (up to 32-bit)</td>
+                    </tr>
+                    <tr>
+                        <td class="klang-dd-spec-label">Spatial Audio Formats</td>
+                        <td>Dolby Atmos (up to 7.1.4), DTS:X (object-based)</td>
+                    </tr>
+                    <tr>
+                        <td class="klang-dd-spec-label">Codec Support</td>
+                        <td>PCM, AAC, FLAC, ALAC, LDAC, aptX Lossless, Opus, Vorbis, MP3</td>
+                    </tr>
+                    <tr>
+                        <td class="klang-dd-spec-label">Signal-to-Noise Ratio</td>
+                        <td>&gt;125 dB (A-weighted, 1kHz reference)</td>
+                    </tr>
+                    <tr>
+                        <td class="klang-dd-spec-label">Total Harmonic Distortion</td>
+                        <td>&lt;0.005% THD+N @ 1kHz, -3dBFS</td>
+                    </tr>
+                    <tr>
+                        <td class="klang-dd-spec-label">Dynamic Range</td>
+                        <td>125 dB (32-bit PCM)</td>
+                    </tr>
+                    <tr>
+                        <td class="klang-dd-spec-label">End-to-End Latency</td>
+                        <td>&lt;10ms (hardware-direct path on Alloy OS)</td>
+                    </tr>
+                    <tr>
+                        <td class="klang-dd-spec-label">Output Impedance</td>
+                        <td>&lt;100Ω (line-level analog outputs)</td>
+                    </tr>
+                    <tr>
+                        <td class="klang-dd-spec-label">Headphone Drive</td>
+                        <td>200mW @ 32Ω (both channels), low-impedance optimized</td>
+                    </tr>
+                    <tr>
+                        <td class="klang-dd-spec-label">Beosonic Axes</td>
+                        <td>Warm / Energetic / Bright / Relaxed + custom parameter matrix</td>
+                    </tr>
+                    <tr>
+                        <td class="klang-dd-spec-label">Spatial Objects (DTS:X)</td>
+                        <td>Up to 32 discrete audio objects in real-time</td>
+                    </tr>
+                    <tr>
+                        <td class="klang-dd-spec-label">Driver APIs</td>
+                        <td>Sonica™ (native hardware-direct), WASAPI, DirectSound, WinAPI (compatibility mode via adapter driver)</td>
+                    </tr>
+                    <tr>
+                        <td class="klang-dd-spec-label">Power Draw</td>
+                        <td>~2.5W nominal, &lt;0.5W idle</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ====== USE-CASE GRID ====== -->
+        <div class="klang-dd-section klang-dd-usecases">
+            <h2>Designed For</h2>
+            <div class="klang-dd-usecase-grid">
+                <div class="klang-dd-usecase">
+                    <div class="klang-dd-usecase-icon">♪</div>
+                    <h4>Audiophile Playback</h4>
+                    <p>Lossless streaming, vinyl simulation, and studio-mastered audio. Beosonic tuning profiles deliver signature B&O warmth. Sub-10ms latency ensures sync-perfect multichannel playback.</p>
+                </div>
+                <div class="klang-dd-usecase">
+                    <div class="klang-dd-usecase-icon">⚡</div>
+                    <h4>Studio Monitoring</h4>
+                    <p>Reference-grade frequency response, zero external codec coloration, and real-time DSP parameter injection. A trusted signal path for audio engineering and mastering.</p>
+                </div>
+                <div class="klang-dd-usecase">
+                    <div class="klang-dd-usecase-icon">🎮</div>
+                    <h4>Spatial Gaming Audio</h4>
+                    <p>Atmos and DTS:X object rendering in hardware. Immersive 3D audio environments with object velocities, height panning, and headphone virtualization — no CPU tax.</p>
+                </div>
+                <div class="klang-dd-usecase">
+                    <div class="klang-dd-usecase-icon">🎬</div>
+                    <h4>Video Production Monitoring</h4>
+                    <p>Dolby Vision 2 + Atmos content audition, real-time object mixing, and B&O spatial audio validation. Full creative metadata awareness.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section divider marking end of Klangkerne deep-dive -->
+    <div class="klang-dd-divider"></div>

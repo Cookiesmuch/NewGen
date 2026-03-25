@@ -1,0 +1,364 @@
+<div class="dp-showcase-wrap">
+<div class="section" style="position:relative; z-index:1;">
+
+  <!-- HEADER -->
+  <div class="dp-eyebrow">Compute Tile · Intel 04A · DP Core · Architecture Deep Dive</div>
+  <div class="dp-headline">SUNSET<br><span>COVE</span></div>
+  <p class="dp-subhead">The IPC workhorse of the Eventide generation. The highest instruction-per-clock throughput of any core in the lineup — and the core that reintroduces Hyper-Threading to Intel's P-core class for the first time since Lion Cove removed it.</p>
+  <div class="dp-badge-row">
+    <span class="dp-badge dp-b-blue">Intel 04A · 0.4nm-class GAA</span>
+    <span class="dp-badge dp-b-smt">P-SMT · 2T Per Core · Returns</span>
+    <span class="dp-badge dp-b-blue">10-Wide Decode — Widest On-Chip</span>
+    <span class="dp-badge dp-b-blue">720-Entry ROB</span>
+    <span class="dp-badge dp-b-blue">20 Disjoint Execution Ports</span>
+    <span class="dp-badge dp-b-note">No V8 HyperBOOST</span>
+  </div>
+
+  <!-- STAT BLOCK -->
+  <div class="dp-stat-block">
+    <div class="dp-stat-cell">
+      <div class="dp-stat-num">+38%</div>
+      <div class="dp-stat-label">IPC Over PTL P-Core</div>
+      <div class="dp-stat-sub">highest IPC in lineup</div>
+    </div>
+    <div class="dp-stat-cell">
+      <div class="dp-stat-num">10W</div>
+      <div class="dp-stat-label">Decode Width</div>
+      <div class="dp-stat-sub">widest on-chip</div>
+    </div>
+    <div class="dp-stat-cell">
+      <div class="dp-stat-num">720</div>
+      <div class="dp-stat-label">ROB Entries</div>
+      <div class="dp-stat-sub">deepest OOO window</div>
+    </div>
+    <div class="dp-stat-cell">
+      <div class="dp-stat-num">+92%</div>
+      <div class="dp-stat-label">MT Throughput vs PTL</div>
+      <div class="dp-stat-sub">P-SMT · 2T · disjoint ports</div>
+    </div>
+  </div>
+
+  <!-- ── PART 1: PHILOSOPHY ── -->
+  <div class="dp-section-label">Design Philosophy · IPC and Thread Density Over Frequency</div>
+  <div class="dp-body-heading">The IPC <span>Workhorse</span></div>
+
+  <div class="dp-two-col">
+    <div>
+      <p class="dp-body-text">
+        The Sunset Cove Dense Performance core takes the opposite architectural bet from the UHP Solar Eclipse. Where Solar Eclipse pursues frequency headroom at the expense of instruction-level depth, <strong>Sunset Cove maximizes IPC — instructions per clock cycle — across every execution unit in the design.</strong> It is the core in the Eventide lineup that extracts the most useful computation from every cycle that elapses, regardless of what that clock frequency is.
+      </p>
+      <p class="dp-body-text">
+        The headline numbers reflect this: <strong>+38% IPC over the Panther Lake P-core</strong> (Cougar Cove), which was itself a significant IPC improvement over its predecessors. At the same operating frequency, a Sunset Cove core completes 38% more work per cycle than the last-generation flagship. This is an architectural achievement that comes from three compounding decisions: the widest decode front-end on the chip, the deepest out-of-order execution window, and the most ambitious multi-porting strategy in recent x86 history.
+      </p>
+      <p class="dp-body-text">
+        The Sunset Cove is also the core that makes one of the most architecturally significant reversals in recent Intel history: <strong>the reintroduction of Hyper-Threading to the P-core class.</strong> Intel removed SMT from its Performance cores starting with Lion Cove in Lunar Lake, citing the latency and execution port contention problems that traditional SMT introduced. Sunset Cove re-adds it — but with a fundamentally re-engineered implementation that specifically addresses those prior criticisms.
+      </p>
+    </div>
+    <div>
+      <div class="dp-info-card">
+        <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.18em;color:rgba(96,180,255,0.48);margin-bottom:14px;">FULL CORE SPECIFICATION</div>
+        <div class="dp-spec-row"><span class="dp-spec-key">Core class</span><span class="dp-spec-val cool">DP — Dense Performance</span></div>
+        <div class="dp-spec-row"><span class="dp-spec-key">Codename</span><span class="dp-spec-val cool">Sunset Cove</span></div>
+        <div class="dp-spec-row"><span class="dp-spec-key">Process node</span><span class="dp-spec-val">Intel 04A · 0.4nm-class GAA</span></div>
+        <div class="dp-spec-row"><span class="dp-spec-key">Base clock</span><span class="dp-spec-val">2.1 GHz</span></div>
+        <div class="dp-spec-row"><span class="dp-spec-key">Max turbo</span><span class="dp-spec-val cool">5.2 GHz</span></div>
+        <div class="dp-spec-row"><span class="dp-spec-key">SMT</span><span class="dp-spec-val cool">P-SMT · 2 threads/core</span></div>
+        <div class="dp-spec-row"><span class="dp-spec-key">Logical threads</span><span class="dp-spec-val">2× physical core count</span></div>
+        <div class="dp-spec-row"><span class="dp-spec-key">Decode pipeline width</span><span class="dp-spec-val cool">10-wide (widest on-chip)</span></div>
+        <div class="dp-spec-row"><span class="dp-spec-key">OOO ROB depth</span><span class="dp-spec-val cool">720 entries</span></div>
+        <div class="dp-spec-row"><span class="dp-spec-key">Execution ports</span><span class="dp-spec-val cool">20 — dual-thread aware</span></div>
+        <div class="dp-spec-row"><span class="dp-spec-key">Port allocation model</span><span class="dp-spec-val">Disjoint — no thread contention</span></div>
+        <div class="dp-spec-row"><span class="dp-spec-key">L0 extra-LLC cache</span><span class="dp-spec-val">128 KB / core</span></div>
+        <div class="dp-spec-row"><span class="dp-spec-key">L2 private cache</span><span class="dp-spec-val">6 MB / core (largest on-chip)</span></div>
+        <div class="dp-spec-row"><span class="dp-spec-key">V8 HyperBOOST</span><span class="dp-spec-val">Not supported</span></div>
+        <div class="dp-spec-row"><span class="dp-spec-key">IPC class</span><span class="dp-spec-val cool">Highest on-chip</span></div>
+        <div class="dp-spec-row"><span class="dp-spec-key">TD dispatch class</span><span class="dp-spec-val">Class 2 — IPC-Bound MT</span></div>
+      </div>
+      <div class="dp-isa-row">
+        <span class="dp-isa-pill excl">P-SMT 2T</span>
+        <span class="dp-isa-pill">AVX-512</span>
+        <span class="dp-isa-pill">AMX</span>
+        <span class="dp-isa-pill">VNNI2</span>
+        <span class="dp-isa-pill">CET</span>
+        <span class="dp-isa-pill">ENQCMD</span>
+        <span class="dp-isa-pill">TSX-NI</span>
+        <span class="dp-isa-pill">CLDEMOTE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PART 2: P-SMT ── -->
+  <div class="dp-inner-divider"></div>
+  <div class="dp-section-label">P-SMT · Hyper-Threading Reinvented</div>
+  <div class="dp-body-heading"><span>P-SMT</span> Returns — Zero Port Contention</div>
+
+  <div class="dp-two-col">
+    <div>
+      <div class="dp-psmt-callout">
+        <div class="dp-psmt-title">Why Intel Removed SMT — And Why It's Back</div>
+        <p class="dp-psmt-text">
+          Intel's original Hyper-Threading, as implemented through Alder Lake and prior generations, shared execution ports between the two hardware threads on each P-core. When both threads were running instructions that needed the same execution unit at the same time, one thread had to wait. The result was a technology that provided genuine multi-thread throughput in some workloads, but introduced latency unpredictability in others — particularly in latency-sensitive gaming scenarios where thread contention caused frame time variance. <strong>Lion Cove in Lunar Lake removed SMT entirely from P-cores for this reason.</strong> The simplification improved single-thread predictability and reduced power, and for Lunar Lake's efficiency-first mission, that was the right call.
+          <br><br>
+          Sunset Cove re-adds SMT, but with a different design: <strong>P-SMT uses disjoint execution port allocation.</strong> The two hardware threads on a Sunset Cove core do not share execution ports. Each thread is assigned a dedicated subset of the 20-port execution array. There is no runtime arbitration between threads for port access, no contention latency, and no head-of-line blocking. The result is SMT that genuinely behaves like having two narrower cores within one core's die footprint — the instruction throughput per mm² is exceptional, without the latency pathologies that got SMT removed in the first place.
+        </p>
+      </div>
+
+      <div class="dp-port-grid">
+        <div class="dp-port-thread">
+          <div class="dp-port-thread-label">THREAD 0 — DEDICATED PORTS</div>
+          <div class="dp-port-row"><div class="dp-port-dot dp-port-a"></div><div class="dp-port-label">Integer ALU (×4 dedicated)</div></div>
+          <div class="dp-port-row"><div class="dp-port-dot dp-port-a"></div><div class="dp-port-label">FP / Vector units (×2)</div></div>
+          <div class="dp-port-row"><div class="dp-port-dot dp-port-a"></div><div class="dp-port-label">Load port (×2)</div></div>
+          <div class="dp-port-row"><div class="dp-port-dot dp-port-a"></div><div class="dp-port-label">Store port (×1)</div></div>
+          <div class="dp-port-row"><div class="dp-port-dot dp-port-a"></div><div class="dp-port-label">AGU (×1)</div></div>
+        </div>
+        <div class="dp-port-thread">
+          <div class="dp-port-thread-label">THREAD 1 — DEDICATED PORTS</div>
+          <div class="dp-port-row"><div class="dp-port-dot dp-port-b"></div><div class="dp-port-label">Integer ALU (×4 dedicated)</div></div>
+          <div class="dp-port-row"><div class="dp-port-dot dp-port-b"></div><div class="dp-port-label">FP / Vector units (×2)</div></div>
+          <div class="dp-port-row"><div class="dp-port-dot dp-port-b"></div><div class="dp-port-label">Load port (×2)</div></div>
+          <div class="dp-port-row"><div class="dp-port-dot dp-port-b"></div><div class="dp-port-label">Store port (×1)</div></div>
+          <div class="dp-port-row"><div class="dp-port-dot dp-port-b"></div><div class="dp-port-label">AGU (×1)</div></div>
+        </div>
+      </div>
+      <div class="dp-port-shared-note">20 execution ports total · no inter-thread contention · disjoint allocation enforced in hardware</div>
+    </div>
+    <div>
+      <p class="dp-body-text">
+        The 20-port execution array is the physical implementation of the P-SMT promise. At 20 ports across a dual-thread design, each thread effectively has access to the equivalent of a 10-port out-of-order engine — which, for reference, is wider than the execution arrays of most prior-generation Intel P-cores. <strong>This is not a compromise configuration. This is a dual high-performance execution engine housed in a single core.</strong>
+      </p>
+      <p class="dp-body-text">
+        The <strong>720-entry Reorder Buffer</strong> is the other key enabler. The ROB is the OOO window — it defines how many instructions ahead of the current commit point the processor can speculatively execute. A 720-entry ROB means the Sunset Cove can have 720 in-flight micro-operations at once across both hardware threads. This deep speculative window allows the core to continue finding work to do even when individual threads are waiting on memory accesses, branch misprediction recovery, or long-latency instructions. For multi-threaded workloads where both threads are executing non-trivially, this is where the +92% MT throughput figure comes from.
+      </p>
+      <p class="dp-body-text">
+        The <strong>128 KB L0 extra-LLC</strong> is the largest on-chip L0 in the Eventide lineup — larger than the Solar Eclipse's 96 KB — because a 10-wide decode front-end serving two threads simultaneously has proportionally higher instruction fetch bandwidth requirements. The <strong>6 MB private L2</strong> is similarly the largest per-core L2 in the lineup, reflecting the working set pressure that two active threads generate.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── PART 3: PIPELINE ── -->
+  <div class="dp-inner-divider"></div>
+  <div class="dp-section-label">Pipeline Architecture · The Deepest OOO Window in the Lineup</div>
+  <div class="dp-body-heading">10-Wide Decode, <span>720-Entry ROB</span></div>
+
+  <div class="dp-two-col">
+    <div>
+      <div class="dp-pipeline-wrap">
+        <div class="dp-pipeline-label">SUNSET COVE · P-SMT PIPELINE DIAGRAM</div>
+        <svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+          <defs>
+            <marker id="arr-dp" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+              <path d="M0,0 L5,2.5 L0,5 Z" fill="rgba(96,180,255,0.45)"/>
+            </marker>
+          </defs>
+          <!-- Row 1 -->
+          <rect x="8" y="10" width="110" height="42" rx="3" fill="rgba(0,104,181,0.1)" stroke="rgba(0,104,181,0.38)" stroke-width="1"/>
+          <text x="63" y="28" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(96,180,255,0.85)" font-weight="500">INST FETCH</text>
+          <text x="63" y="42" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(0,104,181,0.5)">TBM 5.0 · dual-thread</text>
+
+          <path d="M118 31 L134 31" stroke="rgba(0,104,181,0.35)" stroke-width="1" marker-end="url(#arr-dp)"/>
+
+          <rect x="135" y="10" width="110" height="42" rx="3" fill="rgba(0,104,181,0.1)" stroke="rgba(0,104,181,0.38)" stroke-width="1"/>
+          <text x="190" y="28" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(96,180,255,0.85)" font-weight="500">BRANCH PRED</text>
+          <text x="190" y="42" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(0,104,181,0.5)">per-thread predictor</text>
+
+          <path d="M245 31 L261 31" stroke="rgba(0,104,181,0.35)" stroke-width="1" marker-end="url(#arr-dp)"/>
+
+          <rect x="262" y="6" width="132" height="50" rx="3" fill="rgba(0,104,181,0.22)" stroke="rgba(0,104,181,0.7)" stroke-width="1.5"/>
+          <text x="328" y="24" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8.5" fill="#60B4FF" font-weight="700">10-WIDE DECODE</text>
+          <text x="328" y="38" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(96,180,255,0.65)">10 instr/cycle → µOPs</text>
+          <text x="328" y="49" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(0,104,181,0.55)">widest on-chip ↑</text>
+
+          <!-- µOP Cache -->
+          <path d="M328 56 L328 72" stroke="rgba(0,104,181,0.3)" stroke-width="1" marker-end="url(#arr-dp)"/>
+          <rect x="50" y="74" width="420" height="34" rx="3" fill="rgba(0,104,181,0.06)" stroke="rgba(0,104,181,0.18)" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="260" y="88" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(96,180,255,0.45)" font-weight="500">µOP CACHE / LOOP STREAM DETECTOR · DUAL-THREAD AWARE</text>
+          <text x="260" y="101" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(0,104,181,0.32)">128KB L0 feeds both threads simultaneously</text>
+
+          <!-- P-SMT ARBITER — new stage -->
+          <path d="M260 108 L260 126" stroke="rgba(0,104,181,0.3)" stroke-width="1" marker-end="url(#arr-dp)"/>
+          <rect x="130" y="128" width="260" height="44" rx="3" fill="rgba(0,104,181,0.18)" stroke="rgba(0,104,181,0.6)" stroke-width="1.5"/>
+          <text x="260" y="147" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8.5" fill="#60B4FF" font-weight="700">P-SMT THREAD ARBITER</text>
+          <text x="260" y="161" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(96,180,255,0.55)">Thread 0 + Thread 1 · disjoint port allocation · no contention</text>
+
+          <!-- Two branches -->
+          <path d="M200 172 L200 192" stroke="rgba(0,104,181,0.3)" stroke-width="1" marker-end="url(#arr-dp)"/>
+          <path d="M320 172 L320 192" stroke="rgba(0,104,181,0.3)" stroke-width="1" marker-end="url(#arr-dp)"/>
+
+          <rect x="60" y="194" width="136" height="40" rx="3" fill="rgba(0,104,181,0.1)" stroke="rgba(0,104,181,0.35)" stroke-width="1"/>
+          <text x="128" y="210" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(96,180,255,0.82)" font-weight="500">RENAME T0 / ROB</text>
+          <text x="128" y="224" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(0,104,181,0.45)">720-entry · shared window</text>
+
+          <rect x="325" y="194" width="136" height="40" rx="3" fill="rgba(0,104,181,0.1)" stroke="rgba(0,104,181,0.35)" stroke-width="1"/>
+          <text x="393" y="210" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(96,180,255,0.82)" font-weight="500">RENAME T1 / ROB</text>
+          <text x="393" y="224" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(0,104,181,0.45)">shares 720-entry ROB pool</text>
+
+          <path d="M128 234 L128 254" stroke="rgba(0,104,181,0.28)" stroke-width="1" marker-end="url(#arr-dp)"/>
+          <path d="M393 234 L393 254" stroke="rgba(0,104,181,0.28)" stroke-width="1" marker-end="url(#arr-dp)"/>
+
+          <rect x="20" y="256" width="216" height="42" rx="3" fill="rgba(0,104,181,0.14)" stroke="rgba(0,104,181,0.48)" stroke-width="1"/>
+          <text x="128" y="273" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(96,180,255,0.9)" font-weight="500">T0 EXEC PORTS (10 disjoint)</text>
+          <text x="128" y="287" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(0,104,181,0.5)">ALU·FP·Vec·Ld·St · no sharing</text>
+
+          <rect x="285" y="256" width="216" height="42" rx="3" fill="rgba(0,104,181,0.14)" stroke="rgba(0,104,181,0.48)" stroke-width="1"/>
+          <text x="393" y="273" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(96,180,255,0.9)" font-weight="500">T1 EXEC PORTS (10 disjoint)</text>
+          <text x="393" y="287" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(0,104,181,0.5)">ALU·FP·Vec·Ld·St · no sharing</text>
+
+          <path d="M128 298 L128 318" stroke="rgba(0,104,181,0.26)" stroke-width="1" marker-end="url(#arr-dp)"/>
+          <path d="M393 298 L393 318" stroke="rgba(0,104,181,0.26)" stroke-width="1" marker-end="url(#arr-dp)"/>
+
+          <rect x="90" y="320" width="340" height="38" rx="3" fill="rgba(0,104,181,0.09)" stroke="rgba(0,104,181,0.28)" stroke-width="1"/>
+          <text x="260" y="336" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(96,180,255,0.78)" font-weight="500">RETIRE / WRITEBACK — UNIFIED</text>
+          <text x="260" y="350" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(0,104,181,0.38)">in-order commit from 720-entry ROB · both threads</text>
+
+          <!-- L2 -->
+          <rect x="60" y="380" width="400" height="34" rx="3" fill="rgba(0,104,181,0.07)" stroke="rgba(0,104,181,0.18)" stroke-width="1"/>
+          <text x="260" y="395" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(96,180,255,0.52)" font-weight="500">L2 PRIVATE CACHE · 6 MB / CORE (LARGEST IN LINEUP)</text>
+          <text x="260" y="408" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(0,104,181,0.3)">miss → Kache Kore™ bLLC via FOveros 2.0</text>
+          <path d="M260 358 L260 378" stroke="rgba(0,104,181,0.25)" stroke-width="1" marker-end="url(#arr-dp)"/>
+        </svg>
+      </div>
+    </div>
+    <div>
+      <!-- Cache hierarchy -->
+      <div class="dp-section-label" style="margin-top:0;">Cache Hierarchy · Sunset Cove</div>
+      <p class="dp-body-text">The Sunset Cove carries the largest private cache of any core in the Eventide lineup. The <strong>128 KB L0 extra-LLC</strong>, the <strong>256 KB private L1</strong>, and the <strong>6 MB private L2</strong> are all sized for the bandwidth requirements of two active hardware threads simultaneously feeding a 10-wide decode front-end. L2 misses are absorbed first by the <strong>12 MB Compute Tile shared L3</strong> before reaching the photonic fabric.</p>
+
+      <div class="dp-cache-strip">
+        <div class="dp-cache-row">
+          <div class="dp-cache-tier">L0</div>
+          <div class="dp-cache-bar dp-c-l0" style="flex:0.30">
+            <span class="dp-cache-name">L0 Extra-LLC</span>
+            <span class="dp-cache-sz">128 KB / core</span>
+          </div>
+        </div>
+        <div class="dp-cache-note">Largest L0 in lineup — feeds 10-wide decode under dual-thread load</div>
+        <div class="dp-cache-conn">&#8595; miss</div>
+        <div class="dp-cache-row">
+          <div class="dp-cache-tier">L1</div>
+          <div class="dp-cache-bar dp-c-l1" style="flex:0.45">
+            <span class="dp-cache-name">L1 I-Cache + D-Cache</span>
+            <span class="dp-cache-sz">256 KB / core</span>
+          </div>
+        </div>
+        <div class="dp-cache-conn">&#8595; miss</div>
+        <div class="dp-cache-row">
+          <div class="dp-cache-tier">L2</div>
+          <div class="dp-cache-bar dp-c-l2" style="flex:0.7">
+            <span class="dp-cache-name">Private L2 Cache</span>
+            <span class="dp-cache-sz">6 MB / core</span>
+          </div>
+        </div>
+        <div class="dp-cache-note" style="color:rgba(0,104,181,0.4);">Largest per-core L2 on-chip — 6 MB shared across 2 hardware threads</div>
+        <div class="dp-cache-conn">&#8595; miss</div>
+        <div class="dp-cache-row">
+          <div class="dp-cache-tier">L3</div>
+          <div class="dp-cache-bar dp-c-l3" style="flex:0.82">
+            <span class="dp-cache-name">Compute Tile Shared L3</span>
+            <span class="dp-cache-sz">12 MB / tile &middot; 48 MB total</span>
+          </div>
+        </div>
+        <div class="dp-cache-note" style="color:rgba(147,51,234,0.35);">Shared across all UHP + DP + SPE cores on Compute Tile &mdash; 4 tiles &times; 12 MB</div>
+        <div class="dp-cache-conn">&#8595; miss &rarr; FOveros 2.0 photonic</div>
+        <div class="dp-cache-row">
+          <div class="dp-cache-tier" style="color:rgba(192,132,252,0.5);">L4</div>
+          <div class="dp-cache-bar dp-c-bllc" style="flex:1">
+            <span class="dp-cache-name">Kache Kore™ bLLC</span>
+            <span class="dp-cache-sz">4 GB · APU-shared</span>
+          </div>
+        </div>
+        <div class="dp-cache-note" style="color:rgba(147,51,234,0.5);">Shared across all CPU + GPU + NPU tiles via photonic fabric</div>
+      </div>
+
+      <div class="dp-gog-block">
+        <div class="dp-gog-title">Gen-on-Gen Performance · vs Panther Lake P-Core (Cougar Cove)</div>
+        <div class="dp-gog-row">
+          <div class="dp-gog-metric">IPC — single-thread</div>
+          <div class="dp-gog-track"><div class="dp-gog-fill" style="width:80%"></div></div>
+          <div class="dp-gog-num">+38%</div>
+        </div>
+        <div class="dp-gog-row">
+          <div class="dp-gog-metric">MT throughput</div>
+          <div class="dp-gog-track"><div class="dp-gog-fill" style="width:100%"></div></div>
+          <div class="dp-gog-num">+92%</div>
+        </div>
+        <div class="dp-gog-row">
+          <div class="dp-gog-metric">Perf/W (multi-thread)</div>
+          <div class="dp-gog-track"><div class="dp-gog-fill" style="width:60%; opacity:0.8"></div></div>
+          <div class="dp-gog-num">+44%</div>
+        </div>
+        <div class="dp-gog-row">
+          <div class="dp-gog-metric">ROB depth increase</div>
+          <div class="dp-gog-track"><div class="dp-gog-fill" style="width:70%; opacity:0.75"></div></div>
+          <div class="dp-gog-num">+2.4×</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PART 4: USE CASES + FEATURES ── -->
+  <div class="dp-inner-divider"></div>
+  <div class="dp-section-label">Workload Scenarios · Where DP Dominates</div>
+  <div class="dp-body-heading">Where <span>IPC</span> Is Everything</div>
+
+  <p class="dp-body-text" style="max-width:720px;">
+    The Sunset Cove core is the Hardware Thread Director's choice for workloads that are IPC-bound and multi-threaded simultaneously — scenarios where raw instruction throughput per core matters more than frequency headroom or core density. These are the workloads where the 720-entry ROB, 20-port disjoint execution array, and P-SMT combine into a result that no single-threaded or density-optimized core can match.
+  </p>
+
+  <div class="dp-feature-grid">
+    <div class="dp-feature-row">
+      <div class="dp-feature-icon">⚙️</div>
+      <div>
+        <div class="dp-feature-title">Thread Director Classification</div>
+        <div class="dp-feature-desc">Class 2 — IPC-Bound MT. Thread Director routes threads here when instruction-level parallelism is high and working set fits in the large L2 hierarchy.</div>
+      </div>
+    </div>
+    <div class="dp-feature-row">
+      <div class="dp-feature-icon">🧵</div>
+      <div>
+        <div class="dp-feature-title">P-SMT Always Active</div>
+        <div class="dp-feature-desc">Unlike prior SMT implementations, P-SMT does not degrade single-thread performance due to disjoint port allocation. Both threads can run simultaneously at full execution width.</div>
+      </div>
+    </div>
+    <div class="dp-feature-row">
+      <div class="dp-feature-icon">📐</div>
+      <div>
+        <div class="dp-feature-title">Deep OOO Window</div>
+        <div class="dp-feature-desc">720-entry ROB finds useful work across 720 in-flight instructions, masking memory latency and long-latency operations far more aggressively than shallower OOO designs.</div>
+      </div>
+    </div>
+    <div class="dp-feature-row">
+      <div class="dp-feature-icon">🧮</div>
+      <div>
+        <div class="dp-feature-title">AMX + AVX-512 Full Width</div>
+        <div class="dp-feature-desc">Both hardware threads have dedicated access to full-width VNNI2 and AMX matrix acceleration units. No sharing, no throughput division — full acceleration for both threads simultaneously.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dp-usecase-grid">
+    <div class="dp-usecase-chip">
+      <span class="dp-usecase-icon">💼</span>
+      <div class="dp-usecase-title">Productivity Workloads</div>
+      <div class="dp-usecase-desc">Spreadsheet computation, document processing, and background application load all benefit from IPC. Highest throughput per active cycle of any core.</div>
+    </div>
+    <div class="dp-usecase-chip">
+      <span class="dp-usecase-icon">🐍</span>
+      <div class="dp-usecase-title">Runtimes & Scripting</div>
+      <div class="dp-usecase-desc">Python, Node.js, Ruby — interpreted and JIT environments are IPC-bound. The deep OOO window handles irregular instruction patterns that frustrate shallower designs.</div>
+    </div>
+    <div class="dp-usecase-chip">
+      <span class="dp-usecase-icon">📊</span>
+      <div class="dp-usecase-title">Local AI Inference</div>
+      <div class="dp-usecase-desc">Token generation in LLM inference is memory-bandwidth and IPC limited. P-SMT + AMX + 6 MB L2 + Kache Kore™ bLLC create an optimal local inference environment.</div>
+    </div>
+    <div class="dp-usecase-chip">
+      <span class="dp-usecase-icon">🏗️</span>
+      <div class="dp-usecase-title">Server-Class MT</div>
+      <div class="dp-usecase-desc">With P-SMT active, the X500 SKU's Sunset Cove population delivers server-grade multi-thread density in a mobile chassis. Enterprise workloads that expect Xeon-class MT now have a mobile answer.</div>
+    </div>
+  </div>
+
+</div>
+</div>
+

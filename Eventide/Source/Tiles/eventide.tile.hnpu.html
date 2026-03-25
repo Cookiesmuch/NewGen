@@ -1,0 +1,819 @@
+<!-- ══════════════════════════════════════════════════════
+     HNPU ARCHITECTURE — DEEP-DIVE SECTION
+     AI Compute · 256 TOPS on Intel 04A
+     CSS Prefix: hnpu-dd- · Accent Color: #FF7A35
+══════════════════════════════════════════════════════ -->
+
+<style>
+    :root {
+        --hnpu-dd-primary: #FF7A35;
+        --hnpu-dd-primary-light: #FF9060;
+        --hnpu-dd-bg-dark: #080200;
+        --hnpu-dd-bg-gradient-end: #0F0500;
+        --hnpu-dd-grid-glow: rgba(255, 122, 53, 0.05);
+        --hnpu-dd-border-accent: rgba(255, 122, 53, 0.25);
+        --hnpu-dd-text-primary: #F5F5F5;
+        --hnpu-dd-text-secondary: #B8B8B8;
+        --hnpu-dd-accent-muted: rgba(255, 122, 53, 0.1);
+    }
+
+    .hnpu-dd-wrap {
+        width: 100%;
+        background: linear-gradient(135deg, var(--hnpu-dd-bg-dark) 0%, var(--hnpu-dd-bg-gradient-end) 100%);
+        position: relative;
+    }
+
+    .hnpu-dd-wrap::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+            linear-gradient(90deg, var(--hnpu-dd-grid-glow) 1px, transparent 1px),
+            linear-gradient(0deg, var(--hnpu-dd-grid-glow) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+        opacity: 0.3;
+    }
+
+    .hnpu-dd-section {
+        position: relative;
+        z-index: 1;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 64px 48px;
+    }
+
+    /* ── HERO SECTION ── */
+    .hnpu-dd-hero {
+        text-align: center;
+        margin-bottom: 80px;
+        position: relative;
+    }
+
+    .hnpu-dd-eyebrow {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--hnpu-dd-primary);
+        margin-bottom: 16px;
+        font-weight: 500;
+    }
+
+    .hnpu-dd-hero-headline {
+        font-family: var(--font-display);
+        font-size: 72px;
+        font-weight: 700;
+        line-height: 1.1;
+        margin-bottom: 24px;
+        letter-spacing: -1px;
+        background: linear-gradient(135deg, var(--hnpu-dd-primary) 0%, var(--hnpu-dd-primary-light) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hnpu-dd-hero-subhead {
+        font-size: 18px;
+        color: var(--hnpu-dd-text-secondary);
+        max-width: 800px;
+        margin: 0 auto 40px;
+        line-height: 1.7;
+    }
+
+    .hnpu-dd-badge-group {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 0;
+    }
+
+    .hnpu-dd-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border: 1px solid var(--hnpu-dd-border-accent);
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        background: rgba(255, 122, 53, 0.05);
+        color: var(--hnpu-dd-primary);
+        font-family: var(--font-mono);
+    }
+
+    .hnpu-dd-badge.collab {
+        border-color: var(--hnpu-dd-primary);
+        background: rgba(255, 122, 53, 0.1);
+        color: var(--hnpu-dd-text-primary);
+    }
+
+    /* ── STAT BLOCK ── */
+    .hnpu-dd-stat-block {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        margin: 60px 0 80px 0;
+        padding: 40px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--hnpu-dd-border-accent);
+        border-radius: 8px;
+    }
+
+    .hnpu-dd-stat-cell {
+        text-align: center;
+        padding: 20px;
+        border-right: 1px solid var(--hnpu-dd-grid-glow);
+    }
+
+    .hnpu-dd-stat-cell:last-child {
+        border-right: none;
+    }
+
+    .hnpu-dd-stat-value {
+        font-family: var(--font-display);
+        font-size: 42px;
+        font-weight: 700;
+        color: var(--hnpu-dd-primary-light);
+        margin-bottom: 8px;
+        letter-spacing: -0.5px;
+    }
+
+    .hnpu-dd-stat-label {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--hnpu-dd-text-secondary);
+        font-family: var(--font-mono);
+    }
+
+    /* ── TWO-COLUMN LAYOUT ── */
+    .hnpu-dd-two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        margin: 80px 0;
+        align-items: start;
+    }
+
+    .hnpu-dd-col-text h3 {
+        font-family: var(--font-display);
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 24px;
+        line-height: 1.2;
+        letter-spacing: -0.5px;
+    }
+
+    .hnpu-dd-col-text p {
+        font-size: 15px;
+        line-height: 1.8;
+        color: var(--hnpu-dd-text-secondary);
+        margin-bottom: 20px;
+    }
+
+    .hnpu-dd-col-text strong {
+        color: var(--hnpu-dd-primary);
+        font-weight: 600;
+    }
+
+    .hnpu-dd-spec-table {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--hnpu-dd-border-accent);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .hnpu-dd-spec-row {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        border-bottom: 1px solid var(--hnpu-dd-grid-glow);
+        padding: 16px 24px;
+        align-items: center;
+    }
+
+    .hnpu-dd-spec-row:last-child {
+        border-bottom: none;
+    }
+
+    .hnpu-dd-spec-label {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--hnpu-dd-primary);
+        font-weight: 600;
+    }
+
+    .hnpu-dd-spec-value {
+        font-size: 14px;
+        color: var(--hnpu-dd-text-primary);
+        word-break: break-word;
+    }
+
+    /* ── PRECISION MATRIX ── */
+    .hnpu-dd-precision-section {
+        margin: 80px 0;
+    }
+
+    .hnpu-dd-precision-section h3 {
+        font-family: var(--font-display);
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 40px;
+        line-height: 1.2;
+        letter-spacing: -0.5px;
+    }
+
+    .hnpu-dd-precision-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 16px;
+        margin: 0;
+    }
+
+    .hnpu-dd-precision-card {
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid var(--hnpu-dd-border-accent);
+        border-radius: 8px;
+        padding: 24px;
+        text-align: center;
+    }
+
+    .hnpu-dd-precision-card.highlight {
+        background: rgba(255, 122, 53, 0.08);
+        border-color: var(--hnpu-dd-primary);
+    }
+
+    .hnpu-dd-precision-name {
+        font-family: var(--font-mono);
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--hnpu-dd-primary);
+        margin-bottom: 12px;
+        letter-spacing: 0.5px;
+    }
+
+    .hnpu-dd-precision-tops {
+        font-family: var(--font-display);
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--hnpu-dd-primary-light);
+        margin-bottom: 8px;
+    }
+
+    .hnpu-dd-precision-use {
+        font-size: 12px;
+        color: var(--hnpu-dd-text-secondary);
+        line-height: 1.4;
+    }
+
+    /* ── THREAD DIRECTOR ── */
+    .hnpu-dd-thread-director {
+        margin: 80px 0;
+    }
+
+    .hnpu-dd-thread-director h3 {
+        font-family: var(--font-display);
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 40px;
+        line-height: 1.2;
+        letter-spacing: -0.5px;
+    }
+
+    .hnpu-dd-escalation-chain {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    .hnpu-dd-escalation-card {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--hnpu-dd-border-accent);
+        border-radius: 8px;
+        padding: 32px 24px;
+        text-align: center;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .hnpu-dd-escalation-card:hover {
+        background: rgba(255, 122, 53, 0.08);
+        border-color: var(--hnpu-dd-primary);
+    }
+
+    .hnpu-dd-escalation-level {
+        font-family: var(--font-display);
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--hnpu-dd-primary);
+        margin-bottom: 12px;
+        letter-spacing: -0.5px;
+    }
+
+    .hnpu-dd-escalation-desc {
+        font-size: 13px;
+        color: var(--hnpu-dd-text-secondary);
+        line-height: 1.6;
+    }
+
+    .hnpu-dd-escalation-arrow {
+        position: absolute;
+        right: -20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--hnpu-dd-primary);
+        font-weight: 700;
+        font-size: 20px;
+        z-index: 10;
+    }
+
+    .hnpu-dd-escalation-card:last-child .hnpu-dd-escalation-arrow {
+        display: none;
+    }
+
+    /* ── USE-CASE GRID ── */
+    .hnpu-dd-usecase-section {
+        margin: 80px 0;
+    }
+
+    .hnpu-dd-usecase-section h3 {
+        font-family: var(--font-display);
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 40px;
+        line-height: 1.2;
+        letter-spacing: -0.5px;
+    }
+
+    .hnpu-dd-usecase-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+
+    .hnpu-dd-usecase-card {
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid var(--hnpu-dd-border-accent);
+        border-radius: 8px;
+        padding: 32px 28px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hnpu-dd-usecase-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--hnpu-dd-primary) 0%, transparent 100%);
+    }
+
+    .hnpu-dd-usecase-icon {
+        font-family: var(--font-display);
+        font-size: 24px;
+        color: var(--hnpu-dd-primary);
+        margin-bottom: 12px;
+    }
+
+    .hnpu-dd-usecase-title {
+        font-family: var(--font-display);
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--hnpu-dd-text-primary);
+        margin-bottom: 12px;
+        letter-spacing: -0.5px;
+    }
+
+    .hnpu-dd-usecase-desc {
+        font-size: 13px;
+        color: var(--hnpu-dd-text-secondary);
+        line-height: 1.6;
+    }
+
+    /* ── GEN-ON-GEN COMPARISON ── */
+    .hnpu-dd-gen-comparison {
+        margin: 80px 0;
+    }
+
+    .hnpu-dd-gen-comparison h3 {
+        font-family: var(--font-display);
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 40px;
+        line-height: 1.2;
+        letter-spacing: -0.5px;
+    }
+
+    .hnpu-dd-gen-bars {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 40px;
+    }
+
+    .hnpu-dd-gen-bar-group {
+        position: relative;
+    }
+
+    .hnpu-dd-gen-label {
+        font-family: var(--font-display);
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: var(--hnpu-dd-text-primary);
+        letter-spacing: -0.5px;
+    }
+
+    .hnpu-dd-gen-bar {
+        height: 60px;
+        background: linear-gradient(90deg, rgba(255, 122, 53, 0.2), rgba(255, 122, 53, 0.05));
+        border-radius: 6px;
+        border: 1px solid var(--hnpu-dd-border-accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hnpu-dd-gen-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--hnpu-dd-primary), var(--hnpu-dd-primary-light));
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 16px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .hnpu-dd-gen-bar-value {
+        font-family: var(--font-display);
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--hnpu-dd-bg-dark);
+        letter-spacing: -0.5px;
+    }
+
+    .hnpu-dd-gen-metric {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--hnpu-dd-text-secondary);
+        margin-top: 12px;
+    }
+
+    /* ── SECTION DIVIDER ── */
+    .hnpu-dd-divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent 0%, var(--hnpu-dd-primary) 50%, transparent 100%);
+        margin: 80px 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+        .hnpu-dd-two-col {
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+
+        .hnpu-dd-stat-block {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .hnpu-dd-escalation-chain {
+            grid-template-columns: 1fr;
+        }
+
+        .hnpu-dd-escalation-arrow {
+            right: auto;
+            bottom: -20px;
+            transform: rotate(90deg);
+        }
+
+        .hnpu-dd-usecase-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hnpu-dd-hero-headline {
+            font-size: 48px;
+        }
+
+        .hnpu-dd-col-text h3,
+        .hnpu-dd-precision-section h3,
+        .hnpu-dd-thread-director h3,
+        .hnpu-dd-usecase-section h3,
+        .hnpu-dd-gen-comparison h3 {
+            font-size: 28px;
+        }
+
+        .hnpu-dd-section {
+            padding: 40px 24px;
+        }
+
+        .hnpu-dd-stat-block {
+            grid-template-columns: 1fr;
+            padding: 24px;
+        }
+
+        .hnpu-dd-stat-cell {
+            border-right: none;
+            border-bottom: 1px solid var(--hnpu-dd-grid-glow);
+            padding: 16px;
+        }
+
+        .hnpu-dd-stat-cell:last-child {
+            border-bottom: none;
+        }
+
+        .hnpu-dd-precision-grid {
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        }
+
+        .hnpu-dd-spec-row {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .hnpu-dd-gen-bars {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="hnpu-dd-wrap">
+    <div class="hnpu-dd-section">
+        <!-- ── HERO SECTION ── -->
+        <div class="hnpu-dd-hero">
+            <div class="hnpu-dd-eyebrow">AI Compute · HNPU · Intel 04A</div>
+            <h1 class="hnpu-dd-hero-headline">256 TOPS. On the World's Most Advanced Node.</h1>
+            <p class="hnpu-dd-hero-subhead">
+                The HNPU is the primary AI compute engine for on-device LLM inference, Copilot+ compliance, real-time upscaling, and heavy background AI workloads. Manufactured on Intel 04A—the same cutting-edge node as the HPiGPU—the HNPU delivers unprecedented neural network density and power efficiency for next-generation client compute.
+            </p>
+            <div class="hnpu-dd-badge-group">
+                <span class="hnpu-dd-badge">Intel 04A</span>
+                <span class="hnpu-dd-badge">256 TOPS</span>
+                <span class="hnpu-dd-badge">INT2→FP32</span>
+                <span class="hnpu-dd-badge">OpenVINO 5.0</span>
+                <span class="hnpu-dd-badge">XeSS 5.0</span>
+                <span class="hnpu-dd-badge collab">Sole Intel IP</span>
+            </div>
+        </div>
+
+        <!-- ── STAT BLOCK ── -->
+        <div class="hnpu-dd-stat-block">
+            <div class="hnpu-dd-stat-cell">
+                <div class="hnpu-dd-stat-value">256</div>
+                <div class="hnpu-dd-stat-label">TOPS Peak Throughput</div>
+            </div>
+            <div class="hnpu-dd-stat-cell">
+                <div class="hnpu-dd-stat-value">32</div>
+                <div class="hnpu-dd-stat-label">MB Scratchpad SRAM</div>
+            </div>
+            <div class="hnpu-dd-stat-cell">
+                <div class="hnpu-dd-stat-value">7</div>
+                <div class="hnpu-dd-stat-label">Precision Modes</div>
+            </div>
+            <div class="hnpu-dd-stat-cell">
+                <div class="hnpu-dd-stat-value">344</div>
+                <div class="hnpu-dd-stat-label">TOPS w/ LPNPU</div>
+            </div>
+        </div>
+
+        <!-- ── ARCHITECTURE DEEP-DIVE ── -->
+        <div class="hnpu-dd-two-col">
+            <div class="hnpu-dd-col-text">
+                <h3>Tile-Array NPU Architecture</h3>
+                <p>
+                    The HNPU employs a distributed tile-array architecture optimized for sustained AI inference and model execution. Each tile operates as an independent compute island, enabling fine-grained parallelism across neural network operations without introducing latency penalties or synchronization bottlenecks.
+                </p>
+                <p>
+                    <strong>INT2 matrix multiplication</strong> is the cornerstone of the HNPU's breakthrough throughput. By reducing datapath width to 2-bit integer operations, the HNPU achieves <strong>4× the effective throughput of INT4</strong> at the same silicon area—critical for quantized LLM inference where model weights occupy the vast majority of memory bandwidth. This precision mode unlocks aggressive model compression without sacrificing inference latency.
+                </p>
+                <p>
+                    The <strong>32 MB on-die scratchpad SRAM</strong> eliminates external memory round-trips for model weight staging and temporary activations, drastically reducing power consumption during inference. The scratchpad acts as a unified working memory for tile-to-tile data movement, enabling high-bandwidth, low-latency model execution.
+                </p>
+                <p>
+                    The Hardware <strong>Thread Director</strong> coordinates task routing between HNPU and LPNPU, escalating background AI workloads upward only when power budget and thermal headroom permit sustained execution.
+                </p>
+            </div>
+
+            <div class="hnpu-dd-spec-table">
+                <div class="hnpu-dd-spec-row">
+                    <div class="hnpu-dd-spec-label">AI Throughput</div>
+                    <div class="hnpu-dd-spec-value">256 TOPS (INT2); 180 TOPS (INT4); 64 TOPS (FP16)</div>
+                </div>
+                <div class="hnpu-dd-spec-row">
+                    <div class="hnpu-dd-spec-label">Process Node</div>
+                    <div class="hnpu-dd-spec-value">Intel 04A (CMOS)</div>
+                </div>
+                <div class="hnpu-dd-spec-row">
+                    <div class="hnpu-dd-spec-label">Precision Modes</div>
+                    <div class="hnpu-dd-spec-value">INT2, INT4, INT8, FP8, BF16, FP16, FP32</div>
+                </div>
+                <div class="hnpu-dd-spec-row">
+                    <div class="hnpu-dd-spec-label">On-Die SRAM</div>
+                    <div class="hnpu-dd-spec-value">32 MB Scratchpad (tile-to-tile coherency)</div>
+                </div>
+                <div class="hnpu-dd-spec-row">
+                    <div class="hnpu-dd-spec-label">Supported Frameworks</div>
+                    <div class="hnpu-dd-spec-value">OpenVINO 5.0, ONNX Runtime, TensorFlow Lite, PyTorch Export</div>
+                </div>
+                <div class="hnpu-dd-spec-row">
+                    <div class="hnpu-dd-spec-label">Power Envelope</div>
+                    <div class="hnpu-dd-spec-value">~6–8 W sustained; ~12–14 W turbo</div>
+                </div>
+                <div class="hnpu-dd-spec-row">
+                    <div class="hnpu-dd-spec-label">Copilot+ Compliance</div>
+                    <div class="hnpu-dd-spec-value">256 TOPS = 6.4× minimum 40 TOPS requirement</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── PRECISION MATRIX ── -->
+        <div class="hnpu-dd-precision-section">
+            <h3>Precision Modes & Effective Throughput</h3>
+            <div class="hnpu-dd-precision-grid">
+                <div class="hnpu-dd-precision-card highlight">
+                    <div class="hnpu-dd-precision-name">INT2</div>
+                    <div class="hnpu-dd-precision-tops">256T</div>
+                    <div class="hnpu-dd-precision-use">Quantized LLMs, aggressive compression</div>
+                </div>
+                <div class="hnpu-dd-precision-card">
+                    <div class="hnpu-dd-precision-name">INT4</div>
+                    <div class="hnpu-dd-precision-tops">180T</div>
+                    <div class="hnpu-dd-precision-use">Fine-tuned model weights, inference</div>
+                </div>
+                <div class="hnpu-dd-precision-card">
+                    <div class="hnpu-dd-precision-name">INT8</div>
+                    <div class="hnpu-dd-precision-tops">120T</div>
+                    <div class="hnpu-dd-precision-use">Activation quantization, int-only paths</div>
+                </div>
+                <div class="hnpu-dd-precision-card">
+                    <div class="hnpu-dd-precision-name">FP8</div>
+                    <div class="hnpu-dd-precision-tops">96T</div>
+                    <div class="hnpu-dd-precision-use">Lightweight float inference, AI sampling</div>
+                </div>
+                <div class="hnpu-dd-precision-card">
+                    <div class="hnpu-dd-precision-name">BF16</div>
+                    <div class="hnpu-dd-precision-tops">48T</div>
+                    <div class="hnpu-dd-precision-use">Mixed-precision training, bfloat16 models</div>
+                </div>
+                <div class="hnpu-dd-precision-card">
+                    <div class="hnpu-dd-precision-name">FP16</div>
+                    <div class="hnpu-dd-precision-tops">48T</div>
+                    <div class="hnpu-dd-precision-use">Float inference, backward compatibility</div>
+                </div>
+                <div class="hnpu-dd-precision-card">
+                    <div class="hnpu-dd-precision-name">FP32</div>
+                    <div class="hnpu-dd-precision-tops">~12T</div>
+                    <div class="hnpu-dd-precision-use">Research inference, high-precision paths</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── HNPU × XeSS 5.0 INTEGRATION ── -->
+        <div class="hnpu-dd-two-col">
+            <div class="hnpu-dd-col-text">
+                <h3>HNPU × XeSS 5.0 Pipeline</h3>
+                <p>
+                    The HNPU seamlessly integrates with the Elementalist GPU's XeSS 5.0 upscaling engine, decoupling AI-driven temporal frame reconstruction from traditional rasterization latency. While the Elementalist handles pixel rasterization, the HNPU executes low-resolution neural networks for temporal motion estimation, feature synthesis, and perceptual enhancement.
+                </p>
+                <p>
+                    Model inference runs entirely on the HNPU's tile array, freeing GPU XMX5 matrix units for parallel compute offloading. This co-execution model enables <strong>real-time upscaling at 4K+ resolutions</strong> without forcing games to choose between AI enhancements and maximum frame rate.
+                </p>
+                <p>
+                    XeSS 5.0 is production-ready across AAA titles, with dedicated support in Unreal Engine 5.5 and a growing ecosystem of validated game publishers. The HNPU's INT2 quantization pipeline ensures <strong>model size stays under 64 MB</strong>, fitting entirely in tile SRAM for zero-copy execution.
+                </p>
+            </div>
+
+            <div class="hnpu-dd-spec-table">
+                <div class="hnpu-dd-spec-row">
+                    <div class="hnpu-dd-spec-label">XeSS 5.0 Support</div>
+                    <div class="hnpu-dd-spec-value">Native neural upscaling pipeline, dedicated HNPU path</div>
+                </div>
+                <div class="hnpu-dd-spec-row">
+                    <div class="hnpu-dd-spec-label">Frame Rate Impact</div>
+                    <div class="hnpu-dd-spec-value">~0.5–1.2 ms per frame (independent of GPU load)</div>
+                </div>
+                <div class="hnpu-dd-spec-row">
+                    <div class="hnpu-dd-spec-label">Model Footprint</div>
+                    <div class="hnpu-dd-spec-value">~32–48 MB (INT2 quantized, on-die SRAM resident)</div>
+                </div>
+                <div class="hnpu-dd-spec-row">
+                    <div class="hnpu-dd-spec-label">Target Resolutions</div>
+                    <div class="hnpu-dd-spec-value">1440p → 4K, 1080p → 4K, 720p → 1440p native</div>
+                </div>
+                <div class="hnpu-dd-spec-row">
+                    <div class="hnpu-dd-spec-label">API Integration</div>
+                    <div class="hnpu-dd-spec-value">DirectX 12, Vulkan (with XeSS 5.0 extensions)</div>
+                </div>
+                <div class="hnpu-dd-spec-row">
+                    <div class="hnpu-dd-spec-label">Engine Support</div>
+                    <div class="hnpu-dd-spec-value">Unreal Engine 5.5+, custom pipelines via OpenVINO</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── THREAD DIRECTOR COORDINATION ── -->
+        <div class="hnpu-dd-thread-director">
+            <h3>Hardware Thread Director: Escalation Model</h3>
+            <div class="hnpu-dd-escalation-chain">
+                <div class="hnpu-dd-escalation-card">
+                    <div class="hnpu-dd-escalation-level">Level 1: LPNPU</div>
+                    <div class="hnpu-dd-escalation-desc">
+                        Always-on, low-power background AI. Transcription, translation, ambient listening, telemetry inference. Power budget: ~0.3–0.5 W continuous.
+                    </div>
+                    <div class="hnpu-dd-escalation-arrow">→</div>
+                </div>
+                <div class="hnpu-dd-escalation-card">
+                    <div class="hnpu-dd-escalation-level">Level 2: HNPU</div>
+                    <div class="hnpu-dd-escalation-desc">
+                        Primary inference engine. LLM chat, Copilot+, XeSS upscaling, local AI agents. Activated by app demand or thermal headroom. Power budget: ~6–12 W sustained.
+                    </div>
+                    <div class="hnpu-dd-escalation-arrow">→</div>
+                </div>
+                <div class="hnpu-dd-escalation-card">
+                    <div class="hnpu-dd-escalation-level">Level 3: GPU XMX5</div>
+                    <div class="hnpu-dd-escalation-desc">
+                        Parallel matrix flood for large batch inference, training workloads, or collaborative tasks with CPU. Unrestricted power envelope; driven by OS scheduling.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── USE-CASE GRID ── -->
+        <div class="hnpu-dd-usecase-section">
+            <h3>Primary Use Cases</h3>
+            <div class="hnpu-dd-usecase-grid">
+                <div class="hnpu-dd-usecase-card">
+                    <div class="hnpu-dd-usecase-icon">◆</div>
+                    <div class="hnpu-dd-usecase-title">On-Device LLM Inference</div>
+                    <div class="hnpu-dd-usecase-desc">
+                        Host Copilot+, private AI assistants, and local language models directly on silicon. 256 TOPS enables real-time token generation for 7B–13B parameter models with full context windows.
+                    </div>
+                </div>
+                <div class="hnpu-dd-usecase-card">
+                    <div class="hnpu-dd-usecase-icon">◆</div>
+                    <div class="hnpu-dd-usecase-title">XeSS 5.0 Real-Time Upscaling</div>
+                    <div class="hnpu-dd-usecase-desc">
+                        Neural frame upscaling for gaming. Temporal reconstruction runs on HNPU while Elementalist handles rasterization—zero render latency overhead.
+                    </div>
+                </div>
+                <div class="hnpu-dd-usecase-card">
+                    <div class="hnpu-dd-usecase-icon">◆</div>
+                    <div class="hnpu-dd-usecase-title">Background Diffusion & Generative AI</div>
+                    <div class="hnpu-dd-usecase-desc">
+                        Image generation, video frame interpolation, and style transfer. HNPU offloads heavy lifting from CPU/GPU, enabling responsive UI and battery efficiency.
+                    </div>
+                </div>
+                <div class="hnpu-dd-usecase-card">
+                    <div class="hnpu-dd-usecase-icon">◆</div>
+                    <div class="hnpu-dd-usecase-title">Real-Time Transcription & Translation</div>
+                    <div class="hnpu-dd-usecase-desc">
+                        Speech-to-text, live caption generation, and multilingual translation. HNPU enables enterprise-grade transcription without cloud round-trips.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── GEN-ON-GEN COMPARISON ── -->
+        <div class="hnpu-dd-gen-comparison">
+            <h3>Generation-on-Generation: vs Lunar Lake NPU 4.0</h3>
+            <div class="hnpu-dd-gen-bars">
+                <div class="hnpu-dd-gen-bar-group">
+                    <div class="hnpu-dd-gen-label">Peak Throughput</div>
+                    <div class="hnpu-dd-gen-bar">
+                        <div class="hnpu-dd-gen-bar-fill" style="width: 212%;">
+                            <span class="hnpu-dd-gen-bar-value">256T</span>
+                        </div>
+                    </div>
+                    <div class="hnpu-dd-gen-metric">Eventide HNPU vs Lunar Lake 120 TOPS: +112% uplift</div>
+                </div>
+                <div class="hnpu-dd-gen-bar-group">
+                    <div class="hnpu-dd-gen-label">Power Efficiency (perf/watt)</div>
+                    <div class="hnpu-dd-gen-bar">
+                        <div class="hnpu-dd-gen-bar-fill" style="width: 300%;">
+                            <span class="hnpu-dd-gen-bar-value">3×</span>
+                        </div>
+                    </div>
+                    <div class="hnpu-dd-gen-metric">Eventide HNPU: ~35 TOPS/W vs Lunar Lake ~12 TOPS/W</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hnpu-dd-divider"></div>
+</div>

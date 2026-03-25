@@ -1,0 +1,337 @@
+<div class="dkr-dd-showcase-wrap">
+<div class="section" style="position:relative; z-index:1;">
+
+    <!-- ════════════════════════════════════════════════════════════
+         HEADER ZONE
+         ════════════════════════════════════════════════════════════ -->
+    <div class="dkr-dd-eyebrow">Ancillary Tile &middot; Intel 14A-E &middot; 2DKR &middot; Architecture Deep Dive</div>
+
+    <h2 class="dkr-dd-headline">2D KANVAS<br><span>RENDERER</span></h2>
+
+    <p class="dkr-dd-subhead">Purpose-built 2D silicon. Zero 3D ALUs. Zero shaders. Zero Z-buffers. Every transistor dedicated to one mission: rendering the desktop at sub-millisecond latency while consuming less than a watt.</p>
+
+    <div class="dkr-dd-badge-row">
+        <span class="dkr-dd-badge">Intel 14A-E</span>
+        <span class="dkr-dd-badge hot">Modernised Blitter Engine</span>
+        <span class="dkr-dd-badge">Zero 3D ALUs</span>
+        <span class="dkr-dd-badge">Sub-ms UI Latency</span>
+        <span class="dkr-dd-badge">&lt;1W Active</span>
+    </div>
+
+    <!-- Stat block -->
+    <div class="dkr-dd-stat-block">
+        <div class="dkr-dd-stat-cell">
+            <div class="dkr-dd-stat-num">&lt;1W</div>
+            <div class="dkr-dd-stat-label">Active Power Draw</div>
+            <div class="dkr-dd-stat-sub">Entire tile under load</div>
+        </div>
+        <div class="dkr-dd-stat-cell">
+            <div class="dkr-dd-stat-num">0</div>
+            <div class="dkr-dd-stat-label">3D ALUs</div>
+            <div class="dkr-dd-stat-sub">Pure 2D silicon</div>
+        </div>
+        <div class="dkr-dd-stat-cell">
+            <div class="dkr-dd-stat-num">&lt;0.3ms</div>
+            <div class="dkr-dd-stat-label">Frame Latency</div>
+            <div class="dkr-dd-stat-sub">Desktop composition</div>
+        </div>
+        <div class="dkr-dd-stat-cell">
+            <div class="dkr-dd-stat-num">14A-E</div>
+            <div class="dkr-dd-stat-label">Process Node</div>
+            <div class="dkr-dd-stat-sub">Intel efficiency node</div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════
+         SECTION 1 — WHY DEDICATED 2D SILICON
+         ════════════════════════════════════════════════════════════ -->
+    <div class="dkr-dd-inner-divider"></div>
+
+    <div class="dkr-dd-section-label">Design Philosophy &middot; Separation of Concerns</div>
+
+    <h3 class="dkr-dd-body-heading">WHY DEDICATED<br><span>2D SILICON</span></h3>
+
+    <div class="dkr-dd-two-col">
+        <div>
+            <p class="dkr-dd-body-text">
+                Every modern GPU &mdash; from integrated to discrete &mdash; wastes significant silicon area and power budget on desktop composition. Window borders, taskbar animations, scrolling text, and notification overlays all compete for the same 3D pipeline used by games and compute workloads. <strong>This is architectural waste.</strong>
+            </p>
+            <p class="dkr-dd-body-text">
+                The 2D Kanvas Renderer eliminates it entirely. By moving all 2D composition to a dedicated tile built on <strong>Intel 14A-E</strong>, the Eventide APU achieves something no competitor can: <strong>the desktop is completely invisible to the 3D GPU.</strong>
+            </p>
+            <p class="dkr-dd-body-text">
+                During gaming, the Arc Elementalist Xe5 dedicates 100% of its shader array, memory bandwidth, and thermal budget to the 3D workload &mdash; while the 2DKR silently handles the Steam overlay, the Discord notification, the taskbar clock, and the FPS counter. <strong>No context switches. No shader preemption. No stolen cycles.</strong>
+            </p>
+        </div>
+        <div>
+            <div class="dkr-dd-info-card">
+                <div class="dkr-dd-spec-row">
+                    <span class="dkr-dd-spec-key">Process</span>
+                    <span class="dkr-dd-spec-val">Intel 14A-E</span>
+                </div>
+                <div class="dkr-dd-spec-row">
+                    <span class="dkr-dd-spec-key">Architecture</span>
+                    <span class="dkr-dd-spec-val">Scanline-based 2D pipeline</span>
+                </div>
+                <div class="dkr-dd-spec-row">
+                    <span class="dkr-dd-spec-key">3D ALUs</span>
+                    <span class="dkr-dd-spec-val hot">None (0)</span>
+                </div>
+                <div class="dkr-dd-spec-row">
+                    <span class="dkr-dd-spec-key">Shaders</span>
+                    <span class="dkr-dd-spec-val hot">None (0)</span>
+                </div>
+                <div class="dkr-dd-spec-row">
+                    <span class="dkr-dd-spec-key">Z-buffer</span>
+                    <span class="dkr-dd-spec-val hot">None</span>
+                </div>
+                <div class="dkr-dd-spec-row">
+                    <span class="dkr-dd-spec-key">Blitter engine</span>
+                    <span class="dkr-dd-spec-val">Modernised, hardware-accelerated</span>
+                </div>
+                <div class="dkr-dd-spec-row">
+                    <span class="dkr-dd-spec-key">Alpha blend units</span>
+                    <span class="dkr-dd-spec-val hot">8 parallel</span>
+                </div>
+                <div class="dkr-dd-spec-row">
+                    <span class="dkr-dd-spec-key">Overlay layers</span>
+                    <span class="dkr-dd-spec-val hot">16 hardware layers</span>
+                </div>
+                <div class="dkr-dd-spec-row">
+                    <span class="dkr-dd-spec-key">Max resolution</span>
+                    <span class="dkr-dd-spec-val">8K60 per output</span>
+                </div>
+                <div class="dkr-dd-spec-row">
+                    <span class="dkr-dd-spec-key">Active power</span>
+                    <span class="dkr-dd-spec-val hot">&lt;1W (full desktop load)</span>
+                </div>
+                <div class="dkr-dd-spec-row">
+                    <span class="dkr-dd-spec-key">Idle power</span>
+                    <span class="dkr-dd-spec-val">&lt;0.1W (static desktop)</span>
+                </div>
+                <div class="dkr-dd-spec-row">
+                    <span class="dkr-dd-spec-key">Die area</span>
+                    <span class="dkr-dd-spec-val">~4 mm&sup2; (Intel 14A-E)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════
+         SECTION 2 — THE SCANLINE MACHINE
+         ════════════════════════════════════════════════════════════ -->
+    <div class="dkr-dd-inner-divider"></div>
+
+    <div class="dkr-dd-section-label">Pipeline Architecture &middot; Modernised Blitter Engine</div>
+
+    <h3 class="dkr-dd-body-heading">THE SCANLINE<br><span>MACHINE</span></h3>
+
+    <p class="dkr-dd-body-text">
+        The 2DKR operates on a fundamentally different rendering model than any GPU. Where GPUs tile-rasterize triangles in parallel, the 2DKR processes rectangles scanline-by-scanline &mdash; the natural unit of 2D window composition. <strong>This isn't a compromise; it's an optimization.</strong>
+    </p>
+    <p class="dkr-dd-body-text">
+        Desktop windows are axis-aligned rectangles. Scrolling is a vertical shift. Text rendering is a horizontal blit. The scanline model processes these operations in <strong>a single clock cycle per line</strong>, with zero triangle setup overhead. The <strong>Modernised Blitter Engine</strong> at the core of the 2DKR is a direct descendant of the blitter hardware that powered every PC from the IBM PC/AT onward &mdash; re-engineered for 8K HDR composition with hardware alpha blending, gamma-correct sub-pixel anti-aliasing, and a 16-layer overlay compositor.
+    </p>
+
+    <!-- Pipeline SVG -->
+    <svg class="dkr-dd-pipeline-svg" viewBox="0 0 960 180" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+        <defs>
+            <linearGradient id="dkr-dd-stage-bg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(34,211,238,0.08)"/>
+                <stop offset="100%" stop-color="rgba(34,211,238,0.02)"/>
+            </linearGradient>
+            <marker id="dkr-dd-arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L8,3 L0,6" fill="none" stroke="#22D3EE" stroke-width="1.2"/>
+            </marker>
+        </defs>
+
+        <!-- Background -->
+        <rect x="0" y="0" width="960" height="180" rx="8" fill="#020A0E" stroke="rgba(34,211,238,0.12)" stroke-width="1"/>
+
+        <!-- Stage 1: CMD FETCH -->
+        <rect x="20" y="30" width="128" height="120" rx="6" fill="url(#dkr-dd-stage-bg)" stroke="rgba(34,211,238,0.35)" stroke-width="1"/>
+        <text x="84" y="72" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="9" letter-spacing="0.08em" fill="rgba(34,211,238,0.5)">STAGE 1</text>
+        <text x="84" y="94" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="600" fill="#22D3EE">CMD FETCH</text>
+        <text x="84" y="116" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">Command ring</text>
+        <text x="84" y="128" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">buffer read</text>
+
+        <!-- Arrow 1-2 -->
+        <line x1="152" y1="90" x2="174" y2="90" stroke="#22D3EE" stroke-width="1.2" stroke-opacity="0.5" marker-end="url(#dkr-dd-arrow)"/>
+
+        <!-- Stage 2: RECT DISPATCH -->
+        <rect x="178" y="30" width="128" height="120" rx="6" fill="url(#dkr-dd-stage-bg)" stroke="rgba(34,211,238,0.35)" stroke-width="1"/>
+        <text x="242" y="72" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="9" letter-spacing="0.08em" fill="rgba(34,211,238,0.5)">STAGE 2</text>
+        <text x="242" y="94" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="600" fill="#22D3EE">RECT DISPATCH</text>
+        <text x="242" y="116" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">Rectangle</text>
+        <text x="242" y="128" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">decomposition</text>
+
+        <!-- Arrow 2-3 -->
+        <line x1="310" y1="90" x2="332" y2="90" stroke="#22D3EE" stroke-width="1.2" stroke-opacity="0.5" marker-end="url(#dkr-dd-arrow)"/>
+
+        <!-- Stage 3: SCANLINE RAST -->
+        <rect x="336" y="30" width="128" height="120" rx="6" fill="url(#dkr-dd-stage-bg)" stroke="rgba(34,211,238,0.35)" stroke-width="1"/>
+        <text x="400" y="72" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="9" letter-spacing="0.08em" fill="rgba(34,211,238,0.5)">STAGE 3</text>
+        <text x="400" y="94" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="600" fill="#22D3EE">SCANLINE RAST</text>
+        <text x="400" y="116" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">Line-by-line</text>
+        <text x="400" y="128" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">rasterization</text>
+
+        <!-- Arrow 3-4 -->
+        <line x1="468" y1="90" x2="490" y2="90" stroke="#22D3EE" stroke-width="1.2" stroke-opacity="0.5" marker-end="url(#dkr-dd-arrow)"/>
+
+        <!-- Stage 4: ALPHA BLEND -->
+        <rect x="494" y="30" width="128" height="120" rx="6" fill="url(#dkr-dd-stage-bg)" stroke="rgba(34,211,238,0.35)" stroke-width="1"/>
+        <text x="558" y="72" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="9" letter-spacing="0.08em" fill="rgba(34,211,238,0.5)">STAGE 4</text>
+        <text x="558" y="94" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="600" fill="#22D3EE">ALPHA BLEND</text>
+        <text x="558" y="116" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">8-unit parallel</text>
+        <text x="558" y="128" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">alpha composite</text>
+
+        <!-- Arrow 4-5 -->
+        <line x1="626" y1="90" x2="648" y2="90" stroke="#22D3EE" stroke-width="1.2" stroke-opacity="0.5" marker-end="url(#dkr-dd-arrow)"/>
+
+        <!-- Stage 5: OVERLAY COMP -->
+        <rect x="652" y="30" width="128" height="120" rx="6" fill="url(#dkr-dd-stage-bg)" stroke="rgba(34,211,238,0.35)" stroke-width="1"/>
+        <text x="716" y="72" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="9" letter-spacing="0.08em" fill="rgba(34,211,238,0.5)">STAGE 5</text>
+        <text x="716" y="94" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="600" fill="#22D3EE">OVERLAY COMP</text>
+        <text x="716" y="116" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">16-layer</text>
+        <text x="716" y="128" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">overlay stack</text>
+
+        <!-- Arrow 5-6 -->
+        <line x1="784" y1="90" x2="806" y2="90" stroke="#22D3EE" stroke-width="1.2" stroke-opacity="0.5" marker-end="url(#dkr-dd-arrow)"/>
+
+        <!-- Stage 6: DISPLAY OUT -->
+        <rect x="810" y="30" width="128" height="120" rx="6" fill="url(#dkr-dd-stage-bg)" stroke="rgba(34,211,238,0.35)" stroke-width="1"/>
+        <text x="874" y="72" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="9" letter-spacing="0.08em" fill="rgba(34,211,238,0.5)">STAGE 6</text>
+        <text x="874" y="94" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="600" fill="#22D3EE">DISPLAY OUT</text>
+        <text x="874" y="116" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">Direct scanout</text>
+        <text x="874" y="128" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">to panel</text>
+    </svg>
+
+    <p class="dkr-dd-body-text">
+        The overlay compositor supports <strong>16 hardware layers</strong> &mdash; each independently scrollable, alpha-blendable, and addressable. The taskbar, notification center, Start menu, and in-game overlays each occupy their own layer. Layer switching is instantaneous (no framebuffer rebuild), and the display controller reads directly from the overlay compositor's output buffer &mdash; <strong>eliminating the copy-to-framebuffer step</strong> that plagues GPU-based composition.
+    </p>
+
+    <!-- ════════════════════════════════════════════════════════════
+         SECTION 3 — INVISIBLE POWER
+         ════════════════════════════════════════════════════════════ -->
+    <div class="dkr-dd-inner-divider"></div>
+
+    <div class="dkr-dd-section-label">Power Efficiency &middot; Desktop Without Cost</div>
+
+    <h3 class="dkr-dd-body-heading">INVISIBLE<br><span>POWER</span></h3>
+
+    <div class="dkr-dd-two-col">
+        <div>
+            <p class="dkr-dd-body-text">
+                The 2DKR consumes <strong>less than one watt</strong> under full desktop composition load &mdash; rendering windows, compositing alpha-blended overlays, running smooth 120Hz scrolling, and driving animated taskbar elements. Under static desktop (no movement), power drops below <strong>100 milliwatts</strong>.
+            </p>
+            <p class="dkr-dd-body-text">
+                Compare this to GPU-based desktop composition on competing platforms: a discrete GPU in "desktop idle" still draws <strong>5&ndash;12 watts</strong> maintaining its 3D pipeline, shader array, and memory controller in a ready state. The 2DKR has no 3D pipeline to power, no shader array to idle, no high-bandwidth memory to keep warm. It draws only what 2D composition demands &mdash; and <strong>2D composition demands almost nothing.</strong>
+            </p>
+            <p class="dkr-dd-body-text">
+                The result: during gaming, the desktop overlay adds <strong>zero watts</strong> to the GPU power budget. The FPS counter, the Discord overlay, the stream chat widget &mdash; all rendered by the 2DKR, all invisible to the Arc Elementalist's thermal envelope.
+            </p>
+        </div>
+        <div>
+            <!-- GOG bars -->
+            <div class="dkr-dd-gog-wrap">
+                <div class="gog-bar">
+                    <div class="gog-label">vs GPU-BASED DESKTOP COMPOSITION</div>
+                    <div class="gog-row"><div class="gog-metric">Desktop idle W</div><div class="gog-track"><div class="gog-fill" style="width:100%; background: #22D3EE;"></div></div><div class="gog-num" style="color: #22D3EE;">&minus;85%</div></div>
+                    <div class="gog-row"><div class="gog-metric">UI frame latency</div><div class="gog-track"><div class="gog-fill" style="width:90%; background: #22D3EE;"></div></div><div class="gog-num" style="color: #22D3EE;">&minus;92%</div></div>
+                    <div class="gog-row"><div class="gog-metric">GPU freed for 3D</div><div class="gog-track"><div class="gog-fill" style="width:100%; background: #22D3EE;"></div></div><div class="gog-num" style="color: #22D3EE;">100%</div></div>
+                    <div class="gog-row"><div class="gog-metric">Overlay GPU cost</div><div class="gog-track"><div class="gog-fill" style="width:100%; background: #22D3EE;"></div></div><div class="gog-num" style="color: #22D3EE;">0W</div></div>
+                </div>
+            </div>
+
+            <!-- Power spec card -->
+            <div class="dkr-dd-info-card">
+                <div class="dkr-dd-spec-row">
+                    <span class="dkr-dd-spec-key">Full composition load</span>
+                    <span class="dkr-dd-spec-val hot">&lt;1W</span>
+                </div>
+                <div class="dkr-dd-spec-row">
+                    <span class="dkr-dd-spec-key">Static desktop</span>
+                    <span class="dkr-dd-spec-val hot">&lt;0.1W</span>
+                </div>
+                <div class="dkr-dd-spec-row">
+                    <span class="dkr-dd-spec-key">Overlay during gaming</span>
+                    <span class="dkr-dd-spec-val hot">0W GPU overhead</span>
+                </div>
+                <div class="dkr-dd-spec-row">
+                    <span class="dkr-dd-spec-key">120Hz scroll smoothing</span>
+                    <span class="dkr-dd-spec-val">&lt;0.5W</span>
+                </div>
+                <div class="dkr-dd-spec-row">
+                    <span class="dkr-dd-spec-key">Peak (all 16 layers, 8K, HDR)</span>
+                    <span class="dkr-dd-spec-val">~0.8W</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════
+         SECTION 4 — TWO PIPELINES, ZERO CONTENTION
+         ════════════════════════════════════════════════════════════ -->
+    <div class="dkr-dd-inner-divider"></div>
+
+    <div class="dkr-dd-section-label">API Routing &middot; Game Header Split</div>
+
+    <h3 class="dkr-dd-body-heading">TWO PIPELINES,<br><span>ZERO CONTENTION</span></h3>
+
+    <p class="dkr-dd-body-text">
+        The Eventide driver stack implements <strong>hardware-level API routing</strong> that separates 2D and 3D rendering at the command level. When a game runs, the driver identifies 2D overlay surfaces &mdash; HUD elements, Steam overlay, Discord chat, system notifications, video capture widgets &mdash; and routes them to the 2DKR's command queue. 3D draw calls, compute dispatches, and ray tracing commands route to the Arc GPU pipeline.
+    </p>
+    <p class="dkr-dd-body-text">
+        This split happens at the API layer, before command buffer submission, with <strong>zero latency overhead</strong>. The game sees a single GPU; Windows sees a single display adapter. But internally, two independent silicon pipelines execute simultaneously, each optimized for its workload class. <strong>No mode switches. No shader preemption. No pipeline stalls. No resource contention.</strong>
+    </p>
+
+    <!-- Routing spec card -->
+    <div class="dkr-dd-info-card" style="margin-top: 24px;">
+        <div class="dkr-dd-route-row">
+            <span class="dkr-dd-route-key">DirectComposition / DWM</span>
+            <span class="dkr-dd-route-arrow">&rarr;</span>
+            <span class="dkr-dd-route-val cyan">2DKR (all desktop compositing)</span>
+        </div>
+        <div class="dkr-dd-route-row">
+            <span class="dkr-dd-route-key">DXGI overlay surfaces</span>
+            <span class="dkr-dd-route-arrow">&rarr;</span>
+            <span class="dkr-dd-route-val cyan">2DKR (game overlays, stream widgets)</span>
+        </div>
+        <div class="dkr-dd-route-row">
+            <span class="dkr-dd-route-key">Windows.UI.Composition</span>
+            <span class="dkr-dd-route-arrow">&rarr;</span>
+            <span class="dkr-dd-route-val cyan">2DKR (UWP/WinUI animations)</span>
+        </div>
+        <div class="dkr-dd-route-row">
+            <span class="dkr-dd-route-key">Direct3D 11/12</span>
+            <span class="dkr-dd-route-arrow">&rarr;</span>
+            <span class="dkr-dd-route-val white">Arc Xe5 / Xe4E (3D rendering)</span>
+        </div>
+        <div class="dkr-dd-route-row">
+            <span class="dkr-dd-route-key">Vulkan</span>
+            <span class="dkr-dd-route-arrow">&rarr;</span>
+            <span class="dkr-dd-route-val white">Arc Xe5 / Xe4E (3D rendering)</span>
+        </div>
+        <div class="dkr-dd-route-row">
+            <span class="dkr-dd-route-key">DirectCompute / OpenCL</span>
+            <span class="dkr-dd-route-arrow">&rarr;</span>
+            <span class="dkr-dd-route-val white">Arc Xe5 / Xe4E (GPU compute)</span>
+        </div>
+        <div class="dkr-dd-route-row">
+            <span class="dkr-dd-route-key">Video decode (H.266/AV1)</span>
+            <span class="dkr-dd-route-arrow">&rarr;</span>
+            <span class="dkr-dd-route-val">Media Engine (shared)</span>
+        </div>
+        <div class="dkr-dd-route-row">
+            <span class="dkr-dd-route-key">Display scanout</span>
+            <span class="dkr-dd-route-arrow">&rarr;</span>
+            <span class="dkr-dd-route-val cyan">2DKR (final output compositing)</span>
+        </div>
+    </div>
+
+</div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ── C: GPU Product Cards ────────────────────────── -->

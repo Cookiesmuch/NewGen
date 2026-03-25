@@ -1,0 +1,415 @@
+<div class="xe4e-showcase-wrap">
+<div class="section" style="position:relative; z-index:1;">
+
+  <!-- ════════════════════════════════════════════════════════════════
+       SECTION HEADER
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="xe4e-section-label">Arc Druid &middot; Xe4E Technology Showcase</div>
+  <div class="xe4e-section-heading">Efficiency,<br><span>redefined.</span></div>
+  <p class="xe4e-section-intro">
+    Xe4E is not a cut-down Xe5. It is a purpose-built efficiency variant of the Xe4 desktop
+    architecture, re-engineered from the transistor level for Intel 06E &mdash; the most
+    power-efficient process node Intel has ever built. Where Xe5 pursues peak throughput
+    without regard for power, Xe4E pursues the maximum useful work per milliwatt. Every
+    shader, every matrix unit, every ray tracing core is individually power-gated and
+    clock-scaled for the workload at hand.
+  </p>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       BLOCK 01 — Xe4E Core
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="xe4e-inner-divider"></div>
+
+  <div class="xe5-tech-block">
+    <!-- Number -->
+    <div class="xe5-tech-num" style="color:rgba(52,211,153,0.05)">01</div>
+
+    <!-- Content -->
+    <div style="flex:1;min-width:0;">
+      <div class="xe4e-tech-label">Shader Architecture &middot; Xe4 Efficiency Variant</div>
+      <div class="xe4e-tech-name">Xe4E Core</div>
+      <div class="xe5-tech-body">
+        <p>
+          Per-shader power gating is the defining microarchitectural innovation of the Xe4E
+          core &mdash; a technique borrowed from CPU design and applied to GPU execution units
+          for the first time in a production graphics processor. In traditional GPU
+          architectures, the entire shader array must be powered on whenever any workload is
+          active; individual execution units cannot be selectively shut down based on demand.
+          Xe4E breaks this constraint. Each EU (execution unit) within the Xe4E core has
+          independent power-gate transistors that allow it to enter a deep sleep state within a
+          single clock cycle, and wake within two cycles. The granularity is per-shader, not
+          per-core &mdash; meaning that in a 14-core D390, the active shader count continuously
+          adjusts to match the instantaneous workload, from a single EU to all 3,584.
+        </p>
+        <p>
+          Adaptive clock stepping complements per-shader gating with per-core frequency scaling
+          at sub-millisecond granularity. Rather than operating at a single boost clock until
+          thermal limits are hit, each Xe4E core independently selects from a 32-step frequency
+          ladder based on real-time ALU utilization feedback. A core running at 15% occupancy
+          drops to 800&nbsp;MHz; the same core at 95% occupancy scales to 2.4&nbsp;GHz &mdash;
+          all within the same frame, with no driver intervention.
+        </p>
+        <p>
+          The result is a GPU that sustains a 3W active power floor for lightweight 3D
+          workloads &mdash; UI compositing in light games, hardware video decode overlay,
+          Windows animation effects &mdash; while scaling to 22W only when the workload
+          genuinely demands it. The +58% performance-per-watt improvement over the prior
+          Panther Lake Arc B390 is not achieved by clock speed or shader count increases, but by
+          eliminating the wasted power that traditional GPU architectures burn on idle execution
+          resources.
+        </p>
+      </div>
+
+      <!-- Stats -->
+      <div class="xe5-tech-stats">
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">+58% PPW</div>
+          <div class="xe5-tech-stat-key">vs B390 (Panther Lake)</div>
+        </div>
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">3W</div>
+          <div class="xe5-tech-stat-key">sustained active floor</div>
+        </div>
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">per-shader</div>
+          <div class="xe5-tech-stat-key">power gating</div>
+        </div>
+      </div>
+
+      <!-- GOG Bar -->
+      <div class="xe4e-gog-bar">
+        <div class="xe4e-gog-label">GEN-ON-GEN vs PANTHER LAKE ARC B390</div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">Perf-per-watt</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:58%;"></div></div>
+          <div class="xe4e-gog-num">+58%</div>
+        </div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">Active power floor</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:62%;"></div></div>
+          <div class="xe4e-gog-num">&minus;62%</div>
+        </div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">Shader utilization</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:40%;"></div></div>
+          <div class="xe4e-gog-num">+40%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aside -->
+    <div class="xe5-tech-aside">
+      <div class="xe4e-aside-box">
+        <div class="xe4e-aside-title">Xe4E Core &mdash; Key Parameters</div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Base architecture</span><span class="xe5-aside-v">Xe4 (desktop variant)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Process</span><span class="xe5-aside-v">Intel 06E</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Power gating</span><span class="xe5-aside-v">Per-shader EU (not per-core)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Clock stepping</span><span class="xe5-aside-v">32-step adaptive ladder</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Min active</span><span class="xe5-aside-v">3W (single EU)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Max active</span><span class="xe5-aside-v">22W (D390, full load)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">GPU-switch</span><span class="xe5-aside-v">Safe (instant on/off)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">ISA compat</span><span class="xe5-aside-v">Xe4 full backward compat</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       BLOCK 02 — XMX4E AI Acceleration
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="xe4e-inner-divider"></div>
+
+  <div class="xe5-tech-block">
+    <!-- Number -->
+    <div class="xe5-tech-num" style="color:rgba(52,211,153,0.05)">02</div>
+
+    <!-- Content -->
+    <div style="flex:1;min-width:0;">
+      <div class="xe4e-tech-label">AI Matrix Acceleration &middot; Generation 4E</div>
+      <div class="xe4e-tech-name">XMX4E</div>
+      <div class="xe5-tech-body">
+        <p>
+          XMX4E is the dedicated AI matrix accelerator embedded within the Xe4E GPU architecture
+          &mdash; purpose-built for the high-throughput, burst-mode AI workloads that demand
+          GPU-class compute. Real-time image upscaling, AI-driven video enhancement, diffusion
+          model inference, frame generation, and per-pixel super-resolution all require sustained
+          matrix throughput that only a tightly coupled GPU accelerator can deliver. XMX4E
+          provides that capability directly inside the LP GPU tile, eliminating the latency and
+          bandwidth overhead of offloading to a discrete compute block.
+        </p>
+        <p>
+          Native support for INT4, INT8, FP8, and BF16 precision formats covers the full
+          spectrum of modern inference models. INT4 quantized models &mdash; the dominant format
+          for efficient edge AI in 2027 &mdash; run at peak efficiency on XMX4E, delivering
+          ~553&nbsp;TOPS at the D390&rsquo;s 14-core configuration. This is not a theoretical
+          peak calculated from matrix unit count; it is a sustained throughput figure measured
+          under continuous inference load with thermal steady-state power consumption.
+        </p>
+        <p>
+          On fully configured Eventide APUs, AI workloads are segmented across four
+          purpose-built engines. The LPNPU handles always-on ambient AI &mdash; lightweight
+          neural networks that run continuously at near-zero power even with every other block
+          powered down. The HNPU handles batch-mode and dedicated NPU inference: large model pipelines, XeSS
+          acceleration, and sustained throughput workloads that leverage its 256 TOPS and
+          32&nbsp;MB scratchpad. XMX4E fills the LP GPU tier &mdash; GPU-coupled inference that
+          runs on the Druid tile alongside rendering and media decode, with direct access to
+          on-die frame buffers. On configurations that pair Druid with an Elementalist iGPU,
+          XMX5 operates in parallel as the high-throughput matrix engine &mdash; handling heavy
+          diffusion, frame generation, and large-model inference at full GPU-class bandwidth.
+          All four engines activate independently and can run simultaneously without contention.
+        </p>
+      </div>
+
+      <!-- Stats -->
+      <div class="xe5-tech-stats">
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">~553 TOPS</div>
+          <div class="xe5-tech-stat-key">at D390 (INT4)</div>
+        </div>
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">GPU-coupled</div>
+          <div class="xe5-tech-stat-key">burst AI</div>
+        </div>
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">3-5W</div>
+          <div class="xe5-tech-stat-key">during inference</div>
+        </div>
+      </div>
+
+      <!-- GOG Bar -->
+      <div class="xe4e-gog-bar">
+        <div class="xe4e-gog-label">GEN-ON-GEN vs PANTHER LAKE LP iGPU AI</div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">AI TOPS (sustained)</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:100%;"></div></div>
+          <div class="xe4e-gog-num">+280%</div>
+        </div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">Power during inference</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:55%;"></div></div>
+          <div class="xe4e-gog-num">&minus;45%</div>
+        </div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">GPU AI throughput</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:100%;"></div></div>
+          <div class="xe4e-gog-num">New</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aside -->
+    <div class="xe5-tech-aside">
+      <div class="xe4e-aside-box">
+        <div class="xe4e-aside-title">XMX4E &mdash; Precision &amp; Capabilities</div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">INT4</span><span class="xe5-aside-v">Native (primary inference format)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">INT8</span><span class="xe5-aside-v">Native (quantized models)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">FP8</span><span class="xe5-aside-v">E4M3 / E5M2</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">BF16</span><span class="xe5-aside-v">Native (fine-tuning support)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Peak throughput</span><span class="xe5-aside-v">~553 TOPS (D390, INT4)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Sustained power</span><span class="xe5-aside-v">3-5W during inference</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Activation</span><span class="xe5-aside-v">On-demand (with LP GPU tile)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Workload split</span><span class="xe5-aside-v">Background AI &rarr; LPNPU, GPU inference &rarr; XMX4E, Batch AI &rarr; HNPU, Heavy GPU AI &rarr; XMX5 (Elementalist configs)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Framework</span><span class="xe5-aside-v">DirectML / oneAPI / ONNX RT</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       BLOCK 03 — RTU4 Ray Tracing
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="xe4e-inner-divider"></div>
+
+  <div class="xe5-tech-block">
+    <!-- Number -->
+    <div class="xe5-tech-num" style="color:rgba(52,211,153,0.05)">03</div>
+
+    <!-- Content -->
+    <div style="flex:1;min-width:0;">
+      <div class="xe4e-tech-label">Ray Tracing &middot; Generation 4</div>
+      <div class="xe4e-tech-name">RTU4</div>
+      <div class="xe5-tech-body">
+        <p>
+          RTU4 brings hardware-accelerated ray tracing to efficiency-class GPUs for the first
+          time in Intel&rsquo;s lineup. Previous LP iGPUs relied on shader-based (software) ray
+          tracing, which consumed 5&ndash;10&times; the power of dedicated RT hardware for
+          equivalent visual quality. RTU4&rsquo;s fixed-function BVH traversal unit handles the
+          computationally expensive acceleration structure traversal in dedicated silicon,
+          freeing the Xe4E shader cores to focus exclusively on shading and lighting
+          calculations.
+        </p>
+        <p>
+          The RTU4 design prioritizes quality-per-watt over raw throughput. It is not intended
+          to compete with RTU5&rsquo;s multi-level BVH4 traversal for heavy RT workloads
+          &mdash; that is Xe5&rsquo;s domain. Instead, RTU4 targets a specific class of ray
+          tracing use cases: ambient occlusion, soft shadows, single-bounce reflections, and
+          area-light sampling for indoor scenes. These are the RT effects that transform a game
+          from &ldquo;flat and game-like&rdquo; to &ldquo;believable&rdquo; &mdash; and RTU4
+          can render them at mobile TDPs (10&ndash;15W) where software RT would be
+          prohibitively expensive.
+        </p>
+        <p>
+          Area-light sampling is RTU4&rsquo;s standout feature for visual quality-per-ray.
+          Traditional point-light ray tracing requires many rays to approximate the soft shadow
+          falloff of real-world area lights (windows, panels, lamps). RTU4 implements
+          hardware-level area light importance sampling that produces equivalent shadow softness
+          with 3&ndash;4&times; fewer rays per light, enabling realistic indoor lighting at the
+          limited ray budgets appropriate for an efficiency-class GPU.
+        </p>
+      </div>
+
+      <!-- Stats -->
+      <div class="xe5-tech-stats">
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">HW BVH</div>
+          <div class="xe5-tech-stat-key">traversal (dedicated silicon)</div>
+        </div>
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">56 RTU4</div>
+          <div class="xe5-tech-stat-key">units (D390)</div>
+        </div>
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">Area-light</div>
+          <div class="xe5-tech-stat-key">native sampling</div>
+        </div>
+      </div>
+
+      <!-- GOG Bar -->
+      <div class="xe4e-gog-bar">
+        <div class="xe4e-gog-label">VS SOFTWARE RT ON PRIOR LP iGPUs</div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">RT rays/s at 10W</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:100%;"></div></div>
+          <div class="xe4e-gog-num">+500%</div>
+        </div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">RT-enabled titles at LP</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:100%;"></div></div>
+          <div class="xe4e-gog-num">1st gen</div>
+        </div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">Shadow quality/ray</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:75%;"></div></div>
+          <div class="xe4e-gog-num">+300%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aside -->
+    <div class="xe5-tech-aside">
+      <div class="xe4e-aside-box">
+        <div class="xe4e-aside-title">RTU4 &mdash; Ray Tracing Architecture</div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">BVH structure</span><span class="xe5-aside-v">BVH2 (binary traversal)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Fixed-function</span><span class="xe5-aside-v">Full HW BVH traversal</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Target effects</span><span class="xe5-aside-v">AO, soft shadows, reflections</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Light sampling</span><span class="xe5-aside-v">Area-light importance (hardware)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Power budget</span><span class="xe5-aside-v">10-15W RT active</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">RT + raster fallback</span><span class="xe5-aside-v">Hybrid pipeline</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">API support</span><span class="xe5-aside-v">DXR 1.2 / Vulkan RT 1.4</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">vs software RT</span><span class="xe5-aside-v">~5-10&times; perf/W improvement</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       BLOCK 04 — Intel 06E Process Node
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="xe4e-inner-divider"></div>
+
+  <div class="xe5-tech-block">
+    <!-- Number -->
+    <div class="xe5-tech-num" style="color:rgba(52,211,153,0.05)">04</div>
+
+    <!-- Content -->
+    <div style="flex:1;min-width:0;">
+      <div class="xe4e-tech-label">Process Node &middot; Efficiency Breakthrough</div>
+      <div class="xe4e-tech-name">Intel 06E</div>
+      <div class="xe5-tech-body">
+        <p>
+          Intel 06E is not a derivative of Intel 04A &mdash; it is a purpose-designed efficiency
+          process node developed in parallel. Where 04A optimizes for peak transistor performance
+          (highest drive current, fastest switching speed, maximum frequency ceiling), 06E
+          optimizes for the opposite end of the design space: minimum leakage current, lowest
+          operating voltage, and smallest power-per-transistor at moderate frequencies. The Xe4E
+          core, the UHE Lunar Eclipse CPU core, the LPNPU, and the LP Island&rsquo;s supporting
+          logic are all fabricated on 06E, forming Eventide&rsquo;s always-on efficiency
+          substrate.
+        </p>
+        <p>
+          The headline metric is &minus;35% power per transistor compared to Intel 04A at
+          equivalent logic density. This is achieved through a combination of
+          high-threshold-voltage (high-Vt) transistor variants, longer gate lengths where timing
+          closure permits, and Intel&rsquo;s Adaptive Body Bias (ABB) technique that dynamically
+          adjusts the transistor substrate voltage to minimize leakage during low-activity
+          periods. At standby, the 06E die achieves leakage current below TSMC N5 &mdash; a node
+          two full generations older &mdash; while delivering higher performance density when
+          active.
+        </p>
+        <p>
+          The co-design between 06E and 04A is a critical but invisible aspect of
+          Eventide&rsquo;s architecture. Both nodes share the same metallization pitch in their
+          upper interconnect layers, enabling the LP Island (06E) to bond directly to the Compute
+          Tile (04A) through FOveros 2.0 without impedance-matching bridge logic. Data flows
+          between the 04A and 06E dies at full fabric speed, with no protocol translation or
+          bandwidth penalty &mdash; a level of cross-node integration that is only possible when
+          both process nodes are designed within the same foundry ecosystem.
+        </p>
+      </div>
+
+      <!-- Stats -->
+      <div class="xe5-tech-stats">
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">&minus;35%</div>
+          <div class="xe5-tech-stat-key">power vs 04A</div>
+        </div>
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">Always-on</div>
+          <div class="xe5-tech-stat-key">GPU-switch safe</div>
+        </div>
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">&lt; N5</div>
+          <div class="xe5-tech-stat-key">standby leakage</div>
+        </div>
+      </div>
+
+      <!-- GOG Bar -->
+      <div class="xe4e-gog-bar">
+        <div class="xe4e-gog-label">GEN-ON-GEN vs INTEL 04A (COMPUTE NODE)</div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">Power per transistor</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:35%;"></div></div>
+          <div class="xe4e-gog-num">&minus;35%</div>
+        </div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">Standby leakage</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:65%;"></div></div>
+          <div class="xe4e-gog-num">&lt; N5</div>
+        </div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">Die area efficiency</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:20%;"></div></div>
+          <div class="xe4e-gog-num">+20%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aside -->
+    <div class="xe5-tech-aside">
+      <div class="xe4e-aside-box">
+        <div class="xe4e-aside-title">Intel 06E &mdash; Process Parameters</div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Node class</span><span class="xe5-aside-v">Efficiency-optimized</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Power vs 04A</span><span class="xe5-aside-v">&minus;35% per transistor</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Leakage</span><span class="xe5-aside-v">Below TSMC N5 at standby</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Vt variants</span><span class="xe5-aside-v">Multi-Vt (high-Vt dominant)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">ABB</span><span class="xe5-aside-v">Adaptive Body Bias</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Uses</span><span class="xe5-aside-v">LP Island, Xe4E, LPNPU, UHE, LPE</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Metallization</span><span class="xe5-aside-v">Shared upper pitch with 04A</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Cross-die bond</span><span class="xe5-aside-v">FOveros 2.0 (no bridge chip)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Standby draw</span><span class="xe5-aside-v">&lt;50mW (full Xe4E die)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Co-designed with</span><span class="xe5-aside-v">Intel 04A team</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+

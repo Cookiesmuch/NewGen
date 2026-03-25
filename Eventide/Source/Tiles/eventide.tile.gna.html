@@ -1,0 +1,779 @@
+    <!-- Z-ANGLE MEMORY: gna-dd- | GNA Deep-Dive Section -->
+    <style>
+        /* ========================================
+           CSS VARIABLES & THEME
+           ======================================== */
+        :root {
+            --gna-dd-primary: #4ADEAA;
+            --gna-dd-primary-dark: #6EEEB8;
+            --gna-dd-bg-start: #010A05;
+            --gna-dd-bg-end: #020E08;
+            --gna-dd-grid-glow: rgba(74, 222, 128, 0.03);
+            --gna-dd-border-accent: rgba(74, 222, 128, 0.20);
+            --gna-dd-stat-number: #6EEEB8;
+        }
+
+        /* ========================================
+           RESET & BASE
+           ======================================== */
+
+        /* ========================================
+           INSERTION LOCATION
+           ======================================== */
+        /* INSERT AFTER LPNPU DEEP-DIVE AND DIVIDER */
+
+        /* ========================================
+           WRAPPER & SECTION STRUCTURE
+           ======================================== */
+        .gna-dd-wrap {
+            width: 100%;
+            padding: 64px 48px;
+            max-width: none;
+            margin: 0;
+            background: linear-gradient(135deg, var(--gna-dd-bg-start) 0%, var(--gna-dd-bg-end) 100%);
+            position: relative;
+        }
+
+        .gna-dd-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ========================================
+           HERO SECTION
+           ======================================== */
+        .gna-dd-hero {
+            margin-bottom: 72px;
+            text-align: center;
+        }
+
+        .gna-dd-eyebrow {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--gna-dd-primary);
+            margin-bottom: 12px;
+        }
+
+        .gna-dd-headline {
+            font-family: var(--font-display);
+            font-size: 56px;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            color: #FFFFFF;
+            text-shadow: 0 0 40px rgba(74, 222, 128, 0.15);
+        }
+
+        .gna-dd-subhead {
+            font-size: 16px;
+            font-weight: 400;
+            color: #B8C5CF;
+            max-width: 680px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* ========================================
+           STAT BLOCK
+           ======================================== */
+        .gna-dd-stat-block {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 72px;
+            padding: 36px;
+            background: rgba(74, 222, 128, 0.02);
+            border: 1px solid var(--gna-dd-border-accent);
+            border-radius: 8px;
+            backdrop-filter: blur(8px);
+        }
+
+        .gna-dd-stat-item {
+            text-align: center;
+        }
+
+        .gna-dd-stat-value {
+            font-family: var(--font-mono);
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--gna-dd-stat-number);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .gna-dd-stat-label {
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8A98A3;
+        }
+
+        /* ========================================
+           EXPLAINER SECTION
+           ======================================== */
+        .gna-dd-explainer {
+            margin-bottom: 72px;
+        }
+
+        .gna-dd-explainer-title {
+            font-family: var(--font-display);
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #FFFFFF;
+        }
+
+        .gna-dd-explainer-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 36px;
+            align-items: start;
+        }
+
+        .gna-dd-explainer-text {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #C5CED5;
+        }
+
+        .gna-dd-explainer-text p {
+            margin-bottom: 16px;
+        }
+
+        .gna-dd-explainer-text strong {
+            color: var(--gna-dd-primary);
+            font-weight: 600;
+        }
+
+        .gna-dd-timeline {
+            padding: 24px;
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.03), rgba(74, 222, 128, 0.01));
+            border-left: 3px solid var(--gna-dd-primary);
+            border-radius: 4px;
+        }
+
+        .gna-dd-timeline-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .gna-dd-timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .gna-dd-timeline-marker {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 50%;
+            background: var(--gna-dd-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gna-dd-bg-start);
+        }
+
+        .gna-dd-timeline-text {
+            padding-top: 4px;
+        }
+
+        .gna-dd-timeline-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--gna-dd-primary);
+            margin-bottom: 4px;
+        }
+
+        .gna-dd-timeline-desc {
+            font-size: 13px;
+            color: #A8B5BD;
+        }
+
+        /* ========================================
+           KLANGKERNE PIPELINE
+           ======================================== */
+        .gna-dd-pipeline {
+            margin-bottom: 72px;
+        }
+
+        .gna-dd-section-title {
+            font-family: var(--font-display);
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 36px;
+            color: #FFFFFF;
+        }
+
+        .gna-dd-flow-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            padding: 48px 24px;
+            background: linear-gradient(90deg,
+                rgba(74, 222, 128, 0.02) 0%,
+                transparent 25%,
+                transparent 75%,
+                rgba(74, 222, 128, 0.02) 100%);
+            border: 1px solid var(--gna-dd-border-accent);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gna-dd-flow-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                linear-gradient(90deg, var(--gna-dd-grid-glow) 1px, transparent 1px),
+                linear-gradient(0deg, var(--gna-dd-grid-glow) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .gna-dd-flow-item {
+            position: relative;
+            z-index: 1;
+            flex: 0 1 auto;
+            min-width: 160px;
+        }
+
+        .gna-dd-flow-stage {
+            padding: 20px 24px;
+            background: rgba(74, 222, 128, 0.05);
+            border: 1px solid var(--gna-dd-border-accent);
+            border-radius: 6px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .gna-dd-flow-stage:hover {
+            background: rgba(74, 222, 128, 0.10);
+            border-color: var(--gna-dd-primary);
+            transform: translateY(-4px);
+        }
+
+        .gna-dd-flow-stage.gna-accent {
+            border-color: var(--gna-dd-primary);
+            background: rgba(74, 222, 128, 0.08);
+        }
+
+        .gna-dd-flow-stage-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gna-dd-primary);
+            margin-bottom: 8px;
+        }
+
+        .gna-dd-flow-stage-text {
+            font-size: 13px;
+            font-weight: 500;
+            color: #E8ECEF;
+        }
+
+        .gna-dd-flow-arrow {
+            position: relative;
+            z-index: 1;
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gna-dd-primary), transparent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gna-dd-flow-arrow::after {
+            content: '→';
+            position: absolute;
+            right: -8px;
+            font-size: 18px;
+            color: var(--gna-dd-primary);
+            font-weight: bold;
+        }
+
+        /* Pipeline note */
+        .gna-dd-pipeline-note {
+            margin-top: 24px;
+            padding: 16px 20px;
+            background: rgba(74, 222, 128, 0.03);
+            border-left: 2px solid var(--gna-dd-primary);
+            border-radius: 4px;
+            font-size: 13px;
+            color: #A8B5BD;
+            font-style: italic;
+        }
+
+        /* ========================================
+           SPECS TABLE
+           ======================================== */
+        .gna-dd-specs {
+            margin-bottom: 72px;
+        }
+
+        .gna-dd-specs-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(74, 222, 128, 0.02);
+            border: 1px solid var(--gna-dd-border-accent);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .gna-dd-specs-table th {
+            background: linear-gradient(90deg, rgba(74, 222, 128, 0.08), transparent);
+            padding: 16px 20px;
+            text-align: left;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gna-dd-primary);
+            border-bottom: 1px solid var(--gna-dd-border-accent);
+        }
+
+        .gna-dd-specs-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(74, 222, 128, 0.08);
+            font-size: 13px;
+            color: #C5CED5;
+        }
+
+        .gna-dd-specs-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .gna-dd-specs-table tr:hover {
+            background: rgba(74, 222, 128, 0.03);
+        }
+
+        .gna-dd-specs-label {
+            font-weight: 600;
+            color: #E8ECEF;
+            width: 180px;
+        }
+
+        /* ========================================
+           USE-CASE GRID
+           ======================================== */
+        .gna-dd-usecases {
+            margin-bottom: 72px;
+        }
+
+        .gna-dd-usecase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .gna-dd-usecase-card {
+            padding: 32px;
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.04), rgba(74, 222, 128, 0.01));
+            border: 1px solid var(--gna-dd-border-accent);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gna-dd-usecase-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(74, 222, 128, 0.1), transparent 70%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gna-dd-usecase-card:hover {
+            border-color: var(--gna-dd-primary);
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.08), rgba(74, 222, 128, 0.03));
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(74, 222, 128, 0.12);
+        }
+
+        .gna-dd-usecase-card:hover::before {
+            opacity: 1;
+        }
+
+        .gna-dd-usecase-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(74, 222, 128, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .gna-dd-usecase-title {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #FFFFFF;
+            position: relative;
+            z-index: 1;
+        }
+
+        .gna-dd-usecase-desc {
+            font-size: 13px;
+            line-height: 1.7;
+            color: #A8B5BD;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ========================================
+           COLLAB BADGE
+           ======================================== */
+        .gna-dd-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background: rgba(74, 222, 128, 0.08);
+            border: 1px solid var(--gna-dd-border-accent);
+            border-radius: 20px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--gna-dd-primary);
+            margin-top: 48px;
+        }
+
+        .gna-dd-badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--gna-dd-primary);
+        }
+
+        /* ========================================
+           SECTION DIVIDER
+           ======================================== */
+        .gna-dd-divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent,
+                var(--gna-dd-border-accent) 10%,
+                var(--gna-dd-border-accent) 90%,
+                transparent);
+            margin-top: 72px;
+            margin-bottom: 0;
+        }
+
+        /* ========================================
+           RESPONSIVE
+           ======================================== */
+        @media (max-width: 768px) {
+            .gna-dd-wrap {
+                padding: 48px 24px;
+            }
+
+            .gna-dd-headline {
+                font-size: 40px;
+            }
+
+            .gna-dd-explainer-content {
+                grid-template-columns: 1fr;
+            }
+
+            .gna-dd-flow-container {
+                flex-direction: column;
+            }
+
+            .gna-dd-flow-arrow {
+                width: 2px;
+                height: 40px;
+                transform: rotate(90deg);
+            }
+
+            .gna-dd-flow-arrow::after {
+                right: auto;
+                bottom: -8px;
+            }
+
+            .gna-dd-usecase-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .gna-dd-specs-table {
+                font-size: 12px;
+            }
+
+            .gna-dd-specs-table th,
+            .gna-dd-specs-table td {
+                padding: 12px 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gna-dd-wrap {
+                padding: 32px 16px;
+            }
+
+            .gna-dd-headline {
+                font-size: 32px;
+            }
+
+            .gna-dd-section-title,
+            .gna-dd-explainer-title {
+                font-size: 24px;
+            }
+
+            .gna-dd-stat-block {
+                grid-template-columns: 1fr;
+                padding: 24px;
+                gap: 20px;
+            }
+
+            .gna-dd-usecase-card {
+                padding: 24px;
+            }
+        }
+    </style>
+    <div class="gna-dd-wrap">
+        <!-- HERO SECTION -->
+        <section class="gna-dd-hero">
+            <div class="gna-dd-eyebrow">Audio Intelligence · GNA 5.0 · Intel 14A-E</div>
+            <h1 class="gna-dd-headline">The Engine That Never Sleeps</h1>
+            <p class="gna-dd-subhead">
+                GNA 5.0 is the ultra-low-power Gaussian and neural inference co-processor dedicated to continuous audio and speech workloads.
+                The intelligence backbone of the Klangkerne audio stack—always-on, always-listening, always-aware.
+            </p>
+        </section>
+
+        <!-- STAT BLOCK -->
+        <section class="gna-dd-stat-block">
+            <div class="gna-dd-stat-item">
+                <div class="gna-dd-stat-value">Sub-mW</div>
+                <div class="gna-dd-stat-label">Idle Power</div>
+            </div>
+            <div class="gna-dd-stat-item">
+                <div class="gna-dd-stat-value">GMM + DNN</div>
+                <div class="gna-dd-stat-label">Dual Pipeline</div>
+            </div>
+            <div class="gna-dd-stat-item">
+                <div class="gna-dd-stat-value">HW Offload</div>
+                <div class="gna-dd-stat-label">Zero CPU Cost</div>
+            </div>
+            <div class="gna-dd-stat-item">
+                <div class="gna-dd-stat-value">14A-E</div>
+                <div class="gna-dd-stat-label">Process Node</div>
+            </div>
+        </section>
+
+        <!-- EXPLAINER SECTION -->
+        <section class="gna-dd-explainer">
+            <h2 class="gna-dd-explainer-title">What Is GNA?</h2>
+            <div class="gna-dd-explainer-content">
+                <div class="gna-dd-explainer-text">
+                    <p>
+                        <strong>Gaussian Mixture Model (GMM) co-processors</strong> have been integral to Intel silicon since <strong>Ice Lake (GNA 1.0)</strong> through <strong>Arrow Lake (GNA 3.5)</strong>.
+                        As the NPU gained prominence, GNA appeared to be deprecated—until Eventide's audio-first architecture revived the concept.
+                    </p>
+                    <p>
+                        Where <strong>GNA 3.5</strong> focused purely on audio inference with INT8 precision, <strong>GNA 5.0</strong> expands the charter:
+                    </p>
+                    <ul style="margin-left: 20px; color: #A8B5BD;">
+                        <li style="margin-bottom: 8px;"><strong>BF16 & INT8 support</strong> for wider model compatibility</li>
+                        <li style="margin-bottom: 8px;"><strong>Vision inference</strong> for audio-visual context detection</li>
+                        <li style="margin-bottom: 8px;"><strong>Klangkerne integration</strong> for seamless audio processing</li>
+                        <li><strong>14A-E process node</strong> for minimum leakage power and always-on viability</li>
+                    </ul>
+                </div>
+                <div class="gna-dd-timeline">
+                    <div class="gna-dd-timeline-item">
+                        <div class="gna-dd-timeline-marker">1</div>
+                        <div class="gna-dd-timeline-text">
+                            <div class="gna-dd-timeline-label">Ice Lake (2019)</div>
+                            <div class="gna-dd-timeline-desc">GNA 1.0 enters mainstream Intel client</div>
+                        </div>
+                    </div>
+                    <div class="gna-dd-timeline-item">
+                        <div class="gna-dd-timeline-marker">2</div>
+                        <div class="gna-dd-timeline-text">
+                            <div class="gna-dd-timeline-label">Meteor Lake (2023)</div>
+                            <div class="gna-dd-timeline-desc">GNA 3.5 refines INT8 inference; NPU emerges</div>
+                        </div>
+                    </div>
+                    <div class="gna-dd-timeline-item">
+                        <div class="gna-dd-timeline-marker">3</div>
+                        <div class="gna-dd-timeline-text">
+                            <div class="gna-dd-timeline-label">Eventide (2026)</div>
+                            <div class="gna-dd-timeline-desc">GNA 5.0 revived as dedicated audio co-processor</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KLANGKERNE PIPELINE -->
+        <section class="gna-dd-pipeline">
+            <h2 class="gna-dd-section-title">The Klangkerne Pipeline</h2>
+            <div class="gna-dd-flow-container">
+                <div class="gna-dd-flow-item">
+                    <div class="gna-dd-flow-stage">
+                        <div class="gna-dd-flow-stage-label">Input</div>
+                        <div class="gna-dd-flow-stage-text">Microphone Array</div>
+                    </div>
+                </div>
+                <div class="gna-dd-flow-arrow"></div>
+                <div class="gna-dd-flow-item">
+                    <div class="gna-dd-flow-stage gna-accent">
+                        <div class="gna-dd-flow-stage-label">AI Inference</div>
+                        <div class="gna-dd-flow-stage-text">GNA 5.0</div>
+                    </div>
+                </div>
+                <div class="gna-dd-flow-arrow"></div>
+                <div class="gna-dd-flow-item">
+                    <div class="gna-dd-flow-stage">
+                        <div class="gna-dd-flow-stage-label">Processing</div>
+                        <div class="gna-dd-flow-stage-text">Klangkerne Audio Engine</div>
+                    </div>
+                </div>
+                <div class="gna-dd-flow-arrow"></div>
+                <div class="gna-dd-flow-item">
+                    <div class="gna-dd-flow-stage">
+                        <div class="gna-dd-flow-stage-label">Output</div>
+                        <div class="gna-dd-flow-stage-text">Speakers / Headphones</div>
+                    </div>
+                </div>
+            </div>
+            <div class="gna-dd-pipeline-note">
+                ⚡ Real-time audio AI processing: <strong>no CPU in the loop</strong>. GNA 5.0 executes noise suppression, speaker ID, and wake-word detection independently,
+                offloading the system CPU entirely for other workloads.
+            </div>
+        </section>
+
+        <!-- SPECIFICATIONS TABLE -->
+        <section class="gna-dd-specs">
+            <h2 class="gna-dd-section-title">Specifications & Compatibility</h2>
+            <table class="gna-dd-specs-table">
+                <thead>
+                    <tr>
+                        <th>Attribute</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="gna-dd-specs-label">Precision Support</td>
+                        <td>INT8, BF16</td>
+                    </tr>
+                    <tr>
+                        <td class="gna-dd-specs-label">Operation Types</td>
+                        <td>GMM (Gaussian Mixture Model), 1D Convolution, 2D Convolution</td>
+                    </tr>
+                    <tr>
+                        <td class="gna-dd-specs-label">Max Power (Active)</td>
+                        <td>45 mW (sustained audio processing)</td>
+                    </tr>
+                    <tr>
+                        <td class="gna-dd-specs-label">Idle Power</td>
+                        <td>&lt;1 mW (always-on standby)</td>
+                    </tr>
+                    <tr>
+                        <td class="gna-dd-specs-label">Process Node</td>
+                        <td>Intel 14A-E (enhanced for minimum leakage)</td>
+                    </tr>
+                    <tr>
+                        <td class="gna-dd-specs-label">Integration</td>
+                        <td>Klangkerne tile (direct coupling on uncore)</td>
+                    </tr>
+                    <tr>
+                        <td class="gna-dd-specs-label">OpenVINO Support</td>
+                        <td>OpenVINO 5.0 GNA Plugin (optimized kernel library)</td>
+                    </tr>
+                    <tr>
+                        <td class="gna-dd-specs-label">Key Use Cases</td>
+                        <td>Noise cancellation, wake-word detection, speaker ID, acoustic context</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- USE-CASE GRID -->
+        <section class="gna-dd-usecases">
+            <h2 class="gna-dd-section-title">Always-On Audio AI in Action</h2>
+            <div class="gna-dd-usecase-grid">
+                <div class="gna-dd-usecase-card">
+                    <div class="gna-dd-usecase-icon">🔇</div>
+                    <h3 class="gna-dd-usecase-title">Neural Noise Cancellation</h3>
+                    <p class="gna-dd-usecase-desc">
+                        Real-time suppression of background noise, wind, and environmental interference—
+                        powered by trained DNN models executing on GNA 5.0 without CPU overhead.
+                    </p>
+                </div>
+                <div class="gna-dd-usecase-card">
+                    <div class="gna-dd-usecase-icon">🎙️</div>
+                    <h3 class="gna-dd-usecase-title">Wake-Word Detection</h3>
+                    <p class="gna-dd-usecase-desc">
+                        Always-listening for custom wake phrases. GNA 5.0 monitors microphone input continuously,
+                        waking the CPU only when activated—critical for low-power always-on assistants.
+                    </p>
+                </div>
+                <div class="gna-dd-usecase-card">
+                    <div class="gna-dd-usecase-icon">👥</div>
+                    <h3 class="gna-dd-usecase-title">Speaker ID & Separation</h3>
+                    <p class="gna-dd-usecase-desc">
+                        Identify speakers and separate concurrent voices in multi-party conversations.
+                        Audio-visual context awareness enables personalization without high power cost.
+                    </p>
+                </div>
+                <div class="gna-dd-usecase-card">
+                    <div class="gna-dd-usecase-icon">🎵</div>
+                    <h3 class="gna-dd-usecase-title">Acoustic Context Awareness</h3>
+                    <p class="gna-dd-usecase-desc">
+                        Classify audio environment (office, car, outdoors, music playback) to tune
+                        processing parameters dynamically—all on-device, in real-time, autonomously.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- COLLAB BADGE -->
+        <div style="text-align: center;">
+            <span class="gna-dd-badge">
+                <span class="gna-dd-badge-dot"></span>
+                Intel (Sole)
+            </span>
+        </div>
+    </div>
+
+    <!-- SECTION DIVIDER (insert before next section) -->
+    <div class="gna-dd-divider"></div>

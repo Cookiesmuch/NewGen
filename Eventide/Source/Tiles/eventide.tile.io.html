@@ -1,0 +1,755 @@
+    <!-- Z-ANGLE MEMORY: io-dd- | I/O Controller Deep-Dive Section -->
+    <style>
+        /* INSERT LOCATION: After the Killer SignalBoost S1 deep-dive and its divider */
+
+        .io-dd-wrap {
+            max-width: none;
+            margin: 0;
+            padding: 64px 48px;
+            width: 100%;
+            background: linear-gradient(135deg, #030701 0%, #060E02 100%);
+            position: relative;
+        }
+
+        .io-dd-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Section */
+        .io-dd-hero {
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .io-dd-eyebrow {
+            font-family: var(--font-body);
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            color: #A3E635;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+            opacity: 0.9;
+        }
+
+        .io-dd-headline {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            color: #F0F9FF;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 40px rgba(163, 230, 53, 0.2);
+        }
+
+        .io-dd-subhead {
+            font-family: var(--font-body);
+            font-size: 1.125rem;
+            font-weight: 400;
+            color: #CBD5E1;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Stat Block */
+        .io-dd-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3.5rem 0;
+            padding: 2.5rem;
+            background: linear-gradient(135deg, rgba(163, 230, 53, 0.03) 0%, rgba(0, 0, 0, 0.2) 100%);
+            border: 1px solid rgba(163, 230, 53, 0.18);
+            border-radius: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .io-dd-stats::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                repeating-linear-gradient(0deg, rgba(163, 230, 53, 0.03) 0px, rgba(163, 230, 53, 0.03) 1px, transparent 1px, transparent 40px),
+                repeating-linear-gradient(90deg, rgba(163, 230, 53, 0.03) 0px, rgba(163, 230, 53, 0.03) 1px, transparent 1px, transparent 40px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .io-dd-stat-item {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .io-dd-stat-number {
+            font-family: var(--font-display);
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 400;
+            color: #BEF264;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(163, 230, 53, 0.3);
+        }
+
+        .io-dd-stat-label {
+            font-family: var(--font-body);
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #94A3B8;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* Section Structure */
+        .io-dd-wrap .section {
+            margin-bottom: 3.5rem;
+        }
+
+        .io-dd-section-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.75rem, 4vw, 2.25rem);
+            font-weight: 400;
+            color: #F0F9FF;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(163, 230, 53, 0.25);
+            letter-spacing: -0.02em;
+        }
+
+        .io-dd-section-title .accent {
+            color: #A3E635;
+        }
+
+        .io-dd-content {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .io-dd-content p {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #D1D5DB;
+        }
+
+        .io-dd-content strong {
+            color: #A3E635;
+            font-weight: 600;
+        }
+
+        /* Comparison Block */
+        .io-dd-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .io-dd-comparison-col {
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(163, 230, 53, 0.15);
+            border-radius: 0.5rem;
+        }
+
+        .io-dd-comparison-col h4 {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            color: #A3E635;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .io-dd-comparison-col ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .io-dd-comparison-col li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: #D1D5DB;
+            font-size: 0.95rem;
+        }
+
+        .io-dd-comparison-col li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #A3E635;
+            font-weight: 600;
+        }
+
+        /* QoS/Need Technologies Block */
+        .io-dd-priority-stack {
+            background: linear-gradient(135deg, rgba(163, 230, 53, 0.05) 0%, rgba(0, 0, 0, 0.2) 100%);
+            border-left: 4px solid #A3E635;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+        }
+
+        .io-dd-priority-item {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            align-items: start;
+        }
+
+        .io-dd-priority-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .io-dd-priority-number {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: #BEF264;
+            min-width: 2rem;
+            text-align: center;
+            background: rgba(163, 230, 53, 0.1);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        .io-dd-priority-content h5 {
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #A3E635;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .io-dd-priority-content p {
+            font-size: 0.9rem;
+            color: #AEBED1;
+            margin: 0;
+        }
+
+        /* Spec Table */
+        .io-dd-table-wrap {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(163, 230, 53, 0.15);
+        }
+
+        .io-dd-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .io-dd-table thead {
+            background: rgba(163, 230, 53, 0.08);
+        }
+
+        .io-dd-table th {
+            padding: 1rem;
+            text-align: left;
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #A3E635;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            border-bottom: 2px solid rgba(163, 230, 53, 0.25);
+        }
+
+        .io-dd-table td {
+            padding: 0.875rem 1rem;
+            color: #D1D5DB;
+            font-size: 0.95rem;
+            border-bottom: 1px solid rgba(163, 230, 53, 0.1);
+        }
+
+        .io-dd-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .io-dd-table tr:hover {
+            background: rgba(163, 230, 53, 0.03);
+        }
+
+        .io-dd-table strong {
+            color: #BEF264;
+        }
+
+        /* Use-Case Grid */
+        .io-dd-usecases {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .io-dd-usecase {
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(163, 230, 53, 0.03) 0%, rgba(0, 0, 0, 0.1) 100%);
+            border: 1px solid rgba(163, 230, 53, 0.15);
+            border-radius: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .io-dd-usecase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #A3E635, #65A30D);
+            opacity: 0.6;
+        }
+
+        .io-dd-usecase:hover {
+            border-color: rgba(163, 230, 53, 0.35);
+            background: linear-gradient(135deg, rgba(163, 230, 53, 0.08) 0%, rgba(0, 0, 0, 0.15) 100%);
+        }
+
+        .io-dd-usecase-icon {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            color: #A3E635;
+            margin-bottom: 1rem;
+            letter-spacing: -0.05em;
+        }
+
+        .io-dd-usecase-title {
+            font-family: var(--font-body);
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #F0F9FF;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.01em;
+        }
+
+        .io-dd-usecase-desc {
+            font-size: 0.95rem;
+            color: #AEBED1;
+            line-height: 1.6;
+        }
+
+        /* Security Block */
+        .io-dd-security {
+            background: linear-gradient(135deg, rgba(163, 230, 53, 0.05) 0%, rgba(0, 0, 0, 0.15) 100%);
+            border: 1px solid rgba(163, 230, 53, 0.2);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+        }
+
+        .io-dd-security h4 {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            color: #A3E635;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .io-dd-security-item {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1.5rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(163, 230, 53, 0.1);
+            align-items: start;
+        }
+
+        .io-dd-security-item:last-child {
+            border-bottom: none;
+        }
+
+        .io-dd-security-label {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #BEF264;
+            min-width: 140px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .io-dd-security-text {
+            font-size: 0.95rem;
+            color: #AEBED1;
+        }
+
+        /* Collab Badge */
+        .io-dd-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(163, 230, 53, 0.1);
+            border: 1px solid rgba(163, 230, 53, 0.3);
+            border-radius: 9999px;
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #A3E635;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 2rem;
+        }
+
+        /* Divider */
+        .io-dd-divider {
+            height: 2px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(163, 230, 53, 0.3) 25%,
+                rgba(163, 230, 53, 0.3) 75%,
+                transparent 100%);
+            margin: 4rem 0;
+            position: relative;
+        }
+
+        .io-dd-divider::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: #A3E635;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .io-dd-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .io-dd-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+
+            .io-dd-usecases {
+                grid-template-columns: 1fr;
+            }
+
+            .io-dd-wrap {
+                padding: 2rem 1rem;
+            }
+        }
+
+        /* Glow effects */
+        @keyframes glow-pulse {
+            0%, 100% {
+                text-shadow: 0 0 20px rgba(163, 230, 53, 0.3);
+            }
+            50% {
+                text-shadow: 0 0 40px rgba(163, 230, 53, 0.5);
+            }
+        }
+
+        .io-dd-headline {
+            animation: glow-pulse 4s ease-in-out infinite;
+        }
+    </style>
+    <div class="io-dd-wrap">
+        <!-- Collab Badge -->
+        <div class="io-dd-badge">Intel Collaboration</div>
+
+        <!-- Hero Section -->
+        <div class="io-dd-hero">
+            <div class="io-dd-eyebrow">I/O Controller · Intel 14A-E</div>
+            <h1 class="io-dd-headline">Every Wire. Every Protocol. One Tile.</h1>
+            <p class="io-dd-subhead">
+                All wired connectivity from a single isolated tile — <strong>Thunderbolt 6, PCIe 6.0, NVMe 3.0, USB4 Gen 5, and 2.5GbE</strong> — with <strong>Intel Need Technologies</strong> ensuring bandwidth is always allocated to what matters most.
+            </p>
+        </div>
+
+        <!-- Stat Block -->
+        <div class="io-dd-stats">
+            <div class="io-dd-stat-item">
+                <div class="io-dd-stat-number">160<span style="font-size: 0.6em;"> Gbps</span></div>
+                <div class="io-dd-stat-label">Thunderbolt 6 Symmetric</div>
+            </div>
+            <div class="io-dd-stat-item">
+                <div class="io-dd-stat-number">240<span style="font-size: 0.6em;"> Gbps</span></div>
+                <div class="io-dd-stat-label">Bandwidth Boost Unidirectional</div>
+            </div>
+            <div class="io-dd-stat-item">
+                <div class="io-dd-stat-number">24<span style="font-size: 0.6em;"> GB/s</span></div>
+                <div class="io-dd-stat-label">NVMe 3.0 Sequential Read</div>
+            </div>
+            <div class="io-dd-stat-item">
+                <div class="io-dd-stat-number">4<span style="font-size: 0.6em;">×</span></div>
+                <div class="io-dd-stat-label">Thunderbolt 6 Ports</div>
+            </div>
+        </div>
+
+        <!-- Thunderbolt 6 Section -->
+        <div class="section">
+            <h2 class="io-dd-section-title"><span class="accent">Thunderbolt 6:</span> The Next-Gen Fabric</h2>
+            <div class="io-dd-content">
+                <p>
+                    Thunderbolt 6 represents a generational leap from Thunderbolt 5. Built on the <strong>USB4 v2 foundation</strong>, TB6 delivers <strong>160 Gbps symmetric bandwidth</strong> — doubling the 80 Gbps of TB5 and increasing the bandwidth-boosted ceiling to <strong>240 Gbps unidirectional</strong> when display-intensive downstream devices demand asymmetric allocation.
+                </p>
+            </div>
+
+            <div class="io-dd-comparison">
+                <div class="io-dd-comparison-col">
+                    <h4>Thunderbolt 5</h4>
+                    <ul>
+                        <li>80 Gbps symmetric</li>
+                        <li>120 Gbps Boost (unidirectional)</li>
+                        <li>PCIe Gen 4 tunnelling (32 Gbps per ×4)</li>
+                        <li>DP 2.0 UHBR13.5 support</li>
+                        <li>USB4 v1.0 base</li>
+                    </ul>
+                </div>
+                <div class="io-dd-comparison-col">
+                    <h4>Thunderbolt 6</h4>
+                    <ul>
+                        <li>160 Gbps symmetric</li>
+                        <li>240 Gbps Boost (unidirectional)</li>
+                        <li>PCIe Gen 5 tunnelling (64 Gbps per ×4)</li>
+                        <li>DP 2.1 UHBR20 tunnel</li>
+                        <li>USB4 v2.0 base</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="io-dd-content">
+                <p>
+                    <strong>Four TB6 ports</strong> allow daisy-chaining and parallel tunnelling of multiple high-bandwidth protocols. Each port supports full backward compatibility with Thunderbolt 3, 4, 5, and USB4 v1.0 devices — a critical advantage for installed base adoption.
+                </p>
+                <p>
+                    <strong>Bandwidth Boost</strong> is the game-changer: when an external display with iDP or DP 2.1 UHBR20 is connected, the I/O tile dynamically allocates up to 240 Gbps unidirectional to that port, ensuring <strong>zero display tearing or latency spikes</strong> even under saturated PCIe/storage load.
+                </p>
+            </div>
+        </div>
+
+        <!-- PCIe 6.0 Section -->
+        <div class="section">
+            <h2 class="io-dd-section-title"><span class="accent">PCIe 6.0:</span> The Backbone</h2>
+            <div class="io-dd-content">
+                <p>
+                    PCIe 6.0 introduces <strong>PAM4 (Pulse Amplitude Modulation 4-level) signalling</strong> and achieves <strong>64 GT/s per lane</strong> — a full 2× bandwidth jump over PCIe 5.0. Within the I/O tile, PCIe 6.0 ×4 configurations deliver up to <strong>~24 GB/s</strong> sequential throughput, unlocking the next generation of high-speed NVMe SSDs and memory-attached devices.
+                </p>
+                <p>
+                    <strong>Role in the I/O ecosystem:</strong> PCIe 6.0 feeds both the <strong>NVMe subsystem</strong> (for ultra-fast storage) and <strong>high-bandwidth peripherals</strong> (external accelerators, media interfaces). A separate lane pool from the TB6 controller ensures that NVMe reads never starve due to competing TB6 traffic.
+                </p>
+                <p>
+                    The Eventide I/O tile also reserves a portion of its PCIe 6.0 fabric for the <strong>iDP display protocol</strong> — a private, low-latency tunnel that bypasses contention with storage and general I/O, keeping frame rates locked to the display refresh rate even under peak system load.
+                </p>
+            </div>
+        </div>
+
+        <!-- Intel Need Technologies Section -->
+        <div class="section">
+            <h2 class="io-dd-section-title"><span class="accent">Intel Need Technologies:</span> QoS by Design</h2>
+            <div class="io-dd-content">
+                <p>
+                    <strong>Intel Need Technologies</strong> is a proprietary QoS (Quality-of-Service) framework built into the I/O Controller tile. When bandwidth becomes contested — all four TB6 ports active, simultaneous NVMe write, external GPU demand, and audio streaming — Need Technologies enforces a <strong>latency-critical priority stack</strong> that prevents any single workload from degrading user experience.
+                </p>
+            </div>
+
+            <div class="io-dd-priority-stack">
+                <div class="io-dd-priority-item">
+                    <div class="io-dd-priority-number">1</div>
+                    <div class="io-dd-priority-content">
+                        <h5>Display Tunnels (iDP / DP 2.1)</h5>
+                        <p>Frame-locked and preemptive. Any display refresh cycle gets guaranteed latency &lt;100 μs.</p>
+                    </div>
+                </div>
+                <div class="io-dd-priority-item">
+                    <div class="io-dd-priority-number">2</div>
+                    <div class="io-dd-priority-content">
+                        <h5>Audio Streams (Klangkerne Protocol)</h5>
+                        <p>Jitter-protected. Zero-dropout guarantee for USB Audio and Thunderbolt audio bridging.</p>
+                    </div>
+                </div>
+                <div class="io-dd-priority-item">
+                    <div class="io-dd-priority-number">3</div>
+                    <div class="io-dd-priority-content">
+                        <h5>Storage (NVMe / PCIe SSDs)</h5>
+                        <p>Scheduled reads/writes. Preemptable only by Tiers 1–2, ensuring predictable I/O latency.</p>
+                    </div>
+                </div>
+                <div class="io-dd-priority-item">
+                    <div class="io-dd-priority-number">4</div>
+                    <div class="io-dd-priority-content">
+                        <h5>PCIe Peripherals (GPUs, Accelerators)</h5>
+                        <p>Best-effort allocation. Competing high-speed devices share remaining bandwidth fairly.</p>
+                    </div>
+                </div>
+                <div class="io-dd-priority-item">
+                    <div class="io-dd-priority-number">5</div>
+                    <div class="io-dd-priority-content">
+                        <h5>USB Bulk Transfer (Mass Storage, Hubs)</h5>
+                        <p>Background. Fills remaining capacity; preemptable at any time by higher tiers.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="io-dd-content">
+                <p>
+                    This hierarchical model ensures that <strong>real-time workloads never interfere with user perception</strong>. The Eventide PSM (Power & Security Management) tile works hand-in-hand with Need Technologies to monitor CPU demand and thermal state, dynamically throttling lower-priority I/O when the system approaches thermal limits.
+                </p>
+            </div>
+        </div>
+
+        <!-- Specifications Section -->
+        <div class="section">
+            <h2 class="io-dd-section-title"><span class="accent">Full Interface Specifications</span></h2>
+            <div class="io-dd-table-wrap">
+                <table class="io-dd-table">
+                    <thead>
+                        <tr>
+                            <th>Interface</th>
+                            <th>Speed</th>
+                            <th>Lane Configuration</th>
+                            <th>Max Ports</th>
+                            <th>Primary Protocol</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Thunderbolt 6</strong></td>
+                            <td>160 Gbps (sym) / 240 Gbps (boost)</td>
+                            <td>×2 physical lanes (PAM4)</td>
+                            <td>4</td>
+                            <td>USB4 v2 / DP 2.1 UHBR20 / PCIe Gen 5</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PCIe 6.0</strong></td>
+                            <td>64 GT/s per lane</td>
+                            <td>×4 (NVMe) / variable</td>
+                            <td>2 (independent)</td>
+                            <td>NVMe 3.0 / High-BW Peripherals</td>
+                        </tr>
+                        <tr>
+                            <td><strong>NVMe 3.0</strong></td>
+                            <td>~24 GB/s sequential</td>
+                            <td>PCIe 6.0 ×4</td>
+                            <td>2</td>
+                            <td>M.2 2280 / U.2 Form-Factor</td>
+                        </tr>
+                        <tr>
+                            <td><strong>USB4 Gen 5</strong></td>
+                            <td>80 Gbps</td>
+                            <td>×2 physical lanes</td>
+                            <td>2 (shared with TB6)</td>
+                            <td>USB 3.2 Gen 2x2 / Alt Mode</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Intel 2.5GbE</strong></td>
+                            <td>2.5 Gbps</td>
+                            <td>×1 lane (PCIe Gen 3)</td>
+                            <td>1</td>
+                            <td>Ethernet 802.3bz</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DisplayPort (via TB6)</strong></td>
+                            <td>DP 2.1 UHBR20</td>
+                            <td>80 Gbps aggregated</td>
+                            <td>2 (simultaneous)</td>
+                            <td>iDP over TB6 tunnel</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Security Section -->
+        <div class="section">
+            <h2 class="io-dd-section-title"><span class="accent">Security &amp; DMA Protection</span></h2>
+            <div class="io-dd-security">
+                <h4>Intel VT-d & IOMMU</h4>
+                <div class="io-dd-security-item">
+                    <div class="io-dd-security-label">VT-d Remapping</div>
+                    <div class="io-dd-security-text">
+                        Direct Memory Access (DMA) remapping isolates each TB6 port and PCIe device to a separate IOMMU domain. Rogue peripherals cannot read/write host memory.
+                    </div>
+                </div>
+                <div class="io-dd-security-item">
+                    <div class="io-dd-security-label">TB6 DMA Security</div>
+                    <div class="io-dd-security-text">
+                        All Thunderbolt 6 devices must pass Intel DMA Security Certification. The I/O tile controller enforces whitelist validation and rate-limiting on each TB6 port.
+                    </div>
+                </div>
+                <div class="io-dd-security-item">
+                    <div class="io-dd-security-label">Per-Port Isolation</div>
+                    <div class="io-dd-security-text">
+                        Each TB6 and PCIe port has its own VT-d domain context. If one port is compromised, the others remain isolated.
+                    </div>
+                </div>
+                <div class="io-dd-security-item">
+                    <div class="io-dd-security-label">PSM Coordination</div>
+                    <div class="io-dd-security-text">
+                        The PSM tile monitors for DMA abuse (excessive memory access, latency anomalies) and can hot-disable a port or enforce stricter rate-limits in real-time.
+                    </div>
+                </div>
+            </div>
+
+            <div class="io-dd-content">
+                <p>
+                    <strong>Intel vPro Active Management Technology (AMT)</strong> extends security to the I/O layer. The PSM tile and I/O Controller communicate over a dedicated, encrypted channel, enabling out-of-band threat detection, remote diagnostics, and secure port management even when the main OS is offline.
+                </p>
+            </div>
+        </div>
+
+        <!-- Use Cases Section -->
+        <div class="section">
+            <h2 class="io-dd-section-title"><span class="accent">Real-World Use Cases</span></h2>
+            <div class="io-dd-usecases">
+                <div class="io-dd-usecase">
+                    <div class="io-dd-usecase-icon">⚡</div>
+                    <div class="io-dd-usecase-title">External GPU</div>
+                    <div class="io-dd-usecase-desc">
+                        160 Gbps TB6 bandwidth delivers 80+ Gbps sustained to a Thunderbolt eGPU enclosure, avoiding the PCIe bottleneck of traditional docking. Real-time 3D rendering stays smooth even with simultaneous NVMe writes.
+                    </div>
+                </div>
+                <div class="io-dd-usecase">
+                    <div class="io-dd-usecase-icon">💾</div>
+                    <div class="io-dd-usecase-title">24 GB/s External SSD</div>
+                    <div class="io-dd-usecase-desc">
+                        PCIe 6.0 ×4 directly routes to hot-swap NVMe slots. Video editors working with 6K RAW footage achieve near-internal-drive throughput, with Need Technologies protecting from stalls during display or audio streaming.
+                    </div>
+                </div>
+                <div class="io-dd-usecase">
+                    <div class="io-dd-usecase-icon">🖥️</div>
+                    <div class="io-dd-usecase-title">16K Display via iDP/TB6</div>
+                    <div class="io-dd-usecase-desc">
+                        Thunderbolt 6 with DP 2.1 UHBR20 unlocks true 16K@60Hz or 12K@120Hz over a single cable. The Bandwidth Boost feature ensures zero frame drops even if the GPU is saturating PCIe lanes.
+                    </div>
+                </div>
+                <div class="io-dd-usecase">
+                    <div class="io-dd-usecase-icon">🎙️</div>
+                    <div class="io-dd-usecase-title">Daisy-Chain Studio Peripherals</div>
+                    <div class="io-dd-usecase-desc">
+                        Four TB6 ports support daisy-chaining multiple audio interfaces, MIDI controllers, and video capture cards. Klangkerne QoS keeps audio latency locked at &lt;1 ms regardless of downstream congestion.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- End Divider -->
+        <div class="io-dd-divider"></div>
+    </div>

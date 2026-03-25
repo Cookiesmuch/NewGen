@@ -1,0 +1,515 @@
+<div class="uhe-showcase-wrap">
+<div class="section" style="position:relative; z-index:1;">
+
+  <!-- HEADER -->
+  <div class="uhe-eyebrow">Low Power Island · Intel 06E · UHE Core · Architecture Deep Dive</div>
+  <div class="uhe-headline">LUNAR<br><span>ECLIPSE</span></div>
+  <p class="uhe-subhead">Last-generation P-core performance. E-core power consumption. The Lunar Eclipse UHE core on Intel 06E is the spiritual successor to Lunar Lake's efficiency-first philosophy, evolved to its logical conclusion: a core that makes the Compute Tile an optional upgrade, not the baseline.</p>
+  <div class="uhe-badge-row">
+    <span class="uhe-badge uhe-b-teal">Intel 06E · 0.6nm-class FinFlex GAA</span>
+    <span class="uhe-badge uhe-b-ppw">+68% PPW vs Panther Lake LP-E</span>
+    <span class="uhe-badge uhe-b-teal">&ge; PTL P-Core ST Performance</span>
+    <span class="uhe-badge uhe-b-teal">4.8 GHz Max Turbo</span>
+    <span class="uhe-badge uhe-b-teal">1.2W &ndash; 8W TDP Range</span>
+    <span class="uhe-badge uhe-b-note">Compute Tile Optional &mdash; LP Island Handles All Typical Work</span>
+  </div>
+
+  <!-- STAT BLOCK -->
+  <div class="uhe-stat-block">
+    <div class="uhe-stat-cell">
+      <div class="uhe-stat-num">4.8</div>
+      <div class="uhe-stat-label">GHz Max Turbo</div>
+      <div class="uhe-stat-sub">&ge; PTL P-core single-thread</div>
+    </div>
+    <div class="uhe-stat-cell">
+      <div class="uhe-stat-num">+68%</div>
+      <div class="uhe-stat-label">PPW vs PTL LP-E</div>
+      <div class="uhe-stat-sub">performance per watt</div>
+    </div>
+    <div class="uhe-stat-cell">
+      <div class="uhe-stat-num">1.2W</div>
+      <div class="uhe-stat-label">Min TDP Operating</div>
+      <div class="uhe-stat-sub">Compute Tile off</div>
+    </div>
+    <div class="uhe-stat-cell">
+      <div class="uhe-stat-num">&minus;55%</div>
+      <div class="uhe-stat-label">Min Operating Power</div>
+      <div class="uhe-stat-sub">vs Panther Lake LP-E</div>
+    </div>
+  </div>
+
+  <!-- ── PART 1: PHILOSOPHY ── -->
+  <div class="uhe-section-label">Design Philosophy · Efficiency-First Scheduling</div>
+  <div class="uhe-body-heading">The <span>LP Island</span> Is First Choice, Not Fallback</div>
+
+  <div class="uhe-two-col">
+    <div>
+      <div class="uhe-philosophy-callout">
+        <div class="uhe-philo-title">The Lunar Lake Principle &mdash; Carried Forward</div>
+        <p class="uhe-philo-text">
+          Lunar Lake introduced a scheduling philosophy that was, at the time, a significant departure from Intel's prior approach: <strong>the efficiency cores are the primary execution tier, not a background offload engine.</strong> In Lunar Lake, the LP island handled all typical user workloads &mdash; browsing, documents, video calls, light photo editing &mdash; with the performance tile remaining powered off entirely until the system was genuinely pushed. The result was battery life that surprised everyone who benchmarked it.
+          <br><br>
+          The Lunar Eclipse UHE core on Intel 06E takes this philosophy and extends it with a more powerful core and a more advanced process node. The UHE is not just an efficiency core that handles light tasks &mdash; <strong>it is a core that meets or exceeds the single-threaded performance of the last-generation flagship P-core (Cougar Cove on Panther Lake), while operating at a fraction of the power.</strong> For the first time, the efficiency tier is performance-competitive with the prior generation's performance tier. This changes the calculus entirely: the Compute Tile with its UHP and DP cores is no longer a baseline requirement for productive work &mdash; it is an upgrade you invoke for demanding workloads, not the tier you're running on by default.
+        </p>
+      </div>
+      <p class="uhe-body-text">
+        The Intel 06E process node is the foundation for this. Purpose-designed for efficiency-first operation &mdash; FinFlex GAA architecture, efficiency-biased Vt (threshold voltage), ultra-low standby leakage under 0.3 nA/&micro;m &mdash; it provides <strong>+54% performance per watt over Intel 14A</strong> at node level alone. Combined with the architectural improvements of the UHE core design, the +68% PPW figure over Panther Lake LP-E cores reflects both the node improvement and the microarchitectural improvement compounding together.
+      </p>
+      <p class="uhe-body-text">
+        The Thread Director's dispatch classification underlines the philosophical point. UHE cores sit at <strong>Class 0 &mdash; First Assignment</strong>, the highest-priority dispatch tier. Every thread begins its life on the LP Island. Only when the Thread Director's instruction profiler identifies that a thread genuinely requires the wider pipeline of a DP core (IPC-bound workloads), the higher clock of a UHP core (frequency-bound workloads), or the massive parallelism of the SPE cluster (throughput-bound workloads) does it migrate the thread to the Compute Tile. If none of those conditions are met &mdash; and for the vast majority of user-visible tasks, they are not &mdash; the thread stays on Lunar Eclipse for its entire lifetime. The Compute Tile remains powered off, drawing zero active power.
+      </p>
+    </div>
+    <div>
+      <div class="uhe-info-card">
+        <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.18em;color:rgba(52,211,153,0.48);margin-bottom:14px;">FULL CORE SPECIFICATION</div>
+        <div class="uhe-spec-row"><span class="uhe-spec-key">Core class</span><span class="uhe-spec-val leaf">UHE &mdash; Ultra High Efficiency</span></div>
+        <div class="uhe-spec-row"><span class="uhe-spec-key">Codename</span><span class="uhe-spec-val leaf">Lunar Eclipse</span></div>
+        <div class="uhe-spec-row"><span class="uhe-spec-key">Process node</span><span class="uhe-spec-val">Intel 06E &middot; 0.6nm-class FinFlex</span></div>
+        <div class="uhe-spec-row"><span class="uhe-spec-key">Base clock</span><span class="uhe-spec-val">1.6 GHz</span></div>
+        <div class="uhe-spec-row"><span class="uhe-spec-key">Max turbo</span><span class="uhe-spec-val leaf">4.8 GHz</span></div>
+        <div class="uhe-spec-row"><span class="uhe-spec-key">Performance target</span><span class="uhe-spec-val leaf">&ge; PTL P-core (ST)</span></div>
+        <div class="uhe-spec-row"><span class="uhe-spec-key">TDP operating range</span><span class="uhe-spec-val leaf">1.2W &ndash; 8W</span></div>
+        <div class="uhe-spec-row"><span class="uhe-spec-key">Idle power (gate off)</span><span class="uhe-spec-val">&lt;0.2W</span></div>
+        <div class="uhe-spec-row"><span class="uhe-spec-key">SMT</span><span class="uhe-spec-val">None</span></div>
+        <div class="uhe-spec-row"><span class="uhe-spec-key">Pipeline decode width</span><span class="uhe-spec-val">6-wide</span></div>
+        <div class="uhe-spec-row"><span class="uhe-spec-key">L2 cache</span><span class="uhe-spec-val">3 MB / core</span></div>
+        <div class="uhe-spec-row"><span class="uhe-spec-key">Kache Kore&trade; access</span><span class="uhe-spec-val leaf">Full &mdash; FOveros 2.0 photonic</span></div>
+        <div class="uhe-spec-row"><span class="uhe-spec-key">TD dispatch priority</span><span class="uhe-spec-val leaf">Class 0 &mdash; First Assignment</span></div>
+        <div class="uhe-spec-row"><span class="uhe-spec-key">DVFS granularity</span><span class="uhe-spec-val">Per-cluster &middot; multi-Vt ABB</span></div>
+        <div class="uhe-spec-row"><span class="uhe-spec-key">Clock network</span><span class="uhe-spec-val">Resonant mesh &middot; multi-Vt ABB</span></div>
+        <div class="uhe-spec-row"><span class="uhe-spec-key">V8 HyperBOOST</span><span class="uhe-spec-val">Not supported</span></div>
+      </div>
+      <div class="uhe-isa-row">
+        <span class="uhe-isa-pill">AVX2</span>
+        <span class="uhe-isa-pill">VNNI</span>
+        <span class="uhe-isa-pill">CET</span>
+        <span class="uhe-isa-pill">06E-DVFS</span>
+        <span class="uhe-isa-pill">SSE4.2</span>
+        <span class="uhe-isa-pill absent">AVX-512</span>
+        <span class="uhe-isa-pill absent">AMX</span>
+        <span class="uhe-isa-pill absent">P-SMT</span>
+      </div>
+      <p style="font-size:10px; color:rgba(52,211,153,0.3); margin-top:8px; font-style:italic;">Strikethrough = not available on UHE tier. AVX-512 excluded &mdash; 06E efficiency tradeoff.</p>
+    </div>
+  </div>
+
+  <!-- ── PART 2: PIPELINE + PPW CURVE ── -->
+  <div class="uhe-inner-divider"></div>
+  <div class="uhe-section-label">Pipeline Architecture · 6-Wide, Efficiency-Biased</div>
+  <div class="uhe-body-heading">6-Wide Balance: Speed <span>Without Waste</span></div>
+
+  <div class="uhe-two-col">
+    <div>
+      <p class="uhe-body-text">
+        The 6-wide decode front-end of the Lunar Eclipse is a deliberate balance point. Wider than the SPE Venusmont's 4-wide (reflecting the UHE's higher per-core performance ambitions), but narrower than the compute tile cores' 8 and 10-wide decoders (reflecting the 06E node's efficiency-first bias toward leaner decode circuitry). A 6-wide front-end provides enough instruction dispatch bandwidth to sustain the 4.8 GHz turbo clock target without requiring the circuit complexity &mdash; and therefore the power budget &mdash; of wider designs.
+      </p>
+      <p class="uhe-body-text">
+        The efficiency argument is not just about fewer transistors in the decode stage, though that is part of it. A wider decode pipeline requires proportionally wider rename/allocate logic, a larger physical register file, and a wider issue window &mdash; each of which adds active power draw that scales super-linearly with width. The 6-wide UHE design sits at the bend in this power curve: it captures the majority of single-thread IPC available from wider issue (because real-world instruction streams rarely sustain more than 5&ndash;6 useful instructions per cycle anyway) while avoiding the steep power escalation that comes with the 8-wide and 10-wide designs on the Compute Tile.
+      </p>
+      <p class="uhe-body-text">
+        The <strong>resonant clock mesh</strong> is a key enabling technology at the circuit level. Rather than driving the clock network with a brute-force tree of buffers &mdash; which is the standard approach and which consumes a significant fraction of a core's dynamic power &mdash; the resonant mesh uses on-die inductors that form LC oscillator circuits with the intrinsic capacitance of the clock network. The result is clock distribution that recycles a portion of the energy each cycle rather than dissipating it. On the 06E node, Intel reports that the resonant mesh reduces clock network power by approximately 30% compared to a conventional mesh at equivalent frequency &mdash; a non-trivial contribution to the overall PPW figure of the UHE core.
+      </p>
+      <p class="uhe-body-text">
+        <strong>Multi-Vt adaptive body biasing (ABB)</strong> provides per-cluster dynamic leakage control. As voltage and frequency scale down during light workloads, the ABB circuitry reverse-biases the transistor body terminals to increase the effective threshold voltage, reducing sub-threshold leakage. When frequency ramps up for turbo, the bias reverses to lower the threshold voltage, enabling faster switching at the cost of higher leakage &mdash; a tradeoff that is acceptable during short burst windows. This dynamic leakage management, combined with the 06E node's inherently low leakage floor (&lt;0.3 nA/&micro;m), is what enables the UHE core's <strong>&lt;0.2W gate-off idle power</strong> and sub-nanosecond clock gating transitions.
+      </p>
+      <p class="uhe-body-text">
+        The <strong>per-cluster granular DVFS</strong> (Dynamic Voltage and Frequency Scaling) operates at a finer granularity than previous-generation efficiency cores. Rather than scaling the entire LP Island as a single power domain, the 06E island allows individual UHE clusters to operate at independent voltage-frequency points. This means a cluster handling an active foreground thread can turbo to 4.8 GHz while adjacent clusters handling background tasks remain at base frequency or below &mdash; avoiding the penalty of dragging the entire island to a higher power state for one active thread.
+      </p>
+    </div>
+    <div>
+      <div class="uhe-pipeline-wrap">
+        <div class="uhe-pipeline-label">LUNAR ECLIPSE UHE · 6-WIDE PIPELINE · EFFICIENCY-BIASED</div>
+        <svg viewBox="0 0 520 440" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+          <defs>
+            <marker id="arr-uhe" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+              <path d="M0,0 L5,2.5 L0,5 Z" fill="rgba(52,211,153,0.45)"/>
+            </marker>
+          </defs>
+          <!-- Row 1: Front-end -->
+          <rect x="8" y="10" width="118" height="42" rx="3" fill="rgba(15,118,110,0.1)" stroke="rgba(15,118,110,0.38)" stroke-width="1"/>
+          <text x="67" y="28" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(52,211,153,0.85)" font-weight="500">INST FETCH</text>
+          <text x="67" y="42" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(15,118,110,0.55)">06E resonant mesh clk</text>
+          <path d="M126 31 L143 31" stroke="rgba(15,118,110,0.35)" stroke-width="1" marker-end="url(#arr-uhe)"/>
+
+          <rect x="144" y="10" width="118" height="42" rx="3" fill="rgba(15,118,110,0.1)" stroke="rgba(15,118,110,0.38)" stroke-width="1"/>
+          <text x="203" y="28" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(52,211,153,0.85)" font-weight="500">BRANCH PREDICTOR</text>
+          <text x="203" y="42" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(15,118,110,0.55)">efficiency-tuned TAGE</text>
+          <path d="M262 31 L279 31" stroke="rgba(15,118,110,0.35)" stroke-width="1" marker-end="url(#arr-uhe)"/>
+
+          <rect x="280" y="6" width="126" height="50" rx="3" fill="rgba(15,118,110,0.22)" stroke="rgba(52,211,153,0.72)" stroke-width="1.5"/>
+          <text x="343" y="24" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8.5" fill="#34D399" font-weight="700">6-WIDE DECODE</text>
+          <text x="343" y="38" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(52,211,153,0.65)">6 instr/cycle &rarr; &micro;OPs</text>
+          <text x="343" y="49" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(15,118,110,0.5)">balanced width &uarr;</text>
+
+          <!-- &micro;OP Cache row -->
+          <path d="M343 56 L343 72" stroke="rgba(15,118,110,0.3)" stroke-width="1" marker-end="url(#arr-uhe)"/>
+          <rect x="60" y="74" width="400" height="36" rx="3" fill="rgba(15,118,110,0.06)" stroke="rgba(15,118,110,0.2)" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="260" y="89" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(52,211,153,0.5)" font-weight="500">&micro;OP CACHE / LOOP STREAM DETECTOR</text>
+          <text x="260" y="102" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(15,118,110,0.33)">hot loops bypass decode &rarr; power savings during sustained workloads</text>
+
+          <!-- Row 2: Mid-pipe -->
+          <path d="M200 110 L200 128" stroke="rgba(15,118,110,0.3)" stroke-width="1" marker-end="url(#arr-uhe)"/>
+          <path d="M343 110 L343 128" stroke="rgba(15,118,110,0.3)" stroke-width="1" marker-end="url(#arr-uhe)"/>
+
+          <rect x="8" y="130" width="118" height="42" rx="3" fill="rgba(15,118,110,0.1)" stroke="rgba(15,118,110,0.35)" stroke-width="1"/>
+          <text x="67" y="148" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(52,211,153,0.85)" font-weight="500">RENAME / ALLOC</text>
+          <text x="67" y="162" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(15,118,110,0.45)">6-wide register rename</text>
+
+          <rect x="144" y="130" width="118" height="42" rx="3" fill="rgba(15,118,110,0.1)" stroke="rgba(15,118,110,0.35)" stroke-width="1"/>
+          <text x="203" y="148" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(52,211,153,0.85)" font-weight="500">REORDER BUFFER</text>
+          <text x="203" y="162" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(15,118,110,0.45)">OOO &middot; efficiency-sized</text>
+
+          <rect x="280" y="130" width="118" height="42" rx="3" fill="rgba(15,118,110,0.1)" stroke="rgba(15,118,110,0.35)" stroke-width="1"/>
+          <text x="339" y="148" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(52,211,153,0.85)" font-weight="500">SCHEDULER</text>
+          <text x="339" y="162" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(15,118,110,0.45)">&micro;OP dispatch queue</text>
+
+          <path d="M67 172 L67 196" stroke="rgba(15,118,110,0.3)" stroke-width="1" marker-end="url(#arr-uhe)"/>
+          <path d="M126 151 L142 151" stroke="rgba(15,118,110,0.3)" stroke-width="1" marker-end="url(#arr-uhe)"/>
+          <path d="M262 151 L278 151" stroke="rgba(15,118,110,0.3)" stroke-width="1" marker-end="url(#arr-uhe)"/>
+
+          <!-- Row 3: Execution -->
+          <rect x="8" y="198" width="152" height="44" rx="3" fill="rgba(15,118,110,0.14)" stroke="rgba(15,118,110,0.48)" stroke-width="1"/>
+          <text x="84" y="217" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(52,211,153,0.9)" font-weight="500">INT EXECUTION PORTS</text>
+          <text x="84" y="232" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(15,118,110,0.5)">ALU &middot; AGU &middot; branch</text>
+
+          <rect x="174" y="198" width="152" height="44" rx="3" fill="rgba(15,118,110,0.14)" stroke="rgba(15,118,110,0.48)" stroke-width="1"/>
+          <text x="250" y="217" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(52,211,153,0.9)" font-weight="500">FP / VECTOR PORTS</text>
+          <text x="250" y="232" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(15,118,110,0.5)">AVX2 &middot; VNNI &middot; SSE4.2</text>
+
+          <rect x="340" y="198" width="172" height="44" rx="3" fill="rgba(15,118,110,0.14)" stroke="rgba(15,118,110,0.48)" stroke-width="1"/>
+          <text x="426" y="217" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(52,211,153,0.9)" font-weight="500">LOAD / STORE PORTS</text>
+          <text x="426" y="232" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(15,118,110,0.5)">L2 3MB &rarr; bLLC 4GB</text>
+
+          <path d="M84 242 L84 264" stroke="rgba(15,118,110,0.28)" stroke-width="1" marker-end="url(#arr-uhe)"/>
+          <path d="M250 242 L250 264" stroke="rgba(15,118,110,0.28)" stroke-width="1" marker-end="url(#arr-uhe)"/>
+          <path d="M426 242 L426 282 L382 282" stroke="rgba(15,118,110,0.28)" stroke-width="1" marker-end="url(#arr-uhe)"/>
+
+          <!-- Retire -->
+          <rect x="84" y="266" width="295" height="40" rx="3" fill="rgba(15,118,110,0.09)" stroke="rgba(15,118,110,0.3)" stroke-width="1"/>
+          <text x="231" y="283" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(52,211,153,0.8)" font-weight="500">RETIRE / WRITEBACK</text>
+          <text x="231" y="297" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(15,118,110,0.38)">architectural state commit &middot; per-cluster DVFS feedback</text>
+
+          <!-- Power Management Block -->
+          <rect x="418" y="130" width="96" height="42" rx="3" fill="rgba(15,118,110,0.18)" stroke="rgba(52,211,153,0.5)" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="466" y="147" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="#34D399" font-weight="600">DVFS / ABB</text>
+          <text x="466" y="159" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="5.5" fill="rgba(52,211,153,0.45)">per-cluster</text>
+          <text x="466" y="168" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="5.5" fill="rgba(52,211,153,0.45)">&lt;1ns gate</text>
+
+          <!-- L2 cache block -->
+          <rect x="60" y="330" width="400" height="36" rx="3" fill="rgba(15,118,110,0.07)" stroke="rgba(15,118,110,0.2)" stroke-width="1"/>
+          <text x="260" y="346" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(52,211,153,0.55)" font-weight="500">L2 PRIVATE CACHE &middot; 3 MB / CORE</text>
+          <text x="260" y="359" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(15,118,110,0.32)">miss &rarr; Kache Kore&trade; bLLC via FOveros 2.0 photonic fabric</text>
+          <path d="M231 306 L231 328" stroke="rgba(15,118,110,0.28)" stroke-width="1" marker-end="url(#arr-uhe)"/>
+
+          <!-- Resonant Clock annotation -->
+          <rect x="60" y="380" width="400" height="32" rx="3" fill="rgba(15,118,110,0.04)" stroke="rgba(15,118,110,0.12)" stroke-width="1" stroke-dasharray="6,3"/>
+          <text x="260" y="399" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(52,211,153,0.35)">RESONANT CLOCK MESH &middot; &minus;30% clock power vs conventional &middot; LC oscillator energy recycle</text>
+          <path d="M260 366 L260 378" stroke="rgba(15,118,110,0.2)" stroke-width="1" marker-end="url(#arr-uhe)"/>
+
+          <!-- Multi-Vt annotation -->
+          <text x="260" y="430" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(52,211,153,0.25)">MULTI-Vt ADAPTIVE BODY BIASING &middot; dynamic leakage control &middot; &lt;0.3 nA/&micro;m standby</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PART 3: PPW CURVE ── -->
+  <div class="uhe-inner-divider"></div>
+  <div class="uhe-section-label">Performance-per-Watt Curve · The Defining Chart</div>
+  <div class="uhe-body-heading">P-Core Performance at <span>E-Core Power</span></div>
+
+  <div class="uhe-two-col">
+    <div>
+      <p class="uhe-body-text">
+        This is the chart that defines the Lunar Eclipse UHE core's value proposition. The two curves show relative single-threaded performance (Y-axis) plotted against active power consumption (X-axis) for two cores: the <strong>Panther Lake LP-E core (Darkmont on Intel 14A)</strong> and the <strong>UHE Lunar Eclipse on Intel 06E</strong>.
+      </p>
+      <p class="uhe-body-text">
+        The Panther Lake LP-E curve (gray dashed line) rises steadily with power &mdash; it needs roughly 8W to reach its peak performance level, which tops out at approximately 0.6&times; normalized performance (where 1.0 = Panther Lake P-core single-thread performance). It never reaches P-core parity regardless of how much power you give it. This is the fundamental limitation of the prior-generation LP-E architecture: it was a genuinely different, lower-IPC microarchitecture designed for background tasks, not for performance-competitive workloads.
+      </p>
+      <p class="uhe-body-text">
+        The Lunar Eclipse UHE curve (teal solid line) tells a different story entirely. It <strong>starts higher at low power</strong> &mdash; at 1.2W, the UHE already delivers meaningful performance because the 06E node's efficiency floor is dramatically lower. As power increases, the UHE curve rises steeply, reaching and <strong>crossing the 1.0 normalized performance line</strong> at approximately 4.8W &mdash; which means at 4.8W active draw, the UHE core on the LP Island matches or exceeds the single-threaded performance that the Panther Lake P-core delivered at its full power envelope. The shaded teal region represents the UHE's normal operating zone: the vast majority of the time, the core is operating between 1.2W and 5W, delivering between 0.4&times; and 1.0&times; P-core-equivalent performance. The Compute Tile's UHP and DP cores only need to engage for workloads that require sustained performance <em>above</em> the prior-gen P-core level.
+      </p>
+      <p class="uhe-body-text">
+        The <strong>+68% PPW improvement</strong> is derived from comparing the two curves at equivalent performance points: at any given performance level, the UHE reaches it at significantly lower power &mdash; or equivalently, at any given power budget, the UHE delivers substantially more performance. The 06E node's process-level efficiency (+54% PPW over 14A) accounts for the majority of this gap, with the architectural improvements of the UHE microarchitecture (wider pipeline, resonant clock mesh, per-cluster DVFS, multi-Vt ABB) contributing the remaining delta.
+      </p>
+    </div>
+    <div>
+      <div class="uhe-curve-wrap">
+        <div class="uhe-curve-label">PERFORMANCE vs POWER &middot; UHE LUNAR ECLIPSE vs PTL LP-E (DARKMONT)</div>
+        <svg viewBox="0 0 460 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+          <!-- Axes -->
+          <line x1="50" y1="20" x2="50" y2="270" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+          <line x1="50" y1="270" x2="440" y2="270" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+
+          <!-- Y-axis labels -->
+          <text x="45" y="270" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">0</text>
+          <text x="45" y="220" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">0.2&times;</text>
+          <text x="45" y="170" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">0.4&times;</text>
+          <text x="45" y="120" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">0.6&times;</text>
+          <text x="45" y="70" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">0.8&times;</text>
+          <text x="45" y="25" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(52,211,153,0.6)">1.0&times;</text>
+
+          <!-- Y gridlines -->
+          <line x1="50" y1="220" x2="440" y2="220" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <line x1="50" y1="170" x2="440" y2="170" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <line x1="50" y1="120" x2="440" y2="120" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <line x1="50" y1="70" x2="440" y2="70" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+
+          <!-- P-core parity line at 1.0x -->
+          <line x1="50" y1="20" x2="440" y2="20" stroke="rgba(52,211,153,0.18)" stroke-width="1" stroke-dasharray="6,4"/>
+          <text x="445" y="24" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(52,211,153,0.4)">PTL P-core parity</text>
+
+          <!-- X-axis labels (Power in Watts) -->
+          <text x="50" y="285" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">0W</text>
+          <text x="148" y="285" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">2W</text>
+          <text x="246" y="285" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">4W</text>
+          <text x="344" y="285" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">6W</text>
+          <text x="440" y="285" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">8W</text>
+          <text x="245" y="305" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="rgba(255,255,255,0.18)">ACTIVE POWER (WATTS)</text>
+
+          <!-- Y-axis title -->
+          <text x="15" y="150" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.18)" transform="rotate(-90,15,150)">RELATIVE ST PERF</text>
+
+          <!-- UHE operating zone shading -->
+          <path d="M99,230 L148,170 L197,110 L246,60 L295,30 L295,270 L99,270 Z" fill="rgba(15,118,110,0.08)" stroke="none"/>
+
+          <!-- PTL LP-E curve (gray dashed) -->
+          <path d="M99,258 L148,235 L197,195 L246,160 L295,135 L344,120 L392,118 L440,117" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" stroke-dasharray="6,4"/>
+          <text x="420" y="108" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(255,255,255,0.3)">PTL LP-E</text>
+          <text x="420" y="98" font-family="'IBM Plex Mono',monospace" font-size="5.5" fill="rgba(255,255,255,0.2)">(Darkmont 14A)</text>
+
+          <!-- UHE Lunar Eclipse curve (teal solid) -->
+          <path d="M99,230 L148,170 L197,110 L246,60 L295,30 L344,20 L392,15" fill="none" stroke="#34D399" stroke-width="2"/>
+          <text x="370" y="8" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="#34D399">UHE Lunar Eclipse</text>
+
+          <!-- Crossover annotation -->
+          <circle cx="260" cy="48" r="4" fill="none" stroke="#34D399" stroke-width="1.5"/>
+          <line x1="264" y1="52" x2="310" y2="75" stroke="rgba(52,211,153,0.4)" stroke-width="0.5"/>
+          <rect x="297" y="66" width="140" height="22" rx="2" fill="rgba(15,118,110,0.3)" stroke="rgba(52,211,153,0.5)" stroke-width="1"/>
+          <text x="367" y="77" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="#34D399" font-weight="600">P-CORE PERF ACHIEVED</text>
+          <text x="367" y="85" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="5.5" fill="rgba(52,211,153,0.5)">~4.8W &middot; Compute Tile still off</text>
+
+          <!-- UHE operating zone label -->
+          <rect x="110" y="240" width="130" height="18" rx="2" fill="rgba(15,118,110,0.15)" stroke="rgba(15,118,110,0.3)" stroke-width="0.5"/>
+          <text x="175" y="252" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(52,211,153,0.5)">UHE OPERATING ZONE (1.2&ndash;5W)</text>
+
+          <!-- +68% PPW annotation -->
+          <text x="245" y="315" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="rgba(52,211,153,0.35)">+68% PERF-PER-WATT vs PTL LP-E at equivalent performance points</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PART 4: CACHE HIERARCHY + GOG ── -->
+  <div class="uhe-inner-divider"></div>
+  <div class="uhe-section-label">Cache Hierarchy · LP Island to Kache Kore&trade;</div>
+  <div class="uhe-body-heading">Full <span>System Cache</span> Access</div>
+
+  <div class="uhe-two-col">
+    <div>
+      <p class="uhe-body-text">
+        Despite living on the Low Power Island &mdash; a physically separate tile manufactured on the Intel 06E node &mdash; the Lunar Eclipse UHE cores carry a <strong>48 KB L0 extra-LLC</strong> and <strong>128 KB private L1</strong> feeding a <strong>3 MB private L2</strong>, with full, first-class access to the <strong>4 GB Kache Kore&trade; L4 bLLC</strong>. L2 misses are first served by the <strong>8 MB LP Island shared L3</strong> before reaching the FOveros 2.0 photonic fabric. This is a critical architectural decision: it means UHE cores do not pay a memory bandwidth or latency penalty when their working sets exceed the private caches compared to what the Compute Tile cores experience.
+      </p>
+      <p class="uhe-body-text">
+        The <strong>3 MB private L2 per core</strong> is sized for the typical working-set footprint of productivity, browsing, and communication workloads. Web browsers, document editors, email clients, video conferencing &mdash; these applications typically have active working sets well under 3 MB per thread, meaning the UHE core can execute almost entirely from private L2 without touching the inter-tile photonic fabric. This is the ideal power efficiency scenario: the FOveros 2.0 fabric, while faster than any off-die interconnect, still draws more power per access than the on-die L2.
+      </p>
+      <p class="uhe-body-text">
+        When workloads do exceed the L2 &mdash; a large spreadsheet recalculation, a moderately-sized compilation task, or a JavaScript-heavy web application &mdash; the L2 miss path first reaches the <strong>8 MB LP Island L3</strong> (shared with LPE cores on the same 06E tile), then continues through FOveros 2.0 to the shared Kache Kore&trade; bLLC. At 4 GB, the bLLC covers working sets that would otherwise require DRAM access, and FOveros 2.0's photonic latency is roughly <strong>70% lower than DDR6 DRAM round-trip latency</strong>. The result is that even when the UHE core's working set spills past the L2, the performance penalty is far smaller than traditional cache-miss-to-DRAM scenarios.
+      </p>
+      <p class="uhe-body-text">
+        This flat cache access model &mdash; where every core in the system, regardless of tile, sees the same bLLC latency through the photonic fabric &mdash; is what allows the Thread Director to make clean dispatch decisions without worrying about cache residency. A thread can migrate from a UHE core on the LP Island to a DP core on the Compute Tile (or vice versa) without paying a cache coherency penalty at the bLLC level, because the bLLC is shared and the coherency protocol operates at the system level through the photonic fabric.
+      </p>
+    </div>
+    <div>
+      <div class="uhe-cache-strip">
+        <div class="uhe-cache-row">
+          <div class="uhe-cache-tier">L0</div>
+          <div class="uhe-cache-bar uhe-c-l0" style="flex:0.2">
+            <span class="uhe-cache-name">L0 Extra-LLC</span>
+            <span class="uhe-cache-sz">48 KB / core</span>
+          </div>
+        </div>
+        <div class="uhe-cache-note">Instruction buffer &mdash; efficiency-optimized for LP Island workloads</div>
+        <div class="uhe-cache-conn">&darr; miss</div>
+        <div class="uhe-cache-row">
+          <div class="uhe-cache-tier">L1</div>
+          <div class="uhe-cache-bar uhe-c-l1" style="flex:0.3">
+            <span class="uhe-cache-name">L1 I-Cache + D-Cache</span>
+            <span class="uhe-cache-sz">128 KB / core</span>
+          </div>
+        </div>
+        <div class="uhe-cache-note">Private instruction + data cache per UHE core</div>
+        <div class="uhe-cache-conn">&darr; miss</div>
+        <div class="uhe-cache-row">
+          <div class="uhe-cache-tier">L2</div>
+          <div class="uhe-cache-bar uhe-c-l2" style="flex:0.5">
+            <span class="uhe-cache-name">Private L2 Cache</span>
+            <span class="uhe-cache-sz">3 MB / core</span>
+          </div>
+        </div>
+        <div class="uhe-cache-note">Covers typical productivity working sets &mdash; browser, docs, comms</div>
+        <div class="uhe-cache-conn">&darr; miss</div>
+        <div class="uhe-cache-row">
+          <div class="uhe-cache-tier">L3</div>
+          <div class="uhe-cache-bar uhe-c-l3" style="flex:0.75">
+            <span class="uhe-cache-name">LP Island Shared L3</span>
+            <span class="uhe-cache-sz">8 MB &middot; LP Island shared</span>
+          </div>
+        </div>
+        <div class="uhe-cache-note" style="color:rgba(147,51,234,0.35);">Shared across UHE + LPE cores on LP Island (Intel 06E tile)</div>
+        <div class="uhe-cache-conn">&darr; miss &rarr; FOveros 2.0 photonic fabric</div>
+        <div class="uhe-cache-row">
+          <div class="uhe-cache-tier" style="color:rgba(192,132,252,0.5);">L4</div>
+          <div class="uhe-cache-bar uhe-c-bllc" style="flex:1">
+            <span class="uhe-cache-name">Kache Kore&trade; bLLC</span>
+            <span class="uhe-cache-sz">4 GB &middot; APU-shared</span>
+          </div>
+        </div>
+        <div class="uhe-cache-note" style="color:rgba(147,51,234,0.55);">Shared across all CPU, GPU, and NPU tiles &mdash; &minus;70% latency vs DRAM</div>
+        <div class="uhe-cache-conn" style="color:rgba(147,51,234,0.3);">&darr; miss &rarr; ZAM / DDR6</div>
+      </div>
+
+      <div class="uhe-gog-block">
+        <div class="uhe-gog-title">Gen-on-Gen Performance &middot; vs Panther Lake LP-E Core (Darkmont on 14A)</div>
+        <div class="uhe-gog-row">
+          <div class="uhe-gog-metric">ST performance</div>
+          <div class="uhe-gog-track"><div class="uhe-gog-fill" style="width:76%"></div></div>
+          <div class="uhe-gog-num">+52%</div>
+        </div>
+        <div class="uhe-gog-row">
+          <div class="uhe-gog-metric">Performance per watt</div>
+          <div class="uhe-gog-track"><div class="uhe-gog-fill" style="width:100%"></div></div>
+          <div class="uhe-gog-num">+68%</div>
+        </div>
+        <div class="uhe-gog-row">
+          <div class="uhe-gog-metric">Min operating power</div>
+          <div class="uhe-gog-track"><div class="uhe-gog-fill" style="width:80%"></div></div>
+          <div class="uhe-gog-num">&minus;55%</div>
+        </div>
+        <div class="uhe-gog-row">
+          <div class="uhe-gog-metric">Process node PPW (06E vs 14A)</div>
+          <div class="uhe-gog-track"><div class="uhe-gog-fill" style="width:78%; opacity:0.75"></div></div>
+          <div class="uhe-gog-num">+54%</div>
+        </div>
+        <div class="uhe-gog-row">
+          <div class="uhe-gog-metric">Idle power (gate-off)</div>
+          <div class="uhe-gog-track"><div class="uhe-gog-fill" style="width:65%; opacity:0.75"></div></div>
+          <div class="uhe-gog-num">&lt;0.2W</div>
+        </div>
+      </div>
+
+      <div class="uhe-kache-callout">
+        <div class="uhe-kache-title">Kache Kore&trade; Integration Note</div>
+        <p class="uhe-kache-text">
+          Despite residing on the Low Power Island (Intel 06E), UHE cores have <strong>full, first-class access to the 4 GB Kache Kore&trade; L4 bLLC</strong> via FOveros 2.0 photonic fabric. There is <strong>no memory bandwidth penalty</strong> versus Compute Tile cores for working-set-sized workloads. Thread migration between UHE and Compute Tile cores incurs no cache coherency penalty at the bLLC level &mdash; the coherency protocol operates system-wide through the photonic fabric.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PART 5: ARCHITECTURAL FEATURES ── -->
+  <div class="uhe-inner-divider"></div>
+  <div class="uhe-section-label">Architectural Highlights · What Makes the UHE Different</div>
+  <div class="uhe-body-heading">Efficiency Is an <span>Architecture</span>, Not a Compromise</div>
+
+  <div class="uhe-two-col">
+    <div>
+      <p class="uhe-body-text">
+        The Lunar Eclipse UHE core is not simply a "smaller P-core" or a "faster E-core." It is a purpose-designed architecture for a specific role: handling the workloads that constitute 80&ndash;90% of what most users do with their computers, and doing so at a power level that allows the entire Compute Tile to remain off. Every architectural decision &mdash; from the 6-wide decode to the resonant clock mesh to the per-cluster DVFS to the multi-Vt ABB &mdash; is oriented toward this role.
+      </p>
+      <p class="uhe-body-text">
+        The absence of certain capabilities is equally deliberate. <strong>AVX-512 is not present</strong> on the UHE core. This is an explicit 06E efficiency tradeoff: AVX-512 execution units are physically large, consume significant power even when idle due to leakage through wide datapaths, and are rarely needed for the productivity workloads the UHE targets. When a workload genuinely requires AVX-512 (ML inference, scientific compute, media encoding), the Thread Director will route it to UHP, DP, or SPE cores on the Compute Tile, where AVX-512 support is full-width.
+      </p>
+      <p class="uhe-body-text">
+        Similarly, <strong>AMX (Advanced Matrix Extensions) and P-SMT are absent</strong>. AMX matrix tiles are dedicated to the DP core's compute-intensive workloads. P-SMT would add thread arbitration complexity that conflicts with the UHE's single-thread efficiency optimization. And <strong>V8 HyperBOOST is not supported</strong> &mdash; the thermal burst architecture requires the GaNSi substrate of the 04A node, not available on the 06E LP Island.
+      </p>
+    </div>
+    <div>
+      <div class="uhe-feature-grid">
+        <div class="uhe-feature-row">
+          <div class="uhe-feature-icon">🔋</div>
+          <div>
+            <div class="uhe-feature-title">Per-Cluster Granular DVFS</div>
+            <div class="uhe-feature-desc">Individual UHE clusters operate at independent V/F points. Active thread turbos to 4.8 GHz while neighbors idle at base &mdash; no penalty for mixed load.</div>
+          </div>
+        </div>
+        <div class="uhe-feature-row">
+          <div class="uhe-feature-icon">⏱️</div>
+          <div>
+            <div class="uhe-feature-title">Resonant Clock Mesh</div>
+            <div class="uhe-feature-desc">LC oscillator clock distribution recycles energy each cycle. &minus;30% clock network power vs conventional mesh at equivalent frequency.</div>
+          </div>
+        </div>
+        <div class="uhe-feature-row">
+          <div class="uhe-feature-icon">🧬</div>
+          <div>
+            <div class="uhe-feature-title">Multi-Vt Adaptive Body Biasing</div>
+            <div class="uhe-feature-desc">Dynamic leakage control adjusts transistor threshold voltage in real-time. Low leakage at idle, fast switching during turbo bursts.</div>
+          </div>
+        </div>
+        <div class="uhe-feature-row">
+          <div class="uhe-feature-icon">🎯</div>
+          <div>
+            <div class="uhe-feature-title">TD Class 0 &mdash; First Assignment</div>
+            <div class="uhe-feature-desc">Thread Director routes all new threads to UHE first. Compute Tile cores only engage when profiling confirms the thread needs more.</div>
+          </div>
+        </div>
+        <div class="uhe-feature-row">
+          <div class="uhe-feature-icon">🌊</div>
+          <div>
+            <div class="uhe-feature-title">FOveros 2.0 Photonic Access</div>
+            <div class="uhe-feature-desc">Full-bandwidth photonic fabric connection to Kache Kore&trade; bLLC. No memory penalty despite being on a separate tile and process node.</div>
+          </div>
+        </div>
+        <div class="uhe-feature-row">
+          <div class="uhe-feature-icon">⚡</div>
+          <div>
+            <div class="uhe-feature-title">Sub-Nanosecond Power Gating</div>
+            <div class="uhe-feature-desc">&lt;1ns clock-gate and power-gate transitions. Core can enter and exit deep sleep between instruction bursts without visible latency.</div>
+          </div>
+        </div>
+        <div class="uhe-feature-row">
+          <div class="uhe-feature-icon">🛡️</div>
+          <div>
+            <div class="uhe-feature-title">CET Shadow Stack</div>
+            <div class="uhe-feature-desc">Control-flow Enforcement Technology active on UHE. Full hardware-assisted ROP/JOP mitigation without performance overhead.</div>
+          </div>
+        </div>
+        <div class="uhe-feature-row">
+          <div class="uhe-feature-icon">🤖</div>
+          <div>
+            <div class="uhe-feature-title">LPNPU Co-Pilot Ready</div>
+            <div class="uhe-feature-desc">Deep integration with the 88 TOPS always-on LPNPU. Wake-on-voice, predictive dispatch, and AI-assisted power state management.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- USE CASES -->
+  <div class="uhe-usecase-grid">
+    <div class="uhe-usecase-chip">
+      <span class="uhe-usecase-icon">💼</span>
+      <div class="uhe-usecase-title">Sustained Productivity</div>
+      <div class="uhe-usecase-desc">Spreadsheets, documents, email, and office applications run entirely on the LP Island. The Compute Tile stays off &mdash; battery life scales directly with UHE efficiency. Full workdays on a single charge.</div>
+    </div>
+    <div class="uhe-usecase-chip">
+      <span class="uhe-usecase-icon">🌐</span>
+      <div class="uhe-usecase-title">Web Browsing</div>
+      <div class="uhe-usecase-desc">JavaScript-heavy web applications, multiple browser tabs, WebAssembly workloads &mdash; the UHE's 4.8 GHz turbo handles modern web complexity without waking the performance tile. Smooth scrolling, fast page loads.</div>
+    </div>
+    <div class="uhe-usecase-chip">
+      <span class="uhe-usecase-icon">📹</span>
+      <div class="uhe-usecase-title">Video Conferencing</div>
+      <div class="uhe-usecase-desc">Zoom, Teams, WebRTC &mdash; video decode, audio processing, screen sharing, and background blur all run comfortably within the UHE's power envelope. No fan noise, no thermal throttling.</div>
+    </div>
+    <div class="uhe-usecase-chip">
+      <span class="uhe-usecase-icon">🔋</span>
+      <div class="uhe-usecase-title">Battery-Critical Mobile</div>
+      <div class="uhe-usecase-desc">Long flights, conference days, field work &mdash; when battery life is the constraint, the UHE core delivers usable, responsive performance at 1.2W minimum TDP. The 06E efficiency floor changes what &ldquo;all-day battery&rdquo; means.</div>
+    </div>
+  </div>
+
+</div>
+</div>
+

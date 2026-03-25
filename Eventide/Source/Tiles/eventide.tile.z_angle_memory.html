@@ -1,0 +1,554 @@
+<div class="zam-dd-wrap">
+<div class="section" style="position:relative; z-index:1;">
+
+    <!-- ── Section Header ── -->
+    <div class="zam-dd-eyebrow">Memory Architecture &middot; Intel Z-Angle Memory &middot; Deep Dive</div>
+    <div class="zam-dd-headline">Z-ANGLE<br><span>MEMORY</span></div>
+    <p class="zam-dd-subhead">
+        Eventide breaks from convention &mdash; the base configuration uses no DDR memory at all. Intel Z-Angle
+        Memory chips, mounted directly on the FOveros&nbsp;2.0 photonic substrate, deliver bandwidth that dwarfs
+        anything in the discrete GPU world. Kache Kore&rsquo;s 4&nbsp;GB bLLC masks the latency trade-off. Higher
+        SKUs add a third dual-channel DDR6/LPDDR6X controller for up to an additional 1&nbsp;TB of fast conventional
+        memory. All memory is fully unified across every APU tile &mdash; CPU, GPU, NPU, no exceptions.
+    </p>
+
+    <!-- ── Badge Row ── -->
+    <div class="zam-dd-badge-row">
+        <span class="zam-dd-badge">FOveros 2.0 Substrate-Mounted</span>
+        <span class="zam-dd-badge hot">5&ndash;6 TB/s Total Bandwidth</span>
+        <span class="zam-dd-badge">Vertical-Stack AI-Optimized</span>
+        <span class="zam-dd-badge hot">Up to 2 TB Unified</span>
+        <span class="zam-dd-badge">Inline ECC &middot; Xeon 500 Class</span>
+        <span class="zam-dd-badge">Intel 14A-E Controller</span>
+    </div>
+
+    <!-- ── Stat Block ── -->
+    <div class="zam-dd-stat-block">
+        <div class="zam-dd-stat-cell">
+            <div class="zam-dd-stat-num">5&ndash;6 TB/s</div>
+            <div class="zam-dd-stat-label">Total Bandwidth</div>
+            <div class="zam-dd-stat-sub">2&times; dual-channel ZAM</div>
+        </div>
+        <div class="zam-dd-stat-cell">
+            <div class="zam-dd-stat-num">2 TB</div>
+            <div class="zam-dd-stat-label">Max Unified Capacity</div>
+            <div class="zam-dd-stat-sub">1 TB ZAM + 1 TB DDR6</div>
+        </div>
+        <div class="zam-dd-stat-cell">
+            <div class="zam-dd-stat-num">~8 ns</div>
+            <div class="zam-dd-stat-label">Kache Kore Latency</div>
+            <div class="zam-dd-stat-sub">bLLC hot cache access</div>
+        </div>
+        <div class="zam-dd-stat-cell">
+            <div class="zam-dd-stat-num">&minus;75%</div>
+            <div class="zam-dd-stat-label">Power vs GDDR7</div>
+            <div class="zam-dd-stat-sub">Memory subsystem draw</div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         BLOCK 01 — ZAM Architecture
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="zam-dd-block" style="flex-wrap:wrap;">
+        <div class="zam-dd-num">01</div>
+
+        <div style="flex:1; min-width:0;">
+            <div class="zam-dd-label">CHIP TECHNOLOGY &middot; BANDWIDTH-OPTIMIZED MEMORY</div>
+            <div class="zam-dd-name">Z-Angle Memory</div>
+            <p class="zam-dd-body">
+                Intel Z-Angle Memory is a proprietary vertical-stack memory architecture purpose-built for
+                bandwidth and density &mdash; Intel&rsquo;s in-house answer to the AI memory revolution.
+                Unlike HBM used in data-centre GPUs, ZAM is designed from the ground up for client APU
+                workloads: mixed AI&nbsp;inference, GPU&nbsp;rendering, and latency-tolerant CPU access
+                patterns operating simultaneously across a unified address space. The &ldquo;Z-angle&rdquo;
+                name refers to the <strong>vertical interconnect topology</strong>: memory dies are stacked
+                using through-silicon vias (TSVs) at optimised angles that minimise signal path length while
+                maximising the number of parallel data channels per unit area &mdash; achieving bandwidth
+                density that conventional planar DRAM cannot approach.
+            </p>
+            <p class="zam-dd-body" style="margin-top:14px;">
+                Each ZAM stack contains multiple DRAM dies connected via <strong>wide I/O interfaces</strong>,
+                delivering 2&ndash;3&nbsp;TB/s per controller &mdash; bandwidth that dwarfs DDR6 by an order
+                of magnitude and exceeds discrete GDDR7 by roughly 3&times;. The chips mount directly on the
+                FOveros&nbsp;2.0 photonic substrate rather than through a traditional DIMM socket. This
+                <strong>photonic-proximity mounting</strong> eliminates the electrical signalling losses of
+                socketed memory, reduces parasitic capacitance, and enables the memory controller to drive the
+                I/O links at maximum frequency without signal-integrity margin penalties. ZAM is
+                bandwidth-optimised, not latency-optimised &mdash; raw access latency is approximately 40%
+                higher than GDDR7. This is an intentional design trade-off: for AI&nbsp;inference, GPU texture
+                streaming, and large working-set workloads, <strong>bandwidth is the bottleneck, not
+                latency</strong>. The Kache Kore&trade; 4&nbsp;GB bLLC at ~8&nbsp;ns access time masks the
+                latency for hot data, making the disadvantage invisible for the vast majority of access
+                patterns. Power efficiency is exceptional: ZAM draws approximately <strong>75% less
+                power</strong> than an equivalent-bandwidth GDDR7 configuration because the short
+                photonic-proximity signal paths require far less drive current. Inline ECC correction at
+                Xeon&nbsp;500 class ensures data integrity without bandwidth overhead.
+            </p>
+
+            <div class="zam-dd-stats">
+                <div class="zam-dd-stat-box">
+                    <div class="zam-dd-stat-box-val">2&ndash;3 TB/s</div>
+                    <div class="zam-dd-stat-box-key">per controller bandwidth</div>
+                </div>
+                <div class="zam-dd-stat-box">
+                    <div class="zam-dd-stat-box-val">&minus;75% power</div>
+                    <div class="zam-dd-stat-box-key">vs equivalent GDDR7</div>
+                </div>
+                <div class="zam-dd-stat-box">
+                    <div class="zam-dd-stat-box-val">Vertical-stack</div>
+                    <div class="zam-dd-stat-box-key">TSV interconnect topology</div>
+                </div>
+            </div>
+
+            <!-- GOG bar -->
+            <div class="zam-dd-gog">
+                <div class="gog-bar">
+                    <div class="gog-label">ZAM vs GDDR7 (DISCRETE GPU MEMORY)</div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Peak bandwidth</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:95%; background:#4DD9EC;"></div></div>
+                        <div class="gog-num" style="color:#4DD9EC;">+~3&times;</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Power efficiency</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:88%; background:#4DD9EC;"></div></div>
+                        <div class="gog-num" style="color:#4DD9EC;">&minus;75%</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">BW density/mm&sup2;</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:80%; background:#4DD9EC;"></div></div>
+                        <div class="gog-num" style="color:#4DD9EC;">+~2.5&times;</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Raw latency</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:35%; background:#F87171;"></div></div>
+                        <div class="gog-num" style="color:#F87171;">+40%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="zam-dd-aside">
+            <div class="zam-dd-aside-box">
+                <div class="zam-dd-aside-title">ZAM CHIP SPECIFICATIONS</div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Full name</div><div class="zam-dd-aside-v">Intel Z-Angle Memory</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Architecture</div><div class="zam-dd-aside-v hot">Vertical-stack TSV</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Die stacking</div><div class="zam-dd-aside-v">Multi-die wide I/O</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Mounting</div><div class="zam-dd-aside-v">FOveros 2.0 substrate</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">BW per controller</div><div class="zam-dd-aside-v hot">2&ndash;3 TB/s</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Total BW (2&times; ctrl)</div><div class="zam-dd-aside-v hot">5&ndash;6 TB/s effective</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Max capacity</div><div class="zam-dd-aside-v">Up to 1 TB</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Raw latency vs GDDR7</div><div class="zam-dd-aside-v">+~40%</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Power vs GDDR7</div><div class="zam-dd-aside-v hot">&minus;75%</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">ECC</div><div class="zam-dd-aside-v">Inline (Xeon 500)</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Optimisation</div><div class="zam-dd-aside-v">Bandwidth + density</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         BLOCK 02 — Memory Controller Tile
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="zam-dd-block" style="flex-wrap:wrap;">
+        <div class="zam-dd-num">02</div>
+
+        <div style="flex:1; min-width:0;">
+            <div class="zam-dd-label">CONTROLLER SILICON &middot; INTEL 14A-E PROCESS</div>
+            <div class="zam-dd-name">Memory Controller Tile</div>
+            <p class="zam-dd-body">
+                The memory controller tile is the silicon brain of the Eventide memory subsystem, fabricated
+                on Intel&rsquo;s <strong>14A-E efficiency process node</strong>. The base configuration
+                includes two dual-channel ZAM controllers, each managing one ZAM memory stack and delivering
+                2&ndash;3&nbsp;TB/s of bandwidth. The controllers operate independently but present a
+                <strong>unified address space</strong> to all compute tiles &mdash; every CPU core, every
+                Xe5 shader, every NPU engine sees the same flat memory map.
+            </p>
+            <p class="zam-dd-body" style="margin-top:14px;">
+                The controller tile connects to the ZAM stacks through the FOveros&nbsp;2.0 photonic
+                substrate, using <strong>silicon photonic waveguides</strong> rather than electrical traces.
+                Memory requests travel at the speed of light through on-package optical interconnects with
+                sub-nanosecond signalling overhead. Each controller implements
+                <strong>hardware-level memory scheduling</strong> that prioritises requests based on source
+                tile and workload class: GPU texture fetches get bandwidth priority; CPU cache-line fills get
+                latency priority. The Hardware Thread Director&rsquo;s workload classification feeds directly
+                into the memory scheduler, ensuring that the right data moves to the right consumer at the
+                right time. The controller manages <strong>power states per channel</strong>, allowing unused
+                channels to enter deep sleep independently while active channels run at full bandwidth.
+                Write-coalescing buffers aggregate small writes into full-width ZAM bursts, maximising
+                bandwidth utilisation for scatter-write patterns common in GPU rendering and AI weight
+                updates. The 14A-E process choice &mdash; rather than the 04A used for compute tiles &mdash;
+                is deliberate: memory controllers are not frequency-bound workloads. 14A-E offers
+                substantially <strong>lower leakage current and lower power per transistor</strong>, the
+                right optimisation for silicon that runs continuously managing memory traffic.
+            </p>
+
+            <div class="zam-dd-stats">
+                <div class="zam-dd-stat-box">
+                    <div class="zam-dd-stat-box-val">2&times; dual-ch</div>
+                    <div class="zam-dd-stat-box-key">ZAM controllers (base)</div>
+                </div>
+                <div class="zam-dd-stat-box">
+                    <div class="zam-dd-stat-box-val">14A-E</div>
+                    <div class="zam-dd-stat-box-key">efficiency process node</div>
+                </div>
+                <div class="zam-dd-stat-box">
+                    <div class="zam-dd-stat-box-val">Photonic link</div>
+                    <div class="zam-dd-stat-box-key">FOveros 2.0 substrate</div>
+                </div>
+            </div>
+
+            <!-- GOG bar -->
+            <div class="zam-dd-gog">
+                <div class="gog-bar">
+                    <div class="gog-label">vs CONVENTIONAL DDR5 MEMORY CONTROLLER</div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Aggregate BW</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:95%; background:#4DD9EC;"></div></div>
+                        <div class="gog-num" style="color:#4DD9EC;">+~8&times;</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Controller power</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:72%; background:#4DD9EC;"></div></div>
+                        <div class="gog-num" style="color:#4DD9EC;">&minus;60%</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">HW scheduling</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:65%; background:#4DD9EC;"></div></div>
+                        <div class="gog-num" style="color:#4DD9EC;">Per-tile</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="zam-dd-aside">
+            <div class="zam-dd-aside-box">
+                <div class="zam-dd-aside-title">CONTROLLER TILE SPECIFICATIONS</div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Process</div><div class="zam-dd-aside-v hot">Intel 14A-E</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Base controllers</div><div class="zam-dd-aside-v">2&times; dual-channel ZAM</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Higher SKU</div><div class="zam-dd-aside-v">+1&times; dual-ch DDR6</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Substrate link</div><div class="zam-dd-aside-v">FOveros 2.0 photonic</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Scheduling</div><div class="zam-dd-aside-v">HW priority per tile</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Power management</div><div class="zam-dd-aside-v">Per-channel sleep</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Write coalescing</div><div class="zam-dd-aside-v">Hardware</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Address space</div><div class="zam-dd-aside-v">Unified CPU+GPU+NPU</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Coherency</div><div class="zam-dd-aside-v">HW via FOveros</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         BLOCK 03 — DDR6 / LPDDR6X Integration
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="zam-dd-block" style="flex-wrap:wrap;">
+        <div class="zam-dd-num">03</div>
+
+        <div style="flex:1; min-width:0;">
+            <div class="zam-dd-label">CONVENTIONAL MEMORY &middot; HIGHER-SKU EXPANSION</div>
+            <div class="zam-dd-name">DDR6 / LPDDR6X</div>
+            <p class="zam-dd-body">
+                Higher-SKU Eventide processors &mdash; Core Ultra&nbsp;500 and Xeon&nbsp;500 &mdash; add a
+                <strong>third dual-channel memory controller</strong> supporting standard DDR6-9600+ or
+                LPDDR6X-10400 memory, providing up to an additional 1&nbsp;TB of conventional DRAM for a
+                total unified capacity of <strong>2&nbsp;TB</strong>. This is not a replacement for ZAM
+                &mdash; it is a complementary tier. DDR6 serves as the high-capacity expansion layer for
+                datasets that exceed ZAM&rsquo;s 1&nbsp;TB ceiling, and as the staging buffer in the
+                DirectStorage&nbsp;2.0 pipeline where entire game worlds can be pre-loaded before streaming
+                into ZAM at runtime.
+            </p>
+            <p class="zam-dd-body" style="margin-top:14px;">
+                DDR6-9600+ represents the fastest conventional memory standard, offering <strong>lower
+                latency than ZAM</strong> but substantially lower bandwidth per channel. For
+                latency-sensitive CPU workloads with small working sets that miss the bLLC, DDR6 provides
+                better worst-case access times. LPDDR6X-10400 is the mobile variant, chosen for thinner form
+                factors where DIMM slots are impractical &mdash; it offers 10,400&nbsp;MT/s transfer rates
+                with lower power draw than full DDR6. The third controller is <strong>fully unified</strong>
+                into the same coherent address space as the ZAM controllers. The operating system and
+                applications see a single, contiguous memory pool. The Hardware Thread Director and memory
+                scheduler automatically place data on the optimal tier: hot working sets on Kache
+                Kore&trade; bLLC, active runtime data on ZAM, large datasets and staging buffers on DDR6.
+                Full <strong>ECC support</strong> ensures data integrity across the DDR6 tier as well.
+            </p>
+
+            <div class="zam-dd-stats">
+                <div class="zam-dd-stat-box">
+                    <div class="zam-dd-stat-box-val">DDR6-9600+</div>
+                    <div class="zam-dd-stat-box-key">conventional memory speed</div>
+                </div>
+                <div class="zam-dd-stat-box">
+                    <div class="zam-dd-stat-box-val">Up to 1 TB</div>
+                    <div class="zam-dd-stat-box-key">additional capacity</div>
+                </div>
+                <div class="zam-dd-stat-box">
+                    <div class="zam-dd-stat-box-val">2 TB total</div>
+                    <div class="zam-dd-stat-box-key">ZAM + DDR6 unified</div>
+                </div>
+            </div>
+
+            <!-- GOG bar -->
+            <div class="zam-dd-gog">
+                <div class="gog-bar">
+                    <div class="gog-label">DDR6-9600 vs DDR5-6400 (PRIOR GEN)</div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Transfer rate</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:78%; background:#4DD9EC;"></div></div>
+                        <div class="gog-num" style="color:#4DD9EC;">+50%</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">BW per channel</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:75%; background:#4DD9EC;"></div></div>
+                        <div class="gog-num" style="color:#4DD9EC;">+50%</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Max capacity</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:65%; background:#4DD9EC;"></div></div>
+                        <div class="gog-num" style="color:#4DD9EC;">1 TB</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="zam-dd-aside">
+            <div class="zam-dd-aside-box">
+                <div class="zam-dd-aside-title">DDR6 / LPDDR6X SPECIFICATIONS</div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Standard</div><div class="zam-dd-aside-v hot">DDR6-9600+ / LPDDR6X-10400</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Controller</div><div class="zam-dd-aside-v">3rd dual-channel</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Max capacity</div><div class="zam-dd-aside-v">Up to 1 TB</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Availability</div><div class="zam-dd-aside-v">Higher SKUs only</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Role</div><div class="zam-dd-aside-v">Staging + capacity</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">ECC</div><div class="zam-dd-aside-v">Yes</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Address space</div><div class="zam-dd-aside-v">Unified with ZAM</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Total system max</div><div class="zam-dd-aside-v hot">2 TB (ZAM+DDR6)</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Tier placement</div><div class="zam-dd-aside-v">Auto via HW scheduler</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         BLOCK 04 — Unified Memory Architecture
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="zam-dd-block" style="flex-wrap:wrap;">
+        <div class="zam-dd-num">04</div>
+
+        <div style="flex:1; min-width:0;">
+            <div class="zam-dd-label">COHERENCY &middot; APU-WIDE MEMORY SHARING</div>
+            <div class="zam-dd-name">Unified Memory</div>
+            <p class="zam-dd-body">
+                The Eventide APU implements <strong>true unified memory</strong>: every byte of ZAM and
+                DDR6 is accessible by every tile &mdash; CPU compute tile, GPU Xe5 tiles, GPU Xe4E tile,
+                NPU (HNPU), 2DKR, and all ancillary tiles &mdash; through a single coherent address space.
+                This is not the &ldquo;unified memory&rdquo; marketing of previous APUs where CPU and GPU
+                technically shared DRAM but required explicit copy operations or driver-managed page
+                migration. Eventide&rsquo;s FOveros&nbsp;2.0 photonic fabric implements <strong>hardware
+                cache coherency across all tiles</strong>. When the CPU writes to an address, the
+                GPU&rsquo;s view of that address is automatically updated through the coherency protocol
+                &mdash; no memcpy, no staging buffer, no driver intervention.
+            </p>
+            <p class="zam-dd-body" style="margin-top:14px;">
+                The elimination of CPU-to-GPU copies has profound implications for real-world workloads. In
+                traditional discrete GPU architectures, transferring a 256&nbsp;MB texture from system memory
+                to GPU memory takes measurable time and consumes PCIe bandwidth. On Eventide, the texture is
+                simply <strong>mapped into the unified address space</strong>. The GPU accesses it directly.
+                If the texture is hot, it lives in Kache Kore. If it is warm, it lives in ZAM. If it is
+                cold, it lives in DDR6. The memory scheduler handles tier placement transparently. For
+                AI&nbsp;workloads, unified memory means the HNPU can access the same model weights the CPU
+                prepared <strong>without any data movement</strong>. For gaming, DirectStorage-loaded assets
+                can be accessed by the GPU the instant they arrive in memory, with zero copy overhead.
+                <strong>Smart Memory Tiling</strong> automatically pins frequently-accessed texture mipmap
+                levels and shader constants in Kache Kore, ensuring bandwidth-critical data stays
+                on-package. The coherency protocol operates over FOveros&nbsp;2.0&rsquo;s photonic
+                interconnect at <strong>sub-2&nbsp;ns signalling latency</strong>, making coherency
+                transactions effectively invisible to the execution pipeline.
+            </p>
+
+            <div class="zam-dd-stats">
+                <div class="zam-dd-stat-box">
+                    <div class="zam-dd-stat-box-val">Zero-copy</div>
+                    <div class="zam-dd-stat-box-key">CPU&ndash;GPU data sharing</div>
+                </div>
+                <div class="zam-dd-stat-box">
+                    <div class="zam-dd-stat-box-val">HW coherency</div>
+                    <div class="zam-dd-stat-box-key">FOveros 2.0 photonic</div>
+                </div>
+                <div class="zam-dd-stat-box">
+                    <div class="zam-dd-stat-box-val">All tiles</div>
+                    <div class="zam-dd-stat-box-key">unified address space</div>
+                </div>
+            </div>
+
+            <!-- GOG bar -->
+            <div class="zam-dd-gog">
+                <div class="gog-bar">
+                    <div class="gog-label">vs DISCRETE GPU (SEPARATE VRAM)</div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Copy overhead</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:100%; background:#4DD9EC;"></div></div>
+                        <div class="gog-num" style="color:#4DD9EC;">Elim.</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Memory util.</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:85%; background:#4DD9EC;"></div></div>
+                        <div class="gog-num" style="color:#4DD9EC;">+~40%</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">AI model load</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:78%; background:#4DD9EC;"></div></div>
+                        <div class="gog-num" style="color:#4DD9EC;">&minus;90%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="zam-dd-aside">
+            <div class="zam-dd-aside-box">
+                <div class="zam-dd-aside-title">UNIFIED MEMORY ARCHITECTURE</div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Address space</div><div class="zam-dd-aside-v hot">Single unified</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Coherency</div><div class="zam-dd-aside-v">HW via FOveros 2.0</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Coherency latency</div><div class="zam-dd-aside-v">&lt;2 ns signalling</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">CPU access</div><div class="zam-dd-aside-v">Direct, coherent</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">GPU access</div><div class="zam-dd-aside-v">Direct, coherent</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">NPU access</div><div class="zam-dd-aside-v">Direct, coherent</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Copy overhead</div><div class="zam-dd-aside-v hot">Zero (HW coherent)</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Smart Memory Tiling</div><div class="zam-dd-aside-v">Automatic</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Tier placement</div><div class="zam-dd-aside-v">HW scheduler</div></div>
+                <div class="zam-dd-aside-row"><div class="zam-dd-aside-k">Page migration</div><div class="zam-dd-aside-v">Transparent</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         BLOCK 05 — Intel DirectStorage 2.0
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="zam-dd-block" style="flex-wrap:wrap; border-bottom:none;">
+        <div class="zam-dd-num">05</div>
+
+        <div style="flex:1; min-width:0;">
+            <div class="zam-dd-label">DATA PIPELINE &middot; STORAGE TO CACHE</div>
+            <div class="zam-dd-name">DirectStorage 2.0</div>
+            <p class="zam-dd-body">
+                Intel DirectStorage&nbsp;2.0 is the vertically integrated data pipeline that eliminates every
+                bottleneck between NVMe storage and the GPU framebuffer. The pipeline has <strong>four
+                tiers</strong>: NVMe storage streams game assets at PCIe&nbsp;6.0 speeds into DDR6 staging
+                memory. The memory scheduler pre-fetches anticipated assets from DDR6 into ZAM runtime memory
+                based on the application&rsquo;s access patterns. The hottest working set &mdash; textures
+                currently being rendered, shader constants in active use, physics simulation state &mdash; is
+                pinned in the <strong>Kache Kore&trade; 4&nbsp;GB bLLC</strong> at approximately 8&nbsp;ns
+                latency, comparable to dedicated GDDR7 on discrete GPUs.
+            </p>
+            <p class="zam-dd-body" style="margin-top:14px;">
+                What makes this &ldquo;vertical integration&rdquo; is that Intel controls every layer: the
+                NVMe controller, the PCIe&nbsp;6.0 PHY, the DDR6 memory controller, the ZAM controllers, the
+                Kache Kore bLLC, and the GPU L2/L1 caches. <strong>Every handoff between tiers is optimised
+                in hardware</strong>, with zero CPU staging overhead and zero driver-managed buffer copies.
+                For gaming, this means <strong>world-level streaming with zero stutter</strong>: the entire
+                game world can reside in DDR6 (up to 1&nbsp;TB), with the active play area in ZAM, and the
+                immediate frame requirements in Kache Kore. As the player moves through the world, data
+                migrates automatically through the tiers. The Hardware Thread Director coordinates the
+                pre-fetch engine, using workload classification to predict which data will be needed next
+                and begin staging it before the GPU requests it. The result is the elimination of the
+                <strong>&ldquo;shader stall&rdquo;</strong> &mdash; the visible hitch that occurs when a GPU
+                shader needs data that has not yet arrived from storage. On Eventide, the multi-tier pipeline
+                ensures that data is always staged at least one tier ahead of where it is needed.
+            </p>
+
+            <div class="zam-dd-stats">
+                <div class="zam-dd-stat-box">
+                    <div class="zam-dd-stat-box-val">4-tier</div>
+                    <div class="zam-dd-stat-box-key">data pipeline</div>
+                </div>
+                <div class="zam-dd-stat-box">
+                    <div class="zam-dd-stat-box-val">Zero stutter</div>
+                    <div class="zam-dd-stat-box-key">predictive pre-fetch</div>
+                </div>
+                <div class="zam-dd-stat-box">
+                    <div class="zam-dd-stat-box-val">~8 ns</div>
+                    <div class="zam-dd-stat-box-key">hot cache access</div>
+                </div>
+            </div>
+
+            <!-- GOG bar -->
+            <div class="zam-dd-gog">
+                <div class="gog-bar">
+                    <div class="gog-label">vs CONVENTIONAL DIRECTSTORAGE 1.x</div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Asset load latency</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:88%; background:#4DD9EC;"></div></div>
+                        <div class="gog-num" style="color:#4DD9EC;">&minus;85%</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Shader stall freq</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:95%; background:#4DD9EC;"></div></div>
+                        <div class="gog-num" style="color:#4DD9EC;">&minus;95%</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">CPU staging</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:100%; background:#4DD9EC;"></div></div>
+                        <div class="gog-num" style="color:#4DD9EC;">Elim.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SVG Memory Hierarchy Diagram (replaces aside) -->
+        <div class="zam-dd-aside" style="width:320px;">
+            <div class="zam-dd-pipeline-wrap">
+                <div class="zam-dd-pipeline-label">Memory Hierarchy &middot; Data Flow</div>
+                <svg class="zam-dd-pipeline-svg" viewBox="0 0 280 440" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="zam-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                            <path d="M0,0 L6,3 L0,6" fill="none" stroke="#4DD9EC" stroke-width="1.2"/>
+                        </marker>
+                    </defs>
+
+                    <!-- NVMe Storage -->
+                    <rect x="20" y="8" width="200" height="52" rx="6" fill="rgba(77,217,236,0.04)" stroke="rgba(77,217,236,0.2)" stroke-width="1"/>
+                    <text x="120" y="28" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="'IBM Plex Mono', monospace" font-size="9" font-weight="600">NVME STORAGE</text>
+                    <text x="120" y="46" text-anchor="middle" fill="rgba(255,255,255,0.28)" font-family="'IBM Plex Mono', monospace" font-size="7.5">PCIe 6.0 · SSD Assets</text>
+                    <text x="234" y="38" fill="rgba(77,217,236,0.35)" font-family="'IBM Plex Mono', monospace" font-size="7">~32 GB/s</text>
+
+                    <!-- Arrow 1 -->
+                    <line x1="120" y1="60" x2="120" y2="88" stroke="#4DD9EC" stroke-width="1" stroke-opacity="0.4" marker-end="url(#zam-arrow)"/>
+
+                    <!-- DDR6 Staging -->
+                    <rect x="20" y="92" width="200" height="52" rx="6" fill="rgba(77,217,236,0.06)" stroke="rgba(77,217,236,0.28)" stroke-width="1"/>
+                    <text x="120" y="112" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="'IBM Plex Mono', monospace" font-size="9" font-weight="600">DDR6 STAGING</text>
+                    <text x="120" y="130" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-family="'IBM Plex Mono', monospace" font-size="7.5">Up to 1 TB · Full world pre-loaded</text>
+                    <text x="234" y="122" fill="rgba(77,217,236,0.4)" font-family="'IBM Plex Mono', monospace" font-size="7">~150 GB/s</text>
+
+                    <!-- Arrow 2 -->
+                    <line x1="120" y1="144" x2="120" y2="172" stroke="#4DD9EC" stroke-width="1" stroke-opacity="0.5" marker-end="url(#zam-arrow)"/>
+
+                    <!-- ZAM Runtime (wider, brighter) -->
+                    <rect x="10" y="176" width="220" height="64" rx="7" fill="rgba(77,217,236,0.1)" stroke="#4DD9EC" stroke-width="1.5" stroke-opacity="0.6"/>
+                    <text x="120" y="198" text-anchor="middle" fill="#4DD9EC" font-family="'IBM Plex Mono', monospace" font-size="10" font-weight="700">ZAM RUNTIME</text>
+                    <text x="120" y="215" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-family="'IBM Plex Mono', monospace" font-size="7.5">Up to 1 TB · Active session data</text>
+                    <text x="120" y="230" text-anchor="middle" fill="rgba(77,217,236,0.5)" font-family="'IBM Plex Mono', monospace" font-size="7">2-3 TB/s per controller</text>
+                    <text x="244" y="208" fill="#4DD9EC" font-family="'IBM Plex Mono', monospace" font-size="8" font-weight="600" opacity="0.7">5-6 TB/s</text>
+
+                    <!-- Arrow 3 -->
+                    <line x1="120" y1="240" x2="120" y2="268" stroke="#4DD9EC" stroke-width="1.2" stroke-opacity="0.6" marker-end="url(#zam-arrow)"/>
+
+                    <!-- Kache Kore bLLC (accented) -->
+                    <rect x="10" y="272" width="220" height="64" rx="7" fill="rgba(77,217,236,0.12)" stroke="#4DD9EC" stroke-width="1.5" stroke-opacity="0.75"/>
+                    <text x="120" y="294" text-anchor="middle" fill="#4DD9EC" font-family="'IBM Plex Mono', monospace" font-size="10" font-weight="700">KACHE KORE bLLC</text>
+                    <text x="120" y="311" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-family="'IBM Plex Mono', monospace" font-size="7.5">4 GB · Hot working set</text>
+                    <text x="120" y="326" text-anchor="middle" fill="rgba(77,217,236,0.5)" font-family="'IBM Plex Mono', monospace" font-size="7">Near-zero latency for active data</text>
+                    <text x="244" y="304" fill="#4DD9EC" font-family="'IBM Plex Mono', monospace" font-size="8" font-weight="600" opacity="0.8">~8 ns</text>
+
+                    <!-- Arrow 4 -->
+                    <line x1="120" y1="336" x2="120" y2="364" stroke="#4DD9EC" stroke-width="1" stroke-opacity="0.5" marker-end="url(#zam-arrow)"/>
+
+                    <!-- L2 / L1 Caches -->
+                    <rect x="20" y="368" width="200" height="52" rx="6" fill="rgba(77,217,236,0.06)" stroke="rgba(77,217,236,0.25)" stroke-width="1"/>
+                    <text x="120" y="388" text-anchor="middle" fill="rgba(255,255,255,0.65)" font-family="'IBM Plex Mono', monospace" font-size="9" font-weight="600">L2 / L1 CACHES</text>
+                    <text x="120" y="406" text-anchor="middle" fill="rgba(255,255,255,0.28)" font-family="'IBM Plex Mono', monospace" font-size="7.5">32 MB L2 · 128 KB L1/core · On-die</text>
+                    <text x="234" y="395" fill="rgba(77,217,236,0.4)" font-family="'IBM Plex Mono', monospace" font-size="7">On-die</text>
+                </svg>
+                <div class="zam-dd-pipeline-note">
+                    Data flows automatically through tiers via Hardware Thread Director predictive pre-fetch. Zero CPU staging. Zero driver copies.
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /.section -->
+</div><!-- /.zam-dd-wrap -->

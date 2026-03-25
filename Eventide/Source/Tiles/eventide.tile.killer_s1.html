@@ -1,0 +1,1330 @@
+<!-- Z-ANGLE MEMORY: s1-dd- | Killer SignalBoost S1 Deep-Dive Section -->
+<!-- ══════════════════════════════════════════════════════
+     INTEL KILLER SIGNALBOOST S1 — DEEP-DIVE SECTION
+     Wireless · Connectivity Tile · Intel × OPPO Semiconductor
+     CSS Prefix: s1-dd-
+     Accent Color: #4ADE80 (primary green) · #16A34A (secondary)
+     Dark bg: #010A04 → #020E06 gradient
+     Grid/glow: rgba(74,222,128,0.03) lines
+     ══════════════════════════════════════════════════════ -->
+
+<style>
+/* ════════════════════════════════════════════════════════════════════════════
+   KILLER SIGNALBOOST S1 DEEP-DIVE — Scoped Styles (s1-dd- prefix)
+   Green theme: #4ADE80 primary, #16A34A secondary, #010A04 base
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Wrapper Background ──────────────────────────────────────────────────── */
+.s1-dd-wrap {
+  background:
+    radial-gradient(ellipse 75% 55% at 12% 20%, rgba(74,222,128,0.11) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 70% at 88% 80%, rgba(22,163,74,0.07) 0%, transparent 58%),
+    linear-gradient(180deg, #010A04 0%, #020E06 60%, #010804 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.s1-dd-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(74,222,128,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74,222,128,0.03) 1px, transparent 1px);
+  background-size: 56px 56px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.s1-dd-wrap::after {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74,222,128,0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Section Container ──────────────────────────────────────────────────── */
+.s1-dd-section {
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Eyebrow / Breadcrumb ───────────────────────────────────────────────── */
+.s1-dd-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  color: rgba(74,222,128,0.55);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.s1-dd-eyebrow::before {
+  content: '■';
+  font-size: 7px;
+  color: #4ADE80;
+}
+
+/* ── Main Headline ──────────────────────────────────────────────────────── */
+.s1-dd-headline {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 7vw, 72px);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  color: white;
+  margin-bottom: 6px;
+  font-weight: 900;
+}
+
+.s1-dd-headline span {
+  display: block;
+  color: #4ADE80;
+  font-weight: 900;
+}
+
+/* ── Subheadline ────────────────────────────────────────────────────────── */
+.s1-dd-subhead {
+  font-size: 15px;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 24px;
+  max-width: 720px;
+}
+
+.s1-dd-subhead strong {
+  color: #86EFAC;
+  font-weight: 600;
+}
+
+/* ── Badge Row ──────────────────────────────────────────────────────────── */
+.s1-dd-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 32px;
+  margin-top: 20px;
+}
+
+.s1-dd-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  padding: 6px 12px;
+  border-radius: 4px;
+  background: rgba(74,222,128,0.12);
+  border: 1px solid rgba(74,222,128,0.25);
+  color: rgba(134,239,172,0.85);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.s1-dd-badge.hot {
+  background: rgba(74,222,128,0.20);
+  border-color: rgba(74,222,128,0.35);
+  color: #86EFAC;
+}
+
+/* ── Stat Block (Hero Stats) ────────────────────────────────────────────── */
+.s1-dd-stat-block {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 48px;
+  margin-top: 28px;
+}
+
+.s1-dd-stat-cell {
+  background: rgba(74,222,128,0.08);
+  border: 1px solid rgba(74,222,128,0.20);
+  border-radius: 8px;
+  padding: 20px 16px;
+  text-align: center;
+}
+
+.s1-dd-stat-num {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 800;
+  color: #4ADE80;
+  line-height: 1.0;
+}
+
+.s1-dd-stat-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+.s1-dd-stat-sub {
+  font-size: 9px;
+  color: rgba(134,239,172,0.50);
+  margin-top: 4px;
+  font-family: var(--font-mono);
+}
+
+/* ── Block Container (flex layout) ──────────────────────────────────────── */
+.s1-dd-block {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-top: 36px;
+  margin-bottom: 48px;
+  align-items: flex-start;
+}
+
+/* ── Content Column ──────────────────────────────────────────────────────── */
+.s1-dd-content {
+  flex: 1;
+  min-width: 320px;
+}
+
+.s1-dd-content-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+.s1-dd-content-title .s1-dd-accent {
+  color: #4ADE80;
+}
+
+.s1-dd-content p {
+  font-size: 14px;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.70);
+  margin-bottom: 12px;
+}
+
+.s1-dd-content p strong {
+  color: #86EFAC;
+  font-weight: 600;
+}
+
+.s1-dd-content p.s1-dd-callout {
+  background: rgba(74,222,128,0.08);
+  border-left: 3px solid #4ADE80;
+  padding: 12px 16px;
+  border-radius: 4px;
+  color: rgba(255,255,255,0.75);
+  margin: 16px 0;
+}
+
+/* ── Spec List ──────────────────────────────────────────────────────────── */
+.s1-dd-spec-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0 0;
+}
+
+.s1-dd-spec-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(74,222,128,0.08);
+  font-size: 13px;
+  gap: 16px;
+}
+
+.s1-dd-spec-item:last-child {
+  border-bottom: none;
+}
+
+.s1-dd-spec-key {
+  color: rgba(255,255,255,0.35);
+  font-weight: 500;
+  min-width: 140px;
+}
+
+.s1-dd-spec-val {
+  color: rgba(134,239,172,0.80);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.s1-dd-spec-val.hot {
+  color: #4ADE80;
+  font-weight: 600;
+}
+
+/* ── Two-Column Layout ──────────────────────────────────────────────────── */
+.s1-dd-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+  margin-top: 16px;
+}
+
+/* ── Collab Badge Chips ─────────────────────────────────────────────────── */
+.s1-dd-collab-chips {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.s1-dd-collab-chip {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  padding: 4px 10px;
+  background: rgba(22,163,74,0.25);
+  border: 1px solid rgba(74,222,128,0.30);
+  border-radius: 3px;
+  color: #86EFAC;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* ── Hero Grid (Left + Right) ──────────────────────────────────────────── */
+.s1-dd-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+  margin-bottom: 48px;
+}
+
+/* ── Card Container ────────────────────────────────────────────────────── */
+.s1-dd-card {
+  background: rgba(1,10,4,0.50);
+  border: 1px solid rgba(74,222,128,0.15);
+  border-radius: 12px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.s1-dd-card-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: rgba(74,222,128,0.55);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.s1-dd-card-headline {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 16px;
+}
+
+/* ── Grid 4-col (Use Cases / Features) ─────────────────────────────────── */
+.s1-dd-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.s1-dd-grid-item {
+  background: rgba(74,222,128,0.06);
+  border: 1px solid rgba(74,222,128,0.12);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.s1-dd-grid-item-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.s1-dd-grid-item-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.s1-dd-grid-item-desc {
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.5;
+}
+
+/* ── Subsection Header ─────────────────────────────────────────────────── */
+.s1-dd-section-header {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+  margin-top: 44px;
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+  padding-top: 24px;
+  border-top: 1px solid rgba(74,222,128,0.10);
+}
+
+.s1-dd-section-header .s1-dd-accent {
+  color: #4ADE80;
+}
+
+/* ── Bluetooth Deep-Dive Subsections ────────────────────────────────────── */
+.s1-dd-bt-subsection {
+  margin-bottom: 36px;
+}
+
+.s1-dd-bt-subsection-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: #86EFAC;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.s1-dd-bt-subsection-title::before {
+  content: '→';
+  color: #4ADE80;
+}
+
+.s1-dd-bt-subsection p {
+  font-size: 13px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 10px;
+}
+
+/* ── Feature List ──────────────────────────────────────────────────────── */
+.s1-dd-feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+}
+
+.s1-dd-feature-item {
+  padding: 8px 0;
+  padding-left: 20px;
+  position: relative;
+  font-size: 13px;
+  color: rgba(255,255,255,0.60);
+  line-height: 1.6;
+}
+
+.s1-dd-feature-item::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  color: #4ADE80;
+  font-size: 8px;
+}
+
+/* ── Spec Table ────────────────────────────────────────────────────────── */
+.s1-dd-spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 24px;
+  border: 1px solid rgba(74,222,128,0.10);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.s1-dd-spec-table thead {
+  background: rgba(74,222,128,0.08);
+}
+
+.s1-dd-spec-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: rgba(74,222,128,0.70);
+  text-transform: uppercase;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(74,222,128,0.15);
+}
+
+.s1-dd-spec-table td {
+  padding: 14px 16px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.70);
+  border-bottom: 1px solid rgba(74,222,128,0.06);
+}
+
+.s1-dd-spec-table tr:last-child td {
+  border-bottom: none;
+}
+
+.s1-dd-spec-table tr:hover {
+  background: rgba(74,222,128,0.04);
+}
+
+.s1-dd-spec-table .s1-dd-spec-key {
+  font-weight: 600;
+  color: rgba(255,255,255,0.50);
+  width: 200px;
+}
+
+.s1-dd-spec-table .s1-dd-spec-val {
+  color: rgba(134,239,172,0.85);
+}
+
+.s1-dd-spec-table .s1-dd-spec-val.hot {
+  color: #4ADE80;
+  font-weight: 600;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .s1-dd-two-col {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .s1-dd-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .s1-dd-block {
+    flex-direction: column;
+    gap: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .s1-dd-headline {
+    font-size: clamp(36px, 6vw, 48px);
+  }
+
+  .s1-dd-stat-block {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .s1-dd-grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .s1-dd-spec-table {
+    font-size: 12px;
+  }
+
+  .s1-dd-spec-table td,
+  .s1-dd-spec-table th {
+    padding: 10px 12px;
+  }
+}
+</style>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     INTEL KILLER SIGNALBOOST S1 DEEP-DIVE CONTENT
+     ══════════════════════════════════════════════════════════════════════════ -->
+
+<div class="s1-dd-wrap">
+<div class="section s1-dd-section">
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       HERO SECTION
+       ════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="s1-dd-eyebrow">Wireless · Killer SignalBoost S1 · Intel × OPPO · Intel 14A-E</div>
+
+  <div style="margin-bottom: 8px;">
+    <div class="s1-dd-headline">Eight Bands.<br><span>One Intelligence.</span></div>
+  </div>
+
+  <p class="s1-dd-subhead">
+    Intel Killer's gaming network intelligence meets <strong>OPPO Semiconductor's</strong>
+    signal engineering expertise in a single integrated tile. The <strong>Killer SignalBoost S1</strong>
+    combines quad-band WiFi 7 per chip with advanced Bluetooth Core 6.2 dual-mode operation,
+    5G Sub-6 and mmWave support, and SONAR presence detection — delivering network performance
+    optimized for competitive gaming, content creation, and always-on wireless scenarios.
+  </p>
+
+  <div class="s1-dd-badge-row">
+    <span class="s1-dd-badge hot">Intel Killer</span>
+    <span class="s1-dd-badge hot">OPPO Semiconductor</span>
+    <span class="s1-dd-badge">WiFi 7 (802.11be)</span>
+    <span class="s1-dd-badge">Bluetooth Core 6.2</span>
+    <span class="s1-dd-badge">5G mmWave + Sub-6</span>
+    <span class="s1-dd-badge">SONAR Presence</span>
+    <span class="s1-dd-badge">Intel 14A-E</span>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       STAT BLOCK (Hero stats)
+       ════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="s1-dd-stat-block">
+    <div class="s1-dd-stat-cell">
+      <div class="s1-dd-stat-num">8</div>
+      <div class="s1-dd-stat-label">WiFi Bands</div>
+      <div class="s1-dd-stat-sub">2× chip configuration</div>
+    </div>
+    <div class="s1-dd-stat-cell">
+      <div class="s1-dd-stat-num">11.5</div>
+      <div class="s1-dd-stat-label">Gbps Combined</div>
+      <div class="s1-dd-stat-sub">Max throughput (dual)</div>
+    </div>
+    <div class="s1-dd-stat-cell">
+      <div class="s1-dd-stat-num">360°</div>
+      <div class="s1-dd-stat-label">LinkBoost Coverage</div>
+      <div class="s1-dd-stat-sub">Antenna integration</div>
+    </div>
+    <div class="s1-dd-stat-cell">
+      <div class="s1-dd-stat-num">&lt;30ms</div>
+      <div class="s1-dd-stat-label">Gaming Latency</div>
+      <div class="s1-dd-stat-sub">With Killer Engine active</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       SECTION 1: THE COLLABORATION STORY
+       ════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="s1-dd-section-header">
+    <span class="s1-dd-accent">Intel Killer</span> × <span class="s1-dd-accent">OPPO SignalBoost</span>
+  </div>
+
+  <div class="s1-dd-two-col">
+
+    <!-- LEFT: Intel Killer Heritage -->
+    <div>
+      <div class="s1-dd-content-title">Intel Killer: Gaming Network Intelligence</div>
+
+      <p>
+        Intel's Killer networking engine has served competitive gamers for over a decade,
+        delivering packet-level prioritization that distinguishes gaming traffic from
+        background network noise. The S1 integrates three core Killer technologies:
+      </p>
+
+      <ul class="s1-dd-feature-list">
+        <li><strong>Killer Prioritization Engine:</strong> Hardware-level packet classification detects gaming traffic patterns (UDP port ranges, latency-sensitive protocols) and elevates them in the transmission queue, ensuring gaming packets arrive ahead of bulk downloads.</li>
+        <li><strong>Killer Intelligence Engine:</strong> Real-time network environment analysis monitors signal strength, interference, channel utilization, and access point capabilities. Smart AP Selection dynamically switches to the strongest, least congested access point available.</li>
+        <li><strong>DoubleShot Pro:</strong> Simultaneous multi-adapter throughput aggregation. When configured with 2× S1 chips, DoubleShot Pro combines both WiFi 7 chips' bandwidth for non-gaming downloads, then instantly segregates back to single-chip operation for gaming latency prioritization.</li>
+      </ul>
+
+      <p style="margin-top: 16px; padding: 12px 14px; background: rgba(74,222,128,0.08); border-left: 3px solid #4ADE80; border-radius: 4px;">
+        <strong style="color: #86EFAC;">What this means:</strong> Gaming latency remains consistently ~30ms even when heavy downloads run concurrently. Compare this to standard WiFi without Killer Engine: latency spikes to 80–160ms under load.
+      </p>
+    </div>
+
+    <!-- RIGHT: OPPO SignalBoost Heritage -->
+    <div>
+      <div class="s1-dd-content-title">OPPO SignalBoost: Hardware Signal Excellence</div>
+
+      <p>
+        OPPO Semiconductor's Reno13 series (2024) introduced the X1 SignalBoost chip,
+        proving that hardware-level signal optimization can dramatically improve real-world
+        WiFi and cellular performance. The S1 brings OPPO's innovations to Intel's platform:
+      </p>
+
+      <ul class="s1-dd-feature-list">
+        <li><strong>Dynamic Signal Source Changer:</strong> The X1 chip dynamically selects transmission sources (MIMO antenna combinations, frequency bands) in real-time based on environmental conditions, reducing dead zones and maintaining consistent signal even in challenging RF environments.</li>
+        <li><strong>+25% TX Power Boost:</strong> Legitimate power amplification increases transmit power, extending effective coverage to 115 meters in ideal conditions — 40% beyond standard WiFi 6E.</li>
+        <li><strong>AI LinkBoost:</strong> Machine-learning-driven band and channel switching predicts interference and pre-emptively changes frequency allocation 200ms before congestion occurs.</li>
+        <li><strong>Cloud Game Signal Algorithm:</strong> Specialized latency prediction and bandwidth allocation for cloud gaming (GeForce NOW, PlayStation Plus Premium) — maintains 1-bar gameplay without stuttering.</li>
+      </ul>
+
+      <p style="margin-top: 16px;">
+        The S1 re-engineers these OPPO innovations for Intel's 14A-E Eventide APU package,
+        embedding the same RF engineering discipline into the modem and antenna co-design.
+      </p>
+
+      <div class="s1-dd-collab-chips">
+        <span class="s1-dd-collab-chip">Intel × OPPO</span>
+        <span class="s1-dd-collab-chip">BBK Electronics</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       SECTION 2: WIFI 7 TECHNOLOGY & MULTI-LINK OPERATION
+       ════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="s1-dd-section-header">WiFi 7 (802.11be) & Multi-Link <span class="s1-dd-accent">Operation</span></div>
+
+  <div class="s1-dd-block">
+    <div class="s1-dd-content">
+      <div class="s1-dd-content-title">Why MLO Matters for Gaming</div>
+
+      <p>
+        WiFi 7's marquee feature — <strong>Multi-Link Operation (MLO)</strong> — allows a single
+        device to simultaneously use multiple frequency bands and channels without losing connection.
+        This is the foundation of Killer SignalBoost S1's performance:
+      </p>
+
+      <div class="s1-dd-two-col" style="margin-top: 16px; gap: 24px;">
+        <div>
+          <div style="color: #86EFAC; font-weight: 600; margin-bottom: 8px;">Low-Latency Gaming Band</div>
+          <p style="font-size: 13px;">
+            One band (e.g., 5 GHz or 6 GHz, less congested) dedicated to UDP gaming traffic.
+            Single-path, minimal hops, ~8ms latency. Killer Engine steers gaming packets here exclusively.
+          </p>
+        </div>
+        <div>
+          <div style="color: #86EFAC; font-weight: 600; margin-bottom: 8px;">High-Throughput Band</div>
+          <p style="font-size: 13px;">
+            Another band simultaneously carrying bulk downloads, streaming, background OS tasks.
+            DoubleShot Pro aggregates all available bandwidth for non-latency-critical work.
+          </p>
+        </div>
+      </div>
+
+      <p style="margin-top: 16px;">
+        <strong>Per-Chip Specifications:</strong>
+      </p>
+      <ul class="s1-dd-feature-list">
+        <li><strong>320 MHz Channel Width:</strong> Up from WiFi 6E's 160 MHz max, doubling available spectrum per band.</li>
+        <li><strong>4K-QAM Modulation:</strong> Higher modulation density (vs WiFi 6E's 1024-QAM) packs more data per symbol, reaching 5.8 Gbps per chip theoretical maximum.</li>
+        <li><strong>EHT (Extremely High Throughput):</strong> Extended OFDM subcarrier mapping optimizes efficiency even in non-ideal signal conditions.</li>
+        <li><strong>Quad-Band Per Chip:</strong> Each S1 chip: 2× 5 GHz, 1× 2.4 GHz, 1× 6 GHz (WLAN-6 standard). Dual chips = 8 total bands available to MLO scheduler.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       SECTION 3: BLUETOOTH CORE 6.2 DEEP-DIVE (EXPANDED)
+       ════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="s1-dd-section-header">Bluetooth Core 6.2: A New Era of Low-Latency <span class="s1-dd-accent">Wireless Gaming</span></div>
+
+  <p style="font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.65); margin-bottom: 24px;">
+    Bluetooth Core 6.2 (approved 2024) introduces significant latency reductions, enhanced power efficiency,
+    and a new <strong>isochronous stream architecture</strong> purpose-built for real-time audio/video synchronization.
+    The Killer SignalBoost S1 integrates full Bluetooth 6.2 support alongside WiFi 7, enabling simultaneous
+    multi-device connectivity without interference — a first for mobile APUs.
+  </p>
+
+  <!-- Subsection: BT 6.2 Specifications -->
+  <div class="s1-dd-bt-subsection">
+    <div class="s1-dd-bt-subsection-title">Bluetooth Core 6.2 Specifications vs. 5.4</div>
+
+    <table class="s1-dd-spec-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Bluetooth 5.4</th>
+          <th>Bluetooth 6.2</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="s1-dd-spec-key">LE Min Latency</td>
+          <td>~7.5 ms</td>
+          <td>2–4 ms</td>
+        </tr>
+        <tr>
+          <td class="s1-dd-spec-key">LE Max PHY</td>
+          <td>2 Mbps</td>
+          <td>2 Mbps (same, but optimized framing)</td>
+        </tr>
+        <tr>
+          <td class="s1-dd-spec-key">Isochronous Streams</td>
+          <td>Basic LE CIS/BIS</td>
+          <td class="s1-dd-spec-val hot">Enhanced CIS, multi-stream coordination</td>
+        </tr>
+        <tr>
+          <td class="s1-dd-spec-key">Power Efficiency (LE)</td>
+          <td>Baseline</td>
+          <td class="s1-dd-spec-val hot">−35% RX power in LE mode</td>
+        </tr>
+        <tr>
+          <td class="s1-dd-spec-key">Gaming Latency Modes</td>
+          <td>N/A</td>
+          <td class="s1-dd-spec-val hot">Low-Latency LE (LLL) standard profile</td>
+        </tr>
+        <tr>
+          <td class="s1-dd-spec-key">BT/WiFi Coexistence</td>
+          <td>Reactive only</td>
+          <td class="s1-dd-spec-val hot">Predictive frequency hopping, MIC avoidance</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Subsection: Dual-Mode WiFi 7 + BT 6.2 -->
+  <div class="s1-dd-bt-subsection">
+    <div class="s1-dd-bt-subsection-title">Dual-Mode WiFi 7 + Bluetooth 6.2 Coexistence</div>
+
+    <p>
+      The S1 tile implements a sophisticated <strong>traffic segregation stack</strong> that manages
+      simultaneous WiFi 7 and Bluetooth 6.2 operation without mutual interference:
+    </p>
+
+    <ul class="s1-dd-feature-list">
+      <li><strong>Band Segregation:</strong> WiFi 7 uses 5 GHz (WiFi-5 approved channels) and 6 GHz (WiFi-6 band). Bluetooth 6.2 operates exclusively on 2.4 GHz with dynamic frequency-hopping spread spectrum (FHSS) to avoid collisions with WiFi 2.4 GHz traffic.</li>
+      <li><strong>Time-Domain Multiplexing:</strong> When contention is detected, the Killer Intelligence Engine negotiates time-sliced access: WiFi 7 transmits for X ms, Bluetooth pauses briefly, then Bluetooth has guaranteed Y ms. Average latency overhead: &lt;2ms.</li>
+      <li><strong>2.4 GHz Contention Avoidance:</strong> If the 2.4 GHz WiFi band is in heavy use, a learned model (trained on historical network patterns) pre-allocates 2.4 GHz WiFi channels to avoid gaming traffic, leaving Bluetooth uncontended.</li>
+      <li><strong>Predictive Hopping:</strong> Bluetooth 6.2's new "Adaptive Channel Map" allows the modem to predict interference sources (e.g., a microwave oven on 2.4 GHz) and pre-emptively avoid those channels before collision occurs.</li>
+    </ul>
+  </div>
+
+  <!-- Subsection: Gaming-Optimized BT Latency -->
+  <div class="s1-dd-bt-subsection">
+    <div class="s1-dd-bt-subsection-title">Gaming-Optimized Bluetooth Latency</div>
+
+    <p>
+      Bluetooth Core 6.2 introduces <strong>Low-Latency LE (LLL)</strong>, a standard profile for gaming controllers and headsets.
+      The Killer SignalBoost S1 integrates this as the default mode for connected gaming peripherals:
+    </p>
+
+    <ul class="s1-dd-feature-list">
+      <li><strong>Controller Latency Target:</strong> &lt;8ms round-trip for gaming controller input (button press → signal sent). BT 5.4: 15–25ms baseline.</li>
+      <li><strong>Headset Latency Target:</strong> &lt;20ms audio render latency (audio packet arrival → speaker output). Supports aptX Low Latency HD, LDAC, and the new LC3 codec at sub-20ms render delay.</li>
+      <li><strong>Killer Intelligence Integration:</strong> When a Killer-prioritized game is running, the Killer Intelligence Engine signals the Bluetooth 6.2 stack to enable LLL mode and pre-allocate 1 ms of guaranteed timeslot access every 7.5 ms for controller input.</li>
+      <li><strong>Power-Saving Default:</strong> When no game is active, Bluetooth reverts to standard LE power-saving mode (−35% RX power vs. LLL sustained mode).</li>
+    </ul>
+  </div>
+
+  <!-- Subsection: Coexistence & Interference Avoidance -->
+  <div class="s1-dd-bt-subsection">
+    <div class="s1-dd-bt-subsection-title">Coexistence & Interference Avoidance Architecture</div>
+
+    <p>
+      The 2.4 GHz band (shared by WiFi, Bluetooth, Zigbee, cordless phones, microwaves) is inherently contested.
+      The S1 implements a three-layer coexistence strategy:
+    </p>
+
+    <div class="s1-dd-card" style="margin-top: 12px;">
+      <p style="font-size: 13px; margin: 0;">
+        <strong style="color: #86EFAC;">Layer 1 — Frequency Hopping:</strong><br>
+        Bluetooth hops across 40 channels in the 2.4 GHz band (2402–2480 MHz) 1600 times per second.
+        WiFi's wider channels can't follow Bluetooth hops; instead, the Killer Intelligence Engine analyzes
+        which WiFi channels are in use and provides a blacklist to the Bluetooth modem.
+        Bluetooth avoids those channels probabilistically.
+      </p>
+    </div>
+
+    <div class="s1-dd-card" style="margin-top: 12px;">
+      <p style="font-size: 13px; margin: 0;">
+        <strong style="color: #86EFAC;">Layer 2 — Dynamic Spectrum Sensing:</strong><br>
+        The S1 includes a spectral monitor on the 2.4 GHz RF frontend. In real-time, it detects
+        non-WiFi/non-Bluetooth interference (e.g., microwave ovens, cordless phones) and signals this
+        to the Bluetooth PHY layer for immediate channel map adaptation.
+      </p>
+    </div>
+
+    <div class="s1-dd-card" style="margin-top: 12px;">
+      <p style="font-size: 13px; margin: 0;">
+        <strong style="color: #86EFAC;">Layer 3 — Band Offload to 5/6 GHz:</strong><br>
+        For devices supporting WiFi 6E (802.11ax on 6 GHz), the S1 can offload WiFi traffic to the
+        less-contested 6 GHz band entirely, freeing 5 GHz and 2.4 GHz for Bluetooth-only operation.
+        This is the ideal scenario for gaming: Bluetooth controller on 2.4 GHz undisturbed, gaming data on 6 GHz.
+      </p>
+    </div>
+  </div>
+
+  <!-- Subsection: Audio Codec Support -->
+  <div class="s1-dd-bt-subsection">
+    <div class="s1-dd-bt-subsection-title">Audio Codec Support & Quality Tiers</div>
+
+    <p>
+      Bluetooth 6.2 standardizes support for high-quality audio codecs, enabling wireless headphones
+      to rival wired quality. The S1 supports the full codec stack:
+    </p>
+
+    <ul class="s1-dd-feature-list">
+      <li><strong>aptX Lossless:</strong> Qualcomm's truly lossless codec, ~350 kbps. Indistinguishable from CD-quality audio. Requires aptX-certified headphones.</li>
+      <li><strong>LDAC:</strong> Sony's high-resolution codec, up to 990 kbps (vs. SBC baseline 128–345 kbps). Supports Hi-Res Audio (up to 32-bit/96 kHz). Most Sony WH-1000XM series support LDAC.</li>
+      <li><strong>LC3 (Low Complexity Communication Codec):</strong> Bluetooth 6.2's new mandatory codec, optimized for low latency (&lt;20ms) and power efficiency. Replaces SBC for future BT 6.2-certified devices.</li>
+      <li><strong>SBC (Baseline):</strong> Classic Sub-band Coding, 128–345 kbps. Universal compatibility, lower quality, but still acceptable for casual listening.</li>
+    </ul>
+
+    <p style="margin-top: 12px;">
+      <strong>Gaming Recommendation:</strong> aptX Low Latency HD or LC3 codec + &lt;20ms render delay = competitive esports-grade wireless audio.
+    </p>
+  </div>
+
+  <!-- Subsection: Mesh Networking -->
+  <div class="s1-dd-bt-subsection">
+    <div class="s1-dd-bt-subsection-title">Bluetooth 6.2 Mesh for Multi-Device Scenarios</div>
+
+    <p>
+      Bluetooth Core 6.2 enhances mesh networking, allowing multiple Bluetooth devices (controller, headset,
+      smartwatch, body-worn sensors) to coordinate with &lt;100ms coordination latency:
+    </p>
+
+    <ul class="s1-dd-feature-list">
+      <li><strong>Coordinated Mesh Broadcast:</strong> All devices on the mesh simultaneously receive control signals. A "pause game" command broadcasts to controller, headset, and smartwatch in parallel (~5–10ms propagation).</li>
+      <li><strong>Multi-Stream Isochronous Sync:</strong> Bluetooth 6.2's enhanced CIS (Connected Isochronous Stream) allows independent audio/video streams to a headset and controller, both time-locked to within 2ms. Your audio and controller input stay in sync even with multiple concurrent streams.</li>
+      <li><strong>Relay Nodes:</strong> If a peripheral is out of direct range, intermediary devices (e.g., a paired smartwatch) can relay its signal, extending mesh range to 3–5 devices deep.</li>
+    </ul>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       SECTION 4: DUAL-CHIP CONFIGURATION
+       ════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="s1-dd-section-header">Dual-Chip Configuration: Eventide Standard vs. <span class="s1-dd-accent">X500 Class</span></div>
+
+  <p style="font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.65); margin-bottom: 24px;">
+    The Killer SignalBoost S1 can operate as a single chip or paired configuration.
+    Higher-tier Eventide X500 systems ship with 2× S1 chips, unlocking full spatial diversity and capacity:
+  </p>
+
+  <div class="s1-dd-grid-4">
+    <div class="s1-dd-card">
+      <div class="s1-dd-card-title">Single S1 (Standard)</div>
+      <div class="s1-dd-card-headline">4 Bands</div>
+      <ul class="s1-dd-spec-list" style="margin-top: 12px;">
+        <li class="s1-dd-spec-item">
+          <span class="s1-dd-spec-key">Bands</span>
+          <span class="s1-dd-spec-val">2× 5 GHz, 1× 2.4 GHz, 1× 6 GHz</span>
+        </li>
+        <li class="s1-dd-spec-item">
+          <span class="s1-dd-spec-key">Max Throughput</span>
+          <span class="s1-dd-spec-val">5.8 Gbps</span>
+        </li>
+        <li class="s1-dd-spec-item">
+          <span class="s1-dd-spec-key">Antennas</span>
+          <span class="s1-dd-spec-val">1× 360° LinkBoost</span>
+        </li>
+        <li class="s1-dd-spec-item">
+          <span class="s1-dd-spec-key">Use Case</span>
+          <span class="s1-dd-spec-val">Mobile, productivity</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="s1-dd-card">
+      <div class="s1-dd-card-title">Dual S1 (X500 Class)</div>
+      <div class="s1-dd-card-headline">8 Bands</div>
+      <ul class="s1-dd-spec-list" style="margin-top: 12px;">
+        <li class="s1-dd-spec-item">
+          <span class="s1-dd-spec-key">Bands</span>
+          <span class="s1-dd-spec-val hot">4× 5 GHz, 2× 2.4 GHz, 2× 6 GHz</span>
+        </li>
+        <li class="s1-dd-spec-item">
+          <span class="s1-dd-spec-key">Max Throughput</span>
+          <span class="s1-dd-spec-val hot">11.5 Gbps</span>
+        </li>
+        <li class="s1-dd-spec-item">
+          <span class="s1-dd-spec-key">Antennas</span>
+          <span class="s1-dd-spec-val hot">2× 360° LinkBoost</span>
+        </li>
+        <li class="s1-dd-spec-item">
+          <span class="s1-dd-spec-key">Use Case</span>
+          <span class="s1-dd-spec-val hot">Gaming, content creation</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="s1-dd-card">
+      <div class="s1-dd-card-title">Diversity Gain (Dual)</div>
+      <div class="s1-dd-card-headline">2x Spatial</div>
+      <ul class="s1-dd-spec-list" style="margin-top: 12px;">
+        <li class="s1-dd-spec-item">
+          <span class="s1-dd-spec-key">MIMO Streams</span>
+          <span class="s1-dd-spec-val">Full 8×8 MIMO capacity</span>
+        </li>
+        <li class="s1-dd-spec-item">
+          <span class="s1-dd-spec-key">Signal Resilience</span>
+          <span class="s1-dd-spec-val">+6 dB diversity gain</span>
+        </li>
+        <li class="s1-dd-spec-item">
+          <span class="s1-dd-spec-key">Dead Zone Mitigation</span>
+          <span class="s1-dd-spec-val">2× antenna coverage</span>
+        </li>
+        <li class="s1-dd-spec-item">
+          <span class="s1-dd-spec-key">Failover</span>
+          <span class="s1-dd-spec-val">One chip failure ≠ total loss</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="s1-dd-card">
+      <div class="s1-dd-card-title">Traffic Segregation (Dual)</div>
+      <div class="s1-dd-card-headline">Dedicated Bands</div>
+      <ul class="s1-dd-spec-list" style="margin-top: 12px;">
+        <li class="s1-dd-spec-item">
+          <span class="s1-dd-spec-key">Gaming Band</span>
+          <span class="s1-dd-spec-val">Chip 1, dedicated 5/6 GHz</span>
+        </li>
+        <li class="s1-dd-spec-item">
+          <span class="s1-dd-spec-key">Bulk Downloads</span>
+          <span class="s1-dd-spec-val">Chip 2, all 8 bands</span>
+        </li>
+        <li class="s1-dd-spec-item">
+          <span class="s1-dd-spec-key">Aggregation</span>
+          <span class="s1-dd-spec-val">DoubleShot Pro active</span>
+        </li>
+        <li class="s1-dd-spec-item">
+          <span class="s1-dd-spec-key">Isolation</span>
+          <span class="s1-dd-spec-val">No cross-chip interference</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       SECTION 5: SONAR PRESENCE DETECTION
+       ════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="s1-dd-section-header">Intel SONAR: WiFi Signal as <span class="s1-dd-accent">Presence Radar</span></div>
+
+  <div class="s1-dd-block">
+    <div class="s1-dd-content">
+      <div class="s1-dd-content-title">Passive Radar via WiFi Doppler Shift</div>
+
+      <p>
+        Intel SONAR is a novel use of WiFi signals as a <strong>proximity radar</strong>.
+        Rather than a dedicated sensor, SONAR analyzes Doppler shift in reflected 5/6 GHz WiFi signals
+        to detect human presence up to ~3 meters away:
+      </p>
+
+      <ul class="s1-dd-feature-list">
+        <li><strong>Doppler Analysis:</strong> As you move toward the laptop, 5 GHz WiFi signals reflected off your body shift frequency (Doppler effect). SONAR detects this shift in the received signal, confirming human presence.</li>
+        <li><strong>Distance Estimation:</strong> Signal strength and phase variation allow SONAR to estimate whether you're 0.5m away (close) or 2.5m away (far). Threshold: ~3m effective range.</li>
+        <li><strong>Ultra-Low Power:</strong> SONAR processing runs on the LPNPU (Low-Power Neural Processing Unit), consuming &lt;10 mW continuously — comparable to a WiFi beacon.</li>
+        <li><strong>Privacy by Design:</strong> No thermal imaging, no camera, no audio. Only WiFi signal analysis, with all processing local to the device (no cloud upload).</li>
+      </ul>
+
+      <p style="margin-top: 16px; padding: 12px 14px; background: rgba(74,222,128,0.08); border-left: 3px solid #4ADE80; border-radius: 4px;">
+        <strong style="color: #86EFAC;">Use Cases:</strong> Display auto-wake on user approach. Auto-dim when user steps away.
+        Pause video on idle. Mute microphone if room is empty (conference call safety).
+        Anti-theft: alert if laptop moved while unattended.
+      </p>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       SECTION 6: 5G INTEGRATION
+       ════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="s1-dd-section-header">5G Integration: Sub-6 & mmWave <span class="s1-dd-accent">Dual-Mode</span></div>
+
+  <div class="s1-dd-block">
+    <div class="s1-dd-content">
+      <p>
+        The Killer SignalBoost S1 integrates a full 5G modem, enabling Eventide APU systems to operate
+        independent of WiFi infrastructure. Support includes:
+      </p>
+
+      <ul class="s1-dd-feature-list">
+        <li><strong>5G Sub-6 GHz:</strong> Nationwide coverage (up to ~300 Mbps in real-world conditions). Fallback when WiFi is unavailable.</li>
+        <li><strong>5G mmWave (FR2):</strong> Ultra-high-bandwidth short-range (sub-500m). Enables Gigabit-class throughput in dense urban areas. Perfect for content creator uploads.</li>
+        <li><strong>Dual Connectivity (EN-DC):</strong> Simultaneous 4G LTE + 5G for load balancing. Downloads on 5G Sub-6, voice calls on LTE fallback if Sub-6 congested.</li>
+        <li><strong>VoLTE:</strong> High-definition voice over LTE. Clear call quality at all signal levels.</li>
+        <li><strong>Carrier Aggregation:</strong> Bond up to 3× 5G Sub-6 carriers for peak throughput (e.g., AT&T + T-Mobile roaming integration).</li>
+      </ul>
+
+      <p style="margin-top: 16px;">
+        <strong>Eventide Advantage:</strong> Unlike traditional mobile processors tied to specific carriers or bands,
+        Eventide's 5G modem is fully software-configurable via the Killer Intelligence Center,
+        allowing operators to push firmware updates for new 5G standards (e.g., 5G Advanced) without hardware redesign.
+      </p>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       SECTION 7: KILLER INTELLIGENCE CENTER (Software Layer)
+       ════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="s1-dd-section-header">Killer Intelligence <span class="s1-dd-accent">Center: Software Control</span></div>
+
+  <p style="font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.65); margin-bottom: 24px;">
+    The Killer Prioritization Engine is fully configurable via the <strong>Killer Intelligence Center</strong>,
+    a system utility providing real-time network monitoring, per-application traffic rules, and manual override controls:
+  </p>
+
+  <div class="s1-dd-grid-4">
+    <div class="s1-dd-grid-item">
+      <div class="s1-dd-grid-item-icon">🔍</div>
+      <div class="s1-dd-grid-item-title">Network Monitor</div>
+      <div class="s1-dd-grid-item-desc">Real-time graphs of band utilization, RSSI, interference, packet loss, per-connection latency.</div>
+    </div>
+
+    <div class="s1-dd-grid-item">
+      <div class="s1-dd-grid-item-icon">⚙️</div>
+      <div class="s1-dd-grid-item-title">App Priorities</div>
+      <div class="s1-dd-grid-item-desc">Set custom priority levels for any application. Gaming, VoIP, streaming, background sync.</div>
+    </div>
+
+    <div class="s1-dd-grid-item">
+      <div class="s1-dd-grid-item-icon">🎮</div>
+      <div class="s1-dd-grid-item-title">Game Mode</div>
+      <div class="s1-dd-grid-item-desc">One-click optimization: boosts gaming app priority, disables background updates, dedicates WiFi band.</div>
+    </div>
+
+    <div class="s1-dd-grid-item">
+      <div class="s1-dd-grid-item-icon">🧠</div>
+      <div class="s1-dd-grid-item-title">AI Learning</div>
+      <div class="s1-dd-grid-item-desc">Learns your daily network patterns, auto-applies optimal settings at typical usage times.</div>
+    </div>
+
+    <div class="s1-dd-grid-item">
+      <div class="s1-dd-grid-item-icon">📊</div>
+      <div class="s1-dd-grid-item-title">Traffic Visualization</div>
+      <div class="s1-dd-grid-item-desc">Sankey diagrams showing packet flow: which app uses which band, latency per app, congestion hotspots.</div>
+    </div>
+
+    <div class="s1-dd-grid-item">
+      <div class="s1-dd-grid-item-icon">🎛️</div>
+      <div class="s1-dd-grid-item-title">Manual Override</div>
+      <div class="s1-dd-grid-item-desc">Force a specific app to use a dedicated band, or manually lock band selection for testing.</div>
+    </div>
+
+    <div class="s1-dd-grid-item">
+      <div class="s1-dd-grid-item-icon">📡</div>
+      <div class="s1-dd-grid-item-title">Band Steering</div>
+      <div class="s1-dd-grid-item-desc">Manual or auto-driven selection of best WiFi band. See AP signal reports (RSSI, MCS, VHT) for all nearby networks.</div>
+    </div>
+
+    <div class="s1-dd-grid-item">
+      <div class="s1-dd-grid-item-icon">⚡</div>
+      <div class="s1-dd-grid-item-title">Power Profile</div>
+      <div class="s1-dd-grid-item-desc">Optimize for maximum performance or maximum battery. Low-Latency LE auto-disables in power-saving mode.</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       SECTION 8: COMPREHENSIVE SPECS TABLE
+       ════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="s1-dd-section-header">Complete Specifications <span class="s1-dd-accent">Reference</span></div>
+
+  <table class="s1-dd-spec-table" style="margin-top: 20px;">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Specification</th>
+        <th>Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- WiFi Section -->
+      <tr>
+        <td class="s1-dd-spec-key">WiFi Standard</td>
+        <td colspan="2" class="s1-dd-spec-val hot">WiFi 7 (802.11be) · Quad-band per chip</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Bands (Single Chip)</td>
+        <td colspan="2" class="s1-dd-spec-val">2× 5 GHz, 1× 2.4 GHz, 1× 6 GHz WLAN</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Max Bands (Dual Chip)</td>
+        <td colspan="2" class="s1-dd-spec-val hot">8 total: 4× 5 GHz, 2× 2.4 GHz, 2× 6 GHz</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Channel Width</td>
+        <td colspan="2" class="s1-dd-spec-val">320 MHz (5/6 GHz), 80/160 MHz (legacy)</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Modulation</td>
+        <td colspan="2" class="s1-dd-spec-val">4K-QAM (4096), EHT</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Max Throughput (Single)</td>
+        <td colspan="2" class="s1-dd-spec-val">5.8 Gbps</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Max Throughput (Dual)</td>
+        <td colspan="2" class="s1-dd-spec-val hot">11.5 Gbps</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Multi-Link Operation</td>
+        <td colspan="2" class="s1-dd-spec-val">Full MLO · simultaneous band aggregation</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">MIMO</td>
+        <td colspan="2" class="s1-dd-spec-val">8×8 capable per 2× chip configuration</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Killer Prioritization</td>
+        <td colspan="2" class="s1-dd-spec-val hot">Packet-level gaming traffic classification</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">AI LinkBoost</td>
+        <td colspan="2" class="s1-dd-spec-val">Dynamic band/channel switching · +25% TX power</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Coverage (TX)</td>
+        <td colspan="2" class="s1-dd-spec-val">115 m effective (with 360° LinkBoost antenna)</td>
+      </tr>
+
+      <!-- Bluetooth Section -->
+      <tr>
+        <td class="s1-dd-spec-key">Bluetooth Standard</td>
+        <td colspan="2" class="s1-dd-spec-val hot">Bluetooth Core 6.2 · Dual-mode LE+BR/EDR</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">BT LE Min Latency</td>
+        <td colspan="2" class="s1-dd-spec-val">2–4 ms (enhanced LE Core 6.2)</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">BT Gaming Latency (LLL)</td>
+        <td colspan="2" class="s1-dd-spec-val hot">&lt;8ms controller, &lt;20ms audio</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Audio Codecs</td>
+        <td colspan="2" class="s1-dd-spec-val">aptX Lossless, LDAC, LC3 (Core 6.2), SBC</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Isochronous Streams</td>
+        <td colspan="2" class="s1-dd-spec-val">Enhanced CIS · multi-stream coordination</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Mesh Networking</td>
+        <td colspan="2" class="s1-dd-spec-val">&lt;100ms coordination latency</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Range (LE)</td>
+        <td colspan="2" class="s1-dd-spec-val">~240 m line-of-sight</td>
+      </tr>
+
+      <!-- 5G Section -->
+      <tr>
+        <td class="s1-dd-spec-key">5G Sub-6</td>
+        <td colspan="2" class="s1-dd-spec-val">3GPP Release 16+ · up to 300 Mbps (real-world)</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">5G mmWave (FR2)</td>
+        <td colspan="2" class="s1-dd-spec-val hot">Gigabit-class throughput · sub-500m range</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Dual Connectivity</td>
+        <td colspan="2" class="s1-dd-spec-val">EN-DC (4G LTE + 5G simultaneous)</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Carrier Aggregation</td>
+        <td colspan="2" class="s1-dd-spec-val">Up to 3× Sub-6 carriers</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Voice</td>
+        <td colspan="2" class="s1-dd-spec-val">VoLTE · HD voice quality</td>
+      </tr>
+
+      <!-- SONAR & Antennas -->
+      <tr>
+        <td class="s1-dd-spec-key">SONAR Presence</td>
+        <td colspan="2" class="s1-dd-spec-val hot">WiFi Doppler radar · ~3m range · LPNPU-driven</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">SONAR Power</td>
+        <td colspan="2" class="s1-dd-spec-val">&lt;10 mW continuous</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Antenna Config (Single)</td>
+        <td colspan="2" class="s1-dd-spec-val">1× 360° Intel LinkBoost (quad-band)</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Antenna Config (Dual)</td>
+        <td colspan="2" class="s1-dd-spec-val hot">2× 360° Intel LinkBoost · full spatial diversity</td>
+      </tr>
+
+      <!-- Integration & Process -->
+      <tr>
+        <td class="s1-dd-spec-key">Process Node</td>
+        <td colspan="2" class="s1-dd-spec-val">Intel 14A-E</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Package</td>
+        <td colspan="2" class="s1-dd-spec-val">FOveros 2.0 Photonic Substrate</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Interconnect</td>
+        <td colspan="2" class="s1-dd-spec-val">Lightmatter photonic fabric · unified memory</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Power Draw (Idle)</td>
+        <td colspan="2" class="s1-dd-spec-val">&lt;50 mW</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Power Draw (Active WiFi 7)</td>
+        <td colspan="2" class="s1-dd-spec-val">~800–1200 mW (full 8×8 MIMO, dual chip)</td>
+      </tr>
+      <tr>
+        <td class="s1-dd-spec-key">Power Draw (Bluetooth LLL)</td>
+        <td colspan="2" class="s1-dd-spec-val">~120 mW (low-latency mode)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       SECTION 9: USE-CASE GRID
+       ════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="s1-dd-section-header">Optimized Use <span class="s1-dd-accent">Cases</span></div>
+
+  <div class="s1-dd-grid-4">
+    <div class="s1-dd-card">
+      <div class="s1-dd-card-title">Competitive Gaming</div>
+      <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.70); margin-top: 12px;">
+        Dedicated low-latency WiFi band for game traffic. Killer Prioritization suppresses all background
+        updates. Bluetooth LLL mode for controller (&lt;8ms). SONAR auto-pauses on idle. Result:
+        consistent &lt;30ms gaming latency even under network load.
+      </p>
+    </div>
+
+    <div class="s1-dd-card">
+      <div class="s1-dd-card-title">Content Creator Upload</div>
+      <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.70); margin-top: 12px;">
+        DoubleShot Pro aggregates both S1 chips (11.5 Gbps) for YouTube/Twitch upload acceleration.
+        Dual 5G mmWave on-device backup. Killer Intelligence prioritizes upload queue vs. preview rendering.
+        Multi-Gigabit upload finishes in minutes, not hours.
+      </p>
+    </div>
+
+    <div class="s1-dd-card">
+      <div class="s1-dd-card-title">Remote Work on 5G</div>
+      <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.70); margin-top: 12px;">
+        Primary connectivity via 5G Sub-6 when away from WiFi. VoLTE ensures call clarity. Simultaneous
+        Bluetooth headset (LC3 codec, &lt;20ms latency) and mouse (Bluetooth LE). Zero WiFi dependency.
+        Fail-safe: 4G LTE fallback if 5G drops.
+      </p>
+    </div>
+
+    <div class="s1-dd-card">
+      <div class="s1-dd-card-title">Always-On SONAR Presence</div>
+      <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.70); margin-top: 12px;">
+        Display auto-wakes as you approach (&lt;3m SONAR range). Auto-dims when you step away.
+        Conference call auto-mutes if room is empty. Anti-theft: alerts on movement while locked.
+        All powered by &lt;10 mW LPNPU processing.
+      </p>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       CLOSING SUMMARY
+       ════════════════════════════════════════════════════════════════════════ -->
+
+  <div style="margin-top: 56px; padding: 28px; background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.15); border-radius: 12px;">
+    <div style="font-family: var(--font-display); font-size: 20px; font-weight: 700; color: white; margin-bottom: 12px; letter-spacing: -0.01em;">
+      The Wireless Foundation of Eventide
+    </div>
+    <p style="font-size: 14px; line-height: 1.8; color: rgba(255,255,255,0.70);">
+      The <strong style="color: #86EFAC;">Killer SignalBoost S1</strong> is not just a modem tile — it's a
+      comprehensive wireless platform that unifies Intel's 15+ years of gaming network intelligence
+      with OPPO Semiconductor's proven hardware RF expertise. Eight simultaneous frequency bands,
+      sub-30ms gaming latency, Bluetooth 6.2 dual-mode operation with &lt;8ms controller response,
+      WiFi 7 Multi-Link Operation for intelligent traffic segregation, and Intel SONAR presence detection
+      all converge in a single FOveros 2.0-integrated tile on Intel 14A-E.
+      <br><br>
+      Whether you're competing in esports, uploading 4K video files, working remotely on 5G, or
+      simply expecting your device to sense your presence and wake, the S1 delivers the low-latency,
+      high-bandwidth, always-aware wireless experience that defines next-generation computing.
+    </p>
+  </div>
+
+  <div class="s1-dd-collab-chips" style="margin-top: 32px; justify-content: center;">
+    <span class="s1-dd-collab-chip">INTEL KILLER × OPPO</span>
+    <span class="s1-dd-collab-chip">EVENTIDE WIRELESS PLATFORM</span>
+    <span class="s1-dd-collab-chip">INTEL 14A-E</span>
+  </div>
+
+</div><!-- /s1-dd-section -->
+</div><!-- /s1-dd-wrap -->
+
+<div class="section-divider"></div>

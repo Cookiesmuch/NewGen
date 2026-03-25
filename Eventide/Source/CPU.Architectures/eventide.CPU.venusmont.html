@@ -1,0 +1,439 @@
+<div class="spe-showcase-wrap">
+<div class="section" style="position:relative; z-index:1;">
+
+  <!-- HEADER -->
+  <div class="spe-eyebrow">Compute Tile · Intel 04A · SPE Core · Architecture Deep Dive</div>
+  <div class="spe-headline">VENUS<br><span>MONT</span></div>
+  <p class="spe-subhead">Nine cores fit where one used to stand. The Venusmont SPE — Spammable Performance E-Core — is a paradigm shift in x86 density, bringing server-class thread counts to a mobile chassis by stacking extreme core density on Intel 04A with full AVX-512 and VNNI2 support intact.</p>
+  <div class="spe-badge-row">
+    <span class="spe-badge spe-b-purple">Intel 04A · 0.4nm-class GAA</span>
+    <span class="spe-badge spe-b-density">9× Core Density per UHP Area</span>
+    <span class="spe-badge spe-b-purple">288+ Cores in X500 SKU</span>
+    <span class="spe-badge spe-b-purple">AVX-512 + VNNI2 Full Width</span>
+    <span class="spe-badge spe-b-purple">4-Wide Decode · Area-Optimized</span>
+    <span class="spe-badge spe-b-note">No P-SMT · No V8 HyperBOOST</span>
+  </div>
+
+  <!-- STAT BLOCK -->
+  <div class="spe-stat-block">
+    <div class="spe-stat-cell">
+      <div class="spe-stat-num">9×</div>
+      <div class="spe-stat-label">Cores Per UHP Area</div>
+      <div class="spe-stat-sub">same Intel 04A die footprint</div>
+    </div>
+    <div class="spe-stat-cell">
+      <div class="spe-stat-num">288+</div>
+      <div class="spe-stat-label">Max Cores in X500</div>
+      <div class="spe-stat-sub">4 compute tiles populated</div>
+    </div>
+    <div class="spe-stat-cell">
+      <div class="spe-stat-num">+320%</div>
+      <div class="spe-stat-label">Core Density vs PTL E-Core</div>
+      <div class="spe-stat-sub">gen-on-gen density uplift</div>
+    </div>
+    <div class="spe-stat-cell">
+      <div class="spe-stat-num">+280%</div>
+      <div class="spe-stat-label">MT Throughput vs PTL</div>
+      <div class="spe-stat-sub">same thermal envelope</div>
+    </div>
+  </div>
+
+  <!-- ── PART 1: PHILOSOPHY ── -->
+  <div class="spe-section-label">Design Philosophy · Density as a Superpower</div>
+  <div class="spe-body-heading">The <span>Server Farm</span> in Your Chassis</div>
+
+  <div class="spe-two-col">
+    <div>
+      <p class="spe-body-text">
+        The Venusmont SPE core is the most radical departure from conventional CPU design in the Eventide lineup. Its premise is simple to state and profound in implication: <strong>nine SPE cores fit in the same die area as a single UHP Solar Eclipse core.</strong> At the X500 SKU level, with four compute tiles populated, this means more than 288 SPE cores can exist in a package that still fits in a mobile chassis. For the first time, server-grade thread counts — the kind previously requiring multi-socket rack hardware — are available in a device you can hold.
+      </p>
+      <p class="spe-body-text">
+        The design philosophy is that <strong>raw thread count is itself a performance metric</strong> that no single-core or small-core-count design can compete with for a specific class of workloads: massively parallel computation. Scientific simulation, 3D rendering, AI data preprocessing, and large-scale compilation are all workloads where the fastest path forward is not a faster individual core but a greater number of concurrent execution contexts. The Venusmont core is purpose-built to provide those contexts at the highest possible density per mm² on Intel 04A.
+      </p>
+      <p class="spe-body-text">
+        To achieve that density, Venusmont makes deliberate sacrifices: a 4-wide decode pipeline instead of the 8 or 10 of the UHP or DP cores, no OOO execution depth that approaches the DP's 720-entry ROB, and no Hyper-Threading. These are not deficiencies in the context of its intended workloads — <strong>massively parallel tasks rarely benefit from deep speculation within individual cores, because the parallelism at the task level is so abundant that the limiting factor is always core count and memory bandwidth, not per-core OOO depth.</strong> Venusmont is deeply aware of its domain.
+      </p>
+    </div>
+    <div>
+      <div class="spe-info-card">
+        <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.18em;color:rgba(147,51,234,0.5);margin-bottom:14px;">FULL CORE SPECIFICATION</div>
+        <div class="spe-spec-row"><span class="spe-spec-key">Core class</span><span class="spe-spec-val glow">SPE — Spammable E-Core</span></div>
+        <div class="spe-spec-row"><span class="spe-spec-key">Codename</span><span class="spe-spec-val glow">Venusmont</span></div>
+        <div class="spe-spec-row"><span class="spe-spec-key">Process node</span><span class="spe-spec-val">Intel 04A · 0.4nm-class GAA</span></div>
+        <div class="spe-spec-row"><span class="spe-spec-key">Core density ratio</span><span class="spe-spec-val glow">9× per UHP Solar Eclipse area</span></div>
+        <div class="spe-spec-row"><span class="spe-spec-key">Base clock</span><span class="spe-spec-val">1.8 GHz</span></div>
+        <div class="spe-spec-row"><span class="spe-spec-key">Max turbo</span><span class="spe-spec-val glow">3.6 GHz</span></div>
+        <div class="spe-spec-row"><span class="spe-spec-key">SMT</span><span class="spe-spec-val">None</span></div>
+        <div class="spe-spec-row"><span class="spe-spec-key">Pipeline decode width</span><span class="spe-spec-val">4-wide (area-optimized)</span></div>
+        <div class="spe-spec-row"><span class="spe-spec-key">L0 cache</span><span class="spe-spec-val">24 KB / core shared</span></div>
+        <div class="spe-spec-row"><span class="spe-spec-key">Shared L2 per cluster</span><span class="spe-spec-val">2 MB / 9-SPE cluster</span></div>
+        <div class="spe-spec-row"><span class="spe-spec-key">Power state</span><span class="spe-spec-val">Per-core fine-grained gate</span></div>
+        <div class="spe-spec-row"><span class="spe-spec-key">Max cores in X500 SKU</span><span class="spe-spec-val glow">288+ (4 compute tiles)</span></div>
+        <div class="spe-spec-row"><span class="spe-spec-key">TD dispatch class</span><span class="spe-spec-val">Class 3 — Parallel Density</span></div>
+        <div class="spe-spec-row"><span class="spe-spec-key">V8 HyperBOOST</span><span class="spe-spec-val">Not supported</span></div>
+      </div>
+      <div class="spe-isa-row">
+        <span class="spe-isa-pill">AVX-512</span>
+        <span class="spe-isa-pill">VNNI2</span>
+        <span class="spe-isa-pill">AVX-VNNI</span>
+        <span class="spe-isa-pill">CET</span>
+        <span class="spe-isa-pill absent">AMX</span>
+        <span class="spe-isa-pill absent">P-SMT</span>
+        <span class="spe-isa-pill absent">TBM 5.0</span>
+      </div>
+      <p style="font-size:10px; color:rgba(192,132,252,0.35); margin-top:8px; font-style:italic;">Strikethrough = not available on SPE tier</p>
+    </div>
+  </div>
+
+  <!-- ── PART 2: DENSITY VISUAL ── -->
+  <div class="spe-inner-divider"></div>
+  <div class="spe-section-label">Die Area Comparison · 9× Density Visualized</div>
+  <div class="spe-body-heading">Same Area. <span>9× Cores.</span></div>
+
+  <div class="spe-two-col">
+    <div>
+      <p class="spe-body-text">
+        The density advantage of the Venusmont core becomes immediately clear when expressed spatially. Because both the UHP Solar Eclipse and the SPE Venusmont are manufactured on the same Intel 04A process node, their die area consumption can be directly compared on an equal footing. The result: <strong>nine Venusmont cores occupy the same silicon area as one Solar Eclipse core.</strong>
+      </p>
+      <p class="spe-body-text">
+        This is achieved through a combination of architectural simplifications — 4-wide decode vs 8-wide, no deep OOO engine, cluster-shared L2 instead of per-core large private L2 — and through the extremely aggressive transistor density of Intel 04A's GAA nanosheet process. At 0.4nm-class geometry with GaNSi gate material, the physical gate pitches achievable on 04A allow circuits that were previously physically impossible at this density to be realized in a manufacturable flow.
+      </p>
+      <p class="spe-body-text">
+        The implication for the X500 SKU is staggering: with four compute tiles populated, each housing the maximum Venusmont complement, the processor can sustain <strong>288+ simultaneous hardware threads</strong> — a thread count that, in prior generations, required enterprise multi-socket server configurations. For workloads that can utilize this parallelism, no competing product in the mobile or thin-and-light category even begins to approach this capability.
+      </p>
+    </div>
+    <div>
+      <!-- Density comparison SVG -->
+      <div class="spe-pipeline-wrap">
+        <div class="spe-pipeline-label">DIE AREA COMPARISON · SAME 04A FOOTPRINT</div>
+        <svg viewBox="0 0 480 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+          <!-- UHP single core -->
+          <text x="100" y="18" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="rgba(255,107,53,0.55)">1× UHP SOLAR ECLIPSE</text>
+          <rect x="10" y="24" width="180" height="180" rx="4" fill="rgba(255,107,53,0.12)" stroke="rgba(255,107,53,0.55)" stroke-width="1.5"/>
+          <text x="100" y="118" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="11" fill="rgba(255,153,112,0.7)" font-weight="700">SOLAR</text>
+          <text x="100" y="133" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="11" fill="rgba(255,153,112,0.7)" font-weight="700">ECLIPSE</text>
+          <text x="100" y="150" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,107,53,0.4)">UHP CORE</text>
+          <text x="100" y="162" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,107,53,0.35)">8-wide · 4MB L2 · no SMT</text>
+
+          <!-- divider -->
+          <text x="240" y="118" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="20" fill="rgba(255,255,255,0.12)">=</text>
+
+          <!-- 9× SPE grid -->
+          <text x="370" y="18" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="rgba(147,51,234,0.6)">9× VENUSMONT SPE</text>
+          <rect x="290" y="24" width="180" height="180" rx="4" fill="rgba(107,33,168,0.1)" stroke="rgba(107,33,168,0.3)" stroke-width="1"/>
+          <!-- 3×3 grid of SPE cells -->
+          <rect x="292" y="26" width="58" height="58" rx="2" fill="rgba(147,51,234,0.16)" stroke="rgba(147,51,234,0.5)" stroke-width="1"/>
+          <rect x="352" y="26" width="58" height="58" rx="2" fill="rgba(147,51,234,0.16)" stroke="rgba(147,51,234,0.5)" stroke-width="1"/>
+          <rect x="412" y="26" width="56" height="58" rx="2" fill="rgba(147,51,234,0.16)" stroke="rgba(147,51,234,0.5)" stroke-width="1"/>
+          <rect x="292" y="86" width="58" height="60" rx="2" fill="rgba(147,51,234,0.16)" stroke="rgba(147,51,234,0.5)" stroke-width="1"/>
+          <rect x="352" y="86" width="58" height="60" rx="2" fill="rgba(147,51,234,0.2)" stroke="rgba(147,51,234,0.65)" stroke-width="1.5"/>
+          <rect x="412" y="86" width="56" height="60" rx="2" fill="rgba(147,51,234,0.16)" stroke="rgba(147,51,234,0.5)" stroke-width="1"/>
+          <rect x="292" y="148" width="58" height="54" rx="2" fill="rgba(147,51,234,0.16)" stroke="rgba(147,51,234,0.5)" stroke-width="1"/>
+          <rect x="352" y="148" width="58" height="54" rx="2" fill="rgba(147,51,234,0.16)" stroke="rgba(147,51,234,0.5)" stroke-width="1"/>
+          <rect x="412" y="148" width="56" height="54" rx="2" fill="rgba(147,51,234,0.16)" stroke="rgba(147,51,234,0.5)" stroke-width="1"/>
+          <!-- labels on SPE cells -->
+          <text x="321" y="58" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="rgba(192,132,252,0.75)" font-weight="600">SPE 1</text>
+          <text x="381" y="58" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="rgba(192,132,252,0.75)" font-weight="600">SPE 2</text>
+          <text x="440" y="58" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="rgba(192,132,252,0.75)" font-weight="600">SPE 3</text>
+          <text x="321" y="119" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="rgba(192,132,252,0.75)" font-weight="600">SPE 4</text>
+          <text x="381" y="119" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="#C084FC" font-weight="700">SPE 5</text>
+          <text x="440" y="119" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="rgba(192,132,252,0.75)" font-weight="600">SPE 6</text>
+          <text x="321" y="178" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="rgba(192,132,252,0.75)" font-weight="600">SPE 7</text>
+          <text x="381" y="178" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="rgba(192,132,252,0.75)" font-weight="600">SPE 8</text>
+          <text x="440" y="178" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="rgba(192,132,252,0.75)" font-weight="600">SPE 9</text>
+        </svg>
+      </div>
+
+      <!-- Scaling chart -->
+      <div class="spe-scale-chart">
+        <div class="spe-scale-title">PARALLELISM SCALING · ILLUSTRATIVE THREAD UTILIZATION</div>
+        <div class="spe-scale-row">
+          <div class="spe-scale-label">8T — light batch tasks</div>
+          <div class="spe-scale-track"><div class="spe-scale-fill" style="width:10%"></div></div>
+          <div class="spe-scale-count">8 / 288+ cores</div>
+        </div>
+        <div class="spe-scale-row">
+          <div class="spe-scale-label">32T — 3D rendering frame</div>
+          <div class="spe-scale-track"><div class="spe-scale-fill" style="width:22%"></div></div>
+          <div class="spe-scale-count">32 / 288+ cores</div>
+        </div>
+        <div class="spe-scale-row">
+          <div class="spe-scale-label">64T — simulation sweep</div>
+          <div class="spe-scale-track"><div class="spe-scale-fill" style="width:44%"></div></div>
+          <div class="spe-scale-count">64 / 288+ cores</div>
+        </div>
+        <div class="spe-scale-row">
+          <div class="spe-scale-label">128T — parallel compile</div>
+          <div class="spe-scale-track"><div class="spe-scale-fill" style="width:72%"></div></div>
+          <div class="spe-scale-count">128 / 288+ cores</div>
+        </div>
+        <div class="spe-scale-row">
+          <div class="spe-scale-label">288T — full saturation</div>
+          <div class="spe-scale-track"><div class="spe-scale-fill" style="width:100%"></div></div>
+          <div class="spe-scale-count">288+ / 288+ cores</div>
+        </div>
+        <p style="font-size:9px; color:rgba(147,51,234,0.35); margin-top:12px; font-style:italic;">Illustrative scaling curves — not claimed benchmark results</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PART 3: PIPELINE + CLUSTER ── -->
+  <div class="spe-inner-divider"></div>
+  <div class="spe-section-label">Pipeline Architecture · 4-Wide, Area-Optimized</div>
+  <div class="spe-body-heading">Narrow. Dense. <span>Massively Parallel.</span></div>
+
+  <div class="spe-two-col">
+    <div>
+      <p class="spe-body-text">
+        The 4-wide decode front-end of the Venusmont core is its defining area-optimization. A 4-wide decoder requires approximately half the silicon area of an 8-wide decoder, and less than half of the 10-wide design in the DP core. This is the primary contributor — along with the cluster-shared L2 — to the 9× density ratio relative to the UHP Solar Eclipse.
+      </p>
+      <p class="spe-body-text">
+        Despite the narrow front-end, the Venusmont retains <strong>full-width AVX-512 and VNNI2 execution</strong>. This was a deliberate choice: the primary motivating workloads for the SPE core — AI data preprocessing, vectorized scientific compute, large-scale tensor operations — are all heavy users of wide SIMD instructions. Removing AVX-512 to save area would undermine the entire purpose of the core for these workloads. Instead, the AVX-512 and VNNI2 execution units are sized identically to those in the DP core, and only the integer front-end and OOO engine are simplified.
+      </p>
+      <p class="spe-body-text">
+        The per-core fine-grained power gating is essential to the SPE core's efficiency at scale. When 200+ cores are populated but only a fraction are active at any given moment — as happens during task-level parallel scheduling gaps — the idle SPE cores must draw essentially zero power. The Intel 04A node's clockgate and powergate capability, operating at under 1 ns transition time, enables per-core power states that make large SPE populations viable without the idle power becoming prohibitive.
+      </p>
+      <p class="spe-body-text">
+        The <strong>9-SPE cluster topology</strong> is the organizational unit above the individual core. Nine SPE cores share a <strong>128 KB cluster L1</strong> and a <strong>2 MB cluster L2 cache</strong>, with the cluster presenting as a single scheduling unit to the Hardware Thread Director. L2 misses first reach the <strong>12 MB Compute Tile shared L3</strong> (48 MB total across 4 tiles) before exiting through the FOveros 2.0 photonic fabric to the Kache Kore™ 4 GB bLLC — which, at APU-shared scale, means all 288+ SPE cores ultimately share the same 4 GB last-level cache resource.
+      </p>
+    </div>
+    <div>
+      <div class="spe-pipeline-wrap">
+        <div class="spe-pipeline-label">VENUSMONT SPE · 4-WIDE PIPELINE · 9-SPE CLUSTER TOPOLOGY</div>
+        <svg viewBox="0 0 480 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+          <defs>
+            <marker id="arr-spe" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+              <path d="M0,0 L5,2.5 L0,5 Z" fill="rgba(147,51,234,0.45)"/>
+            </marker>
+          </defs>
+
+          <!-- Individual SPE pipeline (top half) -->
+          <text x="240" y="12" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(147,51,234,0.45)">SINGLE VENUSMONT SPE · PIPELINE</text>
+
+          <rect x="10" y="20" width="100" height="36" rx="3" fill="rgba(107,33,168,0.1)" stroke="rgba(107,33,168,0.38)" stroke-width="1"/>
+          <text x="60" y="36" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(192,132,252,0.82)" font-weight="500">INST FETCH</text>
+          <text x="60" y="48" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(107,33,168,0.45)">branch pred.</text>
+
+          <path d="M110 38 L126 38" stroke="rgba(107,33,168,0.35)" stroke-width="1" marker-end="url(#arr-spe)"/>
+
+          <rect x="127" y="18" width="112" height="40" rx="3" fill="rgba(107,33,168,0.2)" stroke="rgba(147,51,234,0.6)" stroke-width="1.5"/>
+          <text x="183" y="34" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="#C084FC" font-weight="700">4-WIDE DECODE</text>
+          <text x="183" y="47" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(147,51,234,0.55)">area-optimized · 9× density</text>
+
+          <path d="M239 38 L255 38" stroke="rgba(107,33,168,0.35)" stroke-width="1" marker-end="url(#arr-spe)"/>
+
+          <rect x="256" y="20" width="100" height="36" rx="3" fill="rgba(107,33,168,0.1)" stroke="rgba(107,33,168,0.38)" stroke-width="1"/>
+          <text x="306" y="36" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(192,132,252,0.82)" font-weight="500">RENAME / ROB</text>
+          <text x="306" y="48" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(107,33,168,0.45)">streamlined OOO</text>
+
+          <path d="M356 38 L372 38" stroke="rgba(107,33,168,0.35)" stroke-width="1" marker-end="url(#arr-spe)"/>
+
+          <rect x="373" y="20" width="100" height="36" rx="3" fill="rgba(107,33,168,0.1)" stroke="rgba(107,33,168,0.38)" stroke-width="1"/>
+          <text x="423" y="36" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(192,132,252,0.82)" font-weight="500">EXEC + RETIRE</text>
+          <text x="423" y="48" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(107,33,168,0.45)">AVX-512 · VNNI2 full</text>
+
+          <!-- per-core powergate callout -->
+          <path d="M60 56 L60 72" stroke="rgba(107,33,168,0.3)" stroke-width="1" marker-end="url(#arr-spe)"/>
+          <rect x="10" y="74" width="200" height="30" rx="3" fill="rgba(107,33,168,0.07)" stroke="rgba(107,33,168,0.18)" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="110" y="88" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(147,51,234,0.45)">PER-CORE FINE POWER GATE</text>
+          <text x="110" y="99" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(107,33,168,0.3)">&lt;1ns transition · sub-µW idle</text>
+
+          <!-- L2 cache note -->
+          <rect x="10" y="108" width="460" height="28" rx="3" fill="rgba(107,33,168,0.08)" stroke="rgba(107,33,168,0.2)" stroke-width="1"/>
+          <text x="240" y="120" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(147,51,234,0.5)">L0: 24 KB / CORE (SHARED IN CLUSTER)</text>
+          <text x="240" y="130" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(107,33,168,0.35)">feeds 4-wide decode · small L0 acceptable at 4-wide rate</text>
+
+          <!-- Cluster topology (bottom half) -->
+          <text x="240" y="156" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(147,51,234,0.45)">9-SPE CLUSTER · SHARED L2 TOPOLOGY</text>
+
+          <!-- 9 SPE cores in a single row -->
+          <rect x="8" y="162" width="48" height="30" rx="2" fill="rgba(147,51,234,0.14)" stroke="rgba(147,51,234,0.42)" stroke-width="1"/>
+          <text x="32" y="181" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(192,132,252,0.7)" font-weight="600">SPE 1</text>
+          <rect x="60" y="162" width="48" height="30" rx="2" fill="rgba(147,51,234,0.14)" stroke="rgba(147,51,234,0.42)" stroke-width="1"/>
+          <text x="84" y="181" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(192,132,252,0.7)" font-weight="600">SPE 2</text>
+          <rect x="112" y="162" width="48" height="30" rx="2" fill="rgba(147,51,234,0.14)" stroke="rgba(147,51,234,0.42)" stroke-width="1"/>
+          <text x="136" y="181" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(192,132,252,0.7)" font-weight="600">SPE 3</text>
+          <rect x="164" y="162" width="48" height="30" rx="2" fill="rgba(147,51,234,0.14)" stroke="rgba(147,51,234,0.42)" stroke-width="1"/>
+          <text x="188" y="181" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(192,132,252,0.7)" font-weight="600">SPE 4</text>
+          <rect x="216" y="162" width="48" height="30" rx="2" fill="rgba(147,51,234,0.14)" stroke="rgba(147,51,234,0.42)" stroke-width="1"/>
+          <text x="240" y="181" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(192,132,252,0.7)" font-weight="600">SPE 5</text>
+          <rect x="268" y="162" width="48" height="30" rx="2" fill="rgba(147,51,234,0.14)" stroke="rgba(147,51,234,0.42)" stroke-width="1"/>
+          <text x="292" y="181" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(192,132,252,0.7)" font-weight="600">SPE 6</text>
+          <rect x="320" y="162" width="48" height="30" rx="2" fill="rgba(147,51,234,0.14)" stroke="rgba(147,51,234,0.42)" stroke-width="1"/>
+          <text x="344" y="181" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(192,132,252,0.7)" font-weight="600">SPE 7</text>
+          <rect x="372" y="162" width="48" height="30" rx="2" fill="rgba(147,51,234,0.14)" stroke="rgba(147,51,234,0.42)" stroke-width="1"/>
+          <text x="396" y="181" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(192,132,252,0.7)" font-weight="600">SPE 8</text>
+          <rect x="424" y="162" width="48" height="30" rx="2" fill="rgba(147,51,234,0.14)" stroke="rgba(147,51,234,0.42)" stroke-width="1"/>
+          <text x="448" y="181" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(192,132,252,0.7)" font-weight="600">SPE 9</text>
+
+          <!-- L2 bar -->
+          <rect x="10" y="206" width="460" height="30" rx="3" fill="rgba(147,51,234,0.16)" stroke="rgba(147,51,234,0.45)" stroke-width="1.5"/>
+          <text x="240" y="220" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="#C084FC" font-weight="600">SHARED L2 CACHE · 2 MB / 9-SPE CLUSTER</text>
+          <text x="240" y="231" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(147,51,234,0.45)">9 cores share 2MB · miss exits to Compute Tile L3 (12 MB), then bLLC</text>
+
+          <!-- Photonic down -->
+          <path d="M240 236 L240 252" stroke="rgba(200,146,42,0.35)" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#arr-spe)"/>
+
+          <!-- bLLC -->
+          <rect x="60" y="254" width="360" height="28" rx="3" fill="rgba(147,51,234,0.1)" stroke="rgba(147,51,234,0.28)" stroke-width="1"/>
+          <text x="240" y="267" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(192,132,252,0.7)">→ KACHE KORE™ bLLC · 4 GB · APU-WIDE SHARED</text>
+          <text x="240" y="278" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(147,51,234,0.35)">FOveros 2.0 photonic · −70% latency vs DRAM</text>
+
+          <!-- connection lines from cores to L2 -->
+          <path d="M32 192 L32 204" stroke="rgba(147,51,234,0.25)" stroke-width="1"/>
+          <path d="M84 192 L84 204" stroke="rgba(147,51,234,0.25)" stroke-width="1"/>
+          <path d="M136 192 L136 204" stroke="rgba(147,51,234,0.25)" stroke-width="1"/>
+          <path d="M188 192 L188 204" stroke="rgba(147,51,234,0.25)" stroke-width="1"/>
+          <path d="M240 192 L240 204" stroke="rgba(147,51,234,0.25)" stroke-width="1"/>
+          <path d="M292 192 L292 204" stroke="rgba(147,51,234,0.25)" stroke-width="1"/>
+          <path d="M344 192 L344 204" stroke="rgba(147,51,234,0.25)" stroke-width="1"/>
+          <path d="M396 192 L396 204" stroke="rgba(147,51,234,0.25)" stroke-width="1"/>
+          <path d="M448 192 L448 204" stroke="rgba(147,51,234,0.25)" stroke-width="1"/>
+
+          <!-- TD tile note -->
+          <rect x="10" y="296" width="460" height="36" rx="3" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <text x="240" y="310" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.35)">HW THREAD DIRECTOR · CLASS 3 — PARALLEL DENSITY DISPATCH</text>
+          <text x="240" y="323" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(255,255,255,0.2)">cluster-level scheduling · per-core fine power gate management · tile sleep/wake arbitration</text>
+        </svg>
+        <div class="spe-cache-strip">
+          <div class="spe-cache-row">
+            <div class="spe-cache-tier">L0</div>
+            <div class="spe-cache-bar spe-c-l0" style="flex:0.22">
+              <span class="spe-cache-name">Per-Core L0</span>
+              <span class="spe-cache-sz">24 KB / core</span>
+            </div>
+          </div>
+          <div class="spe-cache-conn">&#8595; miss</div>
+          <div class="spe-cache-row">
+            <div class="spe-cache-tier">L1</div>
+            <div class="spe-cache-bar spe-c-l1" style="flex:0.3">
+              <span class="spe-cache-name">Cluster-Shared L1</span>
+              <span class="spe-cache-sz">128 KB / 9-cluster</span>
+            </div>
+          </div>
+          <div class="spe-cache-note">Shared instruction + data L1 across all 9 SPE cores in cluster</div>
+          <div class="spe-cache-conn">&#8595; miss</div>
+          <div class="spe-cache-row">
+            <div class="spe-cache-tier">L2</div>
+            <div class="spe-cache-bar spe-c-l2" style="flex:0.48">
+              <span class="spe-cache-name">Cluster-Shared L2</span>
+              <span class="spe-cache-sz">2 MB / 9-cluster</span>
+            </div>
+          </div>
+          <div class="spe-cache-note" style="color:rgba(147,51,234,0.32);">9 cores share 2 MB &mdash; primary bulk cache for cluster-wide working sets</div>
+          <div class="spe-cache-conn">&#8595; miss</div>
+          <div class="spe-cache-row">
+            <div class="spe-cache-tier">L3</div>
+            <div class="spe-cache-bar spe-c-l3" style="flex:0.82">
+              <span class="spe-cache-name">Compute Tile Shared L3</span>
+              <span class="spe-cache-sz">12 MB / tile &middot; 48 MB total</span>
+            </div>
+          </div>
+          <div class="spe-cache-note" style="color:rgba(147,51,234,0.28);">Shared across all UHP + DP + SPE on Compute Tile &mdash; 4 tiles &times; 12 MB</div>
+          <div class="spe-cache-conn">&#8595; miss &rarr; FOveros 2.0 photonic fabric</div>
+          <div class="spe-cache-row">
+            <div class="spe-cache-tier" style="color:rgba(192,132,252,0.4);">L4</div>
+            <div class="spe-cache-bar spe-c-bllc" style="flex:1">
+              <span class="spe-cache-name">Kache Kore&trade; bLLC</span>
+              <span class="spe-cache-sz">4 GB &middot; APU-shared</span>
+            </div>
+          </div>
+          <div class="spe-cache-note" style="color:rgba(147,51,234,0.25);">Shared across all CPU, GPU, and NPU tiles &mdash; &minus;70% latency vs DRAM</div>
+          <div class="spe-cache-conn" style="color:rgba(147,51,234,0.2);">&#8595; miss &rarr; ZAM / DDR6</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PART 4: GOG + FEATURES ── -->
+  <div class="spe-inner-divider"></div>
+
+  <div class="spe-two-col">
+    <div>
+      <div class="spe-section-label">Gen-on-Gen · vs Panther Lake E-Core</div>
+      <div class="spe-gog-block" style="margin-top:0;">
+        <div class="spe-gog-title">Gen-on-Gen Performance · vs Panther Lake E-Core</div>
+        <div class="spe-gog-row">
+          <div class="spe-gog-metric">Core density</div>
+          <div class="spe-gog-track"><div class="spe-gog-fill" style="width:100%"></div></div>
+          <div class="spe-gog-num">+320%</div>
+        </div>
+        <div class="spe-gog-row">
+          <div class="spe-gog-metric">MT throughput</div>
+          <div class="spe-gog-track"><div class="spe-gog-fill" style="width:88%; opacity:0.88"></div></div>
+          <div class="spe-gog-num">+280%</div>
+        </div>
+        <div class="spe-gog-row">
+          <div class="spe-gog-metric">Perf/W (parallel)</div>
+          <div class="spe-gog-track"><div class="spe-gog-fill" style="width:52%; opacity:0.75"></div></div>
+          <div class="spe-gog-num">+38%</div>
+        </div>
+        <div class="spe-gog-row">
+          <div class="spe-gog-metric">Max thread count</div>
+          <div class="spe-gog-track"><div class="spe-gog-fill" style="width:100%"></div></div>
+          <div class="spe-gog-num">+900%+</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="spe-section-label">Key Features</div>
+      <div class="spe-feature-grid" style="margin-top:0;">
+        <div class="spe-feature-row">
+          <div class="spe-feature-icon">⚡</div>
+          <div>
+            <div class="spe-feature-title">Fine Power Gating</div>
+            <div class="spe-feature-desc">Per-core &lt;1ns gate transition. Idle cores draw sub-µW. 288-core population remains viable at mobile TDP through selective activation.</div>
+          </div>
+        </div>
+        <div class="spe-feature-row">
+          <div class="spe-feature-icon">🧮</div>
+          <div>
+            <div class="spe-feature-title">Full-Width AVX-512</div>
+            <div class="spe-feature-desc">Despite narrow front-end, AVX-512 and VNNI2 execution units are full-width. Dense cores do not sacrifice SIMD capability for vectorized AI and scientific workloads.</div>
+          </div>
+        </div>
+        <div class="spe-feature-row">
+          <div class="spe-feature-icon">🔗</div>
+          <div>
+            <div class="spe-feature-title">9-SPE Cluster L2</div>
+            <div class="spe-feature-desc">2 MB shared L2 per 9-core cluster reduces per-core silicon cost versus private L2 per core while maintaining effective cache hit rates at typical SPE working-set sizes.</div>
+          </div>
+        </div>
+        <div class="spe-feature-row">
+          <div class="spe-feature-icon">🎯</div>
+          <div>
+            <div class="spe-feature-title">TD Class 3 Dispatch</div>
+            <div class="spe-feature-desc">Thread Director routes massively-parallel workloads to SPE cluster populations automatically. No manual thread affinity required — hardware classification handles it.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- USE CASES -->
+  <div class="spe-usecase-grid">
+    <div class="spe-usecase-chip">
+      <span class="spe-usecase-icon">🔬</span>
+      <div class="spe-usecase-title">Scientific Simulation</div>
+      <div class="spe-usecase-desc">Physics, fluid dynamics, FEM — workloads where every additional thread reduces wall-clock simulation time proportionally. 288+ threads changes what is feasible on a mobile device.</div>
+    </div>
+    <div class="spe-usecase-chip">
+      <span class="spe-usecase-icon">🎨</span>
+      <div class="spe-usecase-title">3D Rendering</div>
+      <div class="spe-usecase-desc">Path tracing and rasterization-based rendering at the CPU software level scale linearly with thread count. Blender, V-Ray, Arnold — all benefit directly from SPE density.</div>
+    </div>
+    <div class="spe-usecase-chip">
+      <span class="spe-usecase-icon">🤖</span>
+      <div class="spe-usecase-title">AI Data Preprocessing</div>
+      <div class="spe-usecase-desc">Tokenization, augmentation, normalization, and data pipeline preprocessing for ML training are embarrassingly parallel. SPE + VNNI2 handles them with throughput that previously required cluster compute.</div>
+    </div>
+    <div class="spe-usecase-chip">
+      <span class="spe-usecase-icon">🔧</span>
+      <div class="spe-usecase-title">Parallel Compilation</div>
+      <div class="spe-usecase-desc">make -j288 is no longer hypothetical. Large codebases that previously required build cluster infrastructure can now be compiled at full parallelism on a single Eventide X500 device.</div>
+    </div>
+  </div>
+
+</div>
+</div>
+

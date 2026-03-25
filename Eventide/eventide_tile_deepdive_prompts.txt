@@ -1,0 +1,881 @@
+================================================================================
+  EVENTIDE TILE MOSAIC — DEEP-DIVE PROMPTS
+  For each tile listed below, send the corresponding prompt to your IDE AI.
+  Each prompt is self-contained and produces a standalone HTML file that
+  slots into the main brochure file alongside the existing deep-dive sections.
+  All sections use the same font stack, CSS variable set, and structural
+  conventions as the existing brochure — each prompt instructs the AI on
+  exactly how to align to those conventions.
+================================================================================
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SHARED CONVENTIONS (reference these in every prompt)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The main brochure uses these Google Fonts:
+  - Bebas Neue (--font-display)
+  - Space Grotesk (--font-body)
+  - IBM Plex Mono (--font-mono)
+
+CSS variables from the root:
+  --intel-blue: #0068B5
+  --intel-blue-dark: #004A86
+  --eventide-gold: #C8922A
+  --eventide-gold-light: #F0B848
+  --eventide-dusk: #1A0A2E
+  --eventide-purple: #6B21A8
+  --eventide-violet: #9333EA
+  --eventide-sunrise: #FF6B35
+  --surface: #FFFFFF
+  --surface-alt: #F5F7FA
+  --surface-dark: #0A0E1A
+  --font-display / --font-body / --font-mono
+
+Each deep-dive section must:
+  1. Begin with a wrapping <div class="[prefix]-wrap"> that controls the background.
+  2. Contain a <div class="section"> inner wrapper (max-width 1200px, padding 64px 48px).
+  3. Use a unique CSS class prefix (provided per tile) to avoid collision with existing styles.
+  4. Include an INSERT COMMENT at the top indicating where it slots in the main file.
+  5. Follow the existing visual depth language: dark backgrounds, luminous accent colors,
+     Bebas Neue headlines, mono eyebrows, spec rows, stat strips, and use-case grids.
+  6. Each tile has its own accent color palette noted in the prompt — use these for
+     all highlights, borders, glows, and stat numbers. Backgrounds should be dark with
+     subtle colored radial gradients at the corners, consistent with sections like
+     the ZAM deep-dive (cyan), V8 HyperBOOST (orange/red), and Kache Kore (purple).
+  7. End with a <div class="section-divider"></div> to match the existing flow.
+  8. All CSS must be scoped inside a <style> block immediately above the content div.
+  9. Include INSERT comments so the developer knows exactly where to paste each file.
+
+Quality bar: match the depth and design polish of the existing ZAM, BionzXR QuickSync,
+and 2DKR deep-dives already in the file. Those are the reference for structure and depth.
+
+================================================================================
+PROMPT 1 — HNPU DEEP-DIVE
+================================================================================
+
+Create an HTML deep-dive section for the Intel Eventide HNPU (High-Performance NPU)
+tile, suitable for direct insertion into the Intel Eventide brochure HTML file.
+
+INSERT LOCATION: Immediately after the Tile Mosaic overview section and its following
+<div class="section-divider"></div>.
+
+CSS PREFIX: "hnpu-dd-"
+ACCENT COLOR PALETTE:
+  Primary: #FF7A35 (warm orange)
+  Dark bg base: #080200 → #0F0500
+  Grid/glow: rgba(255,122,53,0.05) grid lines
+  Stat numbers: #FF9060
+  Border accents: rgba(255,122,53,0.25)
+
+COLLAB BADGE: Intel (sole — no external collab)
+
+CONTENT TO COVER (research Intel NPU architecture, Meteor Lake NPU, Lunar Lake NPU,
+OpenVINO 5.0, Copilot+ PC requirements, XeSS 5.0 pipeline, INT2 matmul):
+
+1. HERO: Large headline "256 TOPS. On the World's Most Advanced Node." Eyebrow:
+   "AI Compute · HNPU · Intel 04A". Subhead explaining the HNPU as the primary
+   AI compute engine for on-device LLM inference, Copilot+, real-time upscaling,
+   and heavy background AI — manufactured on Intel 04A (same node as the HPiGPU tiles).
+   Badges: "Intel 04A", "256 TOPS", "INT2→FP32", "OpenVINO 5.0", "XeSS 5.0".
+
+2. STAT BLOCK (4 cells): 256 TOPS | 32 MB Scratchpad SRAM | 7 Precision Modes |
+   344 TOPS Combined (with LPNPU).
+
+3. TWO-COLUMN SECTION — Architecture Deep-Dive:
+   Left: Prose on the tile-array NPU architecture. INT2 matmul enables 4× the
+   effective throughput of INT4 at same silicon area for quantised LLM inference.
+   32 MB on-die scratchpad eliminates external memory round-trips for model weight
+   staging. Thread Director coordinates HNPU ↔ LPNPU task routing.
+   Right: Spec table covering: AI throughput, process, precision modes, on-die SRAM,
+   supported frameworks (OpenVINO 5.0, ONNX Runtime, TFLite, PyTorch Export),
+   power envelope, and Copilot+ compliance (exceeds 40 TOPS requirement by 6.4×).
+
+4. PRECISION MATRIX: Visual table showing INT2 / INT4 / INT8 / FP8 / BF16 / FP16 / FP32
+   with effective TOPS and typical use case for each precision level.
+   (INT2 ≈ 256 TOPS effective for quantised LLMs; FP32 ≈ ~12 TOPS for research inference.)
+
+5. TWO-COLUMN SECTION — HNPU × XeSS 5.0:
+   How the HNPU feeds the XeSS 5.0 upscaling pipeline — model inference for
+   temporal frame reconstruction runs on HNPU while final pixel output hits the
+   Elementalist GPU, decoupling AI compute from render latency.
+
+6. THREAD DIRECTOR COORDINATION: Diagram-like spec card showing how the Hardware
+   Thread Director escalates AI tasks: LPNPU (background/always-on) →
+   HNPU (sustained AI) → GPU XMX5 (parallel matrix flood).
+
+7. USE-CASE GRID (4 chips): On-device LLM inference (Copilot+, private AI assistants) /
+   XeSS 5.0 real-time upscaling / Background diffusion / Real-time transcription & translation.
+
+8. GEN-ON-GEN BAR: vs Lunar Lake NPU (4.0) — +112% TOPS, +~3× at same power.
+
+================================================================================
+PROMPT 2 — LPNPU DEEP-DIVE
+================================================================================
+
+Create an HTML deep-dive section for the Intel Eventide LPNPU (Low-Power NPU)
+tile, suitable for direct insertion into the Intel Eventide brochure HTML file.
+
+INSERT LOCATION: Immediately after the HNPU deep-dive section and its divider.
+
+CSS PREFIX: "lpnpu-dd-"
+ACCENT COLOR PALETTE:
+  Primary: #60B4FF (Intel blue-light)
+  Dark bg base: #010810 → #020C1C
+  Grid/glow: rgba(96,180,255,0.03) grid lines
+  Stat numbers: #7BC8FF
+  Border accents: rgba(96,180,255,0.22)
+
+COLLAB BADGE: Intel (sole)
+
+CONTENT TO COVER (research Intel always-on NPU, Lunar Lake NPU LP mode, wake-on-voice
+tech, WiFi SONAR presence, Thread Director co-pilot role, LPNPU power specs):
+
+1. HERO: Headline "88 TOPS. Under One and a Half Watts." Eyebrow:
+   "Always-On Intelligence · LPNPU · Intel 06E". Subhead explaining the LPNPU
+   as Eventide's intelligence layer that never sleeps — running on the same LP Island
+   as the LPE cores and 2DKR tile, and consuming less than 1.4W at peak.
+   Badges: "Intel 06E", "88 TOPS", "Always-On", "Wake-on-Voice", "SONAR".
+
+2. STAT BLOCK (4 cells): 88 TOPS | <1.4W Peak | 344 TOPS Combined | Sub-0.3W Idle.
+
+3. THREE ROLES SECTION — visual list of the three primary LPNPU functions:
+   a) Always-On Inference: Wake-on-Voice keyword detection, ambient audio monitoring,
+      SONAR user presence detection via WiFi signal analysis. Zero CPU involvement.
+   b) Hardware Thread Director Co-Pilot: AI model running on LPNPU predicts task
+      dispatch class before threads are runnable. UHP Solar Eclipse cores pre-stage
+      frequency targets. Sub-100ns arbitration advantage over OS scheduler.
+   c) System Intelligence Layer: predictive app pre-staging based on usage patterns,
+      power profile recommendations, and tile wake sequencing decisions.
+
+4. ALWAYS-ON STACK: Timeline/stack diagram showing how Wake-on-Voice works:
+   LPNPU monitors audio stream → GMM keyword detection → confidence threshold
+   crossed → LPNPU triggers Darkmont LP E-core cluster wake → system becomes
+   responsive before user finishes speaking.
+
+5. SONAR DEEP-DIVE: Two-column. Left: Prose on WiFi SONAR — uses Doppler shift
+   analysis on WiFi signal reflections to detect human presence and proximity
+   within ~3m radius. Wakes display from black screen as user approaches.
+   Dims display as user moves away. Right: Spec card.
+
+6. POWER COMPARISON TABLE: LPNPU at <1.4W vs CPU-based equivalent inference
+   on LPE cores (~8W), on DP cores (~22W). Highlight power advantage.
+
+7. USE-CASE GRID (4 chips): Wake-on-Voice / SONAR Presence / Predictive App Dispatch /
+   Background Noise Suppression (fed to Klangkerne audio tile).
+
+================================================================================
+PROMPT 3 — GNA 5.0 DEEP-DIVE
+================================================================================
+
+Create an HTML deep-dive section for the Intel Eventide GNA 5.0
+(Gaussian & Neural Accelerator), suitable for insertion into the brochure.
+
+INSERT LOCATION: Immediately after the LPNPU deep-dive and its divider.
+
+CSS PREFIX: "gna-dd-"
+ACCENT COLOR PALETTE:
+  Primary: #4ADEAA (emerald green)
+  Dark bg base: #010A05 → #020E08
+  Grid/glow: rgba(74,222,128,0.03) lines
+  Stat numbers: #6EEEB8
+  Border accents: rgba(74,222,128,0.20)
+
+COLLAB BADGE: Intel (sole)
+
+CONTENT TO COVER (research Intel GNA architecture, GMM operations, DNN speech
+processing, always-on audio AI, OpenVINO GNA plugin, GNA 3.x history, relationship
+to NPU. Note: GNA 5.0 is the Eventide-generation successor — GNA was discontinued
+after Meteor Lake (GNA 3.5 was last), but Eventide revives and evolves it as a
+dedicated audio co-processor now tightly coupled with the Klangkerne tile):
+
+1. HERO: Headline "The Engine That Never Sleeps." Eyebrow: "Audio Intelligence ·
+   GNA 5.0 · Intel 14A-E". Subhead explaining GNA as the ultra-low-power
+   Gaussian and neural inference co-processor for continuous audio and speech
+   workloads — the intelligence backbone of the Klangkerne audio stack.
+
+2. STAT BLOCK: Sub-mW idle | GMM + DNN | Hardware-Offloaded | Zero CPU cost.
+
+3. WHAT IS GNA — explainer section for context:
+   Gaussian Mixture Model (GMM) co-processors have been in Intel silicon since
+   Ice Lake (GNA 1.0) through Arrow Lake (GNA 3.5). GNA 5.0 on Eventide marks
+   a revival and extension of the concept: where GNA 3.5 was being deprecated in
+   favour of the NPU, Eventide's unique audio-first architecture warrants a
+   dedicated ultra-low-power audio AI tile. GNA 5.0 extends GNA 3.5's INT8
+   DNN support with BF16, adds vision inference capability (for audio-visual
+   context detection), and is fabricated on 14A-E for minimum leakage power.
+
+4. KLANGKERNE PIPELINE: Visual flow showing:
+   Microphone Array Input → GNA 5.0 (noise suppression, speaker ID, wake-word)
+   → Klangkerne Audio Engine (processed signal, spatial rendering, output)
+   → Physical output (speakers / headphones)
+   No CPU in the loop for real-time audio AI processing.
+
+5. SPEC TABLE: Precision (INT8, BF16), Op types (GMM, 1D/2D DNN conv),
+   Key use cases, power, process, OpenVINO 5.0 compatibility.
+
+6. USE-CASE GRID (4 chips): Neural Noise Cancellation / Wake-Word Detection /
+   Speaker Identification & Separation / Acoustic Context Awareness.
+
+================================================================================
+PROMPT 4 — QUICKSYNC BIONZXR DEEP-DIVE (REPLACEMENT)
+================================================================================
+
+Create an HTML deep-dive section for the Intel × Sony QuickSync BionzXR
+media engine tile, to REPLACE the existing short OPPO Killer SignalBoost section
+that currently follows the Intelligence overview. (The Killer SignalBoost S1 will
+get its own replacement deep-dive separately.)
+
+INSERT LOCATION: After the GNA 5.0 deep-dive section and its divider.
+This section should be longer and more detailed than the existing one.
+
+CSS PREFIX: "bionz-dd-"
+ACCENT COLOR PALETTE:
+  Primary: #F87171 (Sony red)
+  Dark bg base: #080000 → #120000
+  Grid/glow: rgba(248,113,113,0.03) lines
+  Stat numbers: #FCA5A5
+  Border accents: rgba(248,113,113,0.22)
+
+COLLAB BADGE: Intel × Sony Semiconductor Solutions Corporation
+
+BACKGROUND TO RESEARCH:
+- Sony BIONZ X, BIONZ XR imaging processors used in α-series cameras (A1, A7S III, FX3, etc.)
+- Intel QuickSync history and architecture (hardware video encode/decode in Intel silicon)
+- AV2 (AOMedia Video 2) codec — world-first hardware encode claim
+- VVC/H.266 hardware encode status in competitive landscape
+- ProRes hardware encode (previously Apple Silicon exclusive pipeline)
+- VRV1/VRV2 (Intel's VR-optimised AV1/AV2 variants)
+- Sony USB-C/Thunderbolt camera tethering RAW pipeline
+- How the BionzXR lineage bridges Sony camera ISP and PC transcoding
+
+CONTENT TO COVER:
+
+1. HERO: Large headline "Camera-Grade. Codec-Complete." Eyebrow:
+   "Media Engine · QuickSync BionzXR · Intel × Sony · Intel 06E"
+   Subhead on the significance: the first camera-grade transcoder in a consumer
+   mobile APU, co-engineered between Intel QuickSync and Sony's BionzXR team.
+   Badges: "Intel × Sony", "World-First AV2 Encode", "8K ProRes", "Intel 06E",
+   "VRV1/VRV2 Native".
+
+2. STAT BLOCK (4 cells): 8× BionzXR Cores | 8K120 ProRes | 8K240 AV1 | AV2 World-First.
+
+3. TWO-COLUMN: BIONZXR HERITAGE section:
+   Left: Sony's BionzXR lineage — from BIONZ (2004 camcorders) through BIONZ X
+   (A7 III era, α-series standard) to BIONZ XR (A1, A7S III, Cinema Line FX series).
+   What BionzXR actually does in a Sony camera: real-time RAW processing, 
+   14-stop dynamic range tone mapping, 12MP/s burst processing, Real-Time Tracking AF.
+   The engineering challenge: port that silicon know-how into a co-designed tile
+   that runs inside an Intel APU package.
+   Right: How Intel QuickSync's proven fixed-function encode pipeline was extended
+   with BionzXR's codec intelligence — particularly for AV2 encode (zero prior
+   hardware implementations), H.266/VVC (complex entropy coding) and ProRes
+   (traditionally Apple Silicon exclusive).
+
+4. CODEC MATRIX: Full table showing each codec, encode/decode support,
+   max resolution/framerate, and competitive landscape (who else has it in hardware).
+   Include: AV2, AV1, H.266/VVC, H.265, H.264, VP9, VP8, ProRes, VRV1, VRV2, MPEG-4, VC-1.
+   Highlight world-first/exclusive entries.
+
+5. SONY CAMERA INTEGRATION section:
+   When a Sony α-series camera is connected via USB-C or Thunderbolt 5, the IPU 8.2
+   and BionzXR tile establish a direct RAW tether pipeline. Frames arrive as
+   uncompressed RAW sensor data; BionzXR processes them with camera-matched ISP
+   parameters. Real-world use cases: cinema-grade ProRes recording to NVMe SSD,
+   live 8K streaming via AV1, and multi-camera setups.
+
+6. VRV1 / VRV2 SECTION: What these codecs are — Intel's latency-optimised variants
+   of AV1 (VRV1) and AV2 (VRV2) designed for the VR video pipeline (stereo BVH,
+   foveal compression). Why day-one native hardware support matters for Arc GPU
+   VR rendering pipeline.
+
+7. POWER & PROCESS section: Intel 06E node choice — same as LPNPU and LPE island.
+   Why video encode is better suited to 06E (memory bandwidth patterns, thermal
+   headroom for burst encode sessions) than 04A.
+
+8. USE-CASE GRID (4 chips): Cinema Capture & Edit / Live Streaming / VR Content Creation /
+   Professional Photography Tethering.
+
+================================================================================
+PROMPT 5 — MFX QUICKSYNC LP DEEP-DIVE
+================================================================================
+
+Create an HTML deep-dive section for the Intel Eventide MFX QuickSync Low-Power
+media decode engine tile.
+
+INSERT LOCATION: After the BionzXR deep-dive and its divider.
+
+CSS PREFIX: "mfx-dd-"
+ACCENT COLOR PALETTE:
+  Primary: #C084FC (violet purple)
+  Dark bg base: #060010 → #0A0018
+  Grid/glow: rgba(192,132,252,0.03) lines
+  Stat numbers: #D8A4FF
+  Border accents: rgba(192,132,252,0.20)
+
+COLLAB BADGE: Intel (sole)
+
+CONTENT TO COVER (research Intel QuickSync history, AV2/AV1/H.266 decode status,
+low-power video decode pipeline in Lunar Lake/Panther Lake, media decode power comparison):
+
+1. HERO: Headline "Streaming Without the Tax." Eyebrow:
+   "LP Media Engine · MFX QuickSync · Intel 14A-E". Subhead on the role:
+   the always-on decode engine that handles the routine — so BionzXR stays free
+   for the extraordinary.
+
+2. STAT BLOCK: −35% Power vs PTL | AV2 Decode | 14A-E | Decode-First Design.
+
+3. TWO-COLUMN: Role division between MFX QuickSync LP and BionzXR:
+   Left: Prose explaining the architectural choice — BionzXR is a 06E tile with
+   8 high-performance cores designed for encode intensity. Running Netflix decode
+   on it all day would waste both power and encode capacity. MFX QuickSync on 14A-E
+   handles all routine decode (streaming, video calls, background capture review)
+   with the most power-efficient silicon in the package.
+   Right: Spec table — decode codecs, encode codecs (limited fallback),
+   power vs PTL QuickSync, process, max decode resolution.
+
+4. DECODE CODEC TABLE with resolution/fps per codec.
+
+5. POWER EFFICIENCY SECTION: Bar chart style comparison vs previous-gen PTL QuickSync
+   and the BionzXR tile for decode-only workloads.
+
+6. USE-CASE GRID (3 chips): Streaming Playback / Video Calls / Background Video Processing.
+
+================================================================================
+PROMPT 6 — IPU 8.2 DEEP-DIVE
+================================================================================
+
+Create an HTML deep-dive section for the Intel IPU 8.2 (Image Processing Unit)
+tile in the Eventide APU.
+
+INSERT LOCATION: After the MFX QuickSync LP deep-dive and its divider.
+
+CSS PREFIX: "ipu-dd-"
+ACCENT COLOR PALETTE:
+  Primary: #60B4FF (Intel blue)
+  Secondary: #E11D48 (Sony red accent for collab)
+  Dark bg base: #010810 → #010F20
+  Stat numbers: #7BC8FF
+  Border accents: rgba(96,180,255,0.20)
+
+COLLAB BADGE: Intel × Sony Semiconductor
+
+CONTENT TO COVER (research Intel IPU architecture in Meteor Lake/Lunar Lake,
+Sony α-series USB-C tethering, RAW ISP pipeline stages, 201MP sensor support,
+LPNPU scene AI in camera pipeline, lens correction algorithms):
+
+1. HERO: Headline "201 Megapixels. Zero Compromise." Eyebrow:
+   "Image Processing Unit · IPU 8.2 · Intel × Sony · Intel 14A-E".
+
+2. STAT BLOCK: 201 MP Max | Sony TB5 Native | LPNPU AI-Assisted | 14A-E Node.
+
+3. ISP PIPELINE SECTION: Visual/diagram walkthrough of the full pipeline stages:
+   RAW Sensor Input → Demosaic → Multi-Frame HDR Tone Mapping →
+   Multi-Band Noise Reduction → Lens Distortion Correction →
+   LPNPU Scene Classification → Output (BionzXR encode / display / RAM).
+
+4. SONY NATIVE INTEGRATION: How USB-C and Thunderbolt 5 plug-and-play works
+   with Sony α7 IV, α1 II, FX3/FX6 MK II etc. Driver architecture, latency specs,
+   and the advantage over USB3 capture cards.
+
+5. AI-ASSISTED ISP: LPNPU scene classification feeds back into ISP parameters —
+   automatic subject recognition, noise model selection per scene type.
+
+6. SPEC TABLE: Max resolution, interface support, ISP pipeline stages, AI integration.
+
+7. USE-CASE GRID (3 chips): Professional Photography / Video Production / Machine Vision.
+
+================================================================================
+PROMPT 7 — KLANGKERNE™ AUDIO ENGINE DEEP-DIVE
+================================================================================
+
+Create an HTML deep-dive section for the Intel® Klangkerne™ Audio Engine tile —
+the Intel × Bang & Olufsen co-engineered audio processor in the Eventide APU.
+
+INSERT LOCATION: After the IPU 8.2 deep-dive and its divider.
+
+CSS PREFIX: "klang-dd-"
+ACCENT COLOR PALETTE:
+  Primary: #F0B848 (Eventide gold — evokes B&O premium warmth)
+  Secondary: #C8922A (darker gold for depth)
+  Dark bg base: #050300 → #0A0600
+  Grid/glow: rgba(240,184,72,0.04) lines
+  Stat numbers: #F5C842
+  Border accents: rgba(240,184,72,0.22)
+  B&O collab accent: #FFFFFF at low opacity for clean B&O minimalism touches
+
+COLLAB BADGE: Intel × Bang & Olufsen
+
+DESIGN NOTE: This section should have a slightly more refined, premium feel to
+reflect B&O's brand DNA. Where other deep-dives go maximalist-dark-tech, this one
+should balance that with moments of breathing room and typographic elegance —
+while staying fully within the Eventide aesthetic. Think of a B&O product page
+that's been absorbed into the Eventide design system.
+
+BACKGROUND TO RESEARCH:
+- Bang & Olufsen Beosonic technology (spatial audio tuning, 2D sound space interface)
+- B&O Spatial Audio (Dolby Atmos optimised, interaural crosstalk correction)
+- B&O audio tuning philosophy: tonal balance, spatial imaging, fatigue reduction
+- Bang & Olufsen × Ford collaboration audio (Beosonic in Mustang Mach-E, F-150 etc.)
+  — note the existing Ford + Intel + B&O triangle in the Eventide conglomerate
+- Dolby Atmos architecture (object-based audio, height channels, renderer)
+- DTS:X architecture (upmixing, object audio, headphone virtualisation)
+- What "vertically integrated audio stack" means vs Realtek+WinAPI architecture
+- DirectSound / WinAPI audio path latency vs hardware-direct path
+- Intel Smart Sound Technology (SST) — what it does and how Klangkerne supersedes it
+- Intel HD Audio standard — how Klangkerne replaces this for Eventide OS
+
+CONTENT TO COVER:
+
+1. HERO: Headline "Where Silicon Meets Sound." Eyebrow:
+   "Audio Engine · Klangkerne™ · Intel × Bang & Olufsen · Intel 14A-E"
+   Subhead: The world's first fully vertically integrated audio stack on a consumer
+   APU — co-engineered between Intel's silicon teams and Bang & Olufsen's acoustic
+   and DSP engineering groups in Copenhagen.
+   Badges: "Intel × Bang & Olufsen", "Dolby Atmos", "DTS:X", "B&O Beosonic",
+   "14A-E Node", "No External Codec", "Intel × B&O Sound API".
+
+2. STAT BLOCK (4 cells): Sub-10ms Latency | Dolby Atmos + DTS:X | No External Codec |
+   Intel × B&O Sound API.
+
+3. THE PROBLEM IT SOLVES — two-column:
+   Left: Stack comparison diagram-style showing the old PC audio chain:
+   App → DirectSound/WinAPI (OS layer, adds ~30–80ms latency) →
+   Intel Smart Sound Tech (firmware layer) →
+   Intel HD Audio HDA bus →
+   Realtek/Cirrus codec (external IC, adds noise floor) →
+   Analog output.
+   Total: 3–5 component hops, shared bus, vendor firmware stacks.
+   Right: The Klangkerne path:
+   App → Intel × B&O Sound API (hardware-direct, Eventide OS native) →
+   Klangkerne tile (direct silicon path) →
+   Analog output.
+   One hop. Hardware-native latency. B&O-tuned signal path.
+   Windows mode: App → WinAPI / DirectSound → compatibility header →
+   Klangkerne (same hardware, extra OS layer).
+
+4. B&O COLLAB SECTION — what B&O contributed:
+   - Beosonic 2D sound space tuning: B&O's proprietary audio EQ paradigm
+     allowing spatial sound shaping across Warm/Energetic/Bright/Relaxed axes
+     plus fully custom control — ported from B&O loudspeaker products to the
+     Klangkerne's hardware DSP.
+   - Spatial Audio engine: B&O's interaural crosstalk correction algorithm for
+     headphones, now implemented in hardware. Optimised for Dolby Atmos object
+     audio rendering.
+   - B&O acoustic tuning: frequency response target curves, fatigue-reduction
+     DSP, multi-zone audio routing for multi-display/multi-room scenarios.
+   - Note the Ford × B&O × Intel triangle: B&O already ships Beosonic in Ford
+     Mustang Mach-E and F-150. The Eventide conglomerate includes both Ford and
+     B&O — Klangkerne is the next evolution of that partnership into silicon.
+
+5. DOLBY ATMOS SECTION: What Atmos object audio is, how the Klangkerne implements
+   the Atmos renderer in hardware (vs software render on CPU), latency improvement.
+   Mention DTS:X alongside. Reference Eventide OS having a "much better
+   Dolby Vision 2 implementation" as a signal that the OS takes media seriously.
+
+6. INTEL × B&O SOUND API section:
+   Technical description: a hardware-direct audio runtime for the Eventide OS
+   exposing: device enumeration, spatial renderer control, DSP parameter injection,
+   low-latency PCM and compressed audio streams, and Beosonic parameter API.
+   WinAPI and DirectSound compatibility headers: on Windows installations, the API
+   presents as a WinAPI-compatible audio driver — applications see a standard
+   Windows audio device, but internally audio routes to Klangkerne hardware.
+
+7. SPEC TABLE: Process, codec support (PCM, AAC, FLAC, LDAC, aptX Lossless etc.),
+   spatial audio formats, driver APIs, sample rates (up to 384kHz/32-bit),
+   dynamic range, SNR, THD+N targets.
+
+8. USE-CASE GRID (4 chips): Audiophile Playback / Studio Monitoring /
+   Spatial Gaming Audio / Video Production Audio Monitoring.
+
+================================================================================
+PROMPT 8 — EVENTIDE DISPLAY ENGINE DEEP-DIVE
+================================================================================
+
+Create an HTML deep-dive section for the Eventide Unified Display Engine tile.
+
+INSERT LOCATION: After the Klangkerne deep-dive and its divider.
+
+CSS PREFIX: "de-dd-"
+ACCENT COLOR PALETTE:
+  Primary: #2DD4BF (teal/cyan)
+  Secondary: #0F766E (darker teal)
+  Dark bg base: #010A08 → #010D0A
+  Grid/glow: rgba(45,212,191,0.03) lines
+  Stat numbers: #5EEAD4
+  Border accents: rgba(45,212,191,0.20)
+
+COLLAB BADGE: Intel (primary) — optionally pitch a display standards collab
+(VESA for DP 2.1b, HDMI Forum for HDMI 2.2, etc.) at your discretion.
+
+BACKGROUND TO RESEARCH:
+- DisplayPort 2.1b UHBR20 specifications (80 Gbps, DSC 1.2a, max resolutions)
+- eDP 1.6 specification (internal panel interface, max bandwidth, HDR support)
+- HDMI 2.2 specification (announced at CES 2024 — 96 Gbps, 10K support)
+- PCIe 6.0 bandwidth (PAM4, 64 GT/s, ×16 = ~256 GB/s) — relevance to iDP
+- HDR10+ Ultra specification (if available) / Dolby Vision 2
+- VRR (Variable Refresh Rate): VESA Adaptive Sync, HDMI VRR, Freesync Premium Pro
+- XCD-LED DIAC (Direct In-Array Color) technology — mention as a Sony XCDLED use case
+- What "no MUX switch" means architecturally in a multi-GPU APU context
+- iDP 1.0 is Intel's in-house derivative of eDP 2.0 running over PCIe 6.0 ×16×3
+  (explain what ×16×3 means: three independent ×16 PCIe 6.0 lanes = 768 Gbps raw
+   PCIe bandwidth dedicated to display). This is why 16K@1200Hz is physically possible.
+- Codec signal transport: VRV1/VRV2 over iDP — when raw 16K@1200Hz 96-bit data
+  exceeds the PCIe 6.0 ×16×3 bandwidth ceiling at extreme specs, VRV2 compressed
+  transport fills the gap. Explain the math.
+- 96-bit color depth: RGB (32-bit per channel) + MCY (Cyan+Yellow chroma correction
+  channels) — explain what MCY adds and why it matters for micro-LED and QD-OLED.
+
+CONTENT TO COVER:
+
+1. HERO: Headline "One Controller. Six Displays. No Limits." Eyebrow:
+   "Unified Display Engine · Intel 14A-E". Subhead on unified multi-GPU display
+   control — the architectural reason Eventide doesn't need a MUX switch.
+
+2. STAT BLOCK (4 cells): 6 Simultaneous Displays | 16K@1200Hz (iDP) |
+   96-bit Color (MCY) | No MUX Required.
+
+3. THE NO-MUX ARCHITECTURE section:
+   Why other laptops with discrete+integrated GPUs need a MUX switch
+   (display ownership is tied to the GPU producing frames).
+   How the Unified Display Engine breaks that coupling:
+   display controller is fully independent of render pipeline. Any GPU can
+   render to any display simultaneously through the unified fabric.
+   Practical examples: Wallpaper Engine on LPiGPU while gaming on HPiGPU /
+   Video streaming on 2DKR while render preview on Elementalist.
+
+4. iDP 1.0 DEEP-DIVE section:
+   Intel Display Protocol 1.0 — an in-house evolution of eDP, tunnelled over
+   PCIe 6.0 ×16×3. What ×16×3 means (three independent ×16 PCIe 6.0 lanes).
+   Why PCIe 6.0 was chosen (PAM4 signalling, 64 GT/s per lane vs PCIe 5.0's 32).
+   16K×9600@1200Hz 96-bit math: raw = ~4.7 Tbps; PCIe 6.0 ×16×3 theoretical
+   peak ~786 Gbps. At extreme specs, VRV2 compression fills the gap.
+   Mention Sony XCDLED as the target device for iDP 2×.
+
+5. OUTPUT INTERFACE TABLE: iDP 1.0, DP 2.1b UHBR20, eDP 1.6, HDMI 2.2.
+   For each: max resolution, max refresh, max color depth, connector/protocol,
+   HDR support, VRR support.
+
+6. 96-BIT COLOR SECTION:
+   Explain RGB+MCY — 32-bit R/G/B plus 16-bit Cyan and 16-bit Yellow correction
+   channels. Why micro-LED (Sony XCDLED) benefits from this: spectral gamut
+   correction beyond BT.2020 without metamerism artifacts.
+   HDR10+ Ultra and Dolby Vision 2 on iDP.
+
+7. HDR & VRR SECTION: Full VRR (VESA Adaptive Sync + HDMI VRR),
+   XCD-LED DIAC with VRR, HDR10+ Ultra, Dolby Vision 2.
+
+8. USE-CASE GRID (4 chips): Multi-Monitor Workstation / 16K Micro-LED Display /
+   VR Headset Output / Content Creation Studio.
+
+================================================================================
+PROMPT 9 — KILLER SIGNALBOOST S1 DEEP-DIVE (REPLACEMENT)
+================================================================================
+
+Create a full replacement HTML deep-dive section for the Intel Killer SignalBoost S1
+connectivity tile. This REPLACES the existing short Killer SignalBoost section
+currently in the brochure file (the <div class="oppo-wrap"> block).
+
+INSERT LOCATION: After the Display Engine deep-dive and its divider.
+Remove the old oppo-wrap div and replace entirely with this section.
+
+CSS PREFIX: "s1-dd-"
+ACCENT COLOR PALETTE:
+  Primary: #4ADE80 (green — network/connectivity)
+  Secondary: #16A34A (darker green)
+  Dark bg base: #010A04 → #020E06
+  Grid/glow: rgba(74,222,128,0.03) lines
+  Stat numbers: #86EFAC
+  Border accents: rgba(74,222,128,0.20)
+
+COLLAB BADGE: Intel Killer × OPPO Semiconductor (BBK Electronics)
+
+BACKGROUND TO RESEARCH:
+- Intel Killer WiFi 7 (BE1750x/BE200) — Killer Prioritization Engine, Killer
+  Intelligence Engine, DoubleShot Pro, Smart AP Selection, gaming traffic
+  classification, latency management under load (~30ms consistent gaming latency
+  with Killer Engine active vs 80–160ms spikes without)
+- Intel WiFi 7 (802.11be) — Multi-Link Operation (MLO), 320 MHz channel width,
+  4K-QAM, EHT, 5.8 Gbps theoretical per chip, tri-band (2.4/5/6 GHz)
+- OPPO SignalBoost X1 chip — dynamic signal source changer, +25% WiFi TX power,
+  115m coverage, AI LinkBoost with WiFi Positioning, cloud game signal algorithm,
+  1-bar gameplay, TÜV Rheinland High Network Performance certified
+- NOTE: The Eventide chip is named S1 (not X1) — it is a next-generation
+  co-development building on both the OPPO X1's signal engineering and
+  Intel Killer's gaming intelligence, integrated into a single APU tile
+- Intel SONAR: WiFi signal as proximity radar for user presence detection
+- WiFi 7 Multi-Link Operation: how MLO allows simultaneous use of multiple bands
+- Bluetooth 6.2 Core specification improvements
+- 5G Sub-6 / mmWave integration in mobile chipsets
+
+CONTENT TO COVER:
+
+1. HERO: Headline "Eight Bands. One Intelligence." Eyebrow:
+   "Wireless · Killer SignalBoost S1 · Intel × OPPO · Intel 14A-E".
+   Subhead on the co-development story: Intel Killer's gaming network intelligence
+   meets OPPO Semiconductor's signal engineering expertise in a single integrated tile.
+   Badges: "Intel Killer", "OPPO Semiconductor", "WiFi 7 (802.11be)",
+   "5G mmWave + Sub-6", "Bluetooth Core 6.2", "SONAR Presence", "14A-E".
+
+2. STAT BLOCK (4 cells): 8 Bands (2× chip) | 11.5 Gbps Combined |
+   360° LinkBoost | <30ms Gaming Latency.
+
+3. TWO-COLUMN: THE COLLAB story:
+   Left: Intel Killer heritage — Killer Prioritization Engine (packet-level
+   gaming traffic classification), Killer Intelligence Engine (network environment
+   analysis, Smart AP Selection), DoubleShot Pro (simultaneous multi-adapter
+   throughput aggregation). What this intelligence means: gaming latency stays
+   ~30ms even when heavy downloads run concurrently.
+   Right: OPPO SignalBoost heritage — the X1 chip (2024, Reno13 series) proved
+   hardware-level signal optimisation: +25% TX power boost, 115m effective range,
+   AI LinkBoost for band/channel dynamic switching, 1-bar playability, cloud game
+   signal algorithm. The S1 takes these OPPO innovations and re-engineers them
+   for the Eventide APU package on Intel 14A-E.
+
+4. WIFI 7 TECHNOLOGY SECTION:
+   Multi-Link Operation (MLO): simultaneous use of multiple bands for
+   latency + throughput simultaneously. 320 MHz channel width (vs 160 MHz WiFi 6E).
+   4K-QAM (vs 1024-QAM). EHT (Extremely High Throughput). Per-chip bandwidth.
+   With 2× S1 chips: 8 bands available — Killer Engine can aggregate or
+   segregate bands by traffic type (gaming → dedicated low-latency band,
+   downloads → high-throughput band).
+
+5. DUAL-CHIP CONFIGURATION section:
+   Spec card for 1× S1 (standard) and 2× S1 (X500 class).
+   With 2× chips: 8 total bands, dual 360° LinkBoost antennae, doubled
+   diversity gain, full spatial separation of gaming vs background traffic.
+
+6. SONAR PRESENCE DETECTION section:
+   WiFi signal as radar — Doppler shift analysis on reflected 5/6 GHz signals
+   detects human presence at up to ~3m. LPNPU processes signal with near-zero
+   power. Display wakes as user approaches. Dims when user leaves.
+
+7. 5G INTEGRATION: Sub-6 / mmWave dual-mode, VoLTE, carrier aggregation.
+   Use case for Eventide as a device capable of operating without WiFi infrastructure.
+
+8. KILLER INTELLIGENCE CENTER: Software layer — monitoring, recommendations,
+   traffic visualisation, manual prioritisation controls.
+
+9. SPEC TABLE: Full specs — WiFi standard, channels, max throughput, MIMO,
+   Bluetooth, 5G, antenna, SONAR, process, power.
+
+10. USE-CASE GRID (4 chips): Competitive Gaming / Content Creator Upload /
+    Remote Work on 5G / Always-On SONAR Presence.
+
+================================================================================
+PROMPT 10 — I/O CONTROLLER TILE DEEP-DIVE
+================================================================================
+
+Create an HTML deep-dive section for the Eventide I/O Controller Tile.
+
+INSERT LOCATION: After the Killer SignalBoost S1 deep-dive and its divider.
+
+CSS PREFIX: "io-dd-"
+ACCENT COLOR PALETTE:
+  Primary: #A3E635 (acid green — connectivity/wired)
+  Secondary: #65A30D
+  Dark bg base: #030701 → #060E02
+  Grid/glow: rgba(163,230,53,0.03) lines
+  Stat numbers: #BEF264
+  Border accents: rgba(163,230,53,0.18)
+
+COLLAB BADGE: Intel (sole)
+
+BACKGROUND TO RESEARCH:
+- Thunderbolt 6: based on USB4 v2 (80 Gbps), expected 160 Gbps symmetric
+  bandwidth, Bandwidth Boost to 240 Gbps unidirectional for display-intensive use,
+  PCIe Gen 5 tunnelling (vs Gen 4 in TB5), DP 2.1 UHBR20 support, up to 4 ports,
+  backward compatible with TB3/4/5 and USB4. (Note: TB6 was not fully publicly
+  announced as of late 2025 — treat as the next logical step from TB5's 80/120 Gbps.)
+- PCIe 6.0 specification: PAM4 signalling, 64 GT/s per lane, 2× bandwidth of PCIe 5.0
+- NVMe 3.0 (PCIe 6.0 ×4): theoretical ~24 GB/s sequential read
+- USB4 Gen 5 (80 Gbps) — same physical as USB4 v2
+- Intel 2.5GbE: integrated Ethernet in modern Intel platforms
+- Intel Need Technologies (name this as an Eventide-specific QoS framework for
+  the I/O tile — Intel's real equivalent is platform QoS/IOMMU, but frame "Need"
+  as the Eventide brand name for TB6 bandwidth arbitration)
+- DMA protection, VT-d, Thunderbolt DMA security
+- Intel vPro Active Management Technology (AMT) — works with the PSM tile
+
+CONTENT TO COVER:
+
+1. HERO: Headline "Every Wire. Every Protocol. One Tile." Eyebrow:
+   "I/O Controller · Intel 14A-E". Subhead on the role: all wired connectivity
+   from a single isolated tile — Thunderbolt 6, PCIe 6.0, NVMe 3.0, USB4 Gen 5,
+   2.5GbE — with Intel Need Technologies ensuring bandwidth is always allocated
+   to what matters most.
+
+2. STAT BLOCK: 160 Gbps TB6 | 240 Gbps Boost | 24 GB/s NVMe | 4× TB6 Ports.
+
+3. THUNDERBOLT 6 DEEP-DIVE section:
+   TB6 vs TB5 comparison (80/120 Gbps → 160/240 Gbps). PCIe Gen 5 tunnelling
+   (vs Gen 4 in TB5). DP 2.1 UHBR20 tunnel. Bandwidth Boost: 240 Gbps when a
+   display-intensive downstream device triggers asymmetric allocation.
+   Up to 4× TB6 ports. Full backward compatibility chain.
+
+4. PCIe 6.0 SECTION:
+   PAM4 signalling, 64 GT/s, ×4 for NVMe = ~24 GB/s. Role as the backbone
+   for NVMe SSDs and high-bandwidth peripherals. How PCIe 6.0 also feeds the
+   iDP display protocol (separate lane pool from the I/O tile's PCIe allocation).
+
+5. INTEL NEED TECHNOLOGIES:
+   QoS framework built into the I/O tile controller. When TB6 bandwidth is
+   contested, Need Technologies enforces latency-critical priority order:
+   1) Display tunnels (iDP/DP) 2) Audio (Klangkerne) 3) Storage (NVMe)
+   4) PCIe peripherals 5) USB bulk transfer. Prevents display tearing and audio
+   dropouts under maximum I/O load.
+
+6. SPEC TABLE: All interfaces, speeds, lane counts, max port counts, protocols.
+
+7. SECURITY IN I/O section: DMA protection via VT-d, DMA remapping (works with
+   PSM tile), Thunderbolt DMA security certification (all TB6 devices must pass
+   Intel DMA security testing), VT-d IOMMU per TB6 port.
+
+8. USE-CASE GRID (4 chips): External GPU / 24 GB/s External SSD / 16K Display
+   via iDP over TB6 / Daisy-Chain Studio Peripherals.
+
+================================================================================
+PROMPT 11 — PSM TILE DEEP-DIVE (Platform Security & Management)
+================================================================================
+
+Create an HTML deep-dive section for the Eventide PSM (Platform Security &
+Management) Tile.
+
+INSERT LOCATION: After the I/O Controller deep-dive and its divider.
+
+CSS PREFIX: "psm-dd-"
+ACCENT COLOR PALETTE:
+  Primary: #F87171 (red — security/alert)
+  Secondary: #991B1B
+  Dark bg base: #080000 → #0F0000
+  Grid/glow: rgba(248,113,113,0.03) lines
+  Stat numbers: #FCA5A5
+  Border accents: rgba(248,113,113,0.20)
+
+COLLAB BADGE: Intel (primary) + Microsoft (Pluton) — note EGP is Intel in-house
+
+BACKGROUND TO RESEARCH:
+- Intel CSME (Converged Security and Management Engine): what it is, what it does
+  (secure boot, hardware DRM, AMT out-of-band management, firmware signing,
+  runs continuously even when system is off as long as power is present)
+- Intel Silicon Security Engine (SSE): silicon root of trust, hardware FW loading,
+  on-tile certification authority, measurement and attestation
+- Microsoft Pluton 2.1: hardware TPM 2.1 integrated into CPU die, firmware update
+  via Windows Update, protects against physical memory attacks, stores encryption
+  keys isolated from CPU/RAM, resists firmware-level attacks
+- Intel vPro hardware features: AMT, TDT (Threat Detection Technology) with AI,
+  CET (Control-Flow Enforcement Technology), VT-d, boot guard
+- Intel Threat Detection Technology (TDT): AI-based ransomware/cryptojacking
+  detection using performance counters, runs on NPU+hardware performance monitor
+- Intel CET: hardware control-flow enforcement (shadow stack, indirect branch tracking)
+- NIST SP800-193 Platform Firmware Resiliency — what it requires
+- Intel Boot Guard: verified UEFI boot, measured boot chain
+- Intel Key Locker: AES key handle system protecting encryption keys in silicon
+- EGP (Eventide Guardian Protocol): this is your in-house invention — model it as
+  a silicon Root of Trust built into the PSM tile exclusively for the Eventide OS
+  security model. Core functions: on-tile AES-256 key vault (never leaves tile),
+  secure boot measurement chain for Eventide OS, per-app hardware attestation tokens,
+  anti-rollback version enforcement for all firmware. EGP works independently of
+  Pluton — dual-root-of-trust architecture for Xeon 500 class deployments.
+
+CONTENT TO COVER:
+
+1. HERO: Headline "Security Beneath the Software." Eyebrow:
+   "Platform Security & Management · PSM Tile · Intel 14A-E". Subhead on the
+   principle: security hardware that runs independent of any OS, any firmware,
+   any attack surface — isolated in its own tile with its own power domain.
+
+2. STAT BLOCK (4 cells): Dual Root of Trust | TPM 2.1 (Pluton) |
+   Intel CSME 2.0 | vPro® Certified.
+
+3. DUAL ROOT OF TRUST ARCHITECTURE:
+   Visual showing EGP (Eventide OS path) and Pluton 2.1 (Windows path)
+   operating in parallel with separate key stores and measurement chains.
+   Why dual-root matters for Xeon 500 class deployments (enterprise can choose
+   EGP for their fleet attestation model).
+
+4. EGP — EVENTIDE GUARDIAN PROTOCOL section:
+   Intel-developed silicon root of trust for the Eventide OS. On-tile AES-256
+   key vault (keys never leave the PSM tile). Secure boot measurement chain
+   (each boot component is measured and logged; any deviation triggers halt).
+   Per-application hardware attestation token generation (apps can request
+   a hardware-signed proof of execution environment). Anti-rollback version
+   enforcement. EGP is the foundation of Eventide OS's hardware security model.
+
+5. MICROSOFT PLUTON 2.1 section:
+   What Pluton adds for Windows compatibility — hardware TPM 2.1 functions,
+   Windows Hello hardware root, credential isolation, BitLocker key storage,
+   firmware updates via Windows Update. Coexistence with EGP.
+
+6. INTEL CSME 2.0 section:
+   Out-of-band management (AMT): manage the system remotely even when OS is
+   crashed or powered off (as long as power present). Hardware DRM root.
+   Secure firmware loading for all tiles. CSME power domain.
+
+7. INTEL VPRO & TDT section:
+   vPro platform requirement for Xeon 500 class. TDT: AI-assisted threat
+   detection using hardware performance counters — detects ransomware,
+   cryptojacking, and software supply chain attacks before they reach the OS.
+   MITRE ATT&CK framework mapping (150+ attack behaviors covered).
+
+8. ADDITIONAL SECURITY FEATURES LIST:
+   Intel CET (shadow stack, IBT), Intel Boot Guard, Intel Key Locker,
+   NIST SP800-193 FPR compliance, VT-d DMA protection, Intel SGX-NG
+   (secure enclave next-gen for Eventide OS trusted execution).
+
+9. SPEC TABLE: All PSM tile features, standards, certifications.
+
+10. USE-CASE GRID (3 chips): Enterprise Fleet Management / Hardware-Attested AI /
+    Secure Content Pipeline (DRM).
+
+================================================================================
+PROMPT 12 — ZAM MEMORY CONTROLLER DEEP-DIVE (OVERVIEW SYNTHESIS)
+================================================================================
+
+NOTE: The ZAM deep-dive already exists in the brochure (the .zam-dd-wrap section
+with its full architectural deep-dive on the ZAM memory technology).
+
+Do NOT create a new deep-dive section for memory. The ZAM section already covers
+the memory controller tile in full detail. The overview card in the Tile Mosaic
+section above synthesises the key facts for the mosaic, and deep readers are
+directed to the existing ZAM section.
+
+NO ACTION NEEDED FOR THIS PROMPT.
+This note is here so you remember not to accidentally duplicate the ZAM section.
+
+================================================================================
+END OF PROMPT DOCUMENT
+================================================================================
+
+INSERTION ORDER SUMMARY (for reference when integrating into main file):
+
+[Existing content up to GPU Product Cards section]
+  ↓
+[Tile Mosaic Overview Section]  ← new file: eventide_tile_mosaic_overview.html
+  ↓ section-divider
+[HNPU Deep-Dive]  ← Prompt 1
+  ↓ section-divider
+[LPNPU Deep-Dive]  ← Prompt 2
+  ↓ section-divider
+[GNA 5.0 Deep-Dive]  ← Prompt 3
+  ↓ section-divider
+[QuickSync BionzXR Deep-Dive]  ← Prompt 4
+  ↓ section-divider
+[MFX QuickSync LP Deep-Dive]  ← Prompt 5
+  ↓ section-divider
+[IPU 8.2 Deep-Dive]  ← Prompt 6
+  ↓ section-divider
+[Klangkerne™ Audio Engine Deep-Dive]  ← Prompt 7
+  ↓ section-divider
+[Eventide Display Engine Deep-Dive]  ← Prompt 8
+  ↓ section-divider
+[Killer SignalBoost S1 Deep-Dive]  ← Prompt 9 (replaces old oppo-wrap section)
+  ↓ section-divider
+[I/O Controller Tile Deep-Dive]  ← Prompt 10
+  ↓ section-divider
+[PSM Tile Deep-Dive]  ← Prompt 11
+  ↓ section-divider
+[ZAM Deep-Dive]  ← already exists in file, no changes needed
+  ↓
+[Spec Table section]
+  ↓
+[Footer]

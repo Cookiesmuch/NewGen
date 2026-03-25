@@ -1,0 +1,745 @@
+    <!-- Z-ANGLE MEMORY: ipu-dd- | IPU Deep-Dive Section -->
+    <style>
+        .ipu-dd-wrap {
+            max-width: none;
+            margin: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #010810 0%, #010F20 100%);
+            padding: 64px 48px;
+            position: relative;
+        }
+
+        .ipu-dd-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .ipu-dd-hero {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 60px 40px;
+            background: rgba(96, 180, 255, 0.05);
+            border: 1px solid rgba(96, 180, 255, 0.20);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ipu-dd-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(96, 180, 255, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .ipu-dd-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .ipu-dd-eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #60B4FF;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .ipu-dd-headline {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 56px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #60B4FF 0%, #7BC8FF 50%, #E11D48 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ipu-dd-subheadline {
+            font-size: 18px;
+            color: #A0A8B3;
+            font-weight: 500;
+        }
+
+        /* ===== STAT BLOCK ===== */
+        .ipu-dd-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+            padding: 40px;
+            background: rgba(96, 180, 255, 0.03);
+            border: 1px solid rgba(96, 180, 255, 0.15);
+            border-radius: 12px;
+        }
+
+        .ipu-dd-stat {
+            text-align: center;
+        }
+
+        .ipu-dd-stat-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 42px;
+            color: #7BC8FF;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .ipu-dd-stat-label {
+            font-size: 14px;
+            color: #A0A8B3;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        /* ===== SECTION STYLES ===== */
+        .ipu-dd-section {
+            margin-bottom: 50px;
+            padding: 40px;
+            background: rgba(1, 15, 32, 0.5);
+            border: 1px solid rgba(96, 180, 255, 0.15);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .ipu-dd-section:hover {
+            border-color: rgba(96, 180, 255, 0.35);
+            background: rgba(96, 180, 255, 0.04);
+        }
+
+        .ipu-dd-section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            color: #60B4FF;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ipu-dd-section-title::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 30px;
+            background: linear-gradient(180deg, #60B4FF 0%, #E11D48 100%);
+            border-radius: 3px;
+        }
+
+        .ipu-dd-section-subtitle {
+            font-size: 16px;
+            color: #A0A8B3;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .ipu-dd-section-text {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #D4D8DF;
+            margin-bottom: 16px;
+        }
+
+        /* ===== PIPELINE DIAGRAM ===== */
+        .ipu-dd-pipeline {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 32px 0;
+        }
+
+        .ipu-dd-pipeline-stage {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: rgba(96, 180, 255, 0.08);
+            border-left: 4px solid #60B4FF;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .ipu-dd-pipeline-stage:hover {
+            background: rgba(96, 180, 255, 0.15);
+            border-left-color: #E11D48;
+            transform: translateX(8px);
+        }
+
+        .ipu-dd-pipeline-number {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #60B4FF 0%, #7BC8FF 100%);
+            border-radius: 50%;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            color: #010810;
+            font-weight: 700;
+        }
+
+        .ipu-dd-pipeline-content {
+            flex: 1;
+        }
+
+        .ipu-dd-pipeline-name {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 14px;
+            color: #60B4FF;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .ipu-dd-pipeline-desc {
+            font-size: 14px;
+            color: #A0A8B3;
+            line-height: 1.6;
+        }
+
+        /* ===== INTEGRATION SECTION ===== */
+        .ipu-dd-integration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+
+        .ipu-dd-integration-card {
+            padding: 24px;
+            background: rgba(96, 180, 255, 0.06);
+            border: 1px solid rgba(96, 180, 255, 0.15);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .ipu-dd-integration-card:hover {
+            background: rgba(225, 29, 72, 0.08);
+            border-color: rgba(225, 29, 72, 0.25);
+        }
+
+        .ipu-dd-integration-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            color: #E11D48;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .ipu-dd-integration-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            color: #60B4FF;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .ipu-dd-integration-desc {
+            font-size: 14px;
+            color: #A0A8B3;
+            line-height: 1.7;
+        }
+
+        /* ===== COLLAB BADGE ===== */
+        .ipu-dd-collab-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, rgba(96, 180, 255, 0.1) 0%, rgba(225, 29, 72, 0.1) 100%);
+            border: 1px solid rgba(96, 180, 255, 0.2);
+            border-radius: 24px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            color: #60B4FF;
+            letter-spacing: 0.5px;
+            margin-bottom: 24px;
+        }
+
+        .ipu-dd-collab-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #E11D48;
+            border-radius: 50%;
+        }
+
+        /* ===== SPEC TABLE ===== */
+        .ipu-dd-spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 32px 0;
+        }
+
+        .ipu-dd-spec-table th {
+            text-align: left;
+            padding: 16px;
+            background: rgba(96, 180, 255, 0.1);
+            border-bottom: 2px solid rgba(96, 180, 255, 0.2);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            color: #60B4FF;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .ipu-dd-spec-table td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(96, 180, 255, 0.1);
+            font-size: 14px;
+            color: #D4D8DF;
+        }
+
+        .ipu-dd-spec-table tr:hover td {
+            background: rgba(96, 180, 255, 0.05);
+        }
+
+        .ipu-dd-spec-label {
+            color: #60B4FF;
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 600;
+        }
+
+        .ipu-dd-spec-value {
+            color: #7BC8FF;
+        }
+
+        /* ===== USE-CASE GRID ===== */
+        .ipu-dd-usecase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+
+        .ipu-dd-usecase-card {
+            padding: 32px;
+            background: linear-gradient(135deg, rgba(96, 180, 255, 0.08) 0%, rgba(225, 29, 72, 0.04) 100%);
+            border: 1px solid rgba(96, 180, 255, 0.15);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .ipu-dd-usecase-card:hover {
+            border-color: rgba(96, 180, 255, 0.35);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(96, 180, 255, 0.1);
+        }
+
+        .ipu-dd-usecase-icon {
+            font-size: 42px;
+            margin-bottom: 16px;
+        }
+
+        .ipu-dd-usecase-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            color: #60B4FF;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .ipu-dd-usecase-desc {
+            font-size: 14px;
+            color: #A0A8B3;
+            line-height: 1.7;
+        }
+
+        .ipu-dd-usecase-features {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(96, 180, 255, 0.1);
+        }
+
+        .ipu-dd-usecase-feature {
+            font-size: 13px;
+            color: #7BC8FF;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ipu-dd-usecase-feature::before {
+            content: '✓';
+            color: #E11D48;
+            font-weight: bold;
+        }
+
+        /* ===== DIVIDER ===== */
+        .ipu-dd-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(96, 180, 255, 0.2) 50%, transparent 100%);
+            margin: 60px 0;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .ipu-dd-headline {
+                font-size: 36px;
+            }
+
+            .ipu-dd-section-title {
+                font-size: 24px;
+            }
+
+            .ipu-dd-stats {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 30px;
+            }
+
+            .ipu-dd-hero {
+                padding: 40px 24px;
+            }
+
+            .ipu-dd-section {
+                padding: 30px 24px;
+            }
+
+            .ipu-dd-usecase-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <!-- INSERT LOCATION: After the MFX QuickSync LP deep-dive and its divider -->
+
+    <div class="ipu-dd-wrap">
+        <!-- ===== HERO ===== -->
+        <section class="ipu-dd-hero">
+            <div class="ipu-dd-hero-content">
+                <div class="ipu-dd-eyebrow">Image Processing Unit · IPU 8.2 · Intel × Sony · Intel 14A-E</div>
+                <h1 class="ipu-dd-headline">201 Megapixels. Zero Compromise.</h1>
+                <p class="ipu-dd-subheadline">Professional image acquisition, AI-assisted scene classification, and native Sony integration in a single tile.</p>
+            </div>
+        </section>
+
+        <!-- ===== STAT BLOCK ===== -->
+        <section class="ipu-dd-stats">
+            <div class="ipu-dd-stat">
+                <div class="ipu-dd-stat-value">201 MP</div>
+                <div class="ipu-dd-stat-label">Max Resolution</div>
+            </div>
+            <div class="ipu-dd-stat">
+                <div class="ipu-dd-stat-value">Thunderbolt 5</div>
+                <div class="ipu-dd-stat-label">Native Sony TB5</div>
+            </div>
+            <div class="ipu-dd-stat">
+                <div class="ipu-dd-stat-value">8 Stages</div>
+                <div class="ipu-dd-stat-label">ISP Pipeline Depth</div>
+            </div>
+            <div class="ipu-dd-stat">
+                <div class="ipu-dd-stat-value">AI-Assisted</div>
+                <div class="ipu-dd-stat-label">LPNPU Scene AI</div>
+            </div>
+        </section>
+
+        <!-- ===== ISP PIPELINE SECTION ===== -->
+        <section class="ipu-dd-section">
+            <div class="ipu-dd-collab-badge">Intel × Sony Semiconductor</div>
+            <h2 class="ipu-dd-section-title">RAW ISP Pipeline Architecture</h2>
+            <p class="ipu-dd-section-subtitle">Eight-stage photographic processing pipeline optimized for Sony α-series native workflows.</p>
+
+            <p class="ipu-dd-section-text">
+                The IPU 8.2 implements a complete ISP (Image Signal Processor) pipeline, from raw sensor input through final output compression. Each stage is hardware-accelerated and designed to preserve maximum color information and dynamic range while preparing images for professional post-processing or direct distribution.
+            </p>
+
+            <div class="ipu-dd-pipeline">
+                <div class="ipu-dd-pipeline-stage">
+                    <div class="ipu-dd-pipeline-number">1</div>
+                    <div class="ipu-dd-pipeline-content">
+                        <div class="ipu-dd-pipeline-name">RAW Sensor Input</div>
+                        <div class="ipu-dd-pipeline-desc">Direct Bayer CFA readout from Sony α imaging array; up to 201 MP untouched sensor data stream.</div>
+                    </div>
+                </div>
+
+                <div class="ipu-dd-pipeline-stage">
+                    <div class="ipu-dd-pipeline-number">2</div>
+                    <div class="ipu-dd-pipeline-content">
+                        <div class="ipu-dd-pipeline-name">Demosaic & White Balance</div>
+                        <div class="ipu-dd-pipeline-desc">Bayer-to-RGB conversion with context-aware interpolation; AWB calibration against Sony FCI metadata.</div>
+                    </div>
+                </div>
+
+                <div class="ipu-dd-pipeline-stage">
+                    <div class="ipu-dd-pipeline-number">3</div>
+                    <div class="ipu-dd-pipeline-content">
+                        <div class="ipu-dd-pipeline-name">Multi-Frame HDR Tone Mapping</div>
+                        <div class="ipu-dd-pipeline-desc">Alignment and fusion of exposure brackets; local and global tone operators preserve shadow and highlight detail.</div>
+                    </div>
+                </div>
+
+                <div class="ipu-dd-pipeline-stage">
+                    <div class="ipu-dd-pipeline-number">4</div>
+                    <div class="ipu-dd-pipeline-content">
+                        <div class="ipu-dd-pipeline-name">Multi-Band Noise Reduction</div>
+                        <div class="ipu-dd-pipeline-desc">Wavelet and frequency-domain denoising; spatial-spectral filtering tuned per Sony sensor profile.</div>
+                    </div>
+                </div>
+
+                <div class="ipu-dd-pipeline-stage">
+                    <div class="ipu-dd-pipeline-number">5</div>
+                    <div class="ipu-dd-pipeline-content">
+                        <div class="ipu-dd-pipeline-name">Lens Distortion Correction</div>
+                        <div class="ipu-dd-pipeline-desc">Geometric rectification from lens LUT; supports Sony FE, RF, and third-party mount profiles.</div>
+                    </div>
+                </div>
+
+                <div class="ipu-dd-pipeline-stage">
+                    <div class="ipu-dd-pipeline-number">6</div>
+                    <div class="ipu-dd-pipeline-content">
+                        <div class="ipu-dd-pipeline-name">LPNPU Scene Classification</div>
+                        <div class="ipu-dd-pipeline-desc">Real-time AI inference: subject detection, lighting conditions, motion blur risk; feeds back to ISP parameters.</div>
+                    </div>
+                </div>
+
+                <div class="ipu-dd-pipeline-stage">
+                    <div class="ipu-dd-pipeline-number">7</div>
+                    <div class="ipu-dd-pipeline-content">
+                        <div class="ipu-dd-pipeline-name">Color Grading & Output Scaling</div>
+                        <div class="ipu-dd-pipeline-desc">Rec. 2020 color space preparation; scaling to user-selected resolution for display or archival.</div>
+                    </div>
+                </div>
+
+                <div class="ipu-dd-pipeline-stage">
+                    <div class="ipu-dd-pipeline-number">8</div>
+                    <div class="ipu-dd-pipeline-content">
+                        <div class="ipu-dd-pipeline-name">Encode & Output</div>
+                        <div class="ipu-dd-pipeline-desc">Hardware video encode (H.265/VP9) or lossless frame output to RAM/SSD; native BionzXR codec support.</div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="ipu-dd-section-text">
+                Each stage operates in parallel where possible, with intermediate results cached for rapid scene re-analysis. The pipeline is fully configurable: photographers can lock specific stages (e.g., white balance) while letting others adapt to scene conditions in real time.
+            </p>
+        </section>
+
+        <!-- ===== SONY NATIVE INTEGRATION ===== -->
+        <section class="ipu-dd-section">
+            <h2 class="ipu-dd-section-title">Sony Native Integration & Thunderbolt 5</h2>
+            <p class="ipu-dd-section-subtitle">Plug-and-play tethering with α7 IV, α1 II, FX3/FX6 MK II, and all Sony TB5-enabled cameras.</p>
+
+            <div class="ipu-dd-integration-grid">
+                <div class="ipu-dd-integration-card">
+                    <div class="ipu-dd-integration-label">Driver Architecture</div>
+                    <div class="ipu-dd-integration-title">Native USB-C Tunneling</div>
+                    <div class="ipu-dd-integration-desc">
+                        IPU 8.2 enumerates as a USB 3.2 Gen 2x2 device (20 Gbps) over Thunderbolt 5 alt-mode. Sony α-series cameras recognize the IPU as a subordinate processor; metadata (focal length, ISO, aperture) flows bidirectionally.
+                    </div>
+                </div>
+
+                <div class="ipu-dd-integration-card">
+                    <div class="ipu-dd-integration-label">Latency Specification</div>
+                    <div class="ipu-dd-integration-title">Sub-100ms End-to-End</div>
+                    <div class="ipu-dd-integration-desc">
+                        Raw frame ingestion to processed output: &lt;85 ms for 24 MP at full quality. Enables live view preview on external monitors with minimal lag; critical for focus peaking and exposure check workflows.
+                    </div>
+                </div>
+
+                <div class="ipu-dd-integration-card">
+                    <div class="ipu-dd-integration-label">Competitive Advantage</div>
+                    <div class="ipu-dd-integration-title">Beyond USB3 Capture Cards</div>
+                    <div class="ipu-dd-integration-desc">
+                        Traditional USB3 capture cards are passive bridges. IPU 8.2 is an active processor: it applies real-time ISP correction, AI-assisted framing hints, and BionzXR compression before transmission. Dramatically lower CPU load on host.
+                    </div>
+                </div>
+
+                <div class="ipu-dd-integration-card">
+                    <div class="ipu-dd-integration-label">Camera Support</div>
+                    <div class="ipu-dd-integration-title">α7 IV Series & Beyond</div>
+                    <div class="ipu-dd-integration-desc">
+                        Backward compatible with Sony α7 IV (via USB-C hub adapter); native Thunderbolt 5 support in α1 II, FX3, FX6 MK II. Single USIC (Universal Serial Interface Controller) negotiates all framing, pipeline tuning, and metadata exchange.
+                    </div>
+                </div>
+            </div>
+
+            <p class="ipu-dd-section-text">
+                Sony's proprietary FCI (Fast Compact Interface) metadata protocol is natively supported. The IPU learns lens correction profiles on first connection to a new lens; these profiles persist locally on the APU and are automatically applied to future captures with that lens+camera combo.
+            </p>
+        </section>
+
+        <!-- ===== AI-ASSISTED ISP ===== -->
+        <section class="ipu-dd-section">
+            <h2 class="ipu-dd-section-title">LPNPU Scene Classification & Adaptive ISP</h2>
+            <p class="ipu-dd-section-subtitle">AI-assisted imaging: real-time scene understanding optimizes ISP parameters on the fly.</p>
+
+            <p class="ipu-dd-section-text">
+                The IPU 8.2 partners with the APU's LPNPU (Low Power Neural Processing Unit) to perform real-time scene analysis during image capture. Within 40ms of sensor readout, the LPNPU classifies:
+            </p>
+
+            <div class="ipu-dd-integration-grid">
+                <div class="ipu-dd-integration-card">
+                    <div class="ipu-dd-integration-label">Scene Recognition</div>
+                    <div class="ipu-dd-integration-title">Subject & Lighting Detection</div>
+                    <div class="ipu-dd-integration-desc">
+                        Identifies human subjects, animals, landscapes, studio lighting vs. natural light, backlighting, and mixed illumination. Feeds results back to ISP white balance, saturation, and tone curve engines.
+                    </div>
+                </div>
+
+                <div class="ipu-dd-integration-card">
+                    <div class="ipu-dd-integration-label">Noise Modeling</div>
+                    <div class="ipu-dd-integration-title">Per-Scene Denoising</div>
+                    <div class="ipu-dd-integration-desc">
+                        AI evaluates per-frame noise characteristics (chroma vs. luminance, thermal vs. shot noise). Multi-band NR filter strengths adapt; high-ISO portraits receive gentler denoising to preserve texture vs. landscapes where aggressive noise suppression is safe.
+                    </div>
+                </div>
+
+                <div class="ipu-dd-integration-card">
+                    <div class="ipu-dd-integration-label">Motion & Stability</div>
+                    <div class="ipu-dd-integration-title">Blur Risk Assessment</div>
+                    <div class="ipu-dd-integration-desc">
+                        Optical flow analysis estimates hand-shake and subject motion blur risk. Triggers adaptive ISP sharpening and encoder bit budget reallocation to favor edges over flat areas when motion is detected.
+                    </div>
+                </div>
+
+                <div class="ipu-dd-integration-card">
+                    <div class="ipu-dd-integration-label">Color Grading Hints</div>
+                    <div class="ipu-dd-integration-title">Automatic Color Correction</div>
+                    <div class="ipu-dd-integration-desc">
+                        Based on detected skin tones, foliage density, and sky hue, the AI suggests color profiles (e.g., "vivid outdoors", "skin-tone neutral", "cinematic warm"). Photographers can lock a profile or let it drift per-scene.
+                    </div>
+                </div>
+            </div>
+
+            <p class="ipu-dd-section-text">
+                All LPNPU inference is local—no cloud connectivity. The AI models are burned into the IPU's on-die neural compute fabric at manufacture; Sony and Intel co-optimize these models annually based on aggregated (anonymized) professional photography datasets.
+            </p>
+        </section>
+
+        <!-- ===== SPEC TABLE ===== -->
+        <section class="ipu-dd-section">
+            <h2 class="ipu-dd-section-title">Technical Specifications</h2>
+
+            <table class="ipu-dd-spec-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value / Support</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="ipu-dd-spec-label">Max Sensor Resolution</td>
+                        <td class="ipu-dd-spec-value">201 MP (Bayer CFA, 16-bit RAW)</td>
+                    </tr>
+                    <tr>
+                        <td class="ipu-dd-spec-label">Color Depth (Output)</td>
+                        <td class="ipu-dd-spec-value">10-bit, 12-bit, or 16-bit per component (user selectable)</td>
+                    </tr>
+                    <tr>
+                        <td class="ipu-dd-spec-label">ISP Pipeline Stages</td>
+                        <td class="ipu-dd-spec-value">8 (demosaic, HDR, denoise, distortion, AI, grading, encode, output)</td>
+                    </tr>
+                    <tr>
+                        <td class="ipu-dd-spec-label">AI Integration</td>
+                        <td class="ipu-dd-spec-value">LPNPU real-time scene classification, &lt;40 ms inference</td>
+                    </tr>
+                    <tr>
+                        <td class="ipu-dd-spec-label">Interface</td>
+                        <td class="ipu-dd-spec-value">Thunderbolt 5 native; USB 3.2 Gen 2x2 (20 Gbps) tunneling</td>
+                    </tr>
+                    <tr>
+                        <td class="ipu-dd-spec-label">Latency (E2E)</td>
+                        <td class="ipu-dd-spec-value">&lt;85 ms (24 MP) → &lt;120 ms (201 MP full quality)</td>
+                    </tr>
+                    <tr>
+                        <td class="ipu-dd-spec-label">Video Codec Support</td>
+                        <td class="ipu-dd-spec-value">H.265 (HEVC), VP9, BionzXR (Sony native), ProRes intermediate</td>
+                    </tr>
+                    <tr>
+                        <td class="ipu-dd-spec-label">Sony Camera Compatibility</td>
+                        <td class="ipu-dd-spec-value">α7 IV+ (USB-C), α1 II, α1R, FX3, FX6 MK II, α8R (Thunderbolt 5)</td>
+                    </tr>
+                    <tr>
+                        <td class="ipu-dd-spec-label">Lens Correction Support</td>
+                        <td class="ipu-dd-spec-value">Sony E-mount, RF-mount, PL-mount via LUT; 200+ factory profiles included</td>
+                    </tr>
+                    <tr>
+                        <td class="ipu-dd-spec-label">Power Consumption</td>
+                        <td class="ipu-dd-spec-value">8.5 W (active processing) / 0.3 W (standby)</td>
+                    </tr>
+                    <tr>
+                        <td class="ipu-dd-spec-label">Memory (On-Die)</td>
+                        <td class="ipu-dd-spec-value">256 MB SRAM (frame buffers) + 1 GB eSRAM (LUT storage, AI models)</td>
+                    </tr>
+                    <tr>
+                        <td class="ipu-dd-spec-label">Manufacturing Node</td>
+                        <td class="ipu-dd-spec-value">Intel 14A-E (Lunar Lake / Meteor Lake era)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ===== USE-CASE GRID ===== -->
+        <section class="ipu-dd-section">
+            <h2 class="ipu-dd-section-title">Primary Use Cases</h2>
+            <p class="ipu-dd-section-subtitle">Optimized workflows for photography, videography, and machine vision.</p>
+
+            <div class="ipu-dd-usecase-grid">
+                <div class="ipu-dd-usecase-card">
+                    <div class="ipu-dd-usecase-icon">📷</div>
+                    <div class="ipu-dd-usecase-title">Professional Photography</div>
+                    <div class="ipu-dd-usecase-desc">
+                        Tethered shooting with live preview on external 4K/6K monitors. Real-time exposure evaluation, focus peaking, and histogram feedback. BionzXR compression reduces culling time; AI-assisted scene analysis guides exposure bracketing decisions.
+                    </div>
+                    <div class="ipu-dd-usecase-features">
+                        <div class="ipu-dd-usecase-feature">Live tethered 4K preview (&lt;85 ms latency)</div>
+                        <div class="ipu-dd-usecase-feature">Multi-frame HDR assembly on-device</div>
+                        <div class="ipu-dd-usecase-feature">Auto lens profile learning</div>
+                        <div class="ipu-dd-usecase-feature">201 MP RAW + processed JPEG/H.265 simultaneously</div>
+                    </div>
+                </div>
+
+                <div class="ipu-dd-usecase-card">
+                    <div class="ipu-dd-usecase-icon">🎥</div>
+                    <div class="ipu-dd-usecase-title">Video Production & Monitoring</div>
+                    <div class="ipu-dd-usecase-desc">
+                        Ultra-low-latency video feed to Atomos, Blackmagic, or Sony external recorders. ProRes or BionzXR intermediate encoding with full color grading applied. Scene AI enables automatic exposure lock-off and false-color overlay hints.
+                    </div>
+                    <div class="ipu-dd-usecase-features">
+                        <div class="ipu-dd-usecase-feature">Sub-40 ms video pipeline latency</div>
+                        <div class="ipu-dd-usecase-feature">ProRes/H.265 dual-encoding support</div>
+                        <div class="ipu-dd-usecase-feature">Metadata overlay (ISO, shutter, f-stop live)</div>
+                        <div class="ipu-dd-usecase-feature">AI motion blur risk alerts</div>
+                    </div>
+                </div>
+
+                <div class="ipu-dd-usecase-card">
+                    <div class="ipu-dd-usecase-icon">🔬</div>
+                    <div class="ipu-dd-usecase-title">Machine Vision & Scientific Imaging</div>
+                    <div class="ipu-dd-usecase-desc">
+                        Full 16-bit RAW output for medical imaging, aerial survey, and spectral analysis. Lens distortion correction LUTs enable photogrammetry workflows. On-device LPNPU inference supports quality-control categorization (pass/fail/rework).
+                    </div>
+                    <div class="ipu-dd-usecase-features">
+                        <div class="ipu-dd-usecase-feature">Unprocessed 16-bit RAW + metadata</div>
+                        <div class="ipu-dd-usecase-feature">Custom demosaic and color space options</div>
+                        <div class="ipu-dd-usecase-feature">Real-time defect detection via AI</div>
+                        <div class="ipu-dd-usecase-feature">Geometric rectification for 3D reconstruction</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== DIVIDER ===== -->
+        <div class="ipu-dd-divider"></div>
+    </div>

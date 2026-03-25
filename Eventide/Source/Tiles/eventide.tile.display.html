@@ -1,0 +1,763 @@
+    <!-- Z-ANGLE MEMORY: de-dd- | Display Engine Deep-Dive Section -->
+    <style>
+        /* INSERT LOCATION: After the Klangkerne deep-dive and its divider */
+
+        .de-dd-wrap {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 80px 40px;
+            background: linear-gradient(135deg, #010A08 0%, #010D0A 100%);
+            position: relative;
+        }
+
+        .de-dd-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* HERO SECTION */
+        .de-dd-hero {
+            text-align: center;
+            margin-bottom: 120px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .de-dd-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(45,212,191,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .de-dd-eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #5EEAD4;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .de-dd-headline {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 64px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: #2DD4BF;
+            margin-bottom: 16px;
+            line-height: 1.1;
+        }
+
+        .de-dd-subhead {
+            font-size: 18px;
+            color: #9CA3AF;
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        /* STAT BLOCK */
+        .de-dd-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 80px;
+        }
+
+        .de-dd-stat-cell {
+            background: linear-gradient(135deg, rgba(45,212,191,0.05) 0%, rgba(15,118,110,0.03) 100%);
+            border: 1px solid rgba(45,212,191,0.20);
+            border-radius: 8px;
+            padding: 32px 24px;
+            text-align: center;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+
+        .de-dd-stat-cell:hover {
+            background: linear-gradient(135deg, rgba(45,212,191,0.08) 0%, rgba(15,118,110,0.05) 100%);
+            border-color: rgba(45,212,191,0.35);
+            transform: translateY(-2px);
+        }
+
+        .de-dd-stat-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #5EEAD4;
+            margin-bottom: 8px;
+        }
+
+        .de-dd-stat-label {
+            font-size: 14px;
+            color: #B0B9C3;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* SECTION STYLING */
+        .de-dd-section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: #2DD4BF;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .de-dd-section-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 32px;
+            background: linear-gradient(180deg, #2DD4BF 0%, #0F766E 100%);
+            border-radius: 2px;
+        }
+
+        .de-dd-content-block {
+            background: rgba(1,13,10,0.5);
+            border-left: 3px solid #2DD4BF;
+            padding: 32px;
+            border-radius: 4px;
+            margin-bottom: 32px;
+        }
+
+        .de-dd-content-block p {
+            margin-bottom: 16px;
+            font-size: 15px;
+            line-height: 1.8;
+            color: #D1D5DB;
+        }
+
+        .de-dd-content-block p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* NO-MUX ARCHITECTURE */
+        .de-dd-architecture-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 48px;
+            align-items: center;
+        }
+
+        @media (max-width: 1024px) {
+            .de-dd-architecture-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .de-dd-architecture-diagram {
+            background: linear-gradient(135deg, rgba(45,212,191,0.08) 0%, rgba(15,118,110,0.04) 100%);
+            border: 1px solid rgba(45,212,191,0.15);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .de-dd-architecture-item {
+            margin-bottom: 16px;
+            padding: 12px;
+            background: rgba(15,118,110,0.15);
+            border-radius: 6px;
+            border: 1px solid rgba(45,212,191,0.20);
+        }
+
+        .de-dd-architecture-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #5EEAD4;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .de-dd-architecture-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            color: #2DD4BF;
+        }
+
+        .de-dd-connector {
+            font-size: 24px;
+            color: #0F766E;
+            margin: 16px 0;
+        }
+
+        /* EXAMPLE BOX */
+        .de-dd-example {
+            background: linear-gradient(135deg, rgba(45,212,191,0.03) 0%, transparent 100%);
+            border: 1px solid rgba(45,212,191,0.15);
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #B0B9C3;
+        }
+
+        .de-dd-example-title {
+            color: #5EEAD4;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* iDP DEEP-DIVE */
+        .de-dd-specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .de-dd-spec-card {
+            background: linear-gradient(135deg, rgba(45,212,191,0.04) 0%, rgba(15,118,110,0.02) 100%);
+            border: 1px solid rgba(45,212,191,0.15);
+            border-radius: 6px;
+            padding: 24px;
+        }
+
+        .de-dd-spec-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #5EEAD4;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .de-dd-spec-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            color: #2DD4BF;
+            margin-bottom: 12px;
+        }
+
+        .de-dd-spec-description {
+            font-size: 13px;
+            color: #9CA3AF;
+            line-height: 1.6;
+        }
+
+        /* INTERFACE TABLE */
+        .de-dd-table-wrap {
+            overflow-x: auto;
+            margin-bottom: 48px;
+        }
+
+        .de-dd-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: linear-gradient(135deg, rgba(45,212,191,0.03) 0%, transparent 100%);
+        }
+
+        .de-dd-table thead {
+            background: rgba(15,118,110,0.2);
+            border: 1px solid rgba(45,212,191,0.20);
+        }
+
+        .de-dd-table th {
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #5EEAD4;
+            border-bottom: 1px solid rgba(45,212,191,0.15);
+        }
+
+        .de-dd-table td {
+            padding: 16px 20px;
+            font-size: 14px;
+            color: #D1D5DB;
+            border-bottom: 1px solid rgba(45,212,191,0.08);
+        }
+
+        .de-dd-table tr:hover td {
+            background-color: rgba(45,212,191,0.03);
+        }
+
+        .de-dd-table-highlight {
+            color: #2DD4BF;
+            font-weight: 600;
+        }
+
+        /* 96-BIT COLOR SECTION */
+        .de-dd-color-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .de-dd-color-channel {
+            background: linear-gradient(135deg, rgba(45,212,191,0.06) 0%, rgba(15,118,110,0.03) 100%);
+            border: 1px solid rgba(45,212,191,0.20);
+            border-radius: 6px;
+            padding: 28px 24px;
+            text-align: center;
+        }
+
+        .de-dd-channel-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            color: #5EEAD4;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .de-dd-channel-bits {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #9CA3AF;
+            margin-bottom: 12px;
+        }
+
+        .de-dd-channel-desc {
+            font-size: 13px;
+            color: #B0B9C3;
+            line-height: 1.6;
+        }
+
+        /* USE-CASE GRID */
+        .de-dd-usecases {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 28px;
+            margin-bottom: 48px;
+        }
+
+        .de-dd-usecase-card {
+            background: linear-gradient(135deg, rgba(45,212,191,0.05) 0%, rgba(15,118,110,0.03) 100%);
+            border: 1px solid rgba(45,212,191,0.20);
+            border-radius: 8px;
+            padding: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .de-dd-usecase-card:hover {
+            background: linear-gradient(135deg, rgba(45,212,191,0.08) 0%, rgba(15,118,110,0.05) 100%);
+            border-color: rgba(45,212,191,0.35);
+            transform: translateY(-4px);
+        }
+
+        .de-dd-usecase-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #2DD4BF 0%, #0F766E 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+        }
+
+        .de-dd-usecase-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            color: #2DD4BF;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .de-dd-usecase-desc {
+            font-size: 14px;
+            color: #B0B9C3;
+            line-height: 1.7;
+        }
+
+        /* COLLAB BADGE */
+        .de-dd-collab-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(45,212,191,0.1) 0%, rgba(15,118,110,0.05) 100%);
+            border: 1px solid rgba(45,212,191,0.25);
+            border-radius: 4px;
+            padding: 8px 16px;
+            margin-bottom: 24px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #5EEAD4;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* DIVIDER */
+        .de-dd-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(45,212,191,0.20) 50%, transparent 100%);
+            margin: 120px 0;
+        }
+
+        /* MONO TEXT */
+        .de-dd-mono {
+            font-family: 'IBM Plex Mono', monospace;
+            color: #5EEAD4;
+            font-size: 13px;
+            background: rgba(15,118,110,0.15);
+            padding: 2px 6px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .de-dd-wrap {
+                padding: 40px 20px;
+            }
+
+            .de-dd-headline {
+                font-size: 42px;
+            }
+
+            .de-dd-section-title {
+                font-size: 28px;
+            }
+
+            .de-dd-stats {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 16px;
+            }
+
+            .de-dd-stat-number {
+                font-size: 28px;
+            }
+
+            .de-dd-content-block {
+                padding: 20px;
+            }
+        }
+    </style>
+    <div class="de-dd-wrap">
+        <!-- HERO SECTION -->
+        <section class="de-dd-section de-dd-hero">
+            <div class="de-dd-eyebrow">Unified Display Engine · Intel 14A-E</div>
+            <h1 class="de-dd-headline">One Controller. Six Displays. No Limits.</h1>
+            <p class="de-dd-subhead">A unified display architecture that decouples rendering from presentation. Any GPU can output to any display simultaneously—without MUX switching, without latency, without compromise.</p>
+        </section>
+
+        <!-- STAT BLOCK -->
+        <section class="de-dd-section">
+            <div class="de-dd-stats">
+                <div class="de-dd-stat-cell">
+                    <div class="de-dd-stat-number">6</div>
+                    <div class="de-dd-stat-label">Simultaneous Displays</div>
+                </div>
+                <div class="de-dd-stat-cell">
+                    <div class="de-dd-stat-number">16K@1200Hz</div>
+                    <div class="de-dd-stat-label">Max Resolution (iDP)</div>
+                </div>
+                <div class="de-dd-stat-cell">
+                    <div class="de-dd-stat-number">96-bit</div>
+                    <div class="de-dd-stat-label">Color Depth (MCY)</div>
+                </div>
+                <div class="de-dd-stat-cell">
+                    <div class="de-dd-stat-number">∞</div>
+                    <div class="de-dd-stat-label">No MUX Required</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NO-MUX ARCHITECTURE -->
+        <section class="de-dd-section">
+            <div class="de-dd-collab-badge">Intel Architecture</div>
+            <h2 class="de-dd-section-title">The No-MUX Architecture</h2>
+
+            <div class="de-dd-content-block">
+                <p>Traditional discrete+integrated GPU laptops require a <span class="de-dd-mono">MUX switch</span> to route display outputs—a physical or electrical multiplexer that forces you to choose: render on dGPU or iGPU, not both. Eventide breaks this constraint entirely.</p>
+                <p>The Unified Display Engine decouples the display controller from the GPU render pipeline. Both the LPiGPU (Low-Power Integrated GPU) and HPiGPU (High-Performance Discrete GPU) connect to a <strong>unified display fabric</strong> via PCIe 6.0 ×16×3. This fabric acts as a display distribution switch, allowing any GPU to render to any monitor simultaneously without arbitration, switching overhead, or latency penalties.</p>
+            </div>
+
+            <div class="de-dd-architecture-grid">
+                <div>
+                    <h3 style="font-size: 16px; color: #2DD4BF; margin-bottom: 24px; font-weight: 600;">Architecture Diagram</h3>
+                    <div class="de-dd-architecture-diagram">
+                        <div class="de-dd-architecture-item">
+                            <div class="de-dd-architecture-label">LPiGPU Output</div>
+                            <div class="de-dd-architecture-value">GPU A</div>
+                        </div>
+                        <div style="color: #0F766E; font-size: 18px; margin: 12px 0;">↓</div>
+                        <div class="de-dd-architecture-item" style="background: rgba(45,212,191,0.15); border-color: rgba(45,212,191,0.35);">
+                            <div class="de-dd-architecture-label">Unified Fabric</div>
+                            <div class="de-dd-architecture-value">PCIe 6.0 ×16×3</div>
+                        </div>
+                        <div style="color: #0F766E; font-size: 18px; margin: 12px 0;">↓</div>
+                        <div class="de-dd-architecture-item">
+                            <div class="de-dd-architecture-label">HPiGPU Output</div>
+                            <div class="de-dd-architecture-value">GPU B</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="font-size: 16px; color: #2DD4BF; margin-bottom: 24px; font-weight: 600;">Real-World Examples</h3>
+                    <div class="de-dd-example">
+                        <span class="de-dd-example-title">Wallpaper Engine on LPiGPU</span>
+                        While HPiGPU renders demanding games, the integrated GPU drives animated desktop wallpaper on a secondary monitor—zero interaction, zero overhead.
+                    </div>
+                    <div class="de-dd-example">
+                        <span class="de-dd-example-title">Video Stream + Render Preview</span>
+                        Stream 4K video via iGPU to one display while the dGPU previews 16K 3D renders on another. Both streams independent, both running full-speed.
+                    </div>
+                    <div class="de-dd-example">
+                        <span class="de-dd-example-title">Multi-Monitor Workstation</span>
+                        Six displays connected to six outputs: code editor on Integrated, render preview on Discrete, dashboard on third, reference on fourth—all asynchronous, all real-time.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- iDP 1.0 DEEP-DIVE -->
+        <section class="de-dd-section">
+            <h2 class="de-dd-section-title">iDP 1.0: Intel Display Protocol Evolution</h2>
+
+            <div class="de-dd-content-block">
+                <p><strong>Intel Display Protocol 1.0</strong> is an evolution of the eDP standard, purposefully designed for high-bandwidth display delivery over PCIe 6.0. Unlike traditional display buses (HDMI, DP) that operate independently, iDP is <strong>tunnelled over three independent PCIe 6.0 ×16 lanes</strong>—hereafter referred to as <span class="de-dd-mono">×16×3</span> configuration.</p>
+                <p>This hybrid approach unlocks bandwidth previously impossible on mobile platforms: PCIe 6.0 employs <strong>PAM4 signalling</strong> at <strong>64 GT/s per lane</strong> (vs. PCIe 5.0's 32 GT/s), delivering approximately <strong>256 GB/s per ×16 lane</strong>. Three independent lanes sum to ~<strong>768 Gbps raw PCIe bandwidth</strong> dedicated to display delivery alone.</p>
+            </div>
+
+            <div class="de-dd-specs-grid">
+                <div class="de-dd-spec-card">
+                    <span class="de-dd-spec-label">PCIe 6.0 Signalling</span>
+                    <div class="de-dd-spec-value">PAM4</div>
+                    <div class="de-dd-spec-description">Pulse Amplitude Modulation-4 encodes 2 bits per symbol, doubling throughput vs. PAM2 (NRZ).</div>
+                </div>
+                <div class="de-dd-spec-card">
+                    <span class="de-dd-spec-label">Per-Lane Speed</span>
+                    <div class="de-dd-spec-value">64 GT/s</div>
+                    <div class="de-dd-spec-description">Gen 6 standard vs. 32 GT/s for Gen 5. Double the switching frequency.</div>
+                </div>
+                <div class="de-dd-spec-card">
+                    <span class="de-dd-spec-label">Configuration</span>
+                    <div class="de-dd-spec-value">×16×3</div>
+                    <div class="de-dd-spec-description">Three independent 16-lane PCIe 6.0 modules, 768 Gbps aggregate theoretical peak.</div>
+                </div>
+                <div class="de-dd-spec-card">
+                    <span class="de-dd-spec-label">Target Resolution</span>
+                    <div class="de-dd-spec-value">16K@1200Hz</div>
+                    <div class="de-dd-spec-description">Raw 96-bit color uncompressed. See VRV2 compression for extreme specs.</div>
+                </div>
+            </div>
+
+            <h3 style="font-size: 18px; color: #5EEAD4; margin: 40px 0 20px; font-weight: 600;">The 16K Math</h3>
+            <div class="de-dd-content-block">
+                <p><strong>16K×9600@1200Hz, 96-bit color (RGB+MCY), uncompressed:</strong></p>
+                <p style="font-family: 'IBM Plex Mono', monospace; background: rgba(15,118,110,0.2); padding: 16px; border-radius: 4px; margin-bottom: 0;">
+                    16384 × 9600 × 1200 Hz × 96 bits/pixel = ~4.7 Terabits per second (Tbps)
+                </p>
+                <p style="margin-top: 16px;">PCIe 6.0 ×16×3 theoretical peak: ~786 Gbps. At extreme specifications like 16K@1200Hz, <strong>VRV2 visually-lossless compression</strong> bridges the gap, reducing bandwidth demand to within protocol limits while maintaining perceptual equivalence to uncompressed video.</p>
+            </div>
+
+            <h3 style="font-size: 18px; color: #5EEAD4; margin: 40px 0 20px; font-weight: 600;">Target Devices: Sony XCDLED & Future Micro-LED</h3>
+            <div class="de-dd-content-block">
+                <p>iDP 1.0 is architected for next-generation display technology. <strong>Sony XCDLED</strong> (Direct In-Array Color micro-LED) represents the first commercial device targeting iDP 2× bandwidth and HDR capabilities. XCDLED's spectral precision—native RGB with independent cyan and yellow subpixels—requires 96-bit color transport to express full gamut without metamerism artifacts. Standard DP 2.1b and HDMI 2.2 lack this colour depth; iDP 1.0 delivers it natively.</p>
+            </div>
+        </section>
+
+        <!-- OUTPUT INTERFACE TABLE -->
+        <section class="de-dd-section">
+            <h2 class="de-dd-section-title">Output Interfaces: Specification Comparison</h2>
+
+            <div class="de-dd-table-wrap">
+                <table class="de-dd-table">
+                    <thead>
+                        <tr>
+                            <th>Protocol</th>
+                            <th>Max Resolution</th>
+                            <th>Max Refresh</th>
+                            <th>Color Depth</th>
+                            <th>HDR Support</th>
+                            <th>VRR Support</th>
+                            <th>Transport</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="de-dd-table-highlight">iDP 1.0</span></td>
+                            <td>16K (16384×9600)</td>
+                            <td>1200 Hz</td>
+                            <td>96-bit (RGB+MCY)</td>
+                            <td>HDR10+ Ultra, Dolby Vision 2</td>
+                            <td>Full VRR + Adaptive Sync</td>
+                            <td>PCIe 6.0 ×16×3</td>
+                        </tr>
+                        <tr>
+                            <td><span class="de-dd-table-highlight">DP 2.1b UHBR20</span></td>
+                            <td>16K (16384×9600)</td>
+                            <td>480 Hz</td>
+                            <td>32-bit (RGB)</td>
+                            <td>HDR10+ Ultra</td>
+                            <td>VESA Adaptive Sync</td>
+                            <td>DisplayPort ×2</td>
+                        </tr>
+                        <tr>
+                            <td><span class="de-dd-table-highlight">eDP 1.6</span></td>
+                            <td>8K (7680×4320)</td>
+                            <td>144 Hz</td>
+                            <td>32-bit (RGB)</td>
+                            <td>HDR10+</td>
+                            <td>Adaptive Sync</td>
+                            <td>eDP (Integrated Panel)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="de-dd-table-highlight">HDMI 2.2</span></td>
+                            <td>10K (10240×4320)</td>
+                            <td>120 Hz</td>
+                            <td>32-bit (RGB)</td>
+                            <td>Dolby Vision, HDR10+</td>
+                            <td>HDMI VRR</td>
+                            <td>HDMI Connector</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="de-dd-content-block">
+                <p><strong>Partnership Note:</strong> Eventide supports VESA DisplayPort 2.1b alliance standards and HDMI Forum certification for extended-reach external display scenarios. For maximum bandwidth and color fidelity, iDP 1.0 over PCIe 6.0 ×16×3 is the native path; DP 2.1b UHBR20 and HDMI 2.2 serve as fallback bridges to legacy display ecosystems.</p>
+            </div>
+        </section>
+
+        <!-- 96-BIT COLOR SECTION -->
+        <section class="de-dd-section">
+            <h2 class="de-dd-section-title">96-Bit Color: RGB + MCY Spectral Correction</h2>
+
+            <div class="de-dd-content-block">
+                <p>Traditional color depth stops at 32-bit per pixel (8-bit R, 8-bit G, 8-bit B, 8-bit alpha). Eventide's iDP 1.0 supports <strong>96-bit color</strong>: 32-bit RGB foundation plus 16-bit Cyan and 16-bit Yellow <strong>MCY correction channels</strong>.</p>
+                <p>These correction channels are not aftereffects; they are primary color transport planes. On conventional RGB displays (sRGB, DCI-P3), MCY channels are discarded. On advanced display technology—particularly Sony XCDLED with independent cyan and yellow subpixels—MCY enables <strong>native spectral gamut expression</strong> without interpolation or metamerism artifacts.</p>
+            </div>
+
+            <div class="de-dd-color-breakdown">
+                <div class="de-dd-color-channel">
+                    <div class="de-dd-channel-name">R</div>
+                    <div class="de-dd-channel-bits">32-bit Precision</div>
+                    <div class="de-dd-channel-desc">Standard red channel. 2^32 intensity levels. Linear or sRGB encoded.</div>
+                </div>
+                <div class="de-dd-color-channel">
+                    <div class="de-dd-channel-name">G</div>
+                    <div class="de-dd-channel-bits">32-bit Precision</div>
+                    <div class="de-dd-channel-desc">Standard green channel. 2^32 intensity levels. Human eye most sensitive.</div>
+                </div>
+                <div class="de-dd-color-channel">
+                    <div class="de-dd-channel-name">B</div>
+                    <div class="de-dd-channel-bits">32-bit Precision</div>
+                    <div class="de-dd-channel-desc">Standard blue channel. 2^32 intensity levels. Lowest luminance sensitivity.</div>
+                </div>
+                <div class="de-dd-color-channel">
+                    <div class="de-dd-channel-name">C</div>
+                    <div class="de-dd-channel-bits">16-bit Correction</div>
+                    <div class="de-dd-channel-desc">Cyan spectral plane. Corrects blue-green gamut errors in micro-LED arrays.</div>
+                </div>
+                <div class="de-dd-color-channel">
+                    <div class="de-dd-channel-name">Y</div>
+                    <div class="de-dd-channel-bits">16-bit Correction</div>
+                    <div class="de-dd-channel-desc">Yellow spectral plane. Refines red-green gamut boundaries without RGB mixing.</div>
+                </div>
+                <div class="de-dd-color-channel">
+                    <div class="de-dd-channel-name">A</div>
+                    <div class="de-dd-channel-bits">Reserved</div>
+                    <div class="de-dd-channel-desc">Alpha channel or future spectral plane. Extensible for advanced color science.</div>
+                </div>
+            </div>
+
+            <h3 style="font-size: 18px; color: #5EEAD4; margin: 40px 0 20px; font-weight: 600;">Why MCY Matters for Micro-LED</h3>
+            <div class="de-dd-content-block">
+                <p>Conventional LED arrays (red, green, blue) cannot reproduce pure spectral colors without color mixing—resulting in metamerism and perceived color shift at angles. Sony's XCDLED technology adds native cyan and yellow subpixels, forming a 5-channel display. To express this native gamut, content must deliver discrete cyan and yellow values, not RGB mixing ratios.</p>
+                <p>96-bit transport (RGB+MCY) enables <strong>lossless spectral gamut delivery</strong>. HDR10+ Ultra and Dolby Vision 2 profiles on iDP 1.0 encode both RGB rendering and MCY correction planes, ensuring color fidelity that RGB-only protocols cannot match.</p>
+            </div>
+        </section>
+
+        <!-- HDR & VRR SECTION -->
+        <section class="de-dd-section">
+            <h2 class="de-dd-section-title">HDR & Variable Refresh Rate</h2>
+
+            <div class="de-dd-content-block">
+                <p>Eventide's Unified Display Engine natively supports the full spectrum of modern HDR and VRR standards, independently on each connected display.</p>
+            </div>
+
+            <div class="de-dd-specs-grid">
+                <div class="de-dd-spec-card">
+                    <span class="de-dd-spec-label">HDR Standards</span>
+                    <div class="de-dd-spec-value">HDR10+ Ultra</div>
+                    <div class="de-dd-spec-description">Peak brightness up to 10,000 nits with 10-bit precision per channel. Tone mapping per frame.</div>
+                </div>
+                <div class="de-dd-spec-card">
+                    <span class="de-dd-spec-label">Next-Gen HDR</span>
+                    <div class="de-dd-spec-value">Dolby Vision 2</div>
+                    <div class="de-dd-spec-description">Dynamic metadata with dual-layer grading (bright + standard). XCDLED native support on iDP.</div>
+                </div>
+                <div class="de-dd-spec-card">
+                    <span class="de-dd-spec-label">VRR Standard</span>
+                    <div class="de-dd-spec-value">Full Adaptive Sync</div>
+                    <div class="de-dd-spec-description">VESA Adaptive Sync (DP), HDMI VRR, and iDP native VRR. No upper refresh cap.</div>
+                </div>
+                <div class="de-dd-spec-card">
+                    <span class="de-dd-spec-label">Micro-LED VRR</span>
+                    <div class="de-dd-spec-value">XCD-LED DIAC</div>
+                    <div class="de-dd-spec-description">Direct In-Array Color micro-LED with VRR support via iDP 1.0. Sony XCDLED compatible.</div>
+                </div>
+            </div>
+
+            <div class="de-dd-content-block">
+                <p><strong>Independent per-Display:</strong> Each of the six possible displays can operate on its own HDR mode and VRR curve. A game running at HDR10+ Ultra on the main display does not constrain secondary displays to matching HDR mode; each surface negotiates its own capabilities with the Unified Display Engine at display-attach time.</p>
+            </div>
+        </section>
+
+        <!-- USE-CASE GRID -->
+        <section class="de-dd-section">
+            <h2 class="de-dd-section-title">Use Cases & Real-World Scenarios</h2>
+
+            <div class="de-dd-usecases">
+                <div class="de-dd-usecase-card">
+                    <div class="de-dd-usecase-icon">🖥️</div>
+                    <div class="de-dd-usecase-title">Multi-Monitor Workstation</div>
+                    <div class="de-dd-usecase-desc">Six independent displays, each driven simultaneously by either GPU. Code editor on Integrated, 3D viewport on Discrete, reference material, communication, dashboards—all synchronized, all real-time.</div>
+                </div>
+                <div class="de-dd-usecase-card">
+                    <div class="de-dd-usecase-icon">🎨</div>
+                    <div class="de-dd-usecase-title">16K Micro-LED Display</div>
+                    <div class="de-dd-usecase-desc">Connect Sony XCDLED or future DIAC micro-LED arrays. 16K@1200Hz + 96-bit color + Dolby Vision 2 HDR. iDP 1.0 is the only mobile interface with bandwidth and color fidelity for this tier.</div>
+                </div>
+                <div class="de-dd-usecase-card">
+                    <div class="de-dd-usecase-icon">🥽</div>
+                    <div class="de-dd-usecase-title">VR Headset Output</div>
+                    <div class="de-dd-usecase-desc">Dual high-refresh (1200 Hz) stereo output for next-generation VR. iDP 1.0 ×16×3 provides bandwidth for per-eye 8K@1200Hz + full VRR. Discrete GPU renders content while Integrated powers desktop UI.</div>
+                </div>
+                <div class="de-dd-usecase-card">
+                    <div class="de-dd-usecase-icon">🎬</div>
+                    <div class="de-dd-usecase-title">Content Creation Studio</div>
+                    <div class="de-dd-usecase-desc">Color-graded 16K video playback on reference monitor (HDR10+ Ultra + XCD-DIAC), simultaneously rendering 3D scene on secondary, compositing on tertiary, all GPU-asynchronous.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CLOSING STATEMENT -->
+        <section class="de-dd-section" style="text-align: center; padding: 60px 0;">
+            <div class="de-dd-content-block" style="border: none; background: linear-gradient(135deg, rgba(45,212,191,0.08) 0%, rgba(15,118,110,0.04) 100%); border: 1px solid rgba(45,212,191,0.15);">
+                <p style="font-size: 18px; margin-bottom: 0;"><strong>Six displays, unlimited flexibility.</strong> The Unified Display Engine erases the false choice between discrete power and integrated efficiency. For professionals, creators, and power users, Eventide delivers a display subsystem equal to its computational capability.</p>
+            </div>
+        </section>
+
+    </div>
+
+    <div class="de-dd-divider"></div>

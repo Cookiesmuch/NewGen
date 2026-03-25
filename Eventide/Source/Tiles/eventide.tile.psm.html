@@ -1,0 +1,901 @@
+  <!-- Z-ANGLE MEMORY: psm-dd- | PSM Deep-Dive Section -->
+  <style>
+    .psm-dd-wrap {
+      max-width: none;
+      margin: 0;
+      width: 100%;
+      padding: 60px 40px;
+      background:
+        linear-gradient(90deg, rgba(248,113,113,0.03) 1px, transparent 1px),
+        linear-gradient(rgba(248,113,113,0.03) 1px, transparent 1px),
+        linear-gradient(135deg, #080000 0%, #0F0000 100%);
+      background-size: 40px 40px, 40px 40px, 100% 100%;
+      position: relative;
+    }
+
+    .psm-dd-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* INSERT LOCATION: After the I/O Controller deep-dive and its divider */
+
+    .psm-dd-wrap .section {
+      margin-bottom: 80px;
+    }
+
+    /* ===== HERO SECTION ===== */
+    .psm-dd-hero {
+      text-align: center;
+      margin-bottom: 100px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .psm-dd-eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #FCA5A5;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .psm-dd-headline {
+      font-family: 'Bebas Neue', serif;
+      font-size: 64px;
+      letter-spacing: -2px;
+      font-weight: 400;
+      margin-bottom: 16px;
+      line-height: 1.1;
+      color: #fff;
+    }
+
+    .psm-dd-subhead {
+      font-size: 18px;
+      color: #d1d5db;
+      max-width: 800px;
+      margin: 0 auto;
+      font-weight: 400;
+      line-height: 1.7;
+    }
+
+    /* ===== STAT BLOCK ===== */
+    .psm-dd-stat-block {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      margin: 60px 0;
+    }
+
+    .psm-dd-stat {
+      background: rgba(15, 0, 0, 0.6);
+      border: 1px solid rgba(248, 113, 113, 0.20);
+      border-radius: 8px;
+      padding: 32px 24px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .psm-dd-stat::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(248,113,113,0.5), transparent);
+    }
+
+    .psm-dd-stat-value {
+      font-family: 'Bebas Neue', serif;
+      font-size: 36px;
+      color: #FCA5A5;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+
+    .psm-dd-stat-label {
+      font-size: 14px;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    /* ===== SECTION STRUCTURE ===== */
+    .psm-dd-section {
+      margin-bottom: 60px;
+    }
+
+    .psm-dd-section-title {
+      font-family: 'Bebas Neue', serif;
+      font-size: 40px;
+      letter-spacing: -1px;
+      margin-bottom: 24px;
+      color: #fff;
+      font-weight: 400;
+    }
+
+    .psm-dd-section-subtitle {
+      font-size: 16px;
+      color: #FCA5A5;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .psm-dd-section p {
+      font-size: 16px;
+      color: #d1d5db;
+      margin-bottom: 16px;
+      line-height: 1.8;
+    }
+
+    .psm-dd-section ul {
+      margin: 24px 0 24px 24px;
+      color: #d1d5db;
+    }
+
+    .psm-dd-section li {
+      margin-bottom: 12px;
+      line-height: 1.8;
+    }
+
+    .psm-dd-section strong {
+      color: #FCA5A5;
+      font-weight: 600;
+    }
+
+    /* ===== COLLAB BADGES ===== */
+    .psm-dd-collab-badges {
+      display: flex;
+      gap: 16px;
+      margin: 24px 0 40px 0;
+      flex-wrap: wrap;
+    }
+
+    .psm-dd-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(248, 113, 113, 0.10);
+      border: 1px solid rgba(248, 113, 113, 0.25);
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #FCA5A5;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .psm-dd-badge::before {
+      content: '●';
+      color: #F87171;
+    }
+
+    /* ===== DUAL ROOT ARCHITECTURE ===== */
+    .psm-dd-dual-root-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin: 40px 0;
+    }
+
+    .psm-dd-root-path {
+      background: rgba(15, 0, 0, 0.5);
+      border: 1px solid rgba(248, 113, 113, 0.20);
+      border-radius: 8px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .psm-dd-root-path::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        linear-gradient(135deg, rgba(248,113,113,0.05) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .psm-dd-root-path-title {
+      font-family: 'Bebas Neue', serif;
+      font-size: 24px;
+      color: #F87171;
+      margin-bottom: 16px;
+      font-weight: 400;
+      letter-spacing: -0.5px;
+    }
+
+    .psm-dd-root-path p {
+      font-size: 15px;
+      color: #d1d5db;
+      margin-bottom: 16px;
+      line-height: 1.8;
+    }
+
+    .psm-dd-root-features {
+      list-style: none;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(248, 113, 113, 0.15);
+    }
+
+    .psm-dd-root-features li {
+      font-size: 14px;
+      color: #9ca3af;
+      margin-bottom: 10px;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .psm-dd-root-features li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: #F87171;
+      font-weight: 700;
+    }
+
+    @media (max-width: 768px) {
+      .psm-dd-dual-root-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== FEATURE CARDS ===== */
+    .psm-dd-feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin: 40px 0;
+    }
+
+    .psm-dd-feature-card {
+      background: rgba(15, 0, 0, 0.6);
+      border: 1px solid rgba(248, 113, 113, 0.20);
+      border-radius: 8px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .psm-dd-feature-card:hover {
+      background: rgba(15, 0, 0, 0.8);
+      border-color: rgba(248, 113, 113, 0.35);
+      box-shadow: 0 0 20px rgba(248, 113, 113, 0.15);
+    }
+
+    .psm-dd-feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #F87171, transparent);
+    }
+
+    .psm-dd-feature-title {
+      font-family: 'Bebas Neue', serif;
+      font-size: 22px;
+      color: #fff;
+      margin-bottom: 12px;
+      font-weight: 400;
+      letter-spacing: -0.5px;
+    }
+
+    .psm-dd-feature-desc {
+      font-size: 14px;
+      color: #d1d5db;
+      line-height: 1.7;
+    }
+
+    /* ===== SPEC TABLE ===== */
+    .psm-dd-spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 40px 0;
+      background: rgba(15, 0, 0, 0.5);
+      border: 1px solid rgba(248, 113, 113, 0.20);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .psm-dd-spec-table thead {
+      background: rgba(248, 113, 113, 0.10);
+      border-bottom: 2px solid rgba(248, 113, 113, 0.25);
+    }
+
+    .psm-dd-spec-table th {
+      padding: 16px 20px;
+      text-align: left;
+      font-weight: 600;
+      color: #FCA5A5;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .psm-dd-spec-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(248, 113, 113, 0.10);
+      font-size: 15px;
+      color: #d1d5db;
+    }
+
+    .psm-dd-spec-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .psm-dd-spec-table tr:nth-child(even) {
+      background: rgba(248, 113, 113, 0.03);
+    }
+
+    .psm-dd-spec-category {
+      color: #F87171;
+      font-weight: 600;
+    }
+
+    /* ===== USE-CASE GRID ===== */
+    .psm-dd-usecase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+      margin: 40px 0;
+    }
+
+    .psm-dd-usecase {
+      background: linear-gradient(135deg, rgba(248,113,113,0.08) 0%, rgba(248,113,113,0.02) 100%);
+      border: 1px solid rgba(248, 113, 113, 0.25);
+      border-radius: 8px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .psm-dd-usecase::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(248,113,113,0.3) 0%, transparent 70%);
+      filter: blur(30px);
+      pointer-events: none;
+    }
+
+    .psm-dd-usecase-icon {
+      font-family: 'Bebas Neue', serif;
+      font-size: 48px;
+      color: #F87171;
+      margin-bottom: 12px;
+      font-weight: 400;
+    }
+
+    .psm-dd-usecase-title {
+      font-family: 'Bebas Neue', serif;
+      font-size: 20px;
+      color: #fff;
+      margin-bottom: 12px;
+      font-weight: 400;
+      letter-spacing: -0.5px;
+    }
+
+    .psm-dd-usecase-desc {
+      font-size: 14px;
+      color: #d1d5db;
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== SECTION DIVIDER ===== */
+    .psm-dd-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(248,113,113,0.3), transparent);
+      margin: 80px 0;
+      position: relative;
+    }
+
+    .psm-dd-divider::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      background: rgba(248, 113, 113, 0.5);
+      border-radius: 50%;
+      border: 2px solid #080000;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .psm-dd-headline {
+        font-size: 48px;
+      }
+
+      .psm-dd-stat-block {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .psm-dd-section-title {
+        font-size: 32px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .psm-dd-wrap {
+        padding: 40px 16px;
+      }
+
+      .psm-dd-headline {
+        font-size: 36px;
+      }
+
+      .psm-dd-stat-block {
+        grid-template-columns: 1fr;
+      }
+
+      .psm-dd-section-title {
+        font-size: 28px;
+      }
+
+      .psm-dd-section p {
+        font-size: 15px;
+      }
+
+      .psm-dd-spec-table th,
+      .psm-dd-spec-table td {
+        padding: 12px 14px;
+        font-size: 12px;
+      }
+    }
+
+    /* ===== ACCENT HIGHLIGHTS ===== */
+    .psm-dd-highlight {
+      color: #FCA5A5;
+      font-weight: 600;
+    }
+
+    .psm-dd-mono {
+      font-family: 'IBM Plex Mono', monospace;
+      color: #FCA5A5;
+      font-size: 0.95em;
+    }
+
+    /* ===== VISUAL ACCENTS ===== */
+    .psm-dd-accent-box {
+      background: linear-gradient(135deg, rgba(248,113,113,0.12) 0%, rgba(248,113,113,0.04) 100%);
+      border-left: 4px solid #F87171;
+      border-radius: 4px;
+      padding: 20px;
+      margin: 24px 0;
+      font-size: 15px;
+      color: #d1d5db;
+      line-height: 1.8;
+    }
+  </style>
+  <div class="psm-dd-wrap">
+    <!-- INSERT LOCATION: After the I/O Controller deep-dive and its divider -->
+
+    <!-- ===== HERO SECTION ===== -->
+    <div class="section psm-dd-section">
+      <div class="psm-dd-hero">
+        <div class="psm-dd-eyebrow">Platform Security & Management · PSM Tile · Intel 14A-E</div>
+        <h1 class="psm-dd-headline">Security Beneath the Software</h1>
+        <p class="psm-dd-subhead">
+          Security hardware that runs independent of any OS, any firmware, any attack surface — isolated in its own tile with its own power domain.
+        </p>
+        <div class="psm-dd-collab-badges">
+          <div class="psm-dd-badge">Intel (Primary)</div>
+          <div class="psm-dd-badge">Microsoft Pluton 2.1</div>
+          <div class="psm-dd-badge">EGP (In-House)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== STAT BLOCK ===== -->
+    <div class="section">
+      <div class="psm-dd-stat-block">
+        <div class="psm-dd-stat">
+          <div class="psm-dd-stat-value">Dual</div>
+          <div class="psm-dd-stat-label">Root of Trust</div>
+        </div>
+        <div class="psm-dd-stat">
+          <div class="psm-dd-stat-value">TPM 2.1</div>
+          <div class="psm-dd-stat-label">Microsoft Pluton</div>
+        </div>
+        <div class="psm-dd-stat">
+          <div class="psm-dd-stat-value">CSME 2.0</div>
+          <div class="psm-dd-stat-label">Intel Management Engine</div>
+        </div>
+        <div class="psm-dd-stat">
+          <div class="psm-dd-stat-value">vPro®</div>
+          <div class="psm-dd-stat-label">Platform Certified</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== DUAL ROOT OF TRUST ===== -->
+    <div class="section psm-dd-section">
+      <h2 class="psm-dd-section-title">Dual Root of Trust Architecture</h2>
+      <p>
+        The PSM tile implements a <strong>parallel dual-root architecture</strong> — EGP for Alloy OS deployments and Microsoft Pluton 2.1 for Windows compatibility. This design enables enterprise flexibility: customers can deploy Alloy OS exclusively with EGP's hardware attestation model, or maintain a Windows dual-boot with Pluton, or select a hybrid strategy. Each root maintains separate key stores, measurement chains, and firmware binding mechanisms.
+      </p>
+      <p>
+        For <strong>Xeon 500 class deployments</strong>, this dual-root model is essential. It eliminates vendor lock-in at the hardware security boundary while ensuring FIPS 140-3 and NIST SP800-193 compliance across both ecosystems.
+      </p>
+
+      <div class="psm-dd-dual-root-container">
+        <div class="psm-dd-root-path">
+          <div class="psm-dd-root-path-title">EGP Path (Alloy OS)</div>
+          <p>
+            Eventide Guardian Protocol — Intel-developed silicon root of trust exclusive to the PSM tile for Alloy OS security models.
+          </p>
+          <ul class="psm-dd-root-features">
+            <li>On-tile AES-256 key vault</li>
+            <li>Secure boot measurement chain</li>
+            <li>Per-app hardware attestation tokens</li>
+            <li>Anti-rollback firmware enforcement</li>
+            <li>Isolated from Pluton domain</li>
+          </ul>
+        </div>
+
+        <div class="psm-dd-root-path">
+          <div class="psm-dd-root-path-title">Pluton Path (Windows)</div>
+          <p>
+            Microsoft Pluton 2.1 — hardware TPM 2.1 integrated into the CPU die for native Windows security posture.
+          </p>
+          <ul class="psm-dd-root-features">
+            <li>Hardware-based credential storage</li>
+            <li>BitLocker key isolation</li>
+            <li>Windows Hello hardware root</li>
+            <li>Firmware updates via Windows Update</li>
+            <li>FIPS 140-3 Level 2 certified</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== EGP SECTION ===== -->
+    <div class="section psm-dd-section">
+      <h2 class="psm-dd-section-title">Eventide Guardian Protocol (EGP)</h2>
+      <div class="psm-dd-section-subtitle">Intel-developed Silicon Root of Trust</div>
+      <p>
+        EGP is the hardware security foundation of the Alloy OS ecosystem. Unlike software-based TPMs or firmware-mediated security, EGP resides on the PSM tile itself with a dedicated power domain, executing independently of the main processor, operating system, hypervisor, or bootloader. EGP cannot be disabled, downgraded, or compromised by any host-side firmware or software attack.
+      </p>
+
+      <div class="psm-dd-accent-box">
+        <strong style="color: #F87171;">Key Property:</strong> EGP keys never leave the PSM tile. All cryptographic operations (signing, attestation, key derivation) occur in isolated hardware. The protocol ensures that even a full compromise of the main OS yields no access to EGP key material or measurement secrets.
+      </div>
+
+      <h3 style="font-family: 'Bebas Neue', serif; font-size: 22px; color: #fff; margin-top: 32px; margin-bottom: 16px; font-weight: 400;">Core Functions</h3>
+
+      <div class="psm-dd-feature-grid">
+        <div class="psm-dd-feature-card">
+          <div class="psm-dd-feature-title">On-Tile Key Vault</div>
+          <div class="psm-dd-feature-desc">
+            AES-256 master keys stored in non-volatile memory within the PSM tile. Protects against physical memory attacks, DMA probes, and side-channel extraction.
+          </div>
+        </div>
+
+        <div class="psm-dd-feature-card">
+          <div class="psm-dd-feature-title">Secure Boot Chain</div>
+          <div class="psm-dd-feature-desc">
+            Each bootloader, kernel, and firmware component is cryptographically measured on first execution. Deviations halt the system. Historical measurements are logged for audit.
+          </div>
+        </div>
+
+        <div class="psm-dd-feature-card">
+          <div class="psm-dd-feature-title">Per-App Attestation</div>
+          <div class="psm-dd-feature-desc">
+            Applications request hardware-signed proofs of their execution environment — CPU state, loaded kernel modules, memory layout. Proves integrity to remote verifiers.
+          </div>
+        </div>
+
+        <div class="psm-dd-feature-card">
+          <div class="psm-dd-feature-title">Anti-Rollback</div>
+          <div class="psm-dd-feature-desc">
+            Firmware version numbers are locked in one-way counters on the PSM tile. Prevents downgrade attacks; security patches cannot be reverted.
+          </div>
+        </div>
+
+        <div class="psm-dd-feature-card">
+          <div class="psm-dd-feature-title">Measurement Cache</div>
+          <div class="psm-dd-feature-desc">
+            Attestation measurements are cached in EGP memory, enabling rapid proof generation without re-measuring on every request. Cache is protected by HMAC.
+          </div>
+        </div>
+
+        <div class="psm-dd-feature-card">
+          <div class="psm-dd-feature-title">Attestation Binding</div>
+          <div class="psm-dd-feature-desc">
+            Attestation tokens include PCRs (Platform Configuration Registers), nonces, and tile firmware version. Prevents replay and cross-system attestation forgery.
+          </div>
+        </div>
+      </div>
+
+      <div class="psm-dd-accent-box">
+        <strong style="color: #F87171;">Enterprise Value:</strong> EGP enables hardware-rooted supply chain verification. Container images can be signed with EGP attestation, proving they ran in the declared environment. Ransomware and code-injection attacks fail to generate valid attestations, preventing lateral movement.
+      </div>
+    </div>
+
+    <!-- ===== PLUTON SECTION ===== -->
+    <div class="section psm-dd-section">
+      <h2 class="psm-dd-section-title">Microsoft Pluton 2.1</h2>
+      <div class="psm-dd-section-subtitle">Hardware TPM 2.1 for Windows Ecosystems</div>
+      <p>
+        Microsoft Pluton 2.1 is a dedicated security processor integrated into the CPU die, operating independently of the main cores. It provides hardware-rooted TPM 2.1 functionality without reliance on discrete chips or firmware subsystems that could be compromised.
+      </p>
+
+      <h3 style="font-family: 'Bebas Neue', serif; font-size: 22px; color: #fff; margin-top: 32px; margin-bottom: 16px; font-weight: 400;">Key Capabilities</h3>
+
+      <ul style="margin-left: 24px; color: #d1d5db; line-height: 1.8;">
+        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Hardware Credential Storage:</span> Encryption keys, certificates, and passwords are sealed in hardware. Extraction requires Pluton's private key, which is never exposed even in kernel dumps.</li>
+        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">BitLocker Key Isolation:</span> Windows disk encryption keys are stored in Pluton. Even with administrator privileges, BitLocker keys remain inaccessible to Windows processes.</li>
+        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Windows Hello Hardware Root:</span> Biometric credentials are bound to Pluton hardware. Cloned or VM-based identities cannot forge Hello authentication.</li>
+        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Firmware Updates via Windows Update:</span> Pluton firmware is updated through the Windows Update infrastructure, ensuring synchronized security patches across enterprises.</li>
+        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Physical Memory Attack Resistance:</span> Pluton memory is isolated from the main processor and RAM. DMA attacks, cold-boot attacks, and hardware probes cannot extract Pluton data.</li>
+        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">FIPS 140-3 Level 2 Certified:</span> Pluton meets federal cryptographic standards for classified and sensitive government workloads.</li>
+      </ul>
+
+      <div class="psm-dd-accent-box">
+        <strong style="color: #F87171;">Coexistence with EGP:</strong> Pluton and EGP operate independently. Windows deployments use Pluton for Windows security functions; Alloy OS uses EGP. Both can coexist on the same physical system, each with its own measurement chains and key stores. This enables hybrid organizations to run mixed OS fleets on identical hardware.
+      </div>
+    </div>
+
+    <!-- ===== INTEL CSME SECTION ===== -->
+    <div class="section psm-dd-section">
+      <h2 class="psm-dd-section-title">Intel Converged Security & Management Engine (CSME 2.0)</h2>
+      <div class="psm-dd-section-subtitle">Out-of-Band Management & Hardware DRM</div>
+      <p>
+        Intel CSME 2.0 is a discrete management processor embedded on the PSM tile. It provides out-of-band access, hardware DRM enforcement, and secure firmware loading for all other processor tiles — including compute, I/O, and memory controllers.
+      </p>
+
+      <h3 style="font-family: 'Bebas Neue', serif; font-size: 22px; color: #fff; margin-top: 32px; margin-bottom: 16px; font-weight: 400;">Core Functions</h3>
+
+      <div class="psm-dd-feature-grid">
+        <div class="psm-dd-feature-card">
+          <div class="psm-dd-feature-title">Active Management Technology (AMT)</div>
+          <div class="psm-dd-feature-desc">
+            Manage the system remotely even when the OS has crashed, hung, or been powered off (as long as power is present). SSH into a crashed system, capture system state, trigger reboot, or run diagnostics without OS cooperation.
+          </div>
+        </div>
+
+        <div class="psm-dd-feature-card">
+          <div class="psm-dd-feature-title">Hardware DRM Root</div>
+          <div class="psm-dd-feature-desc">
+            CSME enforces DRM policies for protected content — 4K video playback, license validation, codec restrictions. Prevents OS-level DRM circumvention.
+          </div>
+        </div>
+
+        <div class="psm-dd-feature-card">
+          <div class="psm-dd-feature-title">Secure Firmware Loading</div>
+          <div class="psm-dd-feature-desc">
+            All tile firmware (compute, I/O, memory controllers) is cryptographically signed and verified by CSME before execution. Corrupted or unsigned firmware cannot boot.
+          </div>
+        </div>
+
+        <div class="psm-dd-feature-card">
+          <div class="psm-dd-feature-title">CSME Power Domain</div>
+          <div class="psm-dd-feature-desc">
+            CSME operates on its own power supply, remaining active even during suspend, hibernate, or standby. Enables wake-on-LAN, remote diagnostics, and always-available out-of-band channels.
+          </div>
+        </div>
+      </div>
+
+      <div class="psm-dd-accent-box">
+        <strong style="color: #F87171;">Enterprise Deployment:</strong> CSME 2.0 enables datacenter-scale fleet management. Out-of-band channels bypass OS firewalls and network stacks, giving IT control even when systems are misconfigured or compromised. Combined with vPro, this creates enterprise resilience infrastructure.
+      </div>
+    </div>
+
+    <!-- ===== INTEL VPRO & TDT SECTION ===== -->
+    <div class="section psm-dd-section">
+      <h2 class="psm-dd-section-title">Intel vPro & Threat Detection Technology (TDT)</h2>
+      <div class="psm-dd-section-subtitle">Xeon 500 vPro Certification & AI-Assisted Threat Detection</div>
+      <p>
+        vPro is Intel's managed platform certification, mandatory for Xeon 500 class deployments. It bundles AMT, hardware virtualization, and threat detection. <strong>Threat Detection Technology (TDT)</strong> is the newest vPro component — an AI-driven security system that detects ransomware, cryptojacking, and supply chain attacks before they reach the OS.
+      </p>
+
+      <h3 style="font-family: 'Bebas Neue', serif; font-size: 22px; color: #fff; margin-top: 32px; margin-bottom: 16px; font-weight: 400;">Threat Detection Technology (TDT)</h3>
+
+      <p>
+        TDT combines a dedicated NPU (Neural Processing Unit) on the PSM tile with hardware performance monitoring. It continuously observes processor activity — cache behavior, memory access patterns, execution timing — looking for anomalies consistent with ransomware encryption, mining loops, or fuzzing activity.
+      </p>
+
+      <div class="psm-dd-accent-box">
+        <strong style="color: #F87171;">How TDT Works:</strong> Machine learning models trained on known ransomware, cryptojacking, and exploitation patterns run on the NPU. The hardware performance monitor feeds events at line rate. When anomalies are detected, TDT can trigger hardware breakpoints, pause execution, or alert the hypervisor/OS without requiring OS cooperation.
+      </div>
+
+      <h3 style="font-family: 'Bebas Neue', serif; font-size: 22px; color: #fff; margin-top: 32px; margin-bottom: 16px; font-weight: 400;">Detection Coverage</h3>
+
+      <ul style="margin-left: 24px; color: #d1d5db; line-height: 1.8;">
+        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">150+ MITRE ATT&CK Behaviors:</span> TDT models cover execution, privilege escalation, defense evasion, and exfiltration tactics from the MITRE framework.</li>
+        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Ransomware Encryption Detection:</span> Rapid repeated memory writes + encryption instructions trigger alerts before file systems are compromised.</li>
+        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Cryptojacking Detection:</span> Long-running AES/SHA loops with cache patterns consistent with mining trigger alerts.</li>
+        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Supply Chain Attack Detection:</span> Unusual code injection, DLL side-loading, and module load anomalies are flagged for inspection.</li>
+        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Hardware-Immune Detection:</span> TDT sees behavior that OS-level EDR cannot — memory access patterns, cache behavior, raw CPU cycles — enabling detection of attacks that evade userspace monitoring.</li>
+      </ul>
+
+      <h3 style="font-family: 'Bebas Neue', serif; font-size: 22px; color: #fff; margin-top: 32px; margin-bottom: 16px; font-weight: 400;">vPro Platform Requirements</h3>
+
+      <ul style="margin-left: 24px; color: #d1d5db; line-height: 1.8;">
+        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Active Management Technology (AMT):</span> Out-of-band management and provisioning.</li>
+        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">VT-x & VT-d:</span> Hardware virtualization and DMA remapping for hypervisor deployments.</li>
+        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Intel Trusted Execution Technology:</span> Hardware-protected execution enclaves.</li>
+        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Control-Flow Enforcement Technology (CET):</span> Hardware protection against return-oriented programming (ROP) and jump-oriented programming (JOP) exploits.</li>
+        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Threat Detection Technology:</span> NPU-assisted anomaly detection.</li>
+      </ul>
+    </div>
+
+    <!-- ===== ADDITIONAL SECURITY FEATURES ===== -->
+    <div class="section psm-dd-section">
+      <h2 class="psm-dd-section-title">Additional Security Features</h2>
+      <p>
+        Beyond EGP, Pluton, CSME, and TDT, the PSM tile integrates an ecosystem of security technologies designed to protect against firmware attacks, memory attacks, and code injection:
+      </p>
+
+      <div class="psm-dd-feature-grid">
+        <div class="psm-dd-feature-card">
+          <div class="psm-dd-feature-title">Intel Boot Guard</div>
+          <div class="psm-dd-feature-desc">
+            Verified UEFI boot: UEFI firmware is cryptographically signed by Intel. Bootkit infections and UEFI rootkits cannot execute unsigned code.
+          </div>
+        </div>
+
+        <div class="psm-dd-feature-card">
+          <div class="psm-dd-feature-title">Intel CET (Control-Flow Enforcement)</div>
+          <div class="psm-dd-feature-desc">
+            Hardware shadow stack + indirect branch tracking. Prevents return-oriented programming (ROP), jump-oriented programming (JOP), and call-stack hijacking.
+          </div>
+        </div>
+
+        <div class="psm-dd-feature-card">
+          <div class="psm-dd-feature-title">Intel Key Locker</div>
+          <div class="psm-dd-feature-desc">
+            AES key handles stored in silicon. Applications use key handles instead of plaintext keys, preventing memory dumps and side-channel key extraction.
+          </div>
+        </div>
+
+        <div class="psm-dd-feature-card">
+          <div class="psm-dd-feature-title">VT-d (IOMMU)</div>
+          <div class="psm-dd-feature-desc">
+            I/O Memory Management Unit. DMA devices are restricted to assigned memory ranges, preventing rogue devices from reading arbitrary RAM.
+          </div>
+        </div>
+
+        <div class="psm-dd-feature-card">
+          <div class="psm-dd-feature-title">Intel SGX-NG (Next-Gen)</div>
+          <div class="psm-dd-feature-desc">
+            Secure enclaves for Alloy OS trusted applications. Enclaves run in isolated memory, invisible to the OS. EGP can attest to enclave identity.
+          </div>
+        </div>
+
+        <div class="psm-dd-feature-card">
+          <div class="psm-dd-feature-title">NIST SP800-193 FPR</div>
+          <div class="psm-dd-feature-desc">
+            Platform Firmware Resiliency standard compliance. Ensures firmware recovery, rollback protection, and integrity measurement against firmware attacks.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SPEC TABLE ===== -->
+    <div class="section psm-dd-section">
+      <h2 class="psm-dd-section-title">PSM Tile Specification</h2>
+      <table class="psm-dd-spec-table">
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>Specification</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="psm-dd-spec-category">Hardware Root of Trust</span></td>
+            <td>Eventide Guardian Protocol (EGP) + Microsoft Pluton 2.1</td>
+            <td>Dual-root architecture</td>
+          </tr>
+          <tr>
+            <td><span class="psm-dd-spec-category">Key Storage</span></td>
+            <td>On-tile non-volatile memory, AES-256</td>
+            <td>Hardware isolated</td>
+          </tr>
+          <tr>
+            <td><span class="psm-dd-spec-category">Attestation</span></td>
+            <td>EGP: Per-app hardware attestation tokens; Pluton: TPM 2.1 PCRs</td>
+            <td>Real-time capable</td>
+          </tr>
+          <tr>
+            <td><span class="psm-dd-spec-category">Boot Security</span></td>
+            <td>Measured boot, Intel Boot Guard, anti-rollback counters</td>
+            <td>NIST SP800-193 compliant</td>
+          </tr>
+          <tr>
+            <td><span class="psm-dd-spec-category">Management</span></td>
+            <td>Intel CSME 2.0 + Active Management Technology (AMT)</td>
+            <td>Out-of-band capable</td>
+          </tr>
+          <tr>
+            <td><span class="psm-dd-spec-category">Threat Detection</span></td>
+            <td>TDT: NPU + hardware performance monitoring, 150+ MITRE behaviors</td>
+            <td>AI-assisted, real-time</td>
+          </tr>
+          <tr>
+            <td><span class="psm-dd-spec-category">Cryptography</span></td>
+            <td>Intel Key Locker, CET, SGX-NG, VT-d, Boot Guard</td>
+            <td>FIPS 140-3 Level 2</td>
+          </tr>
+          <tr>
+            <td><span class="psm-dd-spec-category">Power Domain</span></td>
+            <td>Dedicated; remains active in suspend/standby</td>
+            <td>Always-on capable</td>
+          </tr>
+          <tr>
+            <td><span class="psm-dd-spec-category">Compliance</span></td>
+            <td>vPro certified, FIPS 140-3, NIST SP800-193, EAL 3+</td>
+            <td>Government deployable</td>
+          </tr>
+          <tr>
+            <td><span class="psm-dd-spec-category">Firmware Updates</span></td>
+            <td>EGP: OEM signed; Pluton: Windows Update channel</td>
+            <td>Synchronized release cycle</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ===== USE-CASE GRID ===== -->
+    <div class="section psm-dd-section">
+      <h2 class="psm-dd-section-title">Key Use Cases</h2>
+      <div class="psm-dd-usecase-grid">
+        <div class="psm-dd-usecase">
+          <div class="psm-dd-usecase-icon">🏢</div>
+          <div class="psm-dd-usecase-title">Enterprise Fleet Management</div>
+          <div class="psm-dd-usecase-desc">
+            CSME 2.0 and AMT enable out-of-band management of thousands of systems. IT teams can remotely diagnose failures, push patches, and recover compromised systems without user cooperation — even when the OS is unresponsive.
+          </div>
+        </div>
+
+        <div class="psm-dd-usecase">
+          <div class="psm-dd-usecase-icon">🤖</div>
+          <div class="psm-dd-usecase-title">Hardware-Attested AI Inference</div>
+          <div class="psm-dd-usecase-desc">
+            AI models can request EGP attestation, proving they executed in a verified environment. Supply chains and compliance audits can validate that sensitive AI models ran on genuine, uncompromised hardware with no unauthorized modifications.
+          </div>
+        </div>
+
+        <div class="psm-dd-usecase">
+          <div class="psm-dd-usecase-icon">🎬</div>
+          <div class="psm-dd-usecase-title">Secure Content Pipeline (DRM)</div>
+          <div class="psm-dd-usecase-desc">
+            CSME DRM root + Pluton hardware bindings enforce license policies for protected media — 4K video, digital audio, streaming. Content cannot be circumvented at the OS level.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION DIVIDER ===== -->
+    <div class="psm-dd-divider"></div>
+  </div>

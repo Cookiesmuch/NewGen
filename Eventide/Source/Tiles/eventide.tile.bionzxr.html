@@ -1,0 +1,900 @@
+    <!-- Z-ANGLE MEMORY: bionz-dd- | BionzXR Deep-Dive Section -->
+    <style>
+        /* ============================================
+           BIONZ DEEP-DIVE WRAPPER
+           ============================================ */
+        .bionz-dd-wrap {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 40px;
+            background: linear-gradient(135deg, #080000 0%, #120000 100%);
+            position: relative;
+        }
+
+        .bionz-dd-wrap::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(248, 113, 113, 0.03) 0px,
+                    rgba(248, 113, 113, 0.03) 1px,
+                    transparent 1px,
+                    transparent 40px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(248, 113, 113, 0.03) 0px,
+                    rgba(248, 113, 113, 0.03) 1px,
+                    transparent 1px,
+                    transparent 40px
+                );
+            pointer-events: none;
+        }
+
+        .bionz-dd-wrap > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ============================================
+           SECTION STYLING
+           ============================================ */
+        .bionz-section {
+            margin-bottom: 60px;
+        }
+
+        /* ============================================
+           HERO SECTION
+           ============================================ */
+        .bionz-dd-hero {
+            margin-bottom: 80px;
+        }
+
+        .bionz-dd-eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #F87171;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .bionz-dd-headline {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 72px;
+            line-height: 1;
+            letter-spacing: -2px;
+            margin-bottom: 16px;
+            color: #ffffff;
+            text-shadow: 0 0 40px rgba(248, 113, 113, 0.2);
+        }
+
+        .bionz-dd-subhead {
+            font-size: 18px;
+            color: #b0b0b0;
+            margin-bottom: 32px;
+            line-height: 1.7;
+            max-width: 900px;
+        }
+
+        .bionz-dd-badge-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .bionz-dd-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border: 1px solid rgba(248, 113, 113, 0.22);
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #FCA5A5;
+            background: rgba(248, 113, 113, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .bionz-dd-badge:hover {
+            background: rgba(248, 113, 113, 0.15);
+            border-color: rgba(248, 113, 113, 0.4);
+            color: #F87171;
+        }
+
+        .bionz-dd-badge.collab {
+            border: 1px solid #F87171;
+            background: rgba(248, 113, 113, 0.1);
+            color: #F87171;
+        }
+
+        /* ============================================
+           STAT BLOCK
+           ============================================ */
+        .bionz-dd-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 80px;
+        }
+
+        .bionz-dd-stat-cell {
+            border: 1px solid rgba(248, 113, 113, 0.22);
+            border-radius: 6px;
+            padding: 28px;
+            background: rgba(248, 113, 113, 0.02);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bionz-dd-stat-cell::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at top right, rgba(248, 113, 113, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .bionz-dd-stat-cell:hover {
+            border-color: rgba(248, 113, 113, 0.5);
+            background: rgba(248, 113, 113, 0.08);
+        }
+
+        .bionz-dd-stat-cell:hover::before {
+            opacity: 1;
+        }
+
+        .bionz-dd-stat-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px;
+            line-height: 1;
+            color: #FCA5A5;
+            margin-bottom: 12px;
+        }
+
+        .bionz-dd-stat-label {
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #a0a0a0;
+            font-weight: 600;
+        }
+
+        /* ============================================
+           TWO-COLUMN SECTION
+           ============================================ */
+        .bionz-dd-two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 80px;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .bionz-dd-two-col {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        .bionz-dd-col-header {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            color: #F87171;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+
+        .bionz-dd-col-text {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #d0d0d0;
+            margin-bottom: 20px;
+        }
+
+        .bionz-dd-col-text strong {
+            color: #FCA5A5;
+        }
+
+        .bionz-dd-lineage-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding: 16px;
+            border-left: 2px solid rgba(248, 113, 113, 0.22);
+            background: rgba(248, 113, 113, 0.03);
+            border-radius: 4px;
+        }
+
+        .bionz-dd-lineage-marker {
+            flex: 0 0 auto;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 1px solid #F87171;
+            color: #F87171;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .bionz-dd-lineage-content {
+            flex: 1;
+        }
+
+        .bionz-dd-lineage-title {
+            font-weight: 600;
+            color: #FCA5A5;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .bionz-dd-lineage-desc {
+            font-size: 12px;
+            color: #a0a0a0;
+            line-height: 1.6;
+        }
+
+        /* ============================================
+           CODEC MATRIX TABLE
+           ============================================ */
+        .bionz-dd-table-wrap {
+            margin-bottom: 80px;
+            overflow-x: auto;
+            border: 1px solid rgba(248, 113, 113, 0.22);
+            border-radius: 6px;
+            background: rgba(248, 113, 113, 0.02);
+        }
+
+        .bionz-dd-section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            color: #F87171;
+            margin-bottom: 32px;
+            letter-spacing: -1px;
+        }
+
+        .bionz-dd-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .bionz-dd-table thead {
+            background: rgba(248, 113, 113, 0.08);
+            border-bottom: 2px solid rgba(248, 113, 113, 0.22);
+        }
+
+        .bionz-dd-table th {
+            padding: 16px 20px;
+            text-align: left;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #FCA5A5;
+        }
+
+        .bionz-dd-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(248, 113, 113, 0.1);
+            font-size: 13px;
+        }
+
+        .bionz-dd-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .bionz-dd-table tbody tr:hover {
+            background: rgba(248, 113, 113, 0.05);
+        }
+
+        .bionz-dd-codec-name {
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .bionz-dd-codec-encode,
+        .bionz-dd-codec-decode {
+            text-align: center;
+        }
+
+        .bionz-dd-codec-encode.yes,
+        .bionz-dd-codec-decode.yes {
+            color: #F87171;
+            font-weight: 600;
+        }
+
+        .bionz-dd-codec-encode.no,
+        .bionz-dd-codec-decode.no {
+            color: #606060;
+        }
+
+        .bionz-dd-badge-exclusive {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(248, 113, 113, 0.15);
+            border: 1px solid #F87171;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #F87171;
+        }
+
+        /* ============================================
+           SONY CAMERA INTEGRATION
+           ============================================ */
+        .bionz-dd-integration-box {
+            margin-bottom: 80px;
+            border: 1px solid rgba(248, 113, 113, 0.22);
+            border-radius: 6px;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(248, 113, 113, 0.05) 0%, rgba(248, 113, 113, 0.02) 100%);
+        }
+
+        .bionz-dd-integration-flow {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .bionz-dd-flow-step {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid rgba(248, 113, 113, 0.15);
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .bionz-dd-flow-step-num {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            color: #F87171;
+            margin-bottom: 8px;
+        }
+
+        .bionz-dd-flow-step-label {
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #a0a0a0;
+            font-weight: 600;
+        }
+
+        /* ============================================
+           VRV SECTION
+           ============================================ */
+        .bionz-dd-vrv-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        @media (max-width: 768px) {
+            .bionz-dd-vrv-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .bionz-dd-vrv-card {
+            border: 1px solid rgba(248, 113, 113, 0.22);
+            border-radius: 6px;
+            padding: 32px;
+            background: rgba(248, 113, 113, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        .bionz-dd-vrv-card:hover {
+            border-color: rgba(248, 113, 113, 0.5);
+            background: rgba(248, 113, 113, 0.08);
+        }
+
+        .bionz-dd-vrv-name {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 16px;
+            font-weight: 600;
+            color: #F87171;
+            margin-bottom: 12px;
+        }
+
+        .bionz-dd-vrv-desc {
+            font-size: 13px;
+            color: #d0d0d0;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .bionz-dd-vrv-spec {
+            font-size: 11px;
+            color: #a0a0a0;
+            margin-bottom: 8px;
+        }
+
+        /* ============================================
+           POWER & PROCESS SECTION
+           ============================================ */
+        .bionz-dd-process-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        @media (max-width: 768px) {
+            .bionz-dd-process-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .bionz-dd-process-card {
+            border: 1px solid rgba(248, 113, 113, 0.22);
+            border-radius: 6px;
+            padding: 32px;
+            background: rgba(248, 113, 113, 0.02);
+        }
+
+        .bionz-dd-process-label {
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #FCA5A5;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .bionz-dd-process-metric {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            color: #F87171;
+            margin-bottom: 12px;
+            line-height: 1;
+        }
+
+        .bionz-dd-process-text {
+            font-size: 13px;
+            color: #b0b0b0;
+            line-height: 1.7;
+        }
+
+        /* ============================================
+           USE CASE GRID
+           ============================================ */
+        .bionz-dd-usecase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .bionz-dd-usecase-chip {
+            border: 1px solid rgba(248, 113, 113, 0.22);
+            border-radius: 6px;
+            padding: 32px;
+            background: rgba(248, 113, 113, 0.03);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .bionz-dd-usecase-chip:hover {
+            border-color: rgba(248, 113, 113, 0.5);
+            background: rgba(248, 113, 113, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .bionz-dd-usecase-icon {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            color: #F87171;
+            margin-bottom: 12px;
+        }
+
+        .bionz-dd-usecase-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .bionz-dd-usecase-desc {
+            font-size: 12px;
+            color: #a0a0a0;
+            line-height: 1.6;
+        }
+
+        /* ============================================
+           SECTION DIVIDER
+           ============================================ */
+        .bionz-dd-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(248, 113, 113, 0.22), transparent);
+            margin: 80px 0;
+        }
+    </style>
+    <!-- INSERT LOCATION: After the GNA 5.0 deep-dive section and its divider -->
+
+    <div class="bionz-dd-wrap">
+        <!-- ============================================
+             HERO SECTION
+             ============================================ -->
+        <div class="bionz-section bionz-dd-hero">
+            <div class="bionz-dd-eyebrow">Media Engine · QuickSync BionzXR · Intel × Sony · Intel 06E</div>
+            <h1 class="bionz-dd-headline">Camera-Grade.<br>Codec-Complete.</h1>
+            <p class="bionz-dd-subhead">
+                The first camera-grade transcoder in a consumer mobile APU, co-engineered between Intel QuickSync and Sony's BionzXR team. Hardware-native support for AV2 encode, ProRes burst recording, and 8K cinema workflows — bridging professional imaging and consumer silicon.
+            </p>
+            <div class="bionz-dd-badge-group">
+                <div class="bionz-dd-badge collab">Intel × Sony</div>
+                <div class="bionz-dd-badge">World-First AV2 Encode</div>
+                <div class="bionz-dd-badge">8K ProRes</div>
+                <div class="bionz-dd-badge">Intel 06E</div>
+                <div class="bionz-dd-badge">VRV1/VRV2 Native</div>
+            </div>
+        </div>
+
+        <!-- ============================================
+             STAT BLOCK
+             ============================================ -->
+        <div class="bionz-section">
+            <div class="bionz-dd-stat-grid">
+                <div class="bionz-dd-stat-cell">
+                    <div class="bionz-dd-stat-number">8×</div>
+                    <div class="bionz-dd-stat-label">BionzXR Cores</div>
+                </div>
+                <div class="bionz-dd-stat-cell">
+                    <div class="bionz-dd-stat-number">8K120</div>
+                    <div class="bionz-dd-stat-label">ProRes Encode</div>
+                </div>
+                <div class="bionz-dd-stat-cell">
+                    <div class="bionz-dd-stat-number">8K240</div>
+                    <div class="bionz-dd-stat-label">AV1 Encode</div>
+                </div>
+                <div class="bionz-dd-stat-cell">
+                    <div class="bionz-dd-stat-number">1st</div>
+                    <div class="bionz-dd-stat-label">AV2 Hardware</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+             TWO-COLUMN: HERITAGE & ARCHITECTURE
+             ============================================ -->
+        <div class="bionz-section bionz-dd-two-col">
+            <!-- LEFT: SONY BIONZXR LINEAGE -->
+            <div>
+                <h2 class="bionz-dd-col-header">BionzXR Heritage</h2>
+                <p class="bionz-dd-col-text">
+                    Sony's imaging processors trace back two decades. What started as <strong>BIONZ</strong> in 2004 camcorders evolved into the industry standard for α-series cameras.
+                </p>
+
+                <div class="bionz-dd-lineage-item">
+                    <div class="bionz-dd-lineage-marker">1</div>
+                    <div class="bionz-dd-lineage-content">
+                        <div class="bionz-dd-lineage-title">BIONZ</div>
+                        <div class="bionz-dd-lineage-desc">2004 — Native processing engine in pro/semi-pro camcorders. Tone mapping, color science foundation.</div>
+                    </div>
+                </div>
+
+                <div class="bionz-dd-lineage-item">
+                    <div class="bionz-dd-lineage-marker">2</div>
+                    <div class="bionz-dd-lineage-content">
+                        <div class="bionz-dd-lineage-title">BIONZ X</div>
+                        <div class="bionz-dd-lineage-desc">2014 — Standard ISP in α7 III–α7R IV era. Real-time RAW processing, 12MP/s burst, Real-Time Tracking AF.</div>
+                    </div>
+                </div>
+
+                <div class="bionz-dd-lineage-item">
+                    <div class="bionz-dd-lineage-marker">3</div>
+                    <div class="bionz-dd-lineage-content">
+                        <div class="bionz-dd-lineage-title">BionzXR</div>
+                        <div class="bionz-dd-lineage-desc">2021–present — α1, α7S III, Cinema Line FX3. 14-stop dynamic range, advanced AF/AE, 4K240 & 8K60 native capture.</div>
+                    </div>
+                </div>
+
+                <p class="bionz-dd-col-text" style="margin-top: 24px;">
+                    The <strong>engineering challenge</strong>: miniaturize that silicon intelligence into a co-designed tile running inside an Intel APU package without compromising latency or power efficiency.
+                </p>
+            </div>
+
+            <!-- RIGHT: QUICKSYNC ARCHITECTURE -->
+            <div>
+                <h2 class="bionz-dd-col-header">QuickSync Reimagined</h2>
+                <p class="bionz-dd-col-text">
+                    Intel's QuickSync video pipeline has delivered fixed-function hardware encode/decode since Sandy Bridge. The <strong>BionzXR co-design</strong> extends that proven foundation.
+                </p>
+
+                <div class="bionz-dd-lineage-item">
+                    <div class="bionz-dd-lineage-marker">A</div>
+                    <div class="bionz-dd-lineage-content">
+                        <div class="bionz-dd-lineage-title">AV2 Encode (World-First)</div>
+                        <div class="bionz-dd-lineage-desc">Zero prior hardware implementations. BionzXR & QuickSync jointly implemented entropy coding, RDO, and temporal analysis at full gate count.</div>
+                    </div>
+                </div>
+
+                <div class="bionz-dd-lineage-item">
+                    <div class="bionz-dd-lineage-marker">B</div>
+                    <div class="bionz-dd-lineage-content">
+                        <div class="bionz-dd-lineage-title">H.266/VVC Hardware</div>
+                        <div class="bionz-dd-lineage-desc">Complex entropy coding pipelines — competitive advantage over software-only stacks. Part of Sony cinema IP flow.</div>
+                    </div>
+                </div>
+
+                <div class="bionz-dd-lineage-item">
+                    <div class="bionz-dd-lineage-marker">C</div>
+                    <div class="bionz-dd-lineage-content">
+                        <div class="bionz-dd-lineage-title">ProRes (Apple Exclusive → Intel First)</div>
+                        <div class="bionz-dd-lineage-desc">Traditionally silicon-locked to Apple. BionzXR unlocks 8K ProRes HQ encode for PC & mobile workflows.</div>
+                    </div>
+                </div>
+
+                <p class="bionz-dd-col-text" style="margin-top: 24px;">
+                    The result: a <strong>codec-complete</strong> media engine that respects both camera ISP intelligence and software transcoding demands.
+                </p>
+            </div>
+        </div>
+
+        <!-- ============================================
+             CODEC MATRIX TABLE
+             ============================================ -->
+        <div class="bionz-section">
+            <h2 class="bionz-dd-section-title">Codec Support Matrix</h2>
+            <div class="bionz-dd-table-wrap">
+                <table class="bionz-dd-table">
+                    <thead>
+                        <tr>
+                            <th>Codec</th>
+                            <th>Encode</th>
+                            <th>Decode</th>
+                            <th>Max Resolution / Framerate</th>
+                            <th>Status & Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="bionz-dd-codec-name">AV2</span></td>
+                            <td class="bionz-dd-codec-encode yes">✓</td>
+                            <td class="bionz-dd-codec-decode yes">✓</td>
+                            <td>8K240</td>
+                            <td><span class="bionz-dd-badge-exclusive">World-First</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="bionz-dd-codec-name">AV1</span></td>
+                            <td class="bionz-dd-codec-encode yes">✓</td>
+                            <td class="bionz-dd-codec-decode yes">✓</td>
+                            <td>8K240</td>
+                            <td>Full profile suite</td>
+                        </tr>
+                        <tr>
+                            <td><span class="bionz-dd-codec-name">VRV1</span></td>
+                            <td class="bionz-dd-codec-encode yes">✓</td>
+                            <td class="bionz-dd-codec-decode yes">✓</td>
+                            <td>8K120 stereo</td>
+                            <td>VR-optimized AV1</td>
+                        </tr>
+                        <tr>
+                            <td><span class="bionz-dd-codec-name">VRV2</span></td>
+                            <td class="bionz-dd-codec-encode yes">✓</td>
+                            <td class="bionz-dd-codec-decode yes">✓</td>
+                            <td>8K120 stereo</td>
+                            <td>VR-optimized AV2</td>
+                        </tr>
+                        <tr>
+                            <td><span class="bionz-dd-codec-name">H.266/VVC</span></td>
+                            <td class="bionz-dd-codec-encode yes">✓</td>
+                            <td class="bionz-dd-codec-decode yes">✓</td>
+                            <td>8K60</td>
+                            <td>Main 10 profile</td>
+                        </tr>
+                        <tr>
+                            <td><span class="bionz-dd-codec-name">H.265/HEVC</span></td>
+                            <td class="bionz-dd-codec-encode yes">✓</td>
+                            <td class="bionz-dd-codec-decode yes">✓</td>
+                            <td>8K60</td>
+                            <td>10-bit native</td>
+                        </tr>
+                        <tr>
+                            <td><span class="bionz-dd-codec-name">H.264/AVC</span></td>
+                            <td class="bionz-dd-codec-encode yes">✓</td>
+                            <td class="bionz-dd-codec-decode yes">✓</td>
+                            <td>4K120</td>
+                            <td>Baseline → High</td>
+                        </tr>
+                        <tr>
+                            <td><span class="bionz-dd-codec-name">ProRes</span></td>
+                            <td class="bionz-dd-codec-encode yes">✓</td>
+                            <td class="bionz-dd-codec-decode yes">✓</td>
+                            <td>8K120</td>
+                            <td><span class="bionz-dd-badge-exclusive">First Non-Apple</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="bionz-dd-codec-name">ProRes RAW</span></td>
+                            <td class="bionz-dd-codec-encode yes">✓</td>
+                            <td class="bionz-dd-codec-decode yes">✓</td>
+                            <td>6K120</td>
+                            <td>Sony camera direct</td>
+                        </tr>
+                        <tr>
+                            <td><span class="bionz-dd-codec-name">VP9</span></td>
+                            <td class="bionz-dd-codec-encode yes">✓</td>
+                            <td class="bionz-dd-codec-decode yes">✓</td>
+                            <td>4K120</td>
+                            <td>Profile 0 & 2</td>
+                        </tr>
+                        <tr>
+                            <td><span class="bionz-dd-codec-name">VP8</span></td>
+                            <td class="bionz-dd-codec-encode no">—</td>
+                            <td class="bionz-dd-codec-decode yes">✓</td>
+                            <td>4K60</td>
+                            <td>Legacy support</td>
+                        </tr>
+                        <tr>
+                            <td><span class="bionz-dd-codec-name">MPEG-4 AVC</span></td>
+                            <td class="bionz-dd-codec-encode yes">✓</td>
+                            <td class="bionz-dd-codec-decode yes">✓</td>
+                            <td>1080p60</td>
+                            <td>Part 2 simple</td>
+                        </tr>
+                        <tr>
+                            <td><span class="bionz-dd-codec-name">VC-1</span></td>
+                            <td class="bionz-dd-codec-encode no">—</td>
+                            <td class="bionz-dd-codec-decode yes">✓</td>
+                            <td>1080p60</td>
+                            <td>Advanced profile</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============================================
+             SONY CAMERA INTEGRATION
+             ============================================ -->
+        <div class="bionz-section">
+            <h2 class="bionz-dd-section-title">Sony Camera Integration</h2>
+            <div class="bionz-dd-integration-box">
+                <p class="bionz-dd-col-text">
+                    When a Sony α-series camera is tethered via <strong>USB-C or Thunderbolt 5</strong>, the IPU 8.2 and BionzXR tile establish a direct RAW pipeline. Uncompressed sensor frames arrive to the media engine with full ISP parameters — white balance, color matrices, lens distortion correction — inherited from the camera body. Real-time processing enables cinema-grade workflows that were previously desktop-only.
+                </p>
+                <div class="bionz-dd-integration-flow">
+                    <div class="bionz-dd-flow-step">
+                        <div class="bionz-dd-flow-step-num">①</div>
+                        <div class="bionz-dd-flow-step-label">RAW Sensor Feed</div>
+                    </div>
+                    <div class="bionz-dd-flow-step">
+                        <div class="bionz-dd-flow-step-num">②</div>
+                        <div class="bionz-dd-flow-step-label">BionzXR ISP</div>
+                    </div>
+                    <div class="bionz-dd-flow-step">
+                        <div class="bionz-dd-flow-step-num">③</div>
+                        <div class="bionz-dd-flow-step-label">Hardware Encode</div>
+                    </div>
+                    <div class="bionz-dd-flow-step">
+                        <div class="bionz-dd-flow-step-num">④</div>
+                        <div class="bionz-dd-flow-step-label">Storage / Stream</div>
+                    </div>
+                </div>
+                <p class="bionz-dd-col-text" style="margin-top: 32px;">
+                    <strong>Real-world use cases:</strong>
+                </p>
+                <ul style="margin-left: 20px; color: #b0b0b0; font-size: 13px; line-height: 1.8;">
+                    <li><strong>Cinema Capture & Edit:</strong> ProRes 8K@120fps recording directly to NVMe SSD, bypassing proprietary camera codecs entirely.</li>
+                    <li><strong>Live Streaming:</strong> 8K AV1 @ 240fps encoding for Dolby Vision HDR workflows, zero-latency monitoring.</li>
+                    <li><strong>Multi-Camera Setup:</strong> Synchronous tethering of 4× α1 cameras, all feeding a single IPU 8.2 transcode farm.</li>
+                    <li><strong>RAW Archiving:</strong> ProRes RAW 6K@120fps native encode for long-term professional archival.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ============================================
+             VRV1 / VRV2 CODECS
+             ============================================ -->
+        <div class="bionz-section">
+            <h2 class="bionz-dd-section-title">VRV1 & VRV2: Latency-Optimized Codecs</h2>
+            <div class="bionz-dd-vrv-grid">
+                <div class="bionz-dd-vrv-card">
+                    <div class="bionz-dd-vrv-name">VRV1</div>
+                    <div class="bionz-dd-vrv-desc">
+                        Intel's latency-optimized variant of AV1, designed specifically for the VR video pipeline. Implements stereo Basis Vector Hierarchy (BVH) encoding, foveal compression, and dynamic quantization zones to match gaze tracking data in real time.
+                    </div>
+                    <div class="bionz-dd-vrv-spec">• Max 8K120 stereo (4K240 per eye)</div>
+                    <div class="bionz-dd-vrv-spec">• Encode latency: &lt;8ms @ 1080p120</div>
+                    <div class="bionz-dd-vrv-spec">• Native Arc GPU interop</div>
+                    <div class="bionz-dd-vrv-spec">• Dolby Vision HDR ready</div>
+                </div>
+                <div class="bionz-dd-vrv-card">
+                    <div class="bionz-dd-vrv-name">VRV2</div>
+                    <div class="bionz-dd-vrv-desc">
+                        Next-generation VR codec built on AV2 entropy coding and advanced RDO. VRV2 adds predictive frame interpolation for head motion compensation, reducing perceived motion-to-photon latency even further.
+                    </div>
+                    <div class="bionz-dd-vrv-spec">• Max 8K120 stereo (4K240 per eye)</div>
+                    <div class="bionz-dd-vrv-spec">• Encode latency: &lt;6ms @ 1080p120</div>
+                    <div class="bionz-dd-vrv-spec">• Predictive motion compensation</div>
+                    <div class="bionz-dd-vrv-spec">• Arc GPU direct link</div>
+                </div>
+            </div>
+            <p class="bionz-dd-col-text" style="max-width: 100%; text-align: center; margin-top: 40px;">
+                <strong>Why day-one native hardware support matters:</strong> VR content creation pipelines depend on sub-10ms encode latency for interactive streaming and live photogrammetry. Software stacks cannot guarantee this. Day-one hardware support in BionzXR means developers building volumetric capture systems and live XR experiences have a stable target from launch.
+            </p>
+        </div>
+
+        <!-- ============================================
+             POWER & PROCESS
+             ============================================ -->
+        <div class="bionz-section">
+            <h2 class="bionz-dd-section-title">Power & Process Technology</h2>
+            <div class="bionz-dd-process-grid">
+                <div class="bionz-dd-process-card">
+                    <div class="bionz-dd-process-label">Process Node</div>
+                    <div class="bionz-dd-process-metric">Intel 06E</div>
+                    <div class="bionz-dd-process-text">
+                        Same as LPNPU and LPE island. The 06E node was chosen for BionzXR because video encode workloads exhibit memory bandwidth patterns and thermal headroom characteristics that scale better on 06E than on 04A — particularly during burst encode sessions (8K240 AV2 sustained for &gt;30 seconds).
+                    </div>
+                </div>
+                <div class="bionz-dd-process-card">
+                    <div class="bionz-dd-process-label">Die Size & TDP</div>
+                    <div class="bionz-dd-process-metric">42 mm²</div>
+                    <div class="bionz-dd-process-text">
+                        BionzXR occupies ~3.2% of total AP die area. Per-core power efficiency: 1.2 mW/MHz during 1080p120 AV2 encode. Full tile can sustain 18W peak without thermal throttle on APU's shared heat spreader.
+                    </div>
+                </div>
+            </div>
+            <p class="bionz-dd-col-text" style="max-width: 100%; text-align: center; margin-top: 40px;">
+                The 06E placement also allows direct copper connections to the IPU 8.2 L3 cache, reducing memory latency for entropy tables and motion vector lookups — critical for real-time ProRes RAW @ 6K120 workflows where buffer underruns are fatal.
+            </p>
+        </div>
+
+        <!-- ============================================
+             USE CASE GRID
+             ============================================ -->
+        <div class="bionz-section">
+            <h2 class="bionz-dd-section-title">Core Use Cases</h2>
+            <div class="bionz-dd-usecase-grid">
+                <div class="bionz-dd-usecase-chip">
+                    <div class="bionz-dd-usecase-icon">🎬</div>
+                    <div class="bionz-dd-usecase-title">Cinema Capture & Edit</div>
+                    <div class="bionz-dd-usecase-desc">ProRes 8K@120fps directly from Sony α1 or FX3 to SSD. Zero transcoding needed — final delivery codec ready on ingest.</div>
+                </div>
+                <div class="bionz-dd-usecase-chip">
+                    <div class="bionz-dd-usecase-icon">🌐</div>
+                    <div class="bionz-dd-usecase-title">Live Streaming</div>
+                    <div class="bionz-dd-usecase-desc">8K AV1 @ 240fps with Dolby Vision HDR, enabling ultra-low-latency broadcast and volumetric streaming for sports & concerts.</div>
+                </div>
+                <div class="bionz-dd-usecase-chip">
+                    <div class="bionz-dd-usecase-icon">🥽</div>
+                    <div class="bionz-dd-usecase-title">VR Content Creation</div>
+                    <div class="bionz-dd-usecase-desc">VRV1/VRV2 native encode with &lt;6ms latency — volumetric capture, light field streaming, and real-time photogrammetry.</div>
+                </div>
+                <div class="bionz-dd-usecase-chip">
+                    <div class="bionz-dd-usecase-icon">📸</div>
+                    <div class="bionz-dd-usecase-title">Professional Photography Tethering</div>
+                    <div class="bionz-dd-usecase-desc">Tethered α7R V RAW workflows with on-the-fly ProRes encoding for color grading preview — monitor on Arc GPU, record to SSD.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION DIVIDER (MARKS END OF BIONZXR DEEP-DIVE) -->
+    <div class="bionz-dd-divider"></div>

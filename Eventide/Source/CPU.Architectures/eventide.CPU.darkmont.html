@@ -1,0 +1,540 @@
+<div class="lpe-showcase-wrap">
+<div class="section" style="position:relative;z-index:1;">
+
+  <!-- HEADER -->
+  <div class="lpe-eyebrow">Low Power Island &middot; Intel 06E &middot; LPE Core</div>
+  <div class="lpe-headline">DARKMONT &mdash; <span>LOW POWER EFFICIENCY</span></div>
+  <p class="lpe-subhead">0.18W per core. The always-on heartbeat of the Eventide APU &mdash; handling background tasks, notifications, and ambient intelligence while the rest of the chip sleeps.</p>
+  <div class="lpe-badge-row">
+    <span class="lpe-badge lpe-b-pwr">0.18W / CORE</span>
+    <span class="lpe-badge lpe-b-blue">INTEL 06E LP ISLAND</span>
+    <span class="lpe-badge lpe-b-blue">PTL E-CORE REBIN</span>
+    <span class="lpe-badge lpe-b-blue">&minus;80mV UNDERVOLT BIN</span>
+    <span class="lpe-badge lpe-b-blue">SUB-&micro;W IDLE / CLUSTER</span>
+    <span class="lpe-badge lpe-b-note">LOWEST POWER x86 CORE IN PRODUCTION</span>
+  </div>
+
+  <!-- STAT BLOCK -->
+  <div class="lpe-stat-block">
+    <div class="lpe-stat-cell">
+      <div class="lpe-stat-num">0.18W</div>
+      <div class="lpe-stat-label">Min Power / Core</div>
+      <div class="lpe-stat-sub">Lowest in lineup</div>
+    </div>
+    <div class="lpe-stat-cell">
+      <div class="lpe-stat-num">1&ndash;5W</div>
+      <div class="lpe-stat-label">System Active Draw</div>
+      <div class="lpe-stat-sub">LPE island only</div>
+    </div>
+    <div class="lpe-stat-cell">
+      <div class="lpe-stat-num">3.0 GHz</div>
+      <div class="lpe-stat-label">Max Turbo</div>
+      <div class="lpe-stat-sub">on Intel 06E node</div>
+    </div>
+    <div class="lpe-stat-cell">
+      <div class="lpe-stat-num">&minus;72%</div>
+      <div class="lpe-stat-label">Min Power vs PTL E-Core</div>
+      <div class="lpe-stat-sub">Same IPC class, fraction of power</div>
+    </div>
+  </div>
+
+  <!-- ── PART 1 : THE ALWAYS-ON PHILOSOPHY ── -->
+  <div class="lpe-section-label">Part 1 &mdash; The Always-On Philosophy</div>
+  <div class="lpe-body-heading">The Core That <span>Never Sleeps</span></div>
+
+  <div class="lpe-two-col">
+    <div>
+      <div class="lpe-always-on-callout">
+        <div class="lpe-always-on-title">SUB-WATT OPERATION</div>
+        <div class="lpe-always-on-text">
+          Darkmont is not a performance core that happens to be efficient &mdash; it is an <strong>efficiency core purpose-built for always-on operation</strong>. Based on the proven Panther Lake E-core architecture, Darkmont is rebinned onto Intel 06E with a <strong>certified &minus;80mV undervolt bin</strong>, achieving power floors that redefine what an x86 core can do at idle. At 0.18W per core, entire clusters of Darkmont cores consume less power than a single status LED.
+        </div>
+      </div>
+      <p class="lpe-body-text">The Eventide power management hierarchy operates on a simple principle: <strong>Darkmont handles everything it can before any other core wakes up</strong>. The Hardware Thread Director classifies incoming work and routes background tasks, system telemetry, notification polling, audio playback, and ambient sensor processing to the LPE island. Only when a task exceeds Darkmont&rsquo;s throughput ceiling does the system escalate to the UHE Lunar Eclipse cores on the same Low Power Island, and only genuinely compute-intensive work ever reaches the Compute Tile.</p>
+      <p class="lpe-body-text">This isn&rsquo;t just about saving battery &mdash; it&rsquo;s about <strong>thermal silence</strong>. When the system runs entirely on Darkmont cores, there is no fan activation, no thermal throttling, no audible noise whatsoever. The 1&ndash;5W total system draw during LPE-only operation means passively cooled operation is the default state, not an exception. For users in meetings, libraries, or quiet environments, the laptop is indistinguishable from being powered off.</p>
+      <p class="lpe-body-text">The &minus;80mV undervolt certification is not a user-applied overclock &mdash; it is a <strong>factory-validated bin</strong>. Every Darkmont core in every Eventide APU is tested and certified to operate stably at this reduced voltage, extracting the full benefit of Intel 06E&rsquo;s low-leakage transistor library. Combined with per-cluster DVFS granularity and sub-nanosecond power gating, the result is a core that spends the vast majority of its time in near-zero-power states, waking only in microsecond bursts to service interrupts and background tasks.</p>
+    </div>
+    <div>
+      <div class="lpe-info-card">
+        <div class="lpe-spec-row"><span class="lpe-spec-key">ARCHITECTURE BASE</span><span class="lpe-spec-val leaf">PTL E-Core (Darkmont) rebin</span></div>
+        <div class="lpe-spec-row"><span class="lpe-spec-key">PROCESS NODE</span><span class="lpe-spec-val leaf">Intel 06E (Low Power)</span></div>
+        <div class="lpe-spec-row"><span class="lpe-spec-key">TILE</span><span class="lpe-spec-val">Low Power Island</span></div>
+        <div class="lpe-spec-row"><span class="lpe-spec-key">BASE CLOCK</span><span class="lpe-spec-val">0.8 GHz</span></div>
+        <div class="lpe-spec-row"><span class="lpe-spec-key">MAX TURBO</span><span class="lpe-spec-val leaf">3.0 GHz</span></div>
+        <div class="lpe-spec-row"><span class="lpe-spec-key">UNDERVOLT BIN</span><span class="lpe-spec-val leaf">&minus;80mV certified</span></div>
+        <div class="lpe-spec-row"><span class="lpe-spec-key">MIN POWER / CORE</span><span class="lpe-spec-val leaf">0.18W</span></div>
+        <div class="lpe-spec-row"><span class="lpe-spec-key">SYSTEM ACTIVE DRAW</span><span class="lpe-spec-val leaf">1&ndash;5W (LPE island)</span></div>
+        <div class="lpe-spec-row"><span class="lpe-spec-key">L2 CACHE</span><span class="lpe-spec-val">1 MB / 4-core cluster</span></div>
+        <div class="lpe-spec-row"><span class="lpe-spec-key">IDLE POWER</span><span class="lpe-spec-val leaf">sub-&micro;W / cluster</span></div>
+        <div class="lpe-spec-row"><span class="lpe-spec-key">POWER GATE LATENCY</span><span class="lpe-spec-val leaf">&lt;1ns</span></div>
+        <div class="lpe-spec-row"><span class="lpe-spec-key">SMT</span><span class="lpe-spec-val">None</span></div>
+        <div class="lpe-spec-row"><span class="lpe-spec-key">V8 HYPERBOOST</span><span class="lpe-spec-val">Not supported</span></div>
+        <div class="lpe-spec-row"><span class="lpe-spec-key">KACHE KORE ACCESS</span><span class="lpe-spec-val">via FOveros 2.0</span></div>
+        <div class="lpe-spec-row"><span class="lpe-spec-key">LPNPU CO-PILOT</span><span class="lpe-spec-val leaf">Connected</span></div>
+      </div>
+      <div class="lpe-isa-row">
+        <span class="lpe-isa-pill">SSE4.2</span>
+        <span class="lpe-isa-pill">AVX2</span>
+        <span class="lpe-isa-pill">VNNI</span>
+        <span class="lpe-isa-pill">CET</span>
+        <span class="lpe-isa-pill absent">AVX-512</span>
+        <span class="lpe-isa-pill absent">AMX</span>
+        <span class="lpe-isa-pill absent">P-SMT</span>
+        <span class="lpe-isa-pill absent">TBM 5.0</span>
+      </div>
+      <p style="font-size:10px;color:rgba(26,32,44,0.3);font-style:italic;margin-top:8px;">Struck-through extensions are not available on the LPE core &mdash; efficiency node tradeoff.</p>
+    </div>
+  </div>
+
+  <!-- ── PART 2 : WHAT DARKMONT HANDLES ── -->
+  <div class="lpe-inner-divider"></div>
+  <div class="lpe-section-label">Part 2 &mdash; What Darkmont Handles</div>
+  <div class="lpe-body-heading">The <span>Always-On</span> Workload Map</div>
+
+  <p class="lpe-body-text">The following workloads run <strong>entirely on Darkmont LPE cores</strong> without waking any other core on the chip. Each tile shows the task category and approximate power draw when handled exclusively by the LPE island. This is what sub-5W total system draw looks like in practice:</p>
+
+  <div class="lpe-workload-grid">
+    <div class="lpe-workload-tile">
+      <span class="lpe-workload-icon">🔄</span>
+      <div class="lpe-workload-name">Background Sync</div>
+      <div class="lpe-workload-pwr">~0.3W</div>
+    </div>
+    <div class="lpe-workload-tile">
+      <span class="lpe-workload-icon">📧</span>
+      <div class="lpe-workload-name">Email Checking</div>
+      <div class="lpe-workload-pwr">~0.2W</div>
+    </div>
+    <div class="lpe-workload-tile">
+      <span class="lpe-workload-icon">🎵</span>
+      <div class="lpe-workload-name">Music Playback</div>
+      <div class="lpe-workload-pwr">~0.4W</div>
+    </div>
+    <div class="lpe-workload-tile">
+      <span class="lpe-workload-icon">⏰</span>
+      <div class="lpe-workload-name">Clock / Timers</div>
+      <div class="lpe-workload-pwr">~0.18W</div>
+    </div>
+    <div class="lpe-workload-tile">
+      <span class="lpe-workload-icon">🎙️</span>
+      <div class="lpe-workload-name">Wake-on-Voice</div>
+      <div class="lpe-workload-pwr">~0.5W</div>
+    </div>
+    <div class="lpe-workload-tile">
+      <span class="lpe-workload-icon">🔔</span>
+      <div class="lpe-workload-name">Notifications</div>
+      <div class="lpe-workload-pwr">~0.2W</div>
+    </div>
+    <div class="lpe-workload-tile">
+      <span class="lpe-workload-icon">🌡️</span>
+      <div class="lpe-workload-name">Thermal Management</div>
+      <div class="lpe-workload-pwr">~0.18W</div>
+    </div>
+    <div class="lpe-workload-tile">
+      <span class="lpe-workload-icon">📊</span>
+      <div class="lpe-workload-name">System Telemetry</div>
+      <div class="lpe-workload-pwr">~0.25W</div>
+    </div>
+  </div>
+
+  <!-- ── PART 3 : PIPELINE + POWER STATE TIMELINE ── -->
+  <div class="lpe-inner-divider"></div>
+  <div class="lpe-section-label">Part 3 &mdash; Pipeline Architecture &amp; Power States</div>
+  <div class="lpe-body-heading">Rebinned for <span>Minimum Power</span></div>
+
+  <div class="lpe-two-col">
+    <div>
+      <p class="lpe-body-text">Darkmont&rsquo;s pipeline is architecturally identical to the Panther Lake E-core &mdash; the same decode width, the same execution backend, the same proven microarchitecture. What changes is the <strong>process node and voltage floor</strong>. By rebinning onto Intel 06E with a certified &minus;80mV undervolt, Intel extracts dramatically lower power at every operating point without sacrificing IPC.</p>
+      <p class="lpe-body-text">At the same voltage and frequency, Darkmont on 06E delivers <strong>+22% IPC</strong> over the identical architecture on Panther Lake&rsquo;s 14A node. This improvement comes entirely from 06E&rsquo;s superior transistor characteristics: lower interconnect resistance, tighter gate control, and reduced parasitic capacitance. The architecture doesn&rsquo;t need to change when the node does this much of the heavy lifting.</p>
+      <p class="lpe-body-text">The pipeline explicitly omits AVX-512, AMX, and P-SMT &mdash; these are <strong>deliberate exclusions</strong>, not limitations. Each of those features adds die area and leakage current that would undermine the core&rsquo;s purpose. Darkmont exists to be small, cold, and always ready. The silicon saved by omitting wide vector units is spent on deeper power gating logic and finer-grained clock distribution.</p>
+      <p class="lpe-body-text">A dashed connection to the <strong>LPNPU co-pilot</strong> represents the always-on neural processing link. Wake-on-voice triggers, predictive app dispatch, and AI-assisted power state management flow through this connection, allowing Darkmont to pre-stage workloads before the user even touches the keyboard. The LPNPU and Darkmont together form the &ldquo;ambient intelligence layer&rdquo; of the Eventide APU.</p>
+      <p class="lpe-body-text">The power state timeline below illustrates Darkmont&rsquo;s operational cadence during typical background workloads. The core spends the overwhelming majority of its time in <strong>power-gated (sub-&micro;W)</strong> or <strong>clock-gated (&lt;0.01W)</strong> states, waking in brief microsecond bursts to service interrupts before returning to deep sleep. With &lt;1ns gate transitions, these state changes are invisible to software and introduce zero latency penalty to interrupt response times.</p>
+    </div>
+    <div>
+      <div class="lpe-pipeline-wrap">
+        <div class="lpe-pipeline-label">DARKMONT LPE &middot; PTL E-CORE REBIN &middot; INTEL 06E &minus;80mV</div>
+        <svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+          <defs>
+            <marker id="arr-lpe" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+              <path d="M0,0 L5,2.5 L0,5 Z" fill="rgba(0,104,181,0.4)"/>
+            </marker>
+          </defs>
+
+          <!-- Row 1: Front-end -->
+          <rect x="8" y="10" width="152" height="42" rx="3" fill="rgba(0,104,181,0.06)" stroke="rgba(0,104,181,0.25)" stroke-width="1"/>
+          <text x="84" y="28" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(0,104,181,0.78)" font-weight="500">INST FETCH</text>
+          <text x="84" y="40" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(0,104,181,0.4)">PTL E-Core arch base</text>
+
+          <path d="M160 31 L177 31" stroke="rgba(0,104,181,0.3)" stroke-width="1" marker-end="url(#arr-lpe)"/>
+
+          <rect x="180" y="10" width="152" height="42" rx="3" fill="rgba(0,104,181,0.06)" stroke="rgba(0,104,181,0.25)" stroke-width="1"/>
+          <text x="256" y="28" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(0,104,181,0.78)" font-weight="500">BRANCH PREDICTOR</text>
+          <text x="256" y="40" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(0,104,181,0.4)">area-optimized TAGE</text>
+
+          <path d="M332 31 L349 31" stroke="rgba(0,104,181,0.3)" stroke-width="1" marker-end="url(#arr-lpe)"/>
+
+          <rect x="352" y="10" width="160" height="42" rx="3" fill="rgba(0,104,181,0.06)" stroke="rgba(0,104,181,0.25)" stroke-width="1"/>
+          <text x="432" y="28" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(0,104,181,0.78)" font-weight="500">DECODE</text>
+          <text x="432" y="40" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(0,104,181,0.4)">PTL E-core width</text>
+
+          <!-- uOP Cache -->
+          <path d="M260 52 L260 66" stroke="rgba(0,104,181,0.25)" stroke-width="1" marker-end="url(#arr-lpe)"/>
+          <rect x="8" y="72" width="504" height="32" rx="3" fill="none" stroke="rgba(0,104,181,0.15)" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="260" y="92" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(0,104,181,0.45)">uOP CACHE / LOOP STREAM DETECTOR</text>
+
+          <!-- Row 2: Mid-pipe -->
+          <path d="M260 104 L260 118" stroke="rgba(0,104,181,0.25)" stroke-width="1" marker-end="url(#arr-lpe)"/>
+
+          <rect x="8" y="124" width="152" height="42" rx="3" fill="rgba(0,104,181,0.06)" stroke="rgba(0,104,181,0.25)" stroke-width="1"/>
+          <text x="84" y="142" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(0,104,181,0.78)" font-weight="500">RENAME / ALLOC</text>
+          <text x="84" y="154" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(0,104,181,0.4)">efficiency-sized</text>
+
+          <path d="M160 145 L177 145" stroke="rgba(0,104,181,0.3)" stroke-width="1" marker-end="url(#arr-lpe)"/>
+
+          <rect x="180" y="124" width="152" height="42" rx="3" fill="rgba(0,104,181,0.06)" stroke="rgba(0,104,181,0.25)" stroke-width="1"/>
+          <text x="256" y="142" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(0,104,181,0.78)" font-weight="500">REORDER BUFFER</text>
+          <text x="256" y="154" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(0,104,181,0.4)">compact OOO window</text>
+
+          <path d="M332 145 L349 145" stroke="rgba(0,104,181,0.3)" stroke-width="1" marker-end="url(#arr-lpe)"/>
+
+          <rect x="352" y="124" width="160" height="42" rx="3" fill="rgba(0,104,181,0.06)" stroke="rgba(0,104,181,0.25)" stroke-width="1"/>
+          <text x="432" y="142" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(0,104,181,0.78)" font-weight="500">SCHEDULER</text>
+          <text x="432" y="154" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(0,104,181,0.4)">minimal dispatch width</text>
+
+          <!-- Row 3: Execution -->
+          <path d="M84 166 L84 186" stroke="rgba(0,104,181,0.25)" stroke-width="1" marker-end="url(#arr-lpe)"/>
+          <path d="M256 166 L256 186" stroke="rgba(0,104,181,0.25)" stroke-width="1" marker-end="url(#arr-lpe)"/>
+          <path d="M432 166 L432 186" stroke="rgba(0,104,181,0.25)" stroke-width="1" marker-end="url(#arr-lpe)"/>
+
+          <rect x="8" y="192" width="152" height="42" rx="3" fill="rgba(0,104,181,0.06)" stroke="rgba(0,104,181,0.25)" stroke-width="1"/>
+          <text x="84" y="210" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(0,104,181,0.78)" font-weight="500">INT EXECUTION</text>
+          <text x="84" y="222" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(0,104,181,0.4)">ALU &middot; AGU &middot; branch</text>
+
+          <rect x="180" y="192" width="152" height="42" rx="3" fill="rgba(0,104,181,0.06)" stroke="rgba(0,104,181,0.25)" stroke-width="1"/>
+          <text x="256" y="210" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(0,104,181,0.78)" font-weight="500">FP / VECTOR</text>
+          <text x="256" y="222" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(0,104,181,0.4)">AVX2 &middot; VNNI &middot; SSE4.2</text>
+
+          <rect x="352" y="192" width="160" height="42" rx="3" fill="rgba(0,104,181,0.06)" stroke="rgba(0,104,181,0.25)" stroke-width="1"/>
+          <text x="432" y="210" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(0,104,181,0.78)" font-weight="500">LOAD / STORE</text>
+          <text x="432" y="222" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(0,104,181,0.4)">L2 1MB &rarr; bLLC 4GB</text>
+
+          <!-- Retire -->
+          <path d="M260 234 L260 254" stroke="rgba(0,104,181,0.25)" stroke-width="1" marker-end="url(#arr-lpe)"/>
+
+          <rect x="120" y="260" width="280" height="36" rx="3" fill="rgba(0,104,181,0.06)" stroke="rgba(0,104,181,0.25)" stroke-width="1"/>
+          <text x="260" y="282" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(0,104,181,0.78)" font-weight="500">RETIRE / WRITEBACK</text>
+
+          <!-- NOT PRESENT annotations (gray) -->
+          <rect x="8" y="310" width="155" height="28" rx="3" fill="rgba(26,32,44,0.04)" stroke="rgba(26,32,44,0.12)" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="85" y="326" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(26,32,44,0.28)">NO V8 HYPERBOOST</text>
+
+          <rect x="180" y="310" width="155" height="28" rx="3" fill="rgba(26,32,44,0.04)" stroke="rgba(26,32,44,0.12)" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="257" y="326" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(26,32,44,0.28)">NO P-SMT</text>
+
+          <rect x="352" y="310" width="160" height="28" rx="3" fill="rgba(26,32,44,0.04)" stroke="rgba(26,32,44,0.12)" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="432" y="326" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(26,32,44,0.28)">NO AVX-512</text>
+
+          <!-- Shared L2 Cache -->
+          <rect x="8" y="350" width="504" height="32" rx="3" fill="none" stroke="rgba(0,104,181,0.15)" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="260" y="370" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(0,104,181,0.45)">SHARED L2 CACHE &middot; 1 MB / 4-CORE CLUSTER</text>
+
+          <!-- LPNPU Co-pilot dashed connection -->
+          <path d="M510 213 L520 213" stroke="none"/>
+          <rect x="352" y="390" width="160" height="22" rx="3" fill="rgba(124,58,237,0.05)" stroke="rgba(124,58,237,0.2)" stroke-width="1" stroke-dasharray="4,2"/>
+          <text x="432" y="404" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(124,58,237,0.55)">LPNPU CO-PILOT CONNECTION</text>
+          <path d="M432 382 L432 390" stroke="rgba(124,58,237,0.25)" stroke-width="1" stroke-dasharray="3,2"/>
+
+          <!-- Power domain annotation -->
+          <rect x="8" y="390" width="160" height="22" rx="3" fill="rgba(0,104,181,0.04)" stroke="rgba(0,104,181,0.18)" stroke-width="1" stroke-dasharray="4,2"/>
+          <text x="88" y="404" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(0,104,181,0.5)">&minus;80mV UNDERVOLT BIN</text>
+        </svg>
+      </div>
+
+      <!-- Power State Timeline -->
+      <div class="lpe-pstate-wrap" style="margin-top:20px;">
+        <div class="lpe-pstate-label">POWER STATE TIMELINE &middot; TYPICAL BACKGROUND WORKLOAD</div>
+        <div class="lpe-pstate-timeline">
+          <!-- Repeating pattern: short ACTIVE, brief CLOCKGATE, long POWERGATE -->
+          <div class="lpe-pstate-bar active" style="height:75px;flex:1;"></div>
+          <div class="lpe-pstate-bar clockgate" style="height:20px;flex:0.6;"></div>
+          <div class="lpe-pstate-bar powergate" style="height:6px;flex:3;"></div>
+          <div class="lpe-pstate-bar active" style="height:50px;flex:0.8;animation-delay:0.3s;"></div>
+          <div class="lpe-pstate-bar clockgate" style="height:15px;flex:0.5;"></div>
+          <div class="lpe-pstate-bar powergate" style="height:6px;flex:4;"></div>
+          <div class="lpe-pstate-bar active" style="height:80px;flex:1.2;animation-delay:0.7s;"></div>
+          <div class="lpe-pstate-bar clockgate" style="height:20px;flex:0.6;"></div>
+          <div class="lpe-pstate-bar powergate" style="height:6px;flex:3.5;"></div>
+          <div class="lpe-pstate-bar active" style="height:35px;flex:0.6;animation-delay:1.1s;"></div>
+          <div class="lpe-pstate-bar clockgate" style="height:12px;flex:0.4;"></div>
+          <div class="lpe-pstate-bar powergate" style="height:6px;flex:5;"></div>
+          <div class="lpe-pstate-bar active" style="height:65px;flex:1;animation-delay:1.5s;"></div>
+          <div class="lpe-pstate-bar clockgate" style="height:18px;flex:0.5;"></div>
+          <div class="lpe-pstate-bar powergate" style="height:6px;flex:3;"></div>
+          <div class="lpe-pstate-bar active" style="height:40px;flex:0.7;animation-delay:1.9s;"></div>
+          <div class="lpe-pstate-bar clockgate" style="height:14px;flex:0.5;"></div>
+          <div class="lpe-pstate-bar powergate" style="height:6px;flex:4.5;"></div>
+        </div>
+        <div class="lpe-pstate-legend">
+          <div class="lpe-pstate-legend-item"><div class="lpe-pstate-legend-swatch" style="background:var(--intel-blue,#0068B5);"></div> ACTIVE (0.18W)</div>
+          <div class="lpe-pstate-legend-item"><div class="lpe-pstate-legend-swatch" style="background:rgba(0,104,181,0.18);"></div> CLOCK-GATE (&lt;0.01W)</div>
+          <div class="lpe-pstate-legend-item"><div class="lpe-pstate-legend-swatch" style="background:rgba(26,32,44,0.06);"></div> POWER-GATE (sub-&micro;W)</div>
+        </div>
+        <p style="font-size:9.5px;color:rgba(26,32,44,0.35);text-align:center;margin-top:10px;font-style:italic;">Core spends &gt;90% of time in gate-off states &middot; &lt;1ns transition latency &middot; zero software-visible penalty</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PART 4 : COMPARISON + CACHE + GOG ── -->
+  <div class="lpe-inner-divider"></div>
+  <div class="lpe-section-label">Part 4 &mdash; Comparison, Cache Hierarchy &amp; Gen-on-Gen</div>
+  <div class="lpe-body-heading">Darkmont in <span>Context</span></div>
+
+  <div class="lpe-two-col">
+    <div>
+      <p class="lpe-body-text">Understanding Darkmont&rsquo;s role requires seeing it alongside its closest relatives. The comparison table below places <strong>Darkmont on 06E</strong> against its direct predecessor (<strong>Darkmont on 14A</strong> in Panther Lake) and the sibling <strong>UHE Lunar Eclipse</strong> core that shares the same Low Power Island. The pattern is clear: Darkmont trades absolute performance ceiling for dramatically lower power floors.</p>
+      <p class="lpe-body-text">Against its Panther Lake predecessor, the 06E rebin delivers <strong>&minus;72% minimum power per core</strong> and <strong>&minus;60% system idle power</strong>, while simultaneously gaining +22% IPC at equivalent voltage and frequency points. This is the compound benefit of a superior process node: you get more performance and less power simultaneously, not a tradeoff between them.</p>
+      <p class="lpe-body-text">The cache hierarchy reflects Darkmont&rsquo;s cluster-oriented architecture. Four LPE cores share a <strong>128 KB L1 cluster cache</strong> and a <strong>1 MB L2 cluster cache</strong> &mdash; small by modern standards, but adequate for the interrupt-driven, bursty workloads this core handles. L2 misses are first absorbed by the <strong>8 MB LP Island shared L3</strong> (shared with the UHE Lunar Eclipse cores on the same 06E tile) before reaching the <strong>4 GB Kache Kore&trade; bLLC</strong> via FOveros 2.0 photonic fabric, ensuring that even cache-miss-heavy background tasks don&rsquo;t need to wake the Compute Tile for DRAM bandwidth.</p>
+      <p class="lpe-body-text">The gen-on-gen performance bars tell the efficiency story at a glance. The <strong>&minus;72% min power</strong> headline is the standout figure, but the <strong>+22% IPC</strong> gain matters too &mdash; it means Darkmont on 06E completes background tasks faster, returning to deep sleep sooner, compounding the power savings through reduced active time. Less time awake at lower power per unit time: the efficiency gains are multiplicative.</p>
+
+      <!-- Comparison Table -->
+      <div class="lpe-info-card" style="margin-top:24px;">
+        <table class="lpe-compare-table">
+          <thead>
+            <tr>
+              <th>Spec</th>
+              <th class="lpe-col-highlight">LPE Darkmont (06E)</th>
+              <th>LPE Darkmont (PTL 14A)</th>
+              <th>UHE Lunar Eclipse (06E)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Min power / core</td>
+              <td class="lpe-col-highlight lpe-win">0.18W</td>
+              <td>0.65W</td>
+              <td>1.2W</td>
+            </tr>
+            <tr>
+              <td>Max turbo</td>
+              <td class="lpe-col-highlight">3.0 GHz</td>
+              <td>2.8 GHz</td>
+              <td class="lpe-win" style="color:var(--intel-blue);">4.8 GHz</td>
+            </tr>
+            <tr>
+              <td>IPC (relative)</td>
+              <td class="lpe-col-highlight lpe-win">1.22&times;</td>
+              <td>1.0&times;</td>
+              <td style="color:rgba(26,32,44,0.5);">Different arch</td>
+            </tr>
+            <tr>
+              <td>L1 cache</td>
+              <td class="lpe-col-highlight">128 KB / 4-core</td>
+              <td style="color:rgba(26,32,44,0.35);">None</td>
+              <td>128 KB / core</td>
+            </tr>
+            <tr>
+              <td>L2 cache</td>
+              <td class="lpe-col-highlight">1 MB / 4-core</td>
+              <td>1 MB / 4-core</td>
+              <td>3 MB / core</td>
+            </tr>
+            <tr>
+              <td>L3 cache</td>
+              <td class="lpe-col-highlight">8 MB (LP Island shared)</td>
+              <td style="color:rgba(26,32,44,0.35);">None</td>
+              <td>8 MB (LP Island shared)</td>
+            </tr>
+            <tr>
+              <td>Primary role</td>
+              <td class="lpe-col-highlight" style="font-weight:600;">Always-on heartbeat</td>
+              <td>Background E-core</td>
+              <td>Efficiency P-core</td>
+            </tr>
+            <tr>
+              <td>Undervolt bin</td>
+              <td class="lpe-col-highlight lpe-win">&minus;80mV</td>
+              <td>None</td>
+              <td>None</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <!-- Cache Strip -->
+      <div class="lpe-cache-strip">
+        <div class="lpe-cache-row">
+          <div class="lpe-cache-tier">L1</div>
+          <div class="lpe-cache-bar lpe-c-l1" style="flex:0.2">
+            <span class="lpe-cache-name">Shared L1 Cluster Cache</span>
+            <span class="lpe-cache-sz">128 KB / 4-core cluster</span>
+          </div>
+        </div>
+        <div class="lpe-cache-note">Cluster-shared instruction + data L1 — first private tier for all 4 LPE cores</div>
+        <div class="lpe-cache-conn">&darr; miss</div>
+        <div class="lpe-cache-row">
+          <div class="lpe-cache-tier">L2</div>
+          <div class="lpe-cache-bar lpe-c-l2" style="flex:0.35">
+            <span class="lpe-cache-name">Shared L2 Cluster Cache</span>
+            <span class="lpe-cache-sz">1 MB / 4-core cluster</span>
+          </div>
+        </div>
+        <div class="lpe-cache-note">Compact cluster cache &mdash; sized for interrupt-driven bursty workloads. 4 LPE cores share one L2 partition.</div>
+        <div class="lpe-cache-conn">&darr; miss</div>
+        <div class="lpe-cache-row">
+          <div class="lpe-cache-tier">L3</div>
+          <div class="lpe-cache-bar lpe-c-l3" style="flex:0.75">
+            <span class="lpe-cache-name">LP Island Shared L3</span>
+            <span class="lpe-cache-sz">8 MB &middot; LP Island shared</span>
+          </div>
+        </div>
+        <div class="lpe-cache-note" style="color:rgba(124,58,237,0.45);">Shared across UHE + LPE cores on LP Island (Intel 06E tile)</div>
+        <div class="lpe-cache-conn">&darr; miss &rarr; FOveros 2.0 photonic fabric</div>
+        <div class="lpe-cache-row">
+          <div class="lpe-cache-tier" style="color:rgba(124,58,237,0.5);">L4</div>
+          <div class="lpe-cache-bar lpe-c-bllc" style="flex:1">
+            <span class="lpe-cache-name">Kache Kore&trade; bLLC</span>
+            <span class="lpe-cache-sz">4 GB &middot; APU-shared</span>
+          </div>
+        </div>
+        <div class="lpe-cache-note" style="color:rgba(124,58,237,0.5);">Full bLLC access from LP Island &mdash; no bandwidth penalty for background tasks that exceed L2 working set.</div>
+        <div class="lpe-cache-conn" style="color:rgba(124,58,237,0.25);">&darr; miss &rarr; DRAM</div>
+      </div>
+
+      <!-- Gen-on-Gen Bars -->
+      <div class="lpe-gog-block">
+        <div class="lpe-gog-title">Gen-on-Gen &middot; vs Panther Lake E-Core (Darkmont on 14A)</div>
+        <div class="lpe-gog-row">
+          <div class="lpe-gog-metric">Min power / core</div>
+          <div class="lpe-gog-track"><div class="lpe-gog-fill" style="width:100%"></div></div>
+          <div class="lpe-gog-num">&minus;72%</div>
+        </div>
+        <div class="lpe-gog-row">
+          <div class="lpe-gog-metric">System idle draw</div>
+          <div class="lpe-gog-track"><div class="lpe-gog-fill" style="width:83%"></div></div>
+          <div class="lpe-gog-num">&minus;60%</div>
+        </div>
+        <div class="lpe-gog-row">
+          <div class="lpe-gog-metric">IPC (same Vf)</div>
+          <div class="lpe-gog-track"><div class="lpe-gog-fill" style="width:55%;opacity:0.75"></div></div>
+          <div class="lpe-gog-num">+22%</div>
+        </div>
+        <div class="lpe-gog-row">
+          <div class="lpe-gog-metric">Node efficiency (06E vs 14A)</div>
+          <div class="lpe-gog-track"><div class="lpe-gog-fill" style="width:68%;opacity:0.75"></div></div>
+          <div class="lpe-gog-num">+48%</div>
+        </div>
+        <div class="lpe-gog-row">
+          <div class="lpe-gog-metric">Gate-off leakage</div>
+          <div class="lpe-gog-track"><div class="lpe-gog-fill" style="width:90%;opacity:0.75"></div></div>
+          <div class="lpe-gog-num">sub-&micro;W</div>
+        </div>
+      </div>
+
+      <!-- LPNPU Callout -->
+      <div class="lpe-lpnpu-callout">
+        <div class="lpe-lpnpu-title">LPNPU CO-PILOT INTEGRATION</div>
+        <div class="lpe-lpnpu-text">Darkmont maintains a dedicated low-latency link to the <strong>88 TOPS always-on LPNPU</strong>. Wake-on-voice triggers, predictive app dispatch, and AI-assisted power state management flow through this connection. The LPNPU and Darkmont together form the ambient intelligence layer &mdash; <strong>the system is aware and responsive even when every other core is powered off</strong>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PART 5 : ARCHITECTURAL FEATURES ── -->
+  <div class="lpe-inner-divider"></div>
+  <div class="lpe-section-label">Part 5 &mdash; Architectural Features</div>
+  <div class="lpe-body-heading">Efficiency by <span>Design</span></div>
+
+  <div class="lpe-two-col">
+    <div>
+      <p class="lpe-body-text">Every architectural decision in Darkmont serves one goal: <strong>minimize power while maintaining responsiveness</strong>. The features below are not performance enhancements &mdash; they are power engineering achievements that make sub-watt x86 operation possible. From certified undervolt bins to sub-microsecond power gating, each feature contributes to the core&rsquo;s ability to be always-on without being always-consuming.</p>
+      <p class="lpe-body-text">The &minus;80mV undervolt bin is particularly significant. Traditional undervolting is a user-applied overclock that voids warranties and risks instability. Intel&rsquo;s factory certification means <strong>every Eventide APU ships with Darkmont cores validated at this reduced voltage</strong>, extracting maximum benefit from 06E&rsquo;s low-leakage transistor library without any risk to system stability. The result is a power floor that previous-generation E-cores simply could not achieve.</p>
+      <p class="lpe-body-text">The cluster-level architecture enables <strong>surgical power management</strong>. Individual 4-core clusters can be independently clock-gated or power-gated based on workload demand. During typical background operation, most clusters remain power-gated while a single cluster handles all active tasks. The Thread Director dynamically consolidates work onto the fewest possible clusters, maximizing the number of clusters in deep sleep at any given moment.</p>
+    </div>
+    <div>
+      <div class="lpe-feature-grid">
+        <div class="lpe-feature-row">
+          <div class="lpe-feature-icon">⚡</div>
+          <div>
+            <div class="lpe-feature-title">&minus;80mV Factory Undervolt</div>
+            <div class="lpe-feature-desc">Certified voltage reduction on every Darkmont core. Not user-applied &mdash; factory-validated for stable sub-watt operation on Intel 06E.</div>
+          </div>
+        </div>
+        <div class="lpe-feature-row">
+          <div class="lpe-feature-icon">🔌</div>
+          <div>
+            <div class="lpe-feature-title">Sub-Nanosecond Power Gating</div>
+            <div class="lpe-feature-desc">&lt;1ns clock-gate and power-gate transitions. Core enters deep sleep between instruction bursts with zero latency penalty.</div>
+          </div>
+        </div>
+        <div class="lpe-feature-row">
+          <div class="lpe-feature-icon">🧊</div>
+          <div>
+            <div class="lpe-feature-title">Sub-&micro;W Idle Per Cluster</div>
+            <div class="lpe-feature-desc">Power-gated clusters draw sub-microwatt leakage. Entire LPE island idles below measurable thresholds during deep sleep.</div>
+          </div>
+        </div>
+        <div class="lpe-feature-row">
+          <div class="lpe-feature-icon">🎯</div>
+          <div>
+            <div class="lpe-feature-title">Per-Cluster DVFS Granularity</div>
+            <div class="lpe-feature-desc">Independent voltage/frequency scaling per 4-core cluster. Active cluster turbos while neighbors stay gated.</div>
+          </div>
+        </div>
+        <div class="lpe-feature-row">
+          <div class="lpe-feature-icon">🤖</div>
+          <div>
+            <div class="lpe-feature-title">LPNPU Wake-on-Voice</div>
+            <div class="lpe-feature-desc">Always-on neural processor monitors audio stream. Darkmont wakes only on confirmed voice trigger &mdash; no polling, no wasted cycles.</div>
+          </div>
+        </div>
+        <div class="lpe-feature-row">
+          <div class="lpe-feature-icon">📡</div>
+          <div>
+            <div class="lpe-feature-title">Predictive App Dispatch</div>
+            <div class="lpe-feature-desc">AI-assisted pre-staging of workloads based on usage patterns. Darkmont + LPNPU anticipate user intent before input arrives.</div>
+          </div>
+        </div>
+        <div class="lpe-feature-row">
+          <div class="lpe-feature-icon">🛡️</div>
+          <div>
+            <div class="lpe-feature-title">CET Shadow Stack</div>
+            <div class="lpe-feature-desc">Full Control-flow Enforcement Technology. Hardware ROP/JOP mitigation even on the lowest-power core &mdash; no security compromise.</div>
+          </div>
+        </div>
+        <div class="lpe-feature-row">
+          <div class="lpe-feature-icon">🌊</div>
+          <div>
+            <div class="lpe-feature-title">FOveros 2.0 Photonic Access</div>
+            <div class="lpe-feature-desc">Full-bandwidth photonic fabric to Kache Kore bLLC. Background tasks get same memory hierarchy as Compute Tile cores.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── USE CASES ── -->
+  <div class="lpe-usecase-grid">
+    <div class="lpe-usecase-chip">
+      <span class="lpe-usecase-icon">🔇</span>
+      <div class="lpe-usecase-title">Background Apps &amp; Sync</div>
+      <div class="lpe-usecase-desc">Cloud sync, file indexing, update checks, antivirus scans &mdash; all handled silently on LPE without waking performance cores. Zero fan noise, zero thermal impact.</div>
+    </div>
+    <div class="lpe-usecase-chip">
+      <span class="lpe-usecase-icon">🎵</span>
+      <div class="lpe-usecase-title">Audio Playback</div>
+      <div class="lpe-usecase-desc">Music and podcast streaming at ~0.4W total CPU draw. Hours of playback from milliwatt-class power consumption. The rest of the APU sleeps entirely.</div>
+    </div>
+    <div class="lpe-usecase-chip">
+      <span class="lpe-usecase-icon">💬</span>
+      <div class="lpe-usecase-title">Always-On Voice &amp; Presence</div>
+      <div class="lpe-usecase-desc">LPNPU co-pilot monitors ambient audio; Darkmont wakes on confirmed trigger. Presence detection keeps screen state intelligent without polling.</div>
+    </div>
+    <div class="lpe-usecase-chip">
+      <span class="lpe-usecase-icon">🌙</span>
+      <div class="lpe-usecase-title">Connected Standby</div>
+      <div class="lpe-usecase-desc">Modern standby with full network connectivity at sub-2W system draw. Instant wake, fresh notifications, zero boot delay. The laptop is always ready.</div>
+    </div>
+  </div>
+
+</div>
+</div>
+

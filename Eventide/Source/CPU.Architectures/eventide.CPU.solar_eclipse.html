@@ -1,0 +1,455 @@
+<div class="uhp-showcase-wrap">
+<div class="section" style="position:relative; z-index:1;">
+
+  <!-- HEADER -->
+  <div class="uhp-eyebrow">Compute Tile · Intel 04A · UHP Core · Architecture Deep Dive</div>
+  <div class="uhp-headline">SOLAR<br><span>ECLIPSE</span></div>
+  <p class="uhp-subhead">The fastest-clocking x86 core Intel has ever committed to silicon. Designed from the ground up to push frequency ceilings that the laws of physics said were impossible — made achievable by the thermal properties of Intel 04A's GaNSi gate material and the architectural intelligence of V8 HyperBOOST.</p>
+  <div class="uhp-badge-row">
+    <span class="uhp-badge uhp-b-fire">Intel 04A · 0.4nm-class GAA</span>
+    <span class="uhp-badge uhp-b-fire">8-Wide Decode Front-End</span>
+    <span class="uhp-badge uhp-b-v8">V8 HyperBOOST · Exclusive</span>
+    <span class="uhp-badge uhp-b-fire">6.0 GHz Max Turbo (TBM 5.0)</span>
+    <span class="uhp-badge uhp-b-fire">4 MB Private L2</span>
+    <span class="uhp-badge uhp-b-note">No SMT — By Design</span>
+  </div>
+
+  <!-- STAT BLOCK -->
+  <div class="uhp-stat-block">
+    <div class="uhp-stat-cell">
+      <div class="uhp-stat-num">6.0</div>
+      <div class="uhp-stat-label">GHz Max Turbo</div>
+      <div class="uhp-stat-sub">TBM 5.0 · single core</div>
+    </div>
+    <div class="uhp-stat-cell">
+      <div class="uhp-stat-num">8W</div>
+      <div class="uhp-stat-label">Decode Width</div>
+      <div class="uhp-stat-sub">widest on compute tile</div>
+    </div>
+    <div class="uhp-stat-cell">
+      <div class="uhp-stat-num">4MB</div>
+      <div class="uhp-stat-label">L2 Per Core</div>
+      <div class="uhp-stat-sub">+ 96 KB L0 extra-LLC</div>
+    </div>
+    <div class="uhp-stat-cell">
+      <div class="uhp-stat-num">+67%</div>
+      <div class="uhp-stat-label">Peak Clock vs PTL</div>
+      <div class="uhp-stat-sub">vs Panther Lake P-Core</div>
+    </div>
+  </div>
+
+  <!-- ── PART 1: PHILOSOPHY ── -->
+  <div class="uhp-section-label">Design Philosophy · Why Frequency Over IPC Density</div>
+  <div class="uhp-body-heading">The Case for <span>Width and Speed</span></div>
+
+  <div class="uhp-two-col">
+    <div>
+      <p class="uhp-body-text">
+        The Solar Eclipse core breaks cleanly from the direction Intel's P-core lineage has taken for the past two generations. Lion Cove and Cougar Cove — the P-cores in Lunar Lake and Panther Lake — pursued IPC efficiency obsessively: narrower and more intelligent decode, eliminated Hyper-Threading, deeper speculation with better instruction scheduling. These were the right calls for the efficiency-first era of thin-and-light computing. But they left a gap. <strong>No Intel core since the late Alder Lake era has pushed the frequency boundary as an explicit design goal.</strong>
+      </p>
+      <p class="uhp-body-text">
+        The UHP Solar Eclipse fills that gap — deliberately, with architectural trade-offs made with open eyes. The core chooses an <strong>8-wide decode front-end</strong> over a deeper OOO engine, because a wider front-end enables more µOPs dispatched per cycle during favorable instruction windows, reducing the number of cycles required to complete a given workload, and therefore reducing the thermal time-integral. This allows the clock to stay higher for longer without accumulating a thermal debt that would force throttling.
+      </p>
+      <p class="uhp-body-text">
+        Hyper-Threading is absent from the UHP core. This is not a cost cut — it is an architectural necessity. At the frequency levels the Solar Eclipse targets, a second hardware thread would introduce memory bandwidth contention and instruction arbitration overhead that would degrade the single-thread throughput the whole core exists to maximize. <strong>The Solar Eclipse has one job. Everything about it is optimized for that job.</strong>
+      </p>
+      <p class="uhp-body-text">
+        The Intel 04A node is an equal partner in this design. Its Gate-All-Around nanosheet transistors built on GaNSi gate material have a thermal conductivity <strong>3× that of conventional silicon</strong> and near-zero quantum tunneling at sub-0.5nm gate lengths. This is not just a process node — it is the thermal foundation that makes the Solar Eclipse's frequency targets physically achievable in a mobile chassis. The core was co-designed with the 04A node's thermal spreading characteristics in mind from the very first layout pass. The PowerVia 2.0 backside power delivery network further decouples the power delivery infrastructure from the signal routing, eliminating the IR drop and inductive noise that historically constrain high-frequency designs.
+      </p>
+    </div>
+    <div>
+      <div class="uhp-info-card">
+        <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.18em;color:rgba(255,107,53,0.5);margin-bottom:14px;">FULL CORE SPECIFICATION</div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">Core class</span><span class="uhp-spec-val hot">UHP — Ultra High Performance</span></div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">Codename</span><span class="uhp-spec-val hot">Solar Eclipse</span></div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">Process node</span><span class="uhp-spec-val">Intel 04A · 0.4nm-class GAA</span></div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">Transistor type</span><span class="uhp-spec-val">GaNSi nanosheet, 4-stack</span></div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">Power delivery</span><span class="uhp-spec-val">PowerVia 2.0 backside PDN</span></div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">Base clock</span><span class="uhp-spec-val">2.4 GHz</span></div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">Max turbo (TBM 5.0)</span><span class="uhp-spec-val hot">6.0 GHz</span></div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">V8 HyperBOOST effective</span><span class="uhp-spec-val hot">10 GHz (sustained burst)</span></div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">SMT</span><span class="uhp-spec-val">None — by architectural decision</span></div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">Decode pipeline width</span><span class="uhp-spec-val hot">8-wide</span></div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">L0 extra-LLC cache</span><span class="uhp-spec-val">96 KB / core</span></div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">L2 private cache</span><span class="uhp-spec-val">4 MB / core</span></div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">Burst duration (V8)</span><span class="uhp-spec-val">8–40 ms / cycle window</span></div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">Octet grouping</span><span class="uhp-spec-val">8-core V8 firing sequence</span></div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">TD dispatch class</span><span class="uhp-spec-val">Class 1 — Frequency-Bound</span></div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">Physical core size</span><span class="uhp-spec-val">Large (thermal spread layout)</span></div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">Voltage floor (04A)</span><span class="uhp-spec-val">0.35V minimum operating</span></div>
+        <div class="uhp-spec-row"><span class="uhp-spec-key">Thermal conductivity</span><span class="uhp-spec-val">GaNSi · peak 850 W/m·K</span></div>
+      </div>
+      <div class="uhp-isa-row">
+        <span class="uhp-isa-pill excl">V8 HyperBOOST</span>
+        <span class="uhp-isa-pill excl">TBM 5.0</span>
+        <span class="uhp-isa-pill">AVX-512</span>
+        <span class="uhp-isa-pill">AMX</span>
+        <span class="uhp-isa-pill">VNNI2</span>
+        <span class="uhp-isa-pill">TSX-NI</span>
+        <span class="uhp-isa-pill">CET</span>
+        <span class="uhp-isa-pill">ENQCMD</span>
+        <span class="uhp-isa-pill">CLDEMOTE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PART 2: PIPELINE ── -->
+  <div class="uhp-inner-divider"></div>
+  <div class="uhp-section-label">Pipeline Architecture · Front-End to Retire</div>
+  <div class="uhp-body-heading">The <span>8-Wide</span> Machine</div>
+
+  <div class="uhp-two-col">
+    <div>
+      <p class="uhp-body-text">
+        The front-end of the Solar Eclipse defines its character as a processor. <strong>8-wide decode</strong> means the processor can accept and convert up to 8 x86 instructions per cycle into micro-operations and route them into the back-end scheduler simultaneously. This is not the widest on-chip — the DP Sunset Cove core has a 10-wide decode — but the Solar Eclipse pairs its 8-wide front-end with a deliberately streamlined out-of-order engine rather than the ultra-deep ROB and extensive execution port array of the DP. The result is a pipeline that can be clocked fundamentally higher because the critical path length through the chip is shorter.
+      </p>
+      <p class="uhp-body-text">
+        The µOP Cache and Loop Stream Detector work hand-in-hand with the wide front-end. Once the processor identifies a hot loop, it begins serving the decoded µOPs from the µOP cache, bypassing the decode stage entirely. This does two things: it eliminates the power draw of the decode hardware during loop execution, and it reduces front-end latency to near-zero since the µOPs are already decoded. In frequency-bound workloads where the same code paths are repeatedly hot, this is where a large fraction of the Solar Eclipse's performance comes from — not from raw decode width alone, but from decode width combined with aggressive loop caching.
+      </p>
+      <p class="uhp-body-text">
+        The <strong>96 KB L0 extra-LLC</strong> is an additional on-core cache layer unique to the UHP tier that feeds the wide decode front-end without starving it. Even at 8-wide dispatch rates, the L1 instruction cache alone can become a bottleneck in working sets that slightly exceed it. The L0 extra-LLC, sitting between L1 and the private 4 MB L2, acts as a second-level instruction buffer that keeps the front-end fed at maximum decode rate across longer code paths.
+      </p>
+    </div>
+    <div>
+      <div class="uhp-pipeline-wrap">
+        <div class="uhp-pipeline-label">SOLAR ECLIPSE · SIMPLIFIED PIPELINE DIAGRAM</div>
+        <svg viewBox="0 0 520 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+          <defs>
+            <marker id="arr-se" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+              <path d="M0,0 L5,2.5 L0,5 Z" fill="rgba(255,107,53,0.45)"/>
+            </marker>
+          </defs>
+          <!-- Row 1 -->
+          <rect x="8" y="10" width="118" height="42" rx="3" fill="rgba(255,107,53,0.1)" stroke="rgba(255,107,53,0.38)" stroke-width="1"/>
+          <text x="67" y="28" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(255,153,112,0.85)" font-weight="500">INST FETCH</text>
+          <text x="67" y="42" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(255,107,53,0.45)">TBM 5.0 thermal-aware</text>
+          <path d="M126 31 L143 31" stroke="rgba(255,107,53,0.35)" stroke-width="1" marker-end="url(#arr-se)"/>
+
+          <rect x="144" y="10" width="118" height="42" rx="3" fill="rgba(255,107,53,0.1)" stroke="rgba(255,107,53,0.38)" stroke-width="1"/>
+          <text x="203" y="28" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(255,153,112,0.85)" font-weight="500">BRANCH PREDICTOR</text>
+          <text x="203" y="42" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(255,107,53,0.45)">indirect + cond. hybrid</text>
+          <path d="M262 31 L279 31" stroke="rgba(255,107,53,0.35)" stroke-width="1" marker-end="url(#arr-se)"/>
+
+          <rect x="280" y="6" width="126" height="50" rx="3" fill="rgba(255,107,53,0.22)" stroke="rgba(255,107,53,0.72)" stroke-width="1.5"/>
+          <text x="343" y="24" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8.5" fill="#FF9970" font-weight="700">8-WIDE DECODE</text>
+          <text x="343" y="38" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(255,153,112,0.65)">8 instr/cycle → µOPs</text>
+          <text x="343" y="49" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6" fill="rgba(255,107,53,0.5)">widest on chip ↑</text>
+
+          <!-- µOP Cache row -->
+          <path d="M343 56 L343 72" stroke="rgba(255,107,53,0.3)" stroke-width="1" marker-end="url(#arr-se)"/>
+          <rect x="60" y="74" width="400" height="36" rx="3" fill="rgba(255,107,53,0.06)" stroke="rgba(255,107,53,0.2)" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="260" y="89" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(255,107,53,0.5)" font-weight="500">µOP CACHE / LOOP STREAM DETECTOR</text>
+          <text x="260" y="102" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(255,107,53,0.33)">hot loops bypass decode → thermal relief during sustained workloads</text>
+
+          <!-- Row 2 -->
+          <path d="M200 110 L200 128" stroke="rgba(255,107,53,0.3)" stroke-width="1" marker-end="url(#arr-se)"/>
+          <path d="M343 110 L343 128" stroke="rgba(255,107,53,0.3)" stroke-width="1" marker-end="url(#arr-se)"/>
+
+          <rect x="8" y="130" width="118" height="42" rx="3" fill="rgba(255,107,53,0.1)" stroke="rgba(255,107,53,0.35)" stroke-width="1"/>
+          <text x="67" y="148" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(255,153,112,0.85)" font-weight="500">RENAME / ALLOC</text>
+          <text x="67" y="162" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(255,107,53,0.45)">register rename · alloc</text>
+
+          <rect x="144" y="130" width="118" height="42" rx="3" fill="rgba(255,107,53,0.1)" stroke="rgba(255,107,53,0.35)" stroke-width="1"/>
+          <text x="203" y="148" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(255,153,112,0.85)" font-weight="500">REORDER BUFFER</text>
+          <text x="203" y="162" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(255,107,53,0.45)">OOO · thermally-limited</text>
+
+          <rect x="280" y="130" width="118" height="42" rx="3" fill="rgba(255,107,53,0.1)" stroke="rgba(255,107,53,0.35)" stroke-width="1"/>
+          <text x="339" y="148" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(255,153,112,0.85)" font-weight="500">SCHEDULER</text>
+          <text x="339" y="162" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(255,107,53,0.45)">µOP dispatch queue</text>
+
+          <path d="M67 172 L67 196" stroke="rgba(255,107,53,0.3)" stroke-width="1" marker-end="url(#arr-se)"/>
+          <path d="M126 151 L142 151" stroke="rgba(255,107,53,0.3)" stroke-width="1" marker-end="url(#arr-se)"/>
+          <path d="M262 151 L278 151" stroke="rgba(255,107,53,0.3)" stroke-width="1" marker-end="url(#arr-se)"/>
+
+          <!-- Row 3: Execution -->
+          <rect x="8" y="198" width="152" height="44" rx="3" fill="rgba(255,107,53,0.14)" stroke="rgba(255,107,53,0.48)" stroke-width="1"/>
+          <text x="84" y="217" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(255,153,112,0.9)" font-weight="500">INT EXECUTION PORTS</text>
+          <text x="84" y="232" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(255,107,53,0.5)">ALU · AGU · shift · branch</text>
+
+          <rect x="174" y="198" width="152" height="44" rx="3" fill="rgba(255,107,53,0.14)" stroke="rgba(255,107,53,0.48)" stroke-width="1"/>
+          <text x="250" y="217" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(255,153,112,0.9)" font-weight="500">FP / VECTOR PORTS</text>
+          <text x="250" y="232" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(255,107,53,0.5)">AVX-512 · AMX · VNNI2</text>
+
+          <rect x="340" y="198" width="172" height="44" rx="3" fill="rgba(255,107,53,0.14)" stroke="rgba(255,107,53,0.48)" stroke-width="1"/>
+          <text x="426" y="217" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(255,153,112,0.9)" font-weight="500">LOAD / STORE PORTS</text>
+          <text x="426" y="232" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(255,107,53,0.5)">L0 96KB → L2 4MB → bLLC</text>
+
+          <path d="M84 242 L84 264" stroke="rgba(255,107,53,0.28)" stroke-width="1" marker-end="url(#arr-se)"/>
+          <path d="M250 242 L250 264" stroke="rgba(255,107,53,0.28)" stroke-width="1" marker-end="url(#arr-se)"/>
+          <path d="M426 242 L426 282 L382 282" stroke="rgba(255,107,53,0.28)" stroke-width="1" marker-end="url(#arr-se)"/>
+
+          <!-- Retire -->
+          <rect x="84" y="266" width="295" height="40" rx="3" fill="rgba(255,107,53,0.09)" stroke="rgba(255,107,53,0.3)" stroke-width="1"/>
+          <text x="231" y="283" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(255,153,112,0.8)" font-weight="500">RETIRE / WRITEBACK</text>
+          <text x="231" y="297" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(255,107,53,0.38)">architectural state commit · V8 burst window tracking</text>
+
+          <!-- L2 cache block -->
+          <rect x="60" y="330" width="400" height="36" rx="3" fill="rgba(255,107,53,0.07)" stroke="rgba(255,107,53,0.2)" stroke-width="1"/>
+          <text x="260" y="346" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7.5" fill="rgba(255,107,53,0.55)" font-weight="500">L2 PRIVATE CACHE · 4 MB / CORE</text>
+          <text x="260" y="359" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="6.5" fill="rgba(255,107,53,0.32)">feeds L0 96KB extra-LLC · miss → Kache Kore™ bLLC via FOveros 2.0</text>
+          <path d="M231 306 L231 328" stroke="rgba(255,107,53,0.28)" stroke-width="1" marker-end="url(#arr-se)"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PART 3: CACHE HIERARCHY ── -->
+  <div class="uhp-inner-divider"></div>
+  <div class="uhp-section-label">Cache Hierarchy · L0 through bLLC</div>
+  <div class="uhp-body-heading">Feed the <span>Front-End</span></div>
+
+  <div class="uhp-two-col">
+    <div>
+      <p class="uhp-body-text">
+        A wide front-end is only as useful as the memory system that feeds it. The Solar Eclipse carries a four-tier cache hierarchy — a dedicated <strong>96 KB L0 extra-LLC</strong>, 256 KB private L1, 4 MB private L2, and a 12 MB Compute Tile shared L3 — that ensures the 8-wide decode is never instruction-starved, even in large working-set workloads that would exceed the private caches alone.
+      </p>
+      <p class="uhp-body-text">
+        The <strong>96 KB L0 extra-LLC</strong> is the outermost ring of the core's personal cache, serving as a second-level instruction buffer between L1 and the 4 MB L2. During high-frequency operation — especially at the 6.0 GHz turbo ceiling — instruction fetch bandwidth requirements grow proportionally with clock. Without the L0, the 8-wide decode would routinely stall waiting for L2 misses at high frequencies. The L0 absorbs these misses at near-zero additional latency, keeping the decode stage filled on every cycle.
+      </p>
+      <p class="uhp-body-text">
+        The <strong>4 MB private L2</strong> is substantially larger than prior P-core generations. Larger L2 reduces the frequency of falls-through to shared cache or DRAM, and for the Solar Eclipse specifically, reduces the frequency of FOveros 2.0 photonic fabric accesses to Kache Kore™ — which, while fast, are not zero latency. For workloads with working sets under ~4 MB per thread, the Solar Eclipse can execute almost entirely from private cache.
+      </p>
+      <p class="uhp-body-text">
+        When working sets exceed the private hierarchy, the <strong>Kache Kore™ 4 GB bLLC</strong> acts as a shared, APU-wide fourth tier. Accessed via FOveros 2.0 photonic fabric at roughly 70% lower latency than DDR6 DRAM, the bLLC eliminates most DRAM round-trips for hot working sets. For the Solar Eclipse specifically, this matters during V8 HyperBOOST burst windows: the burst sequence depends on all 8 UHP cores having rapid access to their working sets simultaneously — the bLLC makes this possible without each core competing for DRAM bandwidth.
+      </p>
+    </div>
+    <div>
+      <div class="uhp-cache-strip">
+        <div class="uhp-cache-row">
+          <div class="uhp-cache-tier">L0</div>
+          <div class="uhp-cache-bar uhp-c-l0" style="flex:0.25">
+            <span class="uhp-cache-name">L0 Extra-LLC</span>
+            <span class="uhp-cache-sz">96 KB / core</span>
+          </div>
+        </div>
+        <div class="uhp-cache-note">First-level instruction buffer — feeds 8-wide decode under high-freq load</div>
+        <div class="uhp-cache-conn">&#8595; miss</div>
+        <div class="uhp-cache-row">
+          <div class="uhp-cache-tier">L1</div>
+          <div class="uhp-cache-bar uhp-c-l0" style="flex:0.45">
+            <span class="uhp-cache-name">L1 I-Cache + D-Cache</span>
+            <span class="uhp-cache-sz">256 KB / core</span>
+          </div>
+        </div>
+        <div class="uhp-cache-note">Private instruction + data cache — second tier above L2</div>
+        <div class="uhp-cache-conn">&#8595; miss</div>
+        <div class="uhp-cache-row">
+          <div class="uhp-cache-tier">L2</div>
+          <div class="uhp-cache-bar uhp-c-l2" style="flex:0.6">
+            <span class="uhp-cache-name">Private L2 Cache</span>
+            <span class="uhp-cache-sz">4 MB / core</span>
+          </div>
+        </div>
+        <div class="uhp-cache-note" style="color:rgba(255,107,53,0.35);">Covers most per-thread working sets — reduces L3 and bLLC fabric accesses</div>
+        <div class="uhp-cache-conn">&#8595; miss</div>
+        <div class="uhp-cache-row">
+          <div class="uhp-cache-tier">L3</div>
+          <div class="uhp-cache-bar uhp-c-l3" style="flex:0.82">
+            <span class="uhp-cache-name">Compute Tile Shared L3</span>
+            <span class="uhp-cache-sz">12 MB / tile &middot; 48 MB total</span>
+          </div>
+        </div>
+        <div class="uhp-cache-note" style="color:rgba(147,51,234,0.35);">Shared across all UHP + DP + SPE cores on Compute Tile &mdash; 4 tiles &times; 12 MB</div>
+        <div class="uhp-cache-conn">&#8595; miss &rarr; FOveros 2.0 photonic fabric</div>
+        <div class="uhp-cache-row">
+          <div class="uhp-cache-tier" style="color:rgba(192,132,252,0.5);">L4</div>
+          <div class="uhp-cache-bar uhp-c-bllc" style="flex:1">
+            <span class="uhp-cache-name">Kache Kore™ bLLC</span>
+            <span class="uhp-cache-sz">4 GB · APU-shared</span>
+          </div>
+        </div>
+        <div class="uhp-cache-note" style="color:rgba(147,51,234,0.55);">Shared across all CPU, GPU, and NPU tiles — −70% latency vs DRAM</div>
+        <div class="uhp-cache-conn" style="color:rgba(147,51,234,0.3);">↓ miss → ZAM / DDR6</div>
+      </div>
+
+      <div class="uhp-gog-block">
+        <div class="uhp-gog-title">Gen-on-Gen Performance · vs Panther Lake P-Core (Cougar Cove)</div>
+        <div class="uhp-gog-row">
+          <div class="uhp-gog-metric">Peak single-core clock</div>
+          <div class="uhp-gog-track"><div class="uhp-gog-fill" style="width:85%"></div></div>
+          <div class="uhp-gog-num">+67%</div>
+        </div>
+        <div class="uhp-gog-row">
+          <div class="uhp-gog-metric">IPC — single-thread</div>
+          <div class="uhp-gog-track"><div class="uhp-gog-fill" style="width:28%; opacity:0.75"></div></div>
+          <div class="uhp-gog-num">+18%</div>
+        </div>
+        <div class="uhp-gog-row">
+          <div class="uhp-gog-metric">ST burst (V8 HyperBOOST)</div>
+          <div class="uhp-gog-track"><div class="uhp-gog-fill" style="width:100%"></div></div>
+          <div class="uhp-gog-num">+210%</div>
+        </div>
+        <div class="uhp-gog-row">
+          <div class="uhp-gog-metric">Perf / mm² on 04A</div>
+          <div class="uhp-gog-track"><div class="uhp-gog-fill" style="width:76%; opacity:0.8"></div></div>
+          <div class="uhp-gog-num">+62%</div>
+        </div>
+        <div class="uhp-gog-row">
+          <div class="uhp-gog-metric">Active power reduction</div>
+          <div class="uhp-gog-track"><div class="uhp-gog-fill" style="width:60%; opacity:0.75"></div></div>
+          <div class="uhp-gog-num">−48%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PART 4: THREAD DIRECTOR ── -->
+  <div class="uhp-inner-divider"></div>
+  <div class="uhp-section-label">Hardware Thread Director · Dispatch Classification</div>
+  <div class="uhp-body-heading"><span>Class 1</span> — Frequency-Bound Dispatch</div>
+  <div class="uhp-two-col">
+    <div>
+      <p class="uhp-body-text">
+        The UHP Solar Eclipse cores occupy <strong>Class 1 — Frequency-Bound</strong> in the Hardware Thread Director's five-class dispatch taxonomy. This classification means the Thread Director will route a thread here only when it has determined — through instruction profiling and workload telemetry — that the thread's performance is genuinely constrained by clock frequency rather than core count or instruction width.
+      </p>
+      <p class="uhp-body-text">
+        The Thread Director tile is dedicated silicon, not firmware. It operates at sub-100ns arbitration latency and monitors every core's thermal headroom continuously via Turbo Boost Max 5.0 telemetry. During V8 HyperBOOST burst sequences, the Thread Director pre-emptively modulates each core's burst window duration based on real-time thermal readings — distributing thermal budget across the 8-core firing sequence before any core approaches its safe ceiling. This predictive pre-emption is what distinguishes V8 HyperBOOST from a conventional turbo boost: it does not react to throttle events, it prevents them.
+      </p>
+      <p class="uhp-body-text">
+        The LPNPU co-pilot — the always-on 88 TOPS neural inference engine on Intel 06E — runs a lightweight on-chip AI model that continuously classifies inbound thread characteristics and predicts their dispatch class before they become runnable. This gives the Thread Director a predictive advantage: by the time a thread reaches the scheduler, its destination core class has already been decided, and the target UHP core has pre-staged its TBM 5.0 frequency target accordingly.
+      </p>
+    </div>
+    <div>
+      <div class="uhp-td-grid">
+        <div class="uhp-td-row">
+          <div class="uhp-td-icon">🎯</div>
+          <div>
+            <div class="uhp-td-title">Class 1 Dispatch</div>
+            <div class="uhp-td-desc">Only frequency-bound threads routed to UHP. Thread Director classifies by instruction profile, not manual hints.</div>
+          </div>
+        </div>
+        <div class="uhp-td-row">
+          <div class="uhp-td-icon">🌡️</div>
+          <div>
+            <div class="uhp-td-title">TBM 5.0 Telemetry</div>
+            <div class="uhp-td-desc">Per-core voltage-frequency profiling in real time. V8 burst windows modulated before thermal ceilings are reached.</div>
+          </div>
+        </div>
+        <div class="uhp-td-row">
+          <div class="uhp-td-icon">🤖</div>
+          <div>
+            <div class="uhp-td-title">LPNPU Co-Pilot</div>
+            <div class="uhp-td-desc">88 TOPS always-on AI model predicts dispatch class before threads are runnable. UHP cores pre-stage frequency targets.</div>
+          </div>
+        </div>
+        <div class="uhp-td-row">
+          <div class="uhp-td-icon">⚡</div>
+          <div>
+            <div class="uhp-td-title">Sub-100ns Arbitration</div>
+            <div class="uhp-td-desc">Thread Director tile operates independently of all CPU cores. Hardware-native — no OS scheduler round-trip.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── USE CASES ── -->
+  <div class="uhp-usecase-grid">
+    <div class="uhp-usecase-chip">
+      <span class="uhp-usecase-icon">🎮</span>
+      <div class="uhp-usecase-title">Competitive Gaming</div>
+      <div class="uhp-usecase-desc">Game render threads are the canonical frequency-bound workload. UHP + V8 HyperBOOST delivers responsiveness that no multi-core parallelism strategy can substitute.</div>
+    </div>
+    <div class="uhp-usecase-chip">
+      <span class="uhp-usecase-icon">🎬</span>
+      <div class="uhp-usecase-title">Video Export</div>
+      <div class="uhp-usecase-desc">Software-path video rendering scales directly with single-core clock. The Solar Eclipse at 6.0 GHz cuts export timelines in proportion — and V8 HyperBOOST mode compresses them further still.</div>
+    </div>
+    <div class="uhp-usecase-chip">
+      <span class="uhp-usecase-icon">🔧</span>
+      <div class="uhp-usecase-title">Build & Compilation</div>
+      <div class="uhp-usecase-desc">Critical-path compilation units are hard sequential bottlenecks. UHP drives the critical path while SPE Venusmont handles the parallel translation unit flood in tandem.</div>
+    </div>
+    <div class="uhp-usecase-chip">
+      <span class="uhp-usecase-icon">🎯</span>
+      <div class="uhp-usecase-title">Real-Time Signal Processing</div>
+      <div class="uhp-usecase-desc">Audio DSP, RF processing, and real-time control loops require deterministic low-latency response at every cycle. A wide, fast, uncontested core is the only architecture for this.</div>
+    </div>
+  </div>
+
+  <!-- V8 BRIDGE -->
+  <div class="uhp-v8-bridge">
+    <div class="uhp-v8-bridge-arrow">↓</div>
+    <div class="uhp-v8-bridge-text">
+      Solar Eclipse is the <strong>only core in the Eventide lineup</strong> that participates in V8 HyperBOOST. The complete V8 HyperBOOST deep-dive — the 8-cylinder firing sequence, thermally orchestrated burst window architecture, Ford Motor Company powertrain thermal engineering collaboration, and the physics of sustained 10 GHz throughput — is detailed in the section immediately below.
+    </div>
+    <span class="uhp-badge uhp-b-v8" style="flex-shrink:0; white-space:nowrap;">V8 HyperBOOST ↓</span>
+  </div>
+
+</div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════════════════════
+     V8 HYPERBOOST
+══════════════════════════════════════════════════════ -->
+<div class="v8-wrap">
+  <img src="MustangOutline.svg" alt="" aria-hidden="true" style="position:absolute; left:-12%; top:50%; transform:translateY(-50%); height:100%; width:auto; opacity:0.07; pointer-events:none; user-select:none; z-index:0;">
+  <img src="MustangLogo.svg" alt="" aria-hidden="true" style="position:absolute; right:2%; top:50%; transform:translateY(-50%); height:55%; width:auto; opacity:0.08; pointer-events:none; user-select:none; z-index:0;">
+<div class="section" style="position:relative; z-index:1;">
+  <div class="v8-hero-grid">
+    <div>
+      <div class="section-label" style="color: rgba(255,107,53,0.8);">CPU Boost Technology · Intel 04A</div>
+      <div class="section-heading" style="color: white; margin-bottom: 12px;">V8 HyperBOOST<br><span style="color: var(--eventide-sunrise);">10 GHz. All 8.</span></div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;">
+        <span class="badge badge-ford">Ford Motor Company Collab</span>
+        <span class="badge badge-orange">UHP Solar Eclipse Exclusive</span>
+        <span class="badge badge-gold">External PSU + Cooler Required</span>
+      </div>
+      <p style="font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.75; margin-bottom: 20px; max-width: 520px;">
+        Inspired by the iconic firing order of a V8 engine — the same offset cylinder ignition sequence
+        that makes a <strong style="color: var(--eventide-sunrise);">Ford Mustang V8</strong> sound and perform the way it does — Intel's V8 HyperBOOST
+        technology operates all 8 UHP Solar Eclipse cores in a hardware-scheduled sequential burst pattern.
+        Rather than all cores simultaneously drawing maximum power (which no mobile thermal system could sustain),
+        V8 HyperBOOST staggers each core's peak-demand window in a thermally orchestrated firing sequence —
+        maintaining effective <strong style="color: var(--eventide-sunrise);">10 GHz throughput</strong> across sustained, frequency-bound single-threaded
+        and near-single-threaded workloads.
+        <br><br>
+        Ford's powertrain thermal engineering contributed critical insights on heat distribution
+        and sustained-power management under cyclic maximum load — directly informing the thermal model
+        used by the HW Thread Director's burst scheduler.
+      </p>
+      <div class="v8-stats-row">
+        <div class="v8-stat"><div class="v8-stat-num">10</div><div class="v8-stat-label">GHz effective throughput</div></div>
+        <div class="v8-stat"><div class="v8-stat-num">8</div><div class="v8-stat-label">UHP cores in V8 sequence</div></div>
+        <div class="v8-stat"><div class="v8-stat-num">8–40</div><div class="v8-stat-label">ms per burst window cycle</div></div>
+      </div>
+      <div class="v8-warning">
+        ⚡ <strong>External PSU + External Cooler Required.</strong> V8 HyperBOOST is a Unleashed-profile feature only.
+        Sustained 10 GHz burst across 8 UHP cores exceeds the thermal and power envelope of any mobile battery configuration.
+        The Hardware Thread Director automatically disables V8 HyperBOOST when running on battery.
+      </div>
+    </div>
+    <div>
+      <div style="background: rgba(0,0,0,0.6); border: 1px solid rgba(255,107,53,0.2); border-radius: 10px; padding: 20px;">
+        <div style="font-family: var(--font-mono); font-size: 9px; color: rgba(255,107,53,0.5); letter-spacing: 0.15em; text-align: center; margin-bottom: 14px;">V8 FIRING ORDER — UHP CORES 1–8</div>
+        <div class="v8-cylinder-art">
+          <div class="v8-cyl firing"><span class="v8-cyl-num">1</span>FIRE</div>
+          <div class="v8-cyl standby"><span class="v8-cyl-num">2</span>COOL</div>
+          <div class="v8-cyl standby"><span class="v8-cyl-num">3</span>COOL</div>
+          <div class="v8-cyl firing"><span class="v8-cyl-num">4</span>FIRE</div>
+          <div class="v8-cyl standby"><span class="v8-cyl-num">5</span>WIND</div>
+          <div class="v8-cyl firing"><span class="v8-cyl-num">6</span>FIRE</div>
+          <div class="v8-cyl standby"><span class="v8-cyl-num">7</span>WIND</div>
+          <div class="v8-cyl standby"><span class="v8-cyl-num">8</span>COOL</div>
+        </div>
+        <div class="v8-firing-seq">FIRING SEQ: 1-4-6-3-8-5-7-2 (offset thermal spread)</div>
+        <div style="margin-top: 16px; background: rgba(255,107,53,0.06); border: 1px solid rgba(255,107,53,0.15); border-radius: 6px; padding: 14px;">
+          <ul class="spec-list">
+            <li class="spec-item"><span class="spec-key" style="color:rgba(255,255,255,0.4);">Max turbo (any 1 core)</span><span class="spec-val" style="color:var(--eventide-sunrise);">6.00 GHz</span></li>
+            <li class="spec-item"><span class="spec-key" style="color:rgba(255,255,255,0.4);">V8 HyperBOOST clock</span><span class="spec-val" style="color:var(--eventide-sunrise);">10.00 GHz</span></li>
+            <li class="spec-item"><span class="spec-key" style="color:rgba(255,255,255,0.4);">Burst window</span><span class="spec-val">8–40 ms per cycle</span></li>
+            <li class="spec-item"><span class="spec-key" style="color:rgba(255,255,255,0.4);">Scheduler</span><span class="spec-val">HW Thread Director</span></li>
+            <li class="spec-item"><span class="spec-key" style="color:rgba(255,255,255,0.4);">Thermal data source</span><span class="spec-val">TBM 5.0 real-time</span></li>
+            <li class="spec-item"><span class="spec-key" style="color:rgba(255,255,255,0.4);">Power requirement</span><span class="spec-val" style="color:var(--eventide-sunrise);">External PSU + cooler</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
