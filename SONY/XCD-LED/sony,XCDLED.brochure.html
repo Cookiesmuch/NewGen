@@ -183,6 +183,35 @@
   .section {
     padding: 100px 60px;
     position: relative;
+    overflow: hidden;
+  }
+
+  .section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px),
+      radial-gradient(ellipse 80% 60% at 70% 40%, rgba(0,180,255,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 20% 80%, rgba(255,45,32,0.06) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 30% at 85% 10%, rgba(204,68,255,0.06) 0%, transparent 50%);
+    background-size: 50px 50px, 50px 50px, 100% 100%, 100% 100%, 100% 100%;
+    pointer-events: none;
+  }
+
+  .section-grid {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+  }
+
+  .section > * {
+    position: relative;
+    z-index: 1;
   }
 
   .section:nth-of-type(even) { background: var(--bg2); }
@@ -193,6 +222,7 @@
     bottom: 0; left: 0; right: 0;
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+    z-index: 10;
   }
 
   .section-label {
