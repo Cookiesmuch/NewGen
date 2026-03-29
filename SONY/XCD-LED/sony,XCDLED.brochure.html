@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SONY XCD-LED — Panel Technology Specification</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Noto+Serif+Display:ital,wght@0,200;0,300;1,200;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #04050a;
+    --bg2: #080b14;
+    --surface: #0d1220;
+    --border: #1a2240;
+    --border-bright: #2a3860;
+    --text: #d8e4ff;
+    --text-dim: #6a7fa8;
+    --text-dimmer: #3a4a6a;
+    --accent: #00b4ff;
+    --accent2: #ff3c6e;
+    --accent3: #ffe135;
+    --accent4: #00ff99;
+    --accent5: #cc44ff;
+    --accent6: #ff7a00;
+    --sony-red: #ff2d20;
+    --white: #f0f4ff;
+    --glow: rgba(0,180,255,0.12);
+    --glow2: rgba(255,60,110,0.10);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* ── SCANLINE ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(0,0,0,0.04) 2px,
+      rgba(0,0,0,0.04) 4px
+    );
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    padding: 120px 60px 80px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    background: var(--bg2);
+  }
+
+  .header-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 40%, rgba(0,180,255,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 20% 80%, rgba(255,45,32,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 30% at 85% 10%, rgba(204,68,255,0.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .header-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  .header-vignette {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 120% 120% at 50% 50%, transparent 40%, var(--bg) 100%);
+    pointer-events: none;
+  }
+
+  .header-content {
+    position: relative; z-index: 2;
+  }
+
+  .sony-mark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--sony-red);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .sony-mark::before {
+    content: '';
+    display: block;
+    width: 28px; height: 1px;
+    background: var(--sony-red);
+  }
+
+  .main-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 10vw, 120px);
+    letter-spacing: 0.02em;
+    line-height: 0.9;
+    color: var(--white);
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  .main-title span {
+    color: var(--accent);
+    position: relative;
+  }
+
+  .main-title span::after {
+    content: 'XCD-LED';
+    position: absolute;
+    left: 2px; top: 2px;
+    color: var(--sony-red);
+    opacity: 0.3;
+    z-index: -1;
+  }
+
+  .subtitle {
+    font-family: 'Noto Serif Display', serif;
+    font-style: italic;
+    font-weight: 200;
+    font-size: 18px;
+    color: var(--text-dim);
+    margin-bottom: 48px;
+    letter-spacing: 0.02em;
+  }
+
+  .header-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    padding: 4px 12px;
+    border: 1px solid var(--border-bright);
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .tag.hot { border-color: var(--accent); color: var(--accent); }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 60px;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section {
+    padding: 100px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px),
+      radial-gradient(ellipse 80% 60% at 70% 40%, rgba(0,180,255,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 20% 80%, rgba(255,45,32,0.06) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 30% at 85% 10%, rgba(204,68,255,0.06) 0%, transparent 50%);
+    background-size: 50px 50px, 50px 50px, 100% 100%, 100% 100%, 100% 100%;
+    pointer-events: none;
+  }
+
+  .section-grid {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+  }
+
+  .section > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .section:nth-of-type(even) { background: var(--bg2); }
+
+  .section::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+    z-index: 10;
+  }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--text-dimmer);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 200px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    margin-bottom: 48px;
+    line-height: 1;
+  }
+
+  /* ── SPEC GRID ── */
+  .spec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+
+  .spec-cell {
+    background: var(--bg);
+    padding: 24px 28px;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .spec-cell:hover { background: var(--surface); }
+
+  .spec-cell.wide { grid-column: span 2; }
+  .spec-cell.full { grid-column: 1 / -1; }
+
+  .spec-key {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: var(--text-dimmer);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .spec-val {
+    font-size: 22px;
+    color: var(--white);
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .spec-val.big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 0.02em;
+  }
+
+  .spec-val .unit {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-weight: 300;
+    margin-left: 4px;
+  }
+
+  .spec-val .accent { color: var(--accent); }
+  .spec-val .accent2 { color: var(--accent2); }
+  .spec-val .accent3 { color: var(--accent3); }
+  .spec-val .accent4 { color: var(--accent4); }
+  .spec-val .accent5 { color: var(--accent5); }
+
+  .spec-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  /* ── LAYER STACK DIAGRAM ── */
+  .layer-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 48px;
+  }
+
+  .layer {
+    display: grid;
+    grid-template-columns: 200px 1fr 120px;
+    align-items: center;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+
+  .layer:last-child { border-bottom: none; }
+  .layer:hover { background: var(--surface); }
+
+  .layer-num {
+    padding: 20px 24px;
+    border-right: 1px solid var(--border);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--text-dimmer);
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .layer-num .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .layer-info {
+    padding: 20px 28px;
+  }
+
+  .layer-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .layer-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .layer-badge {
+    padding: 20px 24px;
+    border-left: 1px solid var(--border);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--text-dimmer);
+    text-align: right;
+    text-transform: uppercase;
+  }
+
+  /* ── COLOR SYSTEM ── */
+  .color-system {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .color-swatch {
+    padding: 28px 16px 24px;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    transition: background 0.2s;
+  }
+
+  .color-swatch:hover { background: var(--surface); }
+
+  .swatch-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    box-shadow: 0 0 20px currentColor;
+  }
+
+  .swatch-name {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .swatch-layer {
+    font-size: 9px;
+    color: var(--text-dimmer);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── BRIGHTNESS CHART ── */
+  .brightness-chart {
+    border: 1px solid var(--border);
+    padding: 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .brightness-chart::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 80% 50%, rgba(0,180,255,0.04) 0%, transparent 60%);
+  }
+
+  .b-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 100px;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .b-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .b-bar-track {
+    height: 8px;
+    background: var(--surface);
+    border-radius: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .b-bar {
+    height: 100%;
+    position: relative;
+    transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .b-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  /* ── CONTROLLER BLOCK ── */
+  .controller-block {
+    border: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    margin-bottom: 32px;
+  }
+
+  .ctrl-cell {
+    background: var(--bg);
+    padding: 32px;
+  }
+
+  .ctrl-title {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-dimmer);
+    margin-bottom: 16px;
+  }
+
+  .ctrl-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ctrl-list li {
+    font-size: 12px;
+    color: var(--text-dim);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+
+  .ctrl-list li::before {
+    content: '—';
+    color: var(--text-dimmer);
+    flex-shrink: 0;
+  }
+
+  .ctrl-list li strong { color: var(--text); font-weight: 500; }
+
+  /* ── MODE TOGGLE VISUAL ── */
+  .mode-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .mode-card {
+    background: var(--bg);
+    padding: 36px 32px;
+  }
+
+  .mode-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+
+  .mode-tag {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border: 1px solid;
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+
+  .mode-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  /* ── PRIVACY ZONE DIAGRAM ── */
+  .privacy-diagram {
+    border: 1px solid var(--border);
+    padding: 40px;
+    margin-bottom: 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .px-screen {
+    aspect-ratio: 16/10;
+    border: 1px solid var(--border-bright);
+    position: relative;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .px-wide-zone {
+    position: absolute;
+    background: rgba(255,60,110,0.15);
+    border: 1px solid rgba(255,60,110,0.3);
+  }
+
+  .px-label {
+    position: absolute;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: var(--accent2);
+    text-transform: uppercase;
+    padding: 2px 6px;
+  }
+
+  .px-narrow-fill {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(0,180,255,0.04) 0px,
+      rgba(0,180,255,0.04) 1px,
+      transparent 1px,
+      transparent 6px
+    );
+  }
+
+  /* ── FOOTNOTES / FINE PRINT ── */
+  .footnote-block {
+    padding: 40px 60px;
+    border-top: 1px solid var(--border);
+  }
+
+  .footnote {
+    font-size: 10px;
+    color: var(--text-dimmer);
+    line-height: 1.8;
+    margin-bottom: 6px;
+  }
+
+  .footnote strong { color: var(--text-dim); }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--bg2);
+    padding: 60px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    color: rgba(255,255,255,0.12);
+    letter-spacing: 0.05em;
+  }
+
+  .footer-brand span {
+    color: var(--sony-red);
+    opacity: 0.6;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--white); }
+
+  .footer-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--text-dimmer);
+    line-height: 2;
+    text-align: right;
+  }
+
+  .footer-bar {
+    background: var(--bg);
+    padding: 16px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border-bright);
+  }
+
+  .footer-bar-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--text-dimmer);
+    text-transform: uppercase;
+  }
+
+  /* ── ANNOTATION ── */
+  .anno {
+    font-size: 9px;
+    color: var(--text-dimmer);
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+  }
+
+  /* ── INLINE HIGHLIGHT ── */
+  .hl { color: var(--accent); }
+  .hl2 { color: var(--accent2); }
+  .hl3 { color: var(--accent3); }
+  .hl4 { color: var(--accent4); }
+  .hl5 { color: var(--accent5); }
+  .hl6 { color: var(--accent6); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border-bright), transparent);
+    margin: 40px 0;
+  }
+
+  /* ── ENTRY ANIMATION ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section { animation: fadeUp 0.5s ease both; }
+  .section:nth-child(1) { animation-delay: 0.05s; }
+  .section:nth-child(2) { animation-delay: 0.10s; }
+  .section:nth-child(3) { animation-delay: 0.15s; }
+  .section:nth-child(4) { animation-delay: 0.20s; }
+  .section:nth-child(5) { animation-delay: 0.25s; }
+
+  /* ── GLOW PULSE on big numbers ── */
+  @keyframes glowPulse {
+    0%, 100% { text-shadow: 0 0 20px rgba(0,180,255,0.3); }
+    50%       { text-shadow: 0 0 40px rgba(0,180,255,0.7), 0 0 80px rgba(0,180,255,0.2); }
+  }
+  .glow-pulse { animation: glowPulse 3s ease-in-out infinite; }
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="header-bg"></div>
+  <div class="header-grid"></div>
+  <div class="header-vignette"></div>
+  <div class="header-content">
+    <div class="sony-mark">SONY SEMICONDUCTOR SOLUTIONS — DISPLAY DIVISION</div>
+    <div class="main-title">SONY <span class="glow-pulse">XCD-LED</span></div>
+    <div class="subtitle">X-tra Color Dynamic Light-Emitting Diode Panel Technology</div>
+    <div class="header-tags">
+      <span class="tag hot">TANDEM QD-LED</span>
+      <span class="tag hot">HC GaN BACKLIGHT</span>
+      <span class="tag">16K NATIVE</span>
+      <span class="tag">250 kHz PANEL</span>
+      <span class="tag">20-BIT COLOR</span>
+      <span class="tag">MEMS SHUTTER</span>
+      <span class="tag">RGBMCY 7-PRIMARY</span>
+      <span class="tag hot">DOLBY VISION 2.0</span>
+      <span class="tag hot">HDR10+ ULTIMATE</span>
+      <span class="tag hot">SONY×ASUS KUROCOAT™</span>
+      <span class="tag">AV2 / eDP2.5 / PCIe 6.0</span>
+    </div>
+  </div>
+</header>
+
+
+<!-- ══ SECTION 1 — PANEL OVERVIEW ══ -->
+<div class="section">
+  <div class="section-label">01 — Panel Overview</div>
+  <div class="section-title">HEADLINE SPECIFICATIONS</div>
+
+  <div class="spec-grid">
+    <div class="spec-cell">
+      <div class="spec-key">Native Resolution</div>
+      <div class="spec-val big accent">15360 <span class="unit">× 9600</span></div>
+      <div class="spec-sub">16K (16:10) — 18-inch diagonal<br>~1026 PPI</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Native Refresh Rate</div>
+      <div class="spec-val big accent">250<span class="unit">kHz</span></div>
+      <div class="spec-sub">No interpolation. No motion processing artifacts.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Color Depth</div>
+      <div class="spec-val big">~22<span class="unit">-bit perceived</span></div>
+      <div class="spec-sub">10-bit native per layer → 20-bit tandem → +2-bit FRC = ~22-bit perceived. FRC adds a consistent +2 bits per application (4 subframes per cycle). Mutually exclusive with BFI mode.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Peak Brightness — Single Layer</div>
+      <div class="spec-val big accent3">21,000<span class="unit">cd/m²</span></div>
+      <div class="spec-sub">Per emission layer (RGB or MCY independently)</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Peak Brightness — Tandem</div>
+      <div class="spec-val big accent2">38,000<span class="unit">cd/m²</span></div>
+      <div class="spec-sub">Combined. Tandem activates above ~10K nits for efficiency.<br>Sustained, not peak-burst.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Panel Test Ceiling</div>
+      <div class="spec-val big">128,000<span class="unit">cd/m²</span></div>
+      <div class="spec-sub">Factory validation only. Shipped at 32K cap with ~4× headroom margin.</div>
+    </div>
+    <div class="spec-cell wide">
+      <div class="spec-key">Maximum Input Signal</div>
+      <div class="spec-val">16K @ 125 kHz @ 10-bit<span class="unit"> — AV2 compressed over eDP 2.5 over PCIe 6.0 ×16 ×3</span></div>
+      <div class="spec-sub">On-panel Meridian controller handles decode, dithering, layer-split, BFI/FRC, and HDR metadata processing. No discrete scaler required.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Form Factor</div>
+      <div class="spec-val">Integrated Panel</div>
+      <div class="spec-sub">Primary target: laptops (full spec, incl. dual-mode MLA). Camera-class SKUs: smaller panels, lower brightness, MEMS shutter retained, dual-mode MLA omitted — single optimized lens only.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">HDR Standards</div>
+      <div class="spec-val">Dolby Vision 2.0<br>HDR10+ Ultimate</div>
+      <div class="spec-sub">Metadata-faithful. No auto-tonemapping without explicit SDR→HDR software mode (Intel/ASUS collab).</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ SECTION 2 — LAYER STACK ══ -->
+<div class="section">
+  <div class="section-label">02 — Physical Architecture</div>
+  <div class="section-title">LAYER STACK — BACKPLANE TO VIEWER</div>
+
+  <div class="layer-stack">
+
+    <div class="layer">
+      <div class="layer-num" style="color:#cc44ff">
+        <span class="dot" style="background:#cc44ff; box-shadow:0 0 8px #cc44ff"></span>
+        L1
+      </div>
+      <div class="layer-info">
+        <div class="layer-name">HC GaN Backlight — UV (MCY Layer)</div>
+        <div class="layer-desc">Hollow Cylindrical GaN LEDs. UV excitation wavelength for Magenta, Cyan, and Yellow quantum dot conversion. 128×64 dimming zones — zone gating is power management only, not contrast control.</div>
+      </div>
+      <div class="layer-badge">Backlight</div>
+    </div>
+
+    <div class="layer">
+      <div class="layer-num" style="color:#ff7a00">
+        <span class="dot" style="background:#ff7a00; box-shadow:0 0 8px #ff7a00"></span>
+        L2
+      </div>
+      <div class="layer-info">
+        <div class="layer-name">MCY Quantum Dot Emission Layer</div>
+        <div class="layer-desc">Magenta, Cyan, Yellow QD conversion. Three subpixels per pixel. UV-pumped. Full-spectrum primary coverage alongside RGB layer. Each primary targets the purest spectral emission achievable.</div>
+      </div>
+      <div class="layer-badge">Emission</div>
+    </div>
+
+    <div class="layer">
+      <div class="layer-num" style="color:#6a7fa8">
+        <span class="dot" style="background:#6a7fa8; box-shadow:0 0 8px #6a7fa8"></span>
+        L3
+      </div>
+      <div class="layer-info">
+        <div class="layer-name">Collimation Microlens Array (MCY)</div>
+        <div class="layer-desc">Collimates MCY emission for clean vertical passthrough into the RGB layer above. Prevents angular bleed across RGB subpixel geometry. Critical for preserving fourth-subpixel fidelity.</div>
+      </div>
+      <div class="layer-badge">Optics</div>
+    </div>
+
+    <div class="layer">
+      <div class="layer-num" style="color:#00b4ff">
+        <span class="dot" style="background:#00b4ff; box-shadow:0 0 8px #00b4ff"></span>
+        L4
+      </div>
+      <div class="layer-info">
+        <div class="layer-name">HC GaN Backlight — Z-Blue Optimized (RGB Layer)</div>
+        <div class="layer-desc">Blue-spectrum HC GaN, spectrally tuned for Red and Green QD pump efficiency (Z-LED architecture). Physical cutouts at each pixel's fourth-subpixel position allow collimated MCY light to pass through unobstructed. 128×64 dimming zones, independent from MCY backlight.</div>
+      </div>
+      <div class="layer-badge">Backlight</div>
+    </div>
+
+    <div class="layer">
+      <div class="layer-num" style="color:#ff3c6e">
+        <span class="dot" style="background:#ff3c6e; box-shadow:0 0 8px #ff3c6e"></span>
+        L5
+      </div>
+      <div class="layer-info">
+        <div class="layer-name">RGB Quantum Dot Emission Layer + MCY Passthrough Subpixel</div>
+        <div class="layer-desc">Red, Green, Blue QD conversion — three subpixels. Fourth subpixel is a transparent passthrough aperture for collimated MCY output from L2/L3. The Meridian controller presents these as a unified 6-primary pixel to the rendering pipeline.</div>
+      </div>
+      <div class="layer-badge">Emission</div>
+    </div>
+
+    <div class="layer">
+      <div class="layer-num" style="color:#f0f4ff">
+        <span class="dot" style="background:#f0f4ff; box-shadow:0 0 8px rgba(240,244,255,0.5)"></span>
+        L6
+      </div>
+      <div class="layer-info">
+        <div class="layer-name">MEMS Micro-Shutter Array — 16K Native</div>
+        <div class="layer-desc">Full 16K resolution electromechanical shutter array. Operates per-pixel. Provides absolute black by physically occluding emission — no light bleed, no halo, no blooming. Contrast ceiling: effectively infinite at pixel level. Also serves as the privacy-mode gate for designated wide-angle pixels.</div>
+      </div>
+      <div class="layer-badge">Contrast</div>
+    </div>
+
+    <div class="layer">
+      <div class="layer-num" style="color:#00ff99">
+        <span class="dot" style="background:#00ff99; box-shadow:0 0 8px #00ff99"></span>
+        L7
+      </div>
+      <div class="layer-info">
+        <div class="layer-name">Dual-Mode Viewing Microlens Array</div>
+        <div class="layer-desc">Interlaced checkerboard lens structure — wide and narrow pixels alternate 1:1 across the full panel (same approach as Samsung's privacy display architecture). Wide pixels expand the viewing cone for collaborative use; narrow pixels concentrate output for privacy. Wide pixels can be individually shuttered via L6 MEMS. Brightness compensates digitally via narrow-pixel drive boost. <em>Camera-class XCD-LED SKUs omit this layer entirely — single optimized lens only.</em></div>
+      </div>
+      <div class="layer-badge">Optics</div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══ SECTION 3 — COLOR SYSTEM ══ -->
+<div class="section">
+  <div class="section-label">03 — Color Architecture</div>
+  <div class="section-title">6-PRIMARY RGBMCY COLOR SYSTEM</div>
+
+  <div class="color-system">
+    <div class="color-swatch">
+      <div class="swatch-dot" style="background:#ff2020; color:#ff2020;"></div>
+      <div class="swatch-name">Red</div>
+      <div class="swatch-layer">RGB Layer</div>
+    </div>
+    <div class="color-swatch">
+      <div class="swatch-dot" style="background:#00ff44; color:#00ff44;"></div>
+      <div class="swatch-name">Green</div>
+      <div class="swatch-layer">RGB Layer</div>
+    </div>
+    <div class="color-swatch">
+      <div class="swatch-dot" style="background:#0055ff; color:#0055ff;"></div>
+      <div class="swatch-name">Blue</div>
+      <div class="swatch-layer">RGB Layer</div>
+    </div>
+    <div class="color-swatch">
+      <div class="swatch-dot" style="background:#ff00cc; color:#ff00cc;"></div>
+      <div class="swatch-name">Magenta</div>
+      <div class="swatch-layer">MCY Layer</div>
+    </div>
+    <div class="color-swatch">
+      <div class="swatch-dot" style="background:#00ffee; color:#00ffee;"></div>
+      <div class="swatch-name">Cyan</div>
+      <div class="swatch-layer">MCY Layer</div>
+    </div>
+    <div class="color-swatch">
+      <div class="swatch-dot" style="background:#ffe135; color:#ffe135;"></div>
+      <div class="swatch-name">Yellow</div>
+      <div class="swatch-layer">MCY Layer</div>
+    </div>
+  </div>
+
+  <div class="controller-block">
+    <div class="ctrl-cell">
+      <div class="ctrl-title">Primary Selection Logic (Meridian)</div>
+      <ul class="ctrl-list">
+        <li>Each target color is mapped to the <strong>nearest pure primaries</strong> on the 6-primary gamut hull — not the nearest RGB approximation.</li>
+        <li>Orange → <strong>R + Y</strong> (avoids cross-layer overhead if energetically favorable).</li>
+        <li>Colors equidistant from two primaries → <strong>experimentally calibrated split</strong> per target luminance. Factory LUT.</li>
+        <li>Above ~10K nits sustained → <strong>tandem mode</strong> activates both layers additively for the same color, up to 38K cd/m².</li>
+        <li>No primary combination uses a suboptimal route when a purer single-layer route exists.</li>
+      </ul>
+    </div>
+    <div class="ctrl-cell">
+      <div class="ctrl-title">Layer Splitting Pipeline</div>
+      <ul class="ctrl-list">
+        <li>AV2-compressed 10-bit signal decoded on-panel by Meridian.</li>
+        <li>Decoded frame split into <strong>RGB drive signal</strong> and <strong>MCY drive signal</strong> per-pixel.</li>
+        <li>MCY passthrough subpixel in L5 carries final MCY contribution as a unified pixel component.</li>
+        <li>FRC operates across <strong>both layers simultaneously</strong> to achieve 20-bit effective depth at full 250 kHz.</li>
+        <li>BFI replaces FRC; black frames injected at 2× input cadence. Mutually exclusive.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ SECTION 4 — BRIGHTNESS & BACKLIGHT ══ -->
+<div class="section">
+  <div class="section-label">04 — Luminance Architecture</div>
+  <div class="section-title">BRIGHTNESS TIERS & BACKLIGHT STRATEGY</div>
+
+  <div class="brightness-chart">
+    <div class="b-row">
+      <div class="b-label">Single Layer — Sustain</div>
+      <div class="b-bar-track">
+        <div class="b-bar" style="width:31.25%; background:linear-gradient(to right,#003a55,#00b4ff);"></div>
+      </div>
+      <div class="b-val" style="color:#00b4ff">10K <span style="font-size:11px;color:#6a7fa8">cd/m²</span></div>
+    </div>
+    <div class="b-row">
+      <div class="b-label">Single Layer — Peak</div>
+      <div class="b-bar-track">
+        <div class="b-bar" style="width:50%; background:linear-gradient(to right,#003a55,#00d4ff);"></div>
+      </div>
+      <div class="b-val" style="color:#00d4ff">21K <span style="font-size:11px;color:#6a7fa8">cd/m²</span></div>
+    </div>
+    <div class="b-row">
+      <div class="b-label">Tandem — Shipped Peak</div>
+      <div class="b-bar-track">
+        <div class="b-bar" style="width:100%; background:linear-gradient(to right,#550010,#ff2d20,#ff8c00);"></div>
+      </div>
+      <div class="b-val" style="color:#ff8c00">38K <span style="font-size:11px;color:#6a7fa8">cd/m²</span></div>
+    </div>
+    <div class="b-row">
+      <div class="b-label">Factory Test Ceiling</div>
+      <div class="b-bar-track">
+        <div class="b-bar" style="width:100%; background:linear-gradient(to right,#2a2a00,#ffe135); opacity:0.5; border-right:2px dashed #ffe135;"></div>
+      </div>
+      <div class="b-val" style="color:#ffe135;opacity:0.6">128K <span style="font-size:11px;color:#6a7fa8">cd/m²</span></div>
+    </div>
+    <div class="anno" style="margin-top:16px">† Tandem efficiency crossover: dual-layer at 50% each is more power-efficient than single-layer at 100% above ~10K nits. Tandem activates automatically above this threshold. — †† 38K shipped figure is validated at factory against the 128K test ceiling; not a marketing extrapolation.</div>
+  </div>
+
+  <div class="spec-grid">
+    <div class="spec-cell">
+      <div class="spec-key">Backlight Type</div>
+      <div class="spec-val">Hollow Cylindrical GaN</div>
+      <div class="spec-sub">HC geometry for improved light uniformity and thermal distribution vs. planar GaN. Independent arrays per emission layer.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Dimming Zones</div>
+      <div class="spec-val">128 × 64</div>
+      <div class="spec-sub">8,192 zones at 18 inches. Power management only — contrast is handled by MEMS shutter (L6), not zone dimming. Zones that feed MEMS-blocked pixels are reduced to idle.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">MCY Backlight Spectrum</div>
+      <div class="spec-val">UV-band</div>
+      <div class="spec-sub">Optimized for Magenta, Cyan, Yellow QD pump wavelengths.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">RGB Backlight Spectrum</div>
+      <div class="spec-val">Z-Blue Optimized</div>
+      <div class="spec-sub">Spectrally tuned blue for R and G QD conversion efficiency. Physical cutouts at MCY passthrough subpixel positions.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ SECTION 5 — FRC vs BFI ══ -->
+<div class="section">
+  <div class="section-label">05 — Temporal Modes</div>
+  <div class="section-title">FRC vs BFI — MUTUALLY EXCLUSIVE TEMPORAL MODES</div>
+
+  <div class="mode-compare">
+    <div class="mode-card">
+      <div class="mode-name" style="color:#cc44ff">FRC MODE</div>
+      <div class="mode-tag" style="border-color:#cc44ff; color:#cc44ff">Color Depth Priority</div>
+      <div class="mode-desc">
+        Frame Rate Control operates across both emission layers at 250 kHz native. Each FRC application adds +2 bits of perceived depth via a 4-subframe dithering cycle — the same mechanism by which 8-bit+FRC panels achieve 10-bit perception today. Applied to XCD-LED's 20-bit tandem baseline (10-bit × 2 layers), FRC yields approximately <strong style="color:var(--accent5)">~22-bit perceived color depth</strong>.<br><br>
+        Best for: color-critical work, photography, video grading, static or slow-motion content where motion blur is not a priority concern.
+      </div>
+    </div>
+    <div class="mode-card" style="border-left:1px solid var(--border)">
+      <div class="mode-name" style="color:#00ff99">BFI MODE</div>
+      <div class="mode-tag" style="border-color:#00ff99; color:#00ff99">Motion Clarity Priority</div>
+      <div class="mode-desc">
+        Black Frame Insertion via ASUS DIAC co-development. Every second frame at 250 kHz native is a complete black frame — effectively halving phosphor/QD persistence and eliminating motion blur at the panel level. Implemented via MEMS shutter array (zero emission, no backlight PWM artifacts).<br><br>
+        Best for: high-framerate gaming, competitive use, fast-motion cinema. FRC is disabled; color depth returns to 10-bit input.
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ SECTION 6 — OPTICS & PRIVACY ══ -->
+<div class="section">
+  <div class="section-label">06 — Viewing Optics & Privacy</div>
+  <div class="section-title">INTERLACED DUAL-MODE MICROLENS & MEMS PRIVACY SYSTEM</div>
+
+  <div class="privacy-diagram">
+    <div>
+      <div class="spec-key" style="margin-bottom:16px">Pixel Layout — Wide vs Narrow (Schematic)</div>
+      <div class="px-screen" style="overflow:hidden;">
+        <!-- Interlaced checkerboard: wide and narrow pixels alternate like a chessboard -->
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;">
+          <defs>
+            <pattern id="checker" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
+              <!-- Row 0: W N -->
+              <rect x="0" y="0" width="6" height="6" fill="rgba(255,60,110,0.22)" stroke="rgba(255,60,110,0.35)" stroke-width="0.5"/>
+              <rect x="6" y="0" width="6" height="6" fill="rgba(0,180,255,0.08)" stroke="rgba(0,180,255,0.18)" stroke-width="0.5"/>
+              <!-- Row 1: N W -->
+              <rect x="0" y="6" width="6" height="6" fill="rgba(0,180,255,0.08)" stroke="rgba(0,180,255,0.18)" stroke-width="0.5"/>
+              <rect x="6" y="6" width="6" height="6" fill="rgba(255,60,110,0.22)" stroke="rgba(255,60,110,0.35)" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#checker)"/>
+        </svg>
+        <!-- Legend overlaid -->
+        <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:14px;align-items:center;">
+          <span style="display:flex;align-items:center;gap:5px;font-size:8px;letter-spacing:0.1em;color:var(--accent2);text-transform:uppercase;">
+            <span style="display:inline-block;width:8px;height:8px;background:rgba(255,60,110,0.5);border:1px solid rgba(255,60,110,0.8);"></span>Wide
+          </span>
+          <span style="display:flex;align-items:center;gap:5px;font-size:8px;letter-spacing:0.1em;color:var(--accent);text-transform:uppercase;">
+            <span style="display:inline-block;width:8px;height:8px;background:rgba(0,180,255,0.2);border:1px solid rgba(0,180,255,0.5);"></span>Narrow
+          </span>
+        </div>
+      </div>
+      <div class="anno" style="margin-top:12px">Interlaced 1:1 checkerboard — every wide pixel is surrounded by narrow pixels on all four cardinal sides, and vice versa. Same approach as Samsung's wide/narrow pixel privacy displays.</div>
+    </div>
+    <div>
+      <ul class="ctrl-list" style="gap:16px">
+        <li><strong>Interlaced 1:1 Structure.</strong> Wide and narrow lens pixels alternate in a checkerboard pattern across the entire panel — every wide pixel is surrounded by narrow pixels on all four cardinal sides. Same architecture as Samsung's privacy display implementations.</li>
+        <li><strong>Privacy via MEMS.</strong> Wide-angle pixels can be individually shuttered by the L6 MEMS array, removing their angular contribution without affecting neighboring narrow-pixel output.</li>
+        <li><strong>No Dark Patch Artifacts.</strong> Because narrow pixels remain active in every 2×2 cell, the panel is never fully dark in any region during privacy mode. The interlaced structure means brightness loss is perceptually uniform — no visible grid pattern at normal viewing distance.</li>
+        <li><strong>Brightness Compensation.</strong> Shutting off wide pixels halves effective spatial density. Panel compensates by boosting narrow-pixel drive — viable given the 38K nit headroom. Combined perceived brightness remains acceptable.</li>
+        <li><strong>Laptop SKU Only.</strong> Camera-class XCD-LED panels omit the dual-mode microlens array entirely. No wide/narrow pixel distinction — all pixels use a single optimized lens for the sensor's optical path.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ SECTION 7 — MERIDIAN CONTROLLER ══ -->
+<div class="section">
+  <div class="section-label">07 — On-Panel Intelligence</div>
+  <div class="section-title">INTEL×SONY MERIDIAN PANEL CONTROLLER IC</div>
+
+  <div class="spec-grid">
+    <div class="spec-cell full">
+      <div class="spec-key">Architecture</div>
+      <div class="spec-val">Monolithic driver IC — Intel×Sony co-development. Embedded on panel PCB. No discrete scaler, no external decoder.</div>
+      <div class="spec-sub">Naming follows the celestial themes of the Eventide generation — Meridian is the display-domain counterpart to the on-die media engines.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">AV2 Decode</div>
+      <div class="spec-val">On-die</div>
+      <div class="spec-sub">Full AV2 hardware decode. Required — raw 16K@125kHz@10-bit is not serviceable over any current cable standard without compression.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Layer Split Engine</div>
+      <div class="spec-val">Per-pixel</div>
+      <div class="spec-sub">Decodes unified color signal and routes per-pixel to RGB drive, MCY drive, and passthrough subpixel — using 6-primary gamut LUT.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">HDR Metadata Engine</div>
+      <div class="spec-val">Dolby Vision 2.0<br>HDR10+ Ultimate</div>
+      <div class="spec-sub">Metadata-faithful execution. Panel honors director intent. No auto-tonemapping in hardware. SDR→HDR conversion is a separate software layer (Intel/ASUS collab, host-side).</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">FRC Engine</div>
+      <div class="spec-val">~22-bit perceived</div>
+      <div class="spec-sub">10-bit per layer → 20-bit tandem → FRC adds +2 bits (4-subframe cycle). Established precedent: 6-bit+FRC≈8-bit, 8-bit+FRC≈10-bit, 10-bit+FRC≈12-bit — XCD-LED's 20-bit tandem baseline pushes this to ~22-bit perceived. Disabled in BFI mode.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">BFI / DIAC Engine</div>
+      <div class="spec-val">ASUS DIAC</div>
+      <div class="spec-sub">Co-developed with ASUS. Black frames via MEMS shutter — no backlight PWM, no ghost frames. Replaces FRC when active.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Backlight Management</div>
+      <div class="spec-val">Zone Power Gating</div>
+      <div class="spec-sub">Reduces drive to zones feeding MEMS-occluded pixel regions. Independent control of RGB and MCY backlight arrays.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Interface</div>
+      <div class="spec-val">eDP 2.5 over PCIe 6.0 ×16 ×3</div>
+      <div class="spec-sub">Three PCIe 6.0 ×16 lanes aggregated. Not feasible over external cable — integrated panel deployment only.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SECTION 8 — KUROCOAT ══ -->
+<div class="section">
+  <div class="section-label">08 — Optical Absorption Technology</div>
+  <div class="section-title">SONY×ASUS KUROCOAT™</div>
+
+  <div class="spec-grid">
+    <div class="spec-cell wide">
+      <div class="spec-key">Technology Overview</div>
+      <div class="spec-val">Photonic Micro-Pyramid Absorption Coating</div>
+      <div class="spec-sub">A fully dense, mechanically robust ultra-black coating applied to the viewer-facing surface of the MEMS shutter array (L6). Developed jointly by Sony Semiconductor and ASUS Material Science. Replaces fragile CNT-forest approaches (e.g. Vantablack) with a lithographically defined sub-wavelength pyramid texture on a hard TiON base film — achieving equivalent or superior absorption without freestanding structures.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Base Material</div>
+      <div class="spec-val">Titanium Oxynitride <span class="unit">(TiON)</span></div>
+      <div class="spec-sub">Stoichiometry tuned for near-unity visible-spectrum absorption. Fully dense hard film — ~20 GPa hardness. Deposited by PVD sputtering, compatible with Intel fab metallization infrastructure.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Surface Structure</div>
+      <div class="spec-val">Sub-wavelength Pyramid Array</div>
+      <div class="spec-sub">Lithographically defined at Intel 04A (0.4nm-class GaNSi GAA). Feature pitch tuned below 380nm — the lower bound of visible light — placing the structure in the photonic resonance regime. Light couples into the pyramid geometry and is absorbed rather than reflected.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Absorption Mechanism</div>
+      <div class="spec-val">Geometric + Photonic + Intrinsic</div>
+      <div class="spec-sub">Three stacked mechanisms: (1) pyramid geometry forces 3+ surface interactions per incident ray; (2) sub-wavelength pitch drives photonic coupling across full visible spectrum; (3) TiON intrinsic extinction coefficient converts photons to heat at each interaction.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Target Absorption</div>
+      <div class="spec-val big accent">&gt;99.99<span class="unit">%</span></div>
+      <div class="spec-sub">Broadband visible spectrum (380–700nm). Potentially exceeds Vantablack (99.965%) in practical measurement due to photonic resonance contributions unavailable to CNT forest geometry.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Mechanical Durability</div>
+      <div class="spec-val accent4">MEMS-rated</div>
+      <div class="spec-sub">Solid pyramid texture on hard TiON — no freestanding structures to delaminate. Survives 250kHz BFI actuation duty cycle. ASUS validates wear and fatigue per BWF mechanical testing protocols adapted for MEMS.</div>
+    </div>
+  </div>
+
+  <div class="controller-block" style="margin-bottom:32px">
+    <div class="ctrl-cell">
+      <div class="ctrl-title">Fabrication — Intel 04A (GaNSi GAA, 0.4nm-class)</div>
+      <ul class="ctrl-list">
+        <li><strong>Pyramid texture lithography.</strong> 04A's feature definition capability establishes pyramid pitch below 380nm — sub-visible — enabling photonic resonance absorption across the full visible spectrum, not just geometric trapping.</li>
+        <li><strong>GaNSi thermal advantage.</strong> 04A substrate achieves 850 W/m·K lateral thermal spreading. Absorbed photon energy (heat) dissipates rapidly through the shutter body — eliminates thermal accumulation even at 32K nit neighboring-pixel loads.</li>
+        <li><strong>ASSI 2.0 bonding.</strong> KUROCOAT can be fabricated as a separate tile at 0.4µm hybrid bond pitch — clean process separation from MEMS actuator body.</li>
+      </ul>
+    </div>
+    <div class="ctrl-cell">
+      <div class="ctrl-title">Fabrication — Intel 06E (FinFlex GAA, 0.6nm-class)</div>
+      <ul class="ctrl-list">
+        <li><strong>MEMS actuator bodies.</strong> Shutter pivot mechanisms, electrostatic drive circuits, and electrical traces fab'd on 06E — proven, reliable, efficiency-biased process appropriate for high-cycle mechanical components.</li>
+        <li><strong>Sub-µW idle per shutter cluster.</strong> 06E's &lt;0.3nA/µm gate leakage and &lt;1ns power gate mean electrostatic shutter drive circuits consume essentially zero power when shutters are held open — relevant for sustained HDR highlights.</li>
+        <li><strong>IPC-biased control logic.</strong> 06E's +22% IPC advantage over 14A means the shutter timing controller handles 250kHz BFI sequencing with significant compute headroom to spare.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="spec-cell full" style="border:1px solid var(--border); padding:24px 28px; margin-bottom:0;">
+    <div class="spec-key">Why not Vantablack CNT forest?</div>
+    <div class="spec-sub" style="margin-top:8px; line-height:1.9;">
+      Vantablack's CNT forest achieves 99.965% absorption but relies on freestanding carbon nanotubes held only at their base — mechanically incompatible with a 250kHz oscillating MEMS actuator. Fatigue cycling would delaminate or collapse the nanotube array within hours of operation. KUROCOAT achieves equivalent or superior absorption via solid pyramid geometry on a hard film: nothing to snap, nothing to delaminate, no process incompatibility with Intel fab infrastructure. The 04A photonic resonance regime is a capability Vantablack's CNT geometry cannot access.
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ FOOTNOTES ══ -->
+<div class="footnote-block">
+  <div class="footnote">† <strong>Tandem efficiency crossover at ~10K nits:</strong> Operating both emission layers at ≤50% drive is more thermally and electrically efficient than pushing a single layer to 100%. Tandem activation is automatic above this threshold.</div>
+  <div class="footnote">† <strong>38K nits is a sustained, real-world figure.</strong> Factory test ceiling of 128K nits provides ≈4× headroom margin. Shipped brightness cap is not a marketing peak.</div>
+  <div class="footnote">† <strong>FRC adds +2 bits per application</strong>, not +4. Mechanism: 4-subframe temporal dithering cycle (2² = 4 subframes → +2 bits perceived). Real-world precedent: 6-bit+FRC≈8-bit, 8-bit+FRC≈10-bit, 10-bit+FRC≈12-bit (confirmed in production HDR panels). XCD-LED's 20-bit tandem baseline + FRC → ~22-bit perceived. A 24-bit claim would require two independent FRC passes on separate signals, which is not how the unified tandem output is dithered.</div>
+  <div class="footnote">† <strong>MEMS black frames in BFI mode</strong> produce zero photon emission per black frame — no residual glow, no backlight ghosting. Contrast during black frames is physically absolute.</div>
+  <div class="footnote">† <strong>KUROCOAT™ absorption target of &gt;99.99%</strong> is a projection based on stacked geometric, photonic, and intrinsic absorption mechanisms. Photonic resonance contribution at 04A sub-wavelength pitch is a theoretical upper bound pending empirical validation. TiON intrinsic absorption (~99.5% per surface interaction) and multi-bounce geometry are individually experimentally established.</div>
+  <div class="footnote">† <strong>Intel 04A (GaNSi GAA)</strong> — 0.4nm-class, +62% perf/mm² vs 14A, 850 W/m·K lateral thermal spreading. <strong>Intel 06E (FinFlex GAA)</strong> — 0.6nm-class, efficiency-first, +54% PPW vs 14A, +22% IPC, &lt;0.3nA/µm gate leakage. Process characterizations per Eventide generation documentation.</div>
+  <div class="footnote">† <strong>Magenta QD:</strong> Novel quantum dot formulation. Not commercially available as of specification authoring. Assumed achievable within XCD-LED development timeline.</div>
+  <div class="footnote">† <strong>Color mixing LUT:</strong> Factory-calibrated per-panel. Equidistant primary splits are empirically determined per luminance target. Not fixed algorithmically at specification time.</div>
+  <div class="footnote">† <strong>Privacy mode brightness compensation</strong> draws on tandem headroom. At 38K peak, shuttering wide pixels and boosting narrow pixels remains within panel operating envelope.</div>
+  <div class="footnote">† <strong>Dolby Vision 2.0 / HDR10+ Ultimate</strong> referenced as current-generation targets. Final shipping spec may reflect DV 3.0 / HDR11+ pending standard ratification.</div>
+</div>
+
+
+<!-- ══ FOOTER ══ -->
+<footer class="footer">
+  <div class="footer-brand">SONY <span>XCD-LED</span></div>
+  <div class="footer-links">
+    <a href="#">Panel Overview</a>
+    <a href="#">Physical Architecture</a>
+    <a href="#">Color Architecture</a>
+    <a href="#">Temporal Modes</a>
+    <a href="#">KUROCOAT™</a>
+  </div>
+  <div class="footer-note">
+    Internal Technical Specification<br>
+    Pre-Production Reference<br>
+    Confidential & Proprietary
+  </div>
+</footer>
+<div class="footer-bar">
+  <div class="footer-bar-text">© 2026 SONY SEMICONDUCTOR SOLUTIONS CORP.</div>
+  <div class="footer-bar-text">DISPLAY DIVISION — TOKYO, JAPAN</div>
+</div>
+
+</body>
+</html>
