@@ -2085,7 +2085,7 @@ hr.rule{border:none;height:0.5px;background:linear-gradient(to right,transparent
       <div>
         <div class="h3">4K <span class="xcd">XCD</span>LED.<br><em>120 Hz. Per pixel.</em></div>
         <p class="body-lg" style="margin-top:20px">The rear monitor is a 3.0-type XCDLED panel running at native 4K (3,840 × 2,160) — 8,294,400 dots. Where a conventional rear LCD averages roughly 2 million dots at best, the α0's rear panel resolves every pixel of a 4K source without interpolation. The XCDLED architecture layers a UV-pumped MCY quantum-dot stack beneath a blue-pumped RGB stack, gated by a 4K-resolution MEMS light-valve layer. Each pixel operates at sub-0.4 ms switching, enabling the 120 Hz refresh that eliminates sample-and-hold blur during live view — even at 30fps RAW throughput.</p>
-        <p class="body-lg" style="margin-top:20px">Peak brightness reaches 21,000 cd/m² at the highlight level. SDR baseline — the mode you use for menu navigation in sunlight — runs at a stable 450 cd/m² regardless of privacy mode or ambient light. In direct afternoon sun, the rear panel reads as clearly as paper.</p>
+        <p class="body-lg" style="margin-top:20px">Peak brightness reaches 21,000 cd/m² at the highlight level. SDR baseline — the mode you use for menu navigation in sunlight — runs at a stable 450 cd/m² regardless of ambient light. In direct afternoon sun, the rear panel reads as clearly as paper.</p>
 
         <div style="margin-top:36px">
           <div class="diag-label">Rear LCD — XCDLED panel specifications</div>
@@ -2105,7 +2105,6 @@ hr.rule{border:none;height:0.5px;background:linear-gradient(to right,transparent
             <tr class="spec-row-h"><td>Dimming zones</td><td>128 × 64 per GaN stack (16,384 zones)</td></tr>
             <tr><td>Touch</td><td>10-point capacitive &nbsp;·&nbsp; glove &amp; rain mode</td></tr>
             <tr class="spec-row-h"><td>Tilt</td><td>4-axis — up 90° / down 45° / left 90° / right 20°</td></tr>
-            <tr><td>Privacy mode</td><td>Per-pixel narrow-lens gate &nbsp;·&nbsp; no SDR brightness loss</td></tr>
           </table>
         </div>
       </div>
@@ -2261,7 +2260,7 @@ hr.rule{border:none;height:0.5px;background:linear-gradient(to right,transparent
           <ellipse cx="278" cy="279" rx="5" ry="5" fill="none" stroke="rgba(184,148,42,0.35)" stroke-width="0.6"/>
           <ellipse cx="292" cy="279" rx="5" ry="5" fill="none" stroke="rgba(184,148,42,0.35)" stroke-width="0.6"/>
           <ellipse cx="306" cy="279" rx="5" ry="5" fill="none" stroke="rgba(184,148,42,0.35)" stroke-width="0.6"/>
-          <text x="190" y="291" text-anchor="middle" font-family="'DM Mono',monospace" font-size="6" fill="rgba(184,148,42,0.25)">WIDE (privacy) + NARROW (peak brightness) OUTPUT OPTICS</text>
+          <text x="190" y="291" text-anchor="middle" font-family="'DM Mono',monospace" font-size="6" fill="rgba(184,148,42,0.25)">MONOLITHIC NARROW LENS L7 OPTICS</text>
           <text x="348" y="272" font-family="'DM Mono',monospace" font-size="6.5" fill="rgba(184,148,42,0.4)">OPTIC</text>
 
           <!-- Output light rays upward -->
@@ -2281,21 +2280,16 @@ hr.rule{border:none;height:0.5px;background:linear-gradient(to right,transparent
     </div><!-- end rear LCD split -->
 
     <!-- mode cards -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-top:48px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:48px">
       <div class="feat-cell">
-        <div class="feat-tag">Efficiency mode</div>
+        <div class="feat-tag">6-Primary Efficiency</div>
         <div class="feat-big" style="font-size:32px">MCY<span class="feat-big-unit"> + </span>RGB</div>
-        <div class="feat-body">Each of the 6 spectral primaries is rendered by its closest native QD layer — M, C, Y from the UV-pumped stack; R, G, B from the blue-pumped stack. The unused layer powers down completely. Maximum efficiency, minimum heat, zero additive error.</div>
+        <div class="feat-body">Operating as a 6-primary RGBMCY system, each primary is rendered by its closest native QD layer — M, C, Y from the UV-pumped stack; R, G, B from the blue-pumped stack. The unused layer powers down completely. Maximum efficiency, minimum heat, zero additive error.</div>
       </div>
       <div class="feat-cell">
         <div class="feat-tag">Dual-stack peak mode</div>
         <div class="feat-big">38K<span class="feat-big-unit">cd/m²</span></div>
         <div class="feat-body">Both GaN stacks fire simultaneously. Each contributes ~12K cd/m² at the panel, combining through the MEMSLV gate for a theoretical ~38,000 cd/m² burst peak. Used for HDR highlight bursts in extreme direct sunlight or sun-facing outdoor shooting.</div>
-      </div>
-      <div class="feat-cell">
-        <div class="feat-tag">Per-pixel privacy</div>
-        <div class="feat-big" style="font-size:32px">∞<span class="feat-big-unit"> : 1</span></div>
-        <div class="feat-body">Wide-lens output pixels selectively deactivate for viewing-angle control without any SDR brightness penalty. Narrow-lens pixels maintain full luminance. No global dimming. No APL penalty. Per-pixel contrast remains true-infinite throughout.</div>
       </div>
     </div>
 
@@ -2308,7 +2302,7 @@ hr.rule{border:none;height:0.5px;background:linear-gradient(to right,transparent
       <div>
         <div class="h3">8K <span class="xcd">XCD</span>LED EVF.<br><em>240 Hz. Zero persistence.</em></div>
         <p class="body-lg" style="margin-top:20px">The electronic viewfinder deploys the same tandem GaN–QD–MEMSLV XCDLED architecture as the rear LCD — in a 0.64-type microdisplay format — at 8K resolution (7,680 × 4,320) and 240 Hz refresh. At 240 Hz with sub-0.4 ms MEMSLV gating, the EVF's moving-image persistence is lower than a CRT phosphor at the same brightness. There is no sample-and-hold blur. There is no motion judder. A subject moving at 80 km/h against a complex background resolves as a sharp edge in the EVF — not a smear — at any shutter speed.</p>
-        <p class="body-lg" style="margin-top:20px">The 8K panel renders 33,177,600 dots at ~1,400 ppi — a dot density that exceeds the resolving power of the human eye at normal eyepiece distances. What the photographer sees in the α0 EVF is not a screen approximation of the scene. It is the scene. The QuickSync Bionz XR maintains a dedicated rendering pipeline for the EVF display, separate from the imaging ISP, ensuring the viewfinder never stutters regardless of RAW throughput.</p>
+        <p class="body-lg" style="margin-top:20px">The 8K panel renders 33,177,600 dots at ~1,400 ppi — a dot density that exceeds the resolving power of the human eye at normal eyepiece distances. What the photographer sees in the α0 EVF is not a screen approximation of the scene. It is the scene. The on-panel Meridian controller IC processes the AV2-compressed display stream independently from the imaging ISP, ensuring the viewfinder never stutters regardless of RAW throughput.</p>
         <p class="body-lg" style="margin-top:20px">EVF peak brightness reaches 10,000 cd/m² — sufficient for clear viewing in direct sunlight. The tiltable housing allows ±90° vertical and ±45° horizontal articulation, enabling shooting from the hip, overhead, or at ground level without removing the eye from the finder.</p>
 
         <div style="margin-top:36px">
@@ -2327,7 +2321,7 @@ hr.rule{border:none;height:0.5px;background:linear-gradient(to right,transparent
             <tr class="spec-row-h"><td>Magnification</td><td>0.90× (35mm equiv.)</td></tr>
             <tr><td>Eye relief</td><td>23mm</td></tr>
             <tr class="spec-row-h"><td>Tilt</td><td>±90° vertical &nbsp;·&nbsp; ±45° horizontal</td></tr>
-            <tr><td>EVF rendering</td><td>Dedicated QuickSync Bionz XR pipeline — async from ISP</td></tr>
+            <tr><td>EVF rendering</td><td>Meridian Display Controller — async from ISP</td></tr>
             <tr class="spec-row-h"><td>Diopter</td><td>−4.0 to +3.0 m⁻¹ &nbsp;·&nbsp; motorised</td></tr>
           </table>
         </div>
@@ -2433,7 +2427,7 @@ hr.rule{border:none;height:0.5px;background:linear-gradient(to right,transparent
 
           <!-- Output optics -->
           <rect x="40" y="376" width="300" height="22" rx="2" fill="rgba(80,80,90,0.07)" stroke="rgba(120,120,130,0.18)" stroke-width="0.5"/>
-          <text x="190" y="390" text-anchor="middle" font-family="'DM Mono',monospace" font-size="6.5" fill="rgba(180,180,170,0.38)" letter-spacing="1">WIDE/NARROW OUTPUT OPTICS · PRIVACY GATE</text>
+          <text x="190" y="390" text-anchor="middle" font-family="'DM Mono',monospace" font-size="6.5" fill="rgba(180,180,170,0.38)" letter-spacing="1">SINGLE OUTPUT OPTICS L7 LENS ARRAY</text>
           <text x="348" y="390" font-family="'DM Mono',monospace" font-size="6.5" fill="rgba(180,180,170,0.3)">L7</text>
 
           <!-- Output arrow upward -->
