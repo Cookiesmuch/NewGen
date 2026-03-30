@@ -11,6 +11,7 @@ set "ROOT=%~dp0"
 set "SERVER_LOG=%ROOT%newgen-server.log"
 set "MAX_WAIT_SECONDS=20"
 set "SERVER_ALREADY_RUNNING="
+set "SERVER_MODE=Started by this launcher."
 
 echo.
 echo ╔══════════════════════════════════════════════════════════════════════╗
@@ -38,6 +39,7 @@ echo [05/08] Checking whether NewGen is already running...
 call :probe_server
 if "%ERRORLEVEL%"=="0" (
   set "SERVER_ALREADY_RUNNING=1"
+  set "SERVER_MODE=Attached to existing server."
   echo [INFO ] Existing NewGen instance detected on %URL%.
   echo [INFO ] Server startup will be skipped.
 ) else (
@@ -53,28 +55,17 @@ if not defined SERVER_ALREADY_RUNNING (
   echo.
 
   echo [07/08] Waiting for server readiness (up to %MAX_WAIT_SECONDS%s)...
-  set "READY="
-  for /L %%I in (1,1,%MAX_WAIT_SECONDS%) do (
-    call :probe_server
-    if "!ERRORLEVEL!"=="0" (
-      set "READY=1"
-      set "READY_AT=%%I"
-      goto :SERVER_READY
-    )
-    <nul set /p "=."
-    timeout /t 1 /nobreak >nul
-  )
-
-  :SERVER_READY
+  call :wait_for_ready
   echo.
-  if not defined READY (
+  if "%ERRORLEVEL%"=="0" (
+    echo [ OK  ] NewGen responded after %READY_AT% second(s).
+  ) else (
     echo [WARN ] NewGen did not respond within %MAX_WAIT_SECONDS% seconds.
     echo [HINT ] Check this terminal for server errors and retry.
     echo.
     pause
     exit /b 1
   )
-  echo [ OK  ] NewGen responded after !READY_AT! second(s).
 ) else (
   echo [06/08] Startup skipped (existing server in use).
   echo [07/08] Readiness check skipped (existing server already responded).
@@ -88,11 +79,7 @@ echo ╔════════════════════════
 call :boxline "SESSION STATUS: RUNNING"
 echo ╠══════════════════════════════════════════════════════════════════════╣
 call :boxline "Browser opened successfully."
-if defined SERVER_ALREADY_RUNNING (
-  call :boxline "Server mode: Attached to existing server."
-) else (
-  call :boxline "Server mode: Started by this launcher."
-)
+call :boxline "Server mode: %SERVER_MODE%"
 call :boxline "Health check status : READY"
 call :boxline "Runtime engine      : Node.js"
 call :boxline "Server log          : %SERVER_LOG%"
@@ -111,6 +98,20 @@ exit /b 0
 :probe_server
 powershell -NoProfile -Command "try { $response = Invoke-WebRequest -Uri '%URL%' -UseBasicParsing -TimeoutSec 2 -ErrorAction Stop; if ($response.StatusCode -ge 200 -and $response.StatusCode -lt 400) { exit 0 } else { exit 1 } } catch { exit 1 }" >nul 2>nul
 exit /b
+
+:wait_for_ready
+setlocal EnableExtensions EnableDelayedExpansion
+set "READY_AT="
+for /L %%I in (1,1,%MAX_WAIT_SECONDS%) do (
+  call :probe_server
+  if "!ERRORLEVEL!"=="0" (
+    endlocal & set "READY_AT=%%I" & exit /b 0
+  )
+  <nul set /p "=."
+  timeout /t 1 /nobreak >nul
+)
+endlocal
+exit /b 1
 
 :open_browser_session
 start "" "%URL%"
