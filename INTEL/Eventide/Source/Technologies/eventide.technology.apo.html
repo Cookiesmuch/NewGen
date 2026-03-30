@@ -1,0 +1,1355 @@
+<!-- APO (Application Performance Optimization): apo-dd- | APO Deep-Dive Section -->
+<style>
+    :root {
+        --apo-dd-primary: #FF8C42;
+        --apo-dd-primary-light: #FFB870;
+        --apo-dd-secondary: #E67A2E;
+        --apo-dd-accent: #FFA563;
+        --apo-dd-dark-base: #0A0400;
+        --apo-dd-dark-gradient: linear-gradient(135deg, #0A0400 0%, #140800 100%);
+        --apo-dd-grid-glow: rgba(255, 140, 66, 0.03);
+        --apo-dd-border-accent: rgba(255, 140, 66, 0.22);
+        --apo-dd-stat-number: #FFB870;
+        --apo-dd-text-primary: #E8E8E8;
+        --apo-dd-text-secondary: #A0A0A0;
+        --apo-dd-text-accent: #FF8C42;
+        --apo-dd-warning: #FF4757;
+        --apo-dd-success: #4AE380;
+    }
+
+    .apo-dd-wrap {
+        width: 100%;
+        background: var(--apo-dd-dark-gradient);
+        color: var(--apo-dd-text-primary);
+        font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .apo-dd-section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 64px 48px;
+        position: relative;
+    }
+
+    /* ===== HERO SECTION ===== */
+    .apo-dd-hero {
+        margin-bottom: 96px;
+    }
+
+    .apo-dd-eyebrow {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--apo-dd-primary);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .apo-dd-eyebrow::before {
+        content: '';
+        width: 24px;
+        height: 2px;
+        background: var(--apo-dd-primary);
+    }
+
+    .apo-dd-hero-headline {
+        font-family: 'Bebas Neue', display;
+        font-size: 72px;
+        font-weight: 400;
+        letter-spacing: -1px;
+        line-height: 1;
+        margin-bottom: 24px;
+        background: linear-gradient(180deg, var(--apo-dd-primary-light) 0%, var(--apo-dd-primary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .apo-dd-hero-subhead {
+        font-size: 18px;
+        line-height: 1.6;
+        color: var(--apo-dd-text-secondary);
+        margin-bottom: 32px;
+        max-width: 740px;
+    }
+
+    .apo-dd-badge-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .apo-dd-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 14px;
+        border: 1px solid var(--apo-dd-border-accent);
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--apo-dd-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        background: rgba(255, 140, 66, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .apo-dd-badge:hover {
+        background: rgba(255, 140, 66, 0.12);
+        border-color: var(--apo-dd-primary);
+    }
+
+    /* ===== STAT BLOCK ===== */
+    .apo-dd-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 24px;
+        margin-bottom: 96px;
+        padding: 48px;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--apo-dd-border-accent);
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .apo-dd-stats::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+            linear-gradient(90deg, var(--apo-dd-grid-glow) 1px, transparent 1px),
+            linear-gradient(0deg, var(--apo-dd-grid-glow) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+    }
+
+    .apo-dd-stat-cell {
+        position: relative;
+        z-index: 1;
+        padding: 24px;
+        text-align: center;
+    }
+
+    .apo-dd-stat-number {
+        font-family: 'Bebas Neue', display;
+        font-size: 48px;
+        font-weight: 400;
+        letter-spacing: -1px;
+        color: var(--apo-dd-stat-number);
+        margin-bottom: 8px;
+        line-height: 1;
+    }
+
+    .apo-dd-stat-label {
+        font-size: 14px;
+        color: var(--apo-dd-text-secondary);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* ===== SECTION TITLE ===== */
+    .apo-dd-section-title {
+        font-family: 'Bebas Neue', display;
+        font-size: 48px;
+        font-weight: 400;
+        letter-spacing: -0.5px;
+        margin-bottom: 24px;
+        color: var(--apo-dd-text-primary);
+    }
+
+    .apo-dd-section-intro {
+        font-size: 16px;
+        line-height: 1.8;
+        color: var(--apo-dd-text-secondary);
+        margin-bottom: 48px;
+        max-width: 800px;
+    }
+
+    /* ===== CORE FEATURES SECTION ===== */
+    .apo-dd-features {
+        margin-bottom: 96px;
+    }
+
+    .apo-dd-feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        margin-bottom: 48px;
+    }
+
+    .apo-dd-feature-card {
+        padding: 32px;
+        border: 1px solid var(--apo-dd-border-accent);
+        border-radius: 12px;
+        background: rgba(10, 4, 0, 0.5);
+        backdrop-filter: blur(8px);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .apo-dd-feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, var(--apo-dd-primary), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .apo-dd-feature-card:hover {
+        border-color: var(--apo-dd-primary);
+        background: rgba(10, 4, 0, 0.8);
+        transform: translateY(-4px);
+    }
+
+    .apo-dd-feature-card:hover::before {
+        opacity: 1;
+    }
+
+    .apo-dd-feature-type {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 12px;
+        color: var(--apo-dd-primary);
+        margin-bottom: 12px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+    }
+
+    .apo-dd-feature-name {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: var(--apo-dd-text-primary);
+    }
+
+    .apo-dd-feature-desc {
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--apo-dd-text-secondary);
+        margin-bottom: 16px;
+    }
+
+    .apo-dd-feature-spec {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 12px;
+        color: var(--apo-dd-accent);
+        padding-top: 16px;
+        border-top: 1px solid rgba(255, 140, 66, 0.1);
+    }
+
+    /* ===== ARCHITECTURE DIAGRAM ===== */
+    .apo-dd-architecture {
+        margin-bottom: 96px;
+        padding: 48px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--apo-dd-border-accent);
+        border-radius: 12px;
+    }
+
+    .apo-dd-arch-diagram {
+        display: grid;
+        grid-template-columns: 1fr 80px 1fr;
+        gap: 32px;
+        align-items: center;
+        margin-top: 32px;
+    }
+
+    .apo-dd-arch-left,
+    .apo-dd-arch-right {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .apo-dd-arch-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .apo-dd-arch-box {
+        padding: 20px;
+        background: rgba(255, 140, 66, 0.08);
+        border: 1px solid var(--apo-dd-border-accent);
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        text-align: center;
+        color: var(--apo-dd-text-primary);
+    }
+
+    .apo-dd-arch-core {
+        background: rgba(255, 140, 66, 0.25);
+        border-color: var(--apo-dd-primary);
+        font-weight: 600;
+        padding: 32px 20px;
+        font-size: 16px;
+        color: var(--apo-dd-primary-light);
+    }
+
+    .apo-dd-arch-arrow {
+        font-size: 28px;
+        color: var(--apo-dd-primary);
+        margin: 8px 0;
+    }
+
+    /* ===== PROCESS STEPS ===== */
+    .apo-dd-process {
+        margin-bottom: 96px;
+    }
+
+    .apo-dd-process-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .apo-dd-step {
+        padding: 32px;
+        background: rgba(255, 140, 66, 0.05);
+        border: 1px solid var(--apo-dd-border-accent);
+        position: relative;
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+    }
+
+    .apo-dd-step:first-child {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    .apo-dd-step:last-child {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        background: rgba(255, 140, 66, 0.12);
+    }
+
+    .apo-dd-step:not(:last-child) {
+        border-bottom: none;
+    }
+
+    .apo-dd-step::after {
+        content: '';
+        position: absolute;
+        right: 32px;
+        top: 100%;
+        width: 2px;
+        height: 16px;
+        background: var(--apo-dd-primary);
+    }
+
+    .apo-dd-step:last-child::after {
+        display: none;
+    }
+
+    .apo-dd-step-number {
+        font-family: 'Bebas Neue', display;
+        font-size: 32px;
+        color: var(--apo-dd-primary);
+        margin-right: 24px;
+        font-weight: 400;
+        min-width: 40px;
+    }
+
+    .apo-dd-step-content {
+        flex: 1;
+    }
+
+    .apo-dd-step-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--apo-dd-text-primary);
+    }
+
+    .apo-dd-step-desc {
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--apo-dd-text-secondary);
+    }
+
+    /* ===== TWO-COLUMN SECTION ===== */
+    .apo-dd-two-column {
+        margin-bottom: 96px;
+    }
+
+    .apo-dd-column-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 48px;
+        align-items: start;
+    }
+
+    .apo-dd-column-prose {
+        font-size: 16px;
+        line-height: 1.8;
+        color: var(--apo-dd-text-secondary);
+    }
+
+    .apo-dd-column-prose h3 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--apo-dd-text-primary);
+        margin-bottom: 24px;
+    }
+
+    .apo-dd-column-prose p {
+        margin-bottom: 16px;
+    }
+
+    .apo-dd-column-prose strong {
+        color: var(--apo-dd-primary);
+        font-weight: 600;
+    }
+
+    .apo-dd-benefit-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .apo-dd-benefit-list li {
+        padding: 12px 0 12px 32px;
+        position: relative;
+        border-bottom: 1px solid rgba(255, 140, 66, 0.1);
+    }
+
+    .apo-dd-benefit-list li:last-child {
+        border-bottom: none;
+    }
+
+    .apo-dd-benefit-list li::before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: var(--apo-dd-primary);
+        font-weight: 600;
+    }
+
+    /* ===== COMPARISON TABLE ===== */
+    .apo-dd-comparison {
+        margin-bottom: 96px;
+    }
+
+    .apo-dd-comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--apo-dd-border-accent);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .apo-dd-comparison-table th,
+    .apo-dd-comparison-table td {
+        padding: 24px 32px;
+        text-align: left;
+        border-bottom: 1px solid var(--apo-dd-border-accent);
+    }
+
+    .apo-dd-comparison-table th:last-child,
+    .apo-dd-comparison-table td:last-child {
+        text-align: center;
+    }
+
+    .apo-dd-comparison-table th {
+        background: rgba(255, 140, 66, 0.1);
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--apo-dd-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .apo-dd-comparison-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .apo-dd-comparison-table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+
+    .apo-dd-comparison-table tbody tr:hover {
+        background: rgba(255, 140, 66, 0.05);
+    }
+
+    .apo-dd-comparison-label {
+        font-weight: 500;
+        color: var(--apo-dd-text-primary);
+    }
+
+    .apo-dd-comparison-value {
+        font-family: 'IBM Plex Mono', monospace;
+        color: var(--apo-dd-text-secondary);
+        font-size: 14px;
+    }
+
+    .apo-dd-highlight-row {
+        background: rgba(255, 140, 66, 0.15);
+    }
+
+    .apo-dd-highlight-row td {
+        font-weight: 600;
+    }
+
+    .apo-dd-check-yes {
+        color: var(--apo-dd-success);
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .apo-dd-check-no {
+        color: var(--apo-dd-warning);
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    /* ===== PERFORMANCE GRAPHS ===== */
+    .apo-dd-performance {
+        margin-bottom: 96px;
+    }
+
+    .apo-dd-graphs-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px;
+        margin-bottom: 48px;
+    }
+
+    .apo-dd-graph-container {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--apo-dd-border-accent);
+        border-radius: 12px;
+        padding: 20px;
+    }
+
+    .apo-dd-graph-label {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 9px;
+        letter-spacing: 0.18em;
+        color: var(--apo-dd-primary);
+        text-align: center;
+        margin-bottom: 16px;
+        font-weight: 600;
+    }
+
+    .apo-dd-metrics-summary {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+    }
+
+    .apo-dd-metric-card {
+        padding: 32px 24px;
+        background: rgba(255, 140, 66, 0.05);
+        border: 1px solid var(--apo-dd-border-accent);
+        border-radius: 12px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .apo-dd-metric-card:hover {
+        background: rgba(255, 140, 66, 0.1);
+        border-color: var(--apo-dd-primary);
+        transform: translateY(-2px);
+    }
+
+    .apo-dd-metric-value {
+        font-family: 'Bebas Neue', display;
+        font-size: 42px;
+        font-weight: 400;
+        letter-spacing: -1px;
+        color: var(--apo-dd-primary-light);
+        margin-bottom: 8px;
+        line-height: 1;
+    }
+
+    .apo-dd-metric-label {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--apo-dd-text-primary);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .apo-dd-metric-desc {
+        font-size: 12px;
+        color: var(--apo-dd-text-secondary);
+        line-height: 1.6;
+    }
+
+    /* ===== USE CASES ===== */
+    .apo-dd-usecases {
+        margin-bottom: 96px;
+    }
+
+    .apo-dd-usecase-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 32px;
+    }
+
+    .apo-dd-usecase-card {
+        padding: 32px;
+        border: 1px solid var(--apo-dd-border-accent);
+        border-radius: 12px;
+        background: rgba(10, 4, 0, 0.5);
+        backdrop-filter: blur(8px);
+        transition: all 0.3s ease;
+    }
+
+    .apo-dd-usecase-card:hover {
+        border-color: var(--apo-dd-primary);
+        background: rgba(10, 4, 0, 0.8);
+    }
+
+    .apo-dd-usecase-icon {
+        font-size: 36px;
+        margin-bottom: 16px;
+    }
+
+    .apo-dd-usecase-name {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: var(--apo-dd-text-primary);
+    }
+
+    .apo-dd-usecase-desc {
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--apo-dd-text-secondary);
+    }
+
+    /* ===== TECHNICAL SPECS ===== */
+    .apo-dd-specs {
+        margin-bottom: 96px;
+        padding: 48px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--apo-dd-border-accent);
+        border-radius: 12px;
+    }
+
+    .apo-dd-spec-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        margin-top: 32px;
+    }
+
+    .apo-dd-spec-item {
+        padding: 24px;
+        background: rgba(255, 140, 66, 0.05);
+        border: 1px solid var(--apo-dd-border-accent);
+        border-radius: 8px;
+    }
+
+    .apo-dd-spec-label {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 12px;
+        color: var(--apo-dd-primary);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    .apo-dd-spec-value {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 18px;
+        color: var(--apo-dd-text-primary);
+        font-weight: 600;
+    }
+
+    /* ===== SECTION DIVIDER ===== */
+    .apo-dd-divider {
+        margin: 64px 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--apo-dd-border-accent) 20%, var(--apo-dd-border-accent) 80%, transparent);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 968px) {
+        .apo-dd-arch-diagram {
+            grid-template-columns: 1fr;
+        }
+
+        .apo-dd-arch-center {
+            order: 2;
+        }
+
+        .apo-dd-arch-arrow {
+            transform: rotate(90deg);
+        }
+
+        .apo-dd-column-grid {
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+
+        .apo-dd-graphs-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .apo-dd-metrics-summary {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .apo-dd-section {
+            padding: 48px 32px;
+        }
+
+        .apo-dd-hero-headline {
+            font-size: 48px;
+        }
+
+        .apo-dd-hero-subhead {
+            font-size: 16px;
+        }
+
+        .apo-dd-stats {
+            grid-template-columns: repeat(2, 1fr);
+            padding: 32px;
+        }
+
+        .apo-dd-section-title {
+            font-size: 36px;
+        }
+
+        .apo-dd-comparison-table th,
+        .apo-dd-comparison-table td {
+            padding: 16px;
+            font-size: 13px;
+        }
+
+        .apo-dd-graphs-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .apo-dd-metrics-summary {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .apo-dd-section {
+            padding: 32px 16px;
+        }
+
+        .apo-dd-hero-headline {
+            font-size: 36px;
+        }
+
+        .apo-dd-stats {
+            grid-template-columns: 1fr;
+            padding: 24px;
+        }
+
+        .apo-dd-badge-group {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .apo-dd-badge {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="apo-dd-wrap">
+    <div class="apo-dd-section">
+        <!-- HERO SECTION -->
+        <div class="apo-dd-hero">
+            <div class="apo-dd-eyebrow">Application Performance Optimization · Intelligent Game Scheduler</div>
+            <h1 class="apo-dd-hero-headline">Every Frame.<br>Every Advantage.</h1>
+            <p class="apo-dd-hero-subhead">
+                Eventide APO is not just a game profile library—it is an <strong>adaptive performance intelligence system</strong>
+                that integrates directly with Hardware Thread Director, LPNPU co-pilot, and the 5-class heterogeneous architecture.
+                Unlike traditional APO that relies on static game profiles, Eventide APO employs real-time workload classification,
+                predictive thread affinity, and dynamic core allocation to ensure critical game threads always execute on optimal cores.
+                With V8 HyperBOOST coordination and GPU escalation awareness, APO delivers unprecedented frame rate consistency
+                and input latency reduction across any gaming workload.
+            </p>
+            <div class="apo-dd-badge-group">
+                <div class="apo-dd-badge">Thread Director Native</div>
+                <div class="apo-dd-badge">Real-Time Classification</div>
+                <div class="apo-dd-badge">LPNPU Co-Pilot</div>
+                <div class="apo-dd-badge">V8 HyperBOOST Aware</div>
+                <div class="apo-dd-badge">Zero Profile Dependency</div>
+            </div>
+        </div>
+
+        <!-- STAT BLOCK -->
+        <div class="apo-dd-stats">
+            <div class="apo-dd-stat-cell">
+                <div class="apo-dd-stat-number">32%</div>
+                <div class="apo-dd-stat-label">Avg FPS Improvement</div>
+            </div>
+            <div class="apo-dd-stat-cell">
+                <div class="apo-dd-stat-number">48%</div>
+                <div class="apo-dd-stat-label">1% Low Uplift</div>
+            </div>
+            <div class="apo-dd-stat-cell">
+                <div class="apo-dd-stat-number">-28%</div>
+                <div class="apo-dd-stat-label">Input Latency Reduction</div>
+            </div>
+            <div class="apo-dd-stat-cell">
+                <div class="apo-dd-stat-number">∞</div>
+                <div class="apo-dd-stat-label">Games Supported</div>
+            </div>
+        </div>
+
+        <!-- CORE FEATURES SECTION -->
+        <div class="apo-dd-features">
+            <h2 class="apo-dd-section-title">Adaptive Thread Intelligence.</h2>
+            <p class="apo-dd-section-intro">
+                Eventide APO transcends static game profiles by implementing real-time thread classification and dynamic
+                affinity management. The system continuously analyzes instruction patterns, memory access behavior, and
+                execution cadence to identify render threads, physics threads, audio threads, and background tasks—then
+                routes each to the most appropriate core class without developer intervention or pre-defined profiles.
+            </p>
+            <div class="apo-dd-feature-grid">
+                <div class="apo-dd-feature-card">
+                    <div class="apo-dd-feature-type">Core Technology</div>
+                    <div class="apo-dd-feature-name">Real-Time Thread Classification</div>
+                    <p class="apo-dd-feature-desc">
+                        LPNPU-assisted analysis identifies critical game threads within milliseconds of launch. Render thread
+                        detection uses instruction mix profiling; physics threads identified by floating-point density;
+                        I/O threads by memory access patterns. No static profiles required.
+                    </p>
+                    <div class="apo-dd-feature-spec">Classification latency: &lt;2ms · Accuracy: 98%+</div>
+                </div>
+                <div class="apo-dd-feature-card">
+                    <div class="apo-dd-feature-type">Performance Routing</div>
+                    <div class="apo-dd-feature-name">Critical Thread Pinning</div>
+                    <p class="apo-dd-feature-desc">
+                        Render and physics threads automatically pinned to UHP (Solar Eclipse) cores during gameplay.
+                        Thread Director reserves core capacity in advance, preventing OS scheduler from displacing
+                        critical threads with background processes.
+                    </p>
+                    <div class="apo-dd-feature-spec">Target: UHP P-cores · Pinning latency: &lt;50ns</div>
+                </div>
+                <div class="apo-dd-feature-card">
+                    <div class="apo-dd-feature-type">Background Isolation</div>
+                    <div class="apo-dd-feature-name">Non-Critical Thread Offload</div>
+                    <p class="apo-dd-feature-desc">
+                        Audio threads, streaming I/O, telemetry, and background tasks automatically routed to UHE/LPE
+                        cores. Keeps performance cores free for latency-sensitive work while maintaining smooth operation
+                        of secondary systems.
+                    </p>
+                    <div class="apo-dd-feature-spec">Target: UHE/LPE E-cores · Thermal savings: 12-18W</div>
+                </div>
+                <div class="apo-dd-feature-card">
+                    <div class="apo-dd-feature-type">Boost Coordination</div>
+                    <div class="apo-dd-feature-name">V8 HyperBOOST Sequencing</div>
+                    <p class="apo-dd-feature-desc">
+                        APO coordinates with V8 HyperBOOST to align 10 GHz burst windows with frame render deadlines.
+                        LPNPU predicts frame start based on vsync cadence, triggering boost sequence 2-3ms in advance
+                        for zero latency penalty.
+                    </p>
+                    <div class="apo-dd-feature-spec">Burst alignment: vsync-synchronized · Prediction: LPNPU</div>
+                </div>
+                <div class="apo-dd-feature-card">
+                    <div class="apo-dd-feature-type">GPU Escalation</div>
+                    <div class="apo-dd-feature-name">Compute Offload Detection</div>
+                    <p class="apo-dd-feature-desc">
+                        Identifies compute-bound game threads (lighting, particle systems, post-processing) and escalates
+                        to Arc E1080 GPU compute units via DirectX/Vulkan async compute queues. Reduces CPU overhead
+                        while maintaining frame rate.
+                    </p>
+                    <div class="apo-dd-feature-spec">Escalation target: GPU compute · Latency: ~100μs</div>
+                </div>
+                <div class="apo-dd-feature-card">
+                    <div class="apo-dd-feature-type">Thermal Management</div>
+                    <div class="apo-dd-feature-name">Proactive Throttle Avoidance</div>
+                    <p class="apo-dd-feature-desc">
+                        Monitors per-core thermal headroom during gameplay. If UHP cores approach thermal limits, APO
+                        temporarily redistributes secondary threads to DP/SPE cores to preserve thermal budget for
+                        render thread. Prevents frame drops from thermal throttling.
+                    </p>
+                    <div class="apo-dd-feature-spec">Thermal threshold: 85°C · Redistribution: &lt;200ns</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ARCHITECTURE DIAGRAM -->
+        <div class="apo-dd-architecture">
+            <h3 class="apo-dd-section-title" style="font-size: 36px;">APO System Architecture</h3>
+            <p class="apo-dd-section-intro">
+                APO operates as a middleware layer between game executables and the Hardware Thread Director,
+                intercepting thread creation and providing classification hints before threads become runnable.
+                LPNPU co-pilot feeds predictive scheduling signals to optimize core selection.
+            </p>
+            <div class="apo-dd-arch-diagram">
+                <div class="apo-dd-arch-left">
+                    <div class="apo-dd-arch-box">Game Executable</div>
+                    <div class="apo-dd-arch-box">Thread Creation</div>
+                    <div class="apo-dd-arch-box">Instruction Profiling</div>
+                    <div class="apo-dd-arch-box">LPNPU Analysis</div>
+                </div>
+                <div class="apo-dd-arch-center">
+                    <div class="apo-dd-arch-arrow">→</div>
+                    <div class="apo-dd-arch-core">Eventide<br>APO<br>Engine</div>
+                    <div class="apo-dd-arch-arrow">→</div>
+                </div>
+                <div class="apo-dd-arch-right">
+                    <div class="apo-dd-arch-box">Thread Director</div>
+                    <div class="apo-dd-arch-box">Core Affinity Hints</div>
+                    <div class="apo-dd-arch-box">V8 HyperBOOST</div>
+                    <div class="apo-dd-arch-box">GPU Escalation</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OPTIMIZATION PROCESS -->
+        <div class="apo-dd-process">
+            <h2 class="apo-dd-section-title">Optimization Pipeline</h2>
+            <p class="apo-dd-section-intro">
+                APO's optimization pipeline executes continuously during gameplay, adapting to changing workload
+                characteristics and system state in real-time. Each step operates in hardware or firmware with
+                minimal CPU overhead.
+            </p>
+            <div class="apo-dd-process-steps">
+                <div class="apo-dd-step">
+                    <div class="apo-dd-step-number">01</div>
+                    <div class="apo-dd-step-content">
+                        <div class="apo-dd-step-title">Game Launch Detection</div>
+                        <p class="apo-dd-step-desc">
+                            APO driver detects game executable launch via process creation event. Immediately activates
+                            enhanced telemetry mode in Thread Director and wakes LPNPU co-pilot for instruction profiling.
+                        </p>
+                    </div>
+                </div>
+                <div class="apo-dd-step">
+                    <div class="apo-dd-step-number">02</div>
+                    <div class="apo-dd-step-content">
+                        <div class="apo-dd-step-title">Thread Classification</div>
+                        <p class="apo-dd-step-desc">
+                            As game threads spawn, LPNPU analyzes first 10K instructions to classify thread type.
+                            Render threads show high IPC + low branch mispredict; physics threads show dense FP ops;
+                            I/O threads show memory-bound patterns.
+                        </p>
+                    </div>
+                </div>
+                <div class="apo-dd-step">
+                    <div class="apo-dd-step-number">03</div>
+                    <div class="apo-dd-step-content">
+                        <div class="apo-dd-step-title">Affinity Assignment</div>
+                        <p class="apo-dd-step-desc">
+                            APO sends classification results to Thread Director as affinity hints. Critical threads
+                            (render, physics) receive UHP affinity; secondary threads (audio, streaming) receive UHE/LPE
+                            affinity. OS scheduler honors hints via CPPC interface.
+                        </p>
+                    </div>
+                </div>
+                <div class="apo-dd-step">
+                    <div class="apo-dd-step-number">04</div>
+                    <div class="apo-dd-step-content">
+                        <div class="apo-dd-step-title">V8 HyperBOOST Coordination</div>
+                        <p class="apo-dd-step-desc">
+                            APO monitors vsync timing from GPU to predict frame render windows. Signals Thread Director
+                            to trigger V8 HyperBOOST sequence 2-3ms before frame start, ensuring 10 GHz boost window
+                            aligns with render thread execution.
+                        </p>
+                    </div>
+                </div>
+                <div class="apo-dd-step">
+                    <div class="apo-dd-step-number">05</div>
+                    <div class="apo-dd-step-content">
+                        <div class="apo-dd-step-title">Continuous Adaptation</div>
+                        <p class="apo-dd-step-desc">
+                            LPNPU continuously monitors thread behavior throughout gameplay. If workload characteristics
+                            change (e.g., menu → gameplay transition, cutscene → combat), APO reclassifies threads and
+                            updates affinity hints dynamically without frame drops.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EVENTIDE-SPECIFIC ADVANTAGES -->
+        <div class="apo-dd-two-column">
+            <h2 class="apo-dd-section-title">Beyond Traditional APO</h2>
+            <div class="apo-dd-column-grid">
+                <div class="apo-dd-column-prose">
+                    <h3>Universal Game Support</h3>
+                    <p>
+                        Traditional Intel APO requires per-game profiles—static affinity maps created by Intel engineers
+                        for specific titles. Eventide APO <strong>eliminates profile dependency entirely</strong> through
+                        real-time thread classification. Any DirectX 11/12/Vulkan game receives optimization automatically,
+                        from AAA releases to indie titles to legacy games.
+                    </p>
+                    <p>
+                        The LPNPU co-pilot learns each game's threading patterns within the first 30 seconds of gameplay,
+                        building a <strong>dynamic classification model</strong> stored in on-chip SRAM. This model persists
+                        across game sessions, providing instant optimization on subsequent launches while adapting to game
+                        updates and DLC content changes.
+                    </p>
+                    <p>
+                        By removing the profile bottleneck, Eventide APO delivers <strong>Day-0 support</strong> for every
+                        game release—no driver updates required, no waiting for Intel validation. The system simply works.
+                    </p>
+                </div>
+                <div>
+                    <div class="apo-dd-specs" style="margin: 0;">
+                        <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600; color: var(--apo-dd-text-primary); margin-bottom: 24px;">Eventide Advantages</h3>
+                        <ul class="apo-dd-benefit-list">
+                            <li>
+                                <strong>No Profile Dependency</strong><br>
+                                <span style="font-size: 13px; color: var(--apo-dd-text-secondary);">
+                                    Works with any game via real-time classification
+                                </span>
+                            </li>
+                            <li>
+                                <strong>5-Class Core Architecture</strong><br>
+                                <span style="font-size: 13px; color: var(--apo-dd-text-secondary);">
+                                    More granular thread placement vs 2-class P/E designs
+                                </span>
+                            </li>
+                            <li>
+                                <strong>V8 HyperBOOST Integration</strong><br>
+                                <span style="font-size: 13px; color: var(--apo-dd-text-secondary);">
+                                    10 GHz bursts aligned with frame render windows
+                                </span>
+                            </li>
+                            <li>
+                                <strong>GPU Compute Escalation</strong><br>
+                                <span style="font-size: 13px; color: var(--apo-dd-text-secondary);">
+                                    Automatic offload to Arc E1080 for compute workloads
+                                </span>
+                            </li>
+                            <li>
+                                <strong>LPNPU Predictive Learning</strong><br>
+                                <span style="font-size: 13px; color: var(--apo-dd-text-secondary);">
+                                    Adapts to user behavior and game updates automatically
+                                </span>
+                            </li>
+                            <li>
+                                <strong>Thermal-Aware Scheduling</strong><br>
+                                <span style="font-size: 13px; color: var(--apo-dd-text-secondary);">
+                                    Prevents throttling via proactive thread redistribution
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPARISON TABLE -->
+        <div class="apo-dd-comparison">
+            <h2 class="apo-dd-section-title">Eventide APO vs Traditional APO</h2>
+            <table class="apo-dd-comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Eventide APO</th>
+                        <th>Traditional Intel APO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="apo-dd-highlight-row">
+                        <td class="apo-dd-comparison-label">Game Support</td>
+                        <td class="apo-dd-comparison-value">Universal (Any Game)</td>
+                        <td class="apo-dd-comparison-value">Profile-Based (~20 games)</td>
+                    </tr>
+                    <tr>
+                        <td class="apo-dd-comparison-label">Thread Classification</td>
+                        <td class="apo-dd-check-yes">✓ Real-Time</td>
+                        <td class="apo-dd-check-no">✗ Static Profiles</td>
+                    </tr>
+                    <tr>
+                        <td class="apo-dd-comparison-label">LPNPU Co-Pilot</td>
+                        <td class="apo-dd-check-yes">✓</td>
+                        <td class="apo-dd-check-no">✗</td>
+                    </tr>
+                    <tr>
+                        <td class="apo-dd-comparison-label">Core Classes</td>
+                        <td class="apo-dd-comparison-value">5 Classes (UHP/DP/SPE/UHE/LPE)</td>
+                        <td class="apo-dd-comparison-value">2 Classes (P/E)</td>
+                    </tr>
+                    <tr>
+                        <td class="apo-dd-comparison-label">V8 HyperBOOST Integration</td>
+                        <td class="apo-dd-check-yes">✓</td>
+                        <td class="apo-dd-check-no">✗</td>
+                    </tr>
+                    <tr>
+                        <td class="apo-dd-comparison-label">GPU Compute Escalation</td>
+                        <td class="apo-dd-check-yes">✓</td>
+                        <td class="apo-dd-check-no">✗</td>
+                    </tr>
+                    <tr>
+                        <td class="apo-dd-comparison-label">Thermal-Aware Scheduling</td>
+                        <td class="apo-dd-check-yes">✓ Proactive</td>
+                        <td class="apo-dd-check-no">✗ Reactive</td>
+                    </tr>
+                    <tr>
+                        <td class="apo-dd-comparison-label">Adaptive Learning</td>
+                        <td class="apo-dd-check-yes">✓ Per-Game</td>
+                        <td class="apo-dd-check-no">✗</td>
+                    </tr>
+                    <tr>
+                        <td class="apo-dd-comparison-label">Day-0 Game Support</td>
+                        <td class="apo-dd-check-yes">✓</td>
+                        <td class="apo-dd-check-no">✗ Requires Driver</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PERFORMANCE GRAPHS -->
+        <div class="apo-dd-performance">
+            <h2 class="apo-dd-section-title">Real-World Performance Impact</h2>
+            <p class="apo-dd-section-intro">
+                Eventide APO delivers measurable improvements in both average frame rate and frame time consistency.
+                These graphs demonstrate performance across diverse game engines and rendering techniques, with no
+                per-game tuning required.
+            </p>
+
+            <div class="apo-dd-graphs-grid">
+                <!-- GRAPH 1: Average FPS Improvement -->
+                <div class="apo-dd-graph-container">
+                    <div class="apo-dd-graph-label">AVERAGE FPS IMPROVEMENT · APO ON vs APO OFF</div>
+                    <svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+                        <!-- Axes -->
+                        <line x1="50" y1="20" x2="50" y2="210" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+                        <line x1="50" y1="210" x2="380" y2="210" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+
+                        <!-- Y-axis labels -->
+                        <text x="45" y="210" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">0%</text>
+                        <text x="45" y="163" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">+15%</text>
+                        <text x="45" y="116" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">+30%</text>
+                        <text x="45" y="69" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">+45%</text>
+                        <text x="45" y="24" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,140,66,0.6)">+60%</text>
+
+                        <!-- Y gridlines -->
+                        <line x1="50" y1="163" x2="380" y2="163" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                        <line x1="50" y1="116" x2="380" y2="116" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                        <line x1="50" y1="69" x2="380" y2="69" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+
+                        <!-- Baseline -->
+                        <line x1="50" y1="210" x2="380" y2="210" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+                        <!-- X-axis labels -->
+                        <text x="90" y="228" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.6)">Cyberpunk</text>
+                        <text x="160" y="228" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.6)">Starfield</text>
+                        <text x="230" y="228" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.6)">CS2</text>
+                        <text x="300" y="228" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.6)">Fortnite</text>
+
+                        <!-- Y-axis title -->
+                        <text x="15" y="120" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.18)" transform="rotate(-90,15,120)">FPS UPLIFT (%)</text>
+
+                        <!-- Bars -->
+                        <!-- Cyberpunk: +28% -->
+                        <rect x="70" y="122" width="40" height="88" fill="rgba(255,140,66,0.25)" stroke="rgba(255,140,66,0.7)" stroke-width="1.5"/>
+                        <text x="90" y="110" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#FF8C42" font-weight="600">+28%</text>
+
+                        <!-- Starfield: +35% -->
+                        <rect x="140" y="100" width="40" height="110" fill="rgba(255,140,66,0.25)" stroke="rgba(255,140,66,0.7)" stroke-width="1.5"/>
+                        <text x="160" y="88" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#FF8C42" font-weight="600">+35%</text>
+
+                        <!-- CS2: +42% -->
+                        <rect x="210" y="78" width="40" height="132" fill="rgba(255,140,66,0.25)" stroke="rgba(255,140,66,0.7)" stroke-width="1.5"/>
+                        <text x="230" y="66" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#FF8C42" font-weight="600">+42%</text>
+
+                        <!-- Fortnite: +31% -->
+                        <rect x="280" y="112" width="40" height="98" fill="rgba(255,140,66,0.25)" stroke="rgba(255,140,66,0.7)" stroke-width="1.5"/>
+                        <text x="300" y="100" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#FF8C42" font-weight="600">+31%</text>
+
+                        <!-- Average line -->
+                        <line x1="50" y1="125" x2="380" y2="125" stroke="rgba(255,140,66,0.5)" stroke-width="2" stroke-dasharray="6,4"/>
+                        <text x="375" y="120" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,140,66,0.8)">Avg: +32%</text>
+                    </svg>
+                </div>
+
+                <!-- GRAPH 2: 1% Low Improvement (Frame Time Consistency) -->
+                <div class="apo-dd-graph-container">
+                    <div class="apo-dd-graph-label">1% LOW FPS IMPROVEMENT · FRAME TIME CONSISTENCY</div>
+                    <svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+                        <!-- Axes -->
+                        <line x1="50" y1="20" x2="50" y2="210" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+                        <line x1="50" y1="210" x2="380" y2="210" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+
+                        <!-- Y-axis labels -->
+                        <text x="45" y="210" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">0%</text>
+                        <text x="45" y="163" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">+20%</text>
+                        <text x="45" y="116" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">+40%</text>
+                        <text x="45" y="69" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.25)">+60%</text>
+                        <text x="45" y="24" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,140,66,0.6)">+80%</text>
+
+                        <!-- Y gridlines -->
+                        <line x1="50" y1="163" x2="380" y2="163" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                        <line x1="50" y1="116" x2="380" y2="116" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                        <line x1="50" y1="69" x2="380" y2="69" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+
+                        <!-- Baseline -->
+                        <line x1="50" y1="210" x2="380" y2="210" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+                        <!-- X-axis labels -->
+                        <text x="90" y="228" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.6)">Cyberpunk</text>
+                        <text x="160" y="228" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.6)">Starfield</text>
+                        <text x="230" y="228" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.6)">CS2</text>
+                        <text x="300" y="228" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.6)">Fortnite</text>
+
+                        <!-- Y-axis title -->
+                        <text x="15" y="120" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,255,255,0.18)" transform="rotate(-90,15,120)">1% LOW UPLIFT (%)</text>
+
+                        <!-- Bars (1% lows show larger improvements due to reducing stutters) -->
+                        <!-- Cyberpunk: +45% -->
+                        <rect x="70" y="94" width="40" height="116" fill="rgba(255,140,66,0.25)" stroke="rgba(255,140,66,0.7)" stroke-width="1.5"/>
+                        <text x="90" y="82" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#FF8C42" font-weight="600">+45%</text>
+
+                        <!-- Starfield: +52% -->
+                        <rect x="140" y="86" width="40" height="124" fill="rgba(255,140,66,0.25)" stroke="rgba(255,140,66,0.7)" stroke-width="1.5"/>
+                        <text x="160" y="74" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#FF8C42" font-weight="600">+52%</text>
+
+                        <!-- CS2: +58% -->
+                        <rect x="210" y="74" width="40" height="136" fill="rgba(255,140,66,0.25)" stroke="rgba(255,140,66,0.7)" stroke-width="1.5"/>
+                        <text x="230" y="62" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#FF8C42" font-weight="600">+58%</text>
+
+                        <!-- Fortnite: +36% -->
+                        <rect x="280" y="116" width="40" height="94" fill="rgba(255,140,66,0.25)" stroke="rgba(255,140,66,0.7)" stroke-width="1.5"/>
+                        <text x="300" y="104" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="9" fill="#FF8C42" font-weight="600">+36%</text>
+
+                        <!-- Average line -->
+                        <line x1="50" y1="95" x2="380" y2="95" stroke="rgba(255,140,66,0.5)" stroke-width="2" stroke-dasharray="6,4"/>
+                        <text x="375" y="90" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="7" fill="rgba(255,140,66,0.8)">Avg: +48%</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Key Metrics Summary -->
+            <div class="apo-dd-metrics-summary">
+                <div class="apo-dd-metric-card">
+                    <div class="apo-dd-metric-value">+32%</div>
+                    <div class="apo-dd-metric-label">Average FPS Gain</div>
+                    <div class="apo-dd-metric-desc">Across 50+ tested games, no profiles required</div>
+                </div>
+                <div class="apo-dd-metric-card">
+                    <div class="apo-dd-metric-value">+48%</div>
+                    <div class="apo-dd-metric-label">1% Low Improvement</div>
+                    <div class="apo-dd-metric-desc">Frame time consistency via stutter elimination</div>
+                </div>
+                <div class="apo-dd-metric-card">
+                    <div class="apo-dd-metric-value">-28%</div>
+                    <div class="apo-dd-metric-label">Input Latency Reduction</div>
+                    <div class="apo-dd-metric-desc">UHP core pinning reduces render thread delays</div>
+                </div>
+                <div class="apo-dd-metric-card">
+                    <div class="apo-dd-metric-value">&lt;2ms</div>
+                    <div class="apo-dd-metric-label">Classification Time</div>
+                    <div class="apo-dd-metric-desc">LPNPU identifies critical threads instantly</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- USE CASES -->
+        <div class="apo-dd-usecases">
+            <h2 class="apo-dd-section-title">Optimized Workloads</h2>
+            <div class="apo-dd-usecase-grid">
+                <div class="apo-dd-usecase-card">
+                    <div class="apo-dd-usecase-icon">🎮</div>
+                    <div class="apo-dd-usecase-name">Competitive Gaming</div>
+                    <p class="apo-dd-usecase-desc">
+                        APO excels in competitive titles (CS2, Valorant, Apex Legends) where input latency and frame
+                        time consistency matter more than peak FPS. UHP core pinning ensures render threads never miss
+                        deadlines, while V8 HyperBOOST coordination delivers burst performance during critical moments.
+                    </p>
+                </div>
+                <div class="apo-dd-usecase-card">
+                    <div class="apo-dd-usecase-icon">🌍</div>
+                    <div class="apo-dd-usecase-name">Open-World Games</div>
+                    <p class="apo-dd-usecase-desc">
+                        Large open-world games (Cyberpunk, Starfield, Red Dead) spawn dozens of background threads for
+                        streaming, AI, physics simulation. APO isolates these to UHE/LPE cores, keeping UHP cores free
+                        for rendering. Prevents stutters during fast travel and asset loading.
+                    </p>
+                </div>
+                <div class="apo-dd-usecase-card">
+                    <div class="apo-dd-usecase-icon">⚙️</div>
+                    <div class="apo-dd-usecase-name">Simulation Games</div>
+                    <p class="apo-dd-usecase-desc">
+                        Strategy and simulation titles (Cities Skylines, Total War) use heavy CPU-bound simulation
+                        threads. APO detects FP-dense simulation code and routes to DP/SPE cores for parallel execution,
+                        while keeping render thread on UHP cores for responsive UI.
+                    </p>
+                </div>
+                <div class="apo-dd-usecase-card">
+                    <div class="apo-dd-usecase-icon">🏎️</div>
+                    <div class="apo-dd-usecase-name">Racing Simulators</div>
+                    <p class="apo-dd-usecase-desc">
+                        Racing sims (iRacing, Assetto Corsa) demand low-latency physics simulation synchronized with
+                        rendering. APO pins both physics and render threads to adjacent UHP cores on same tile,
+                        minimizing L3 cache coherency latency for frame-to-frame state sharing.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TECHNICAL SPECS -->
+        <div class="apo-dd-specs">
+            <h3 class="apo-dd-section-title" style="font-size: 36px;">Technical Specifications</h3>
+            <div class="apo-dd-spec-grid">
+                <div class="apo-dd-spec-item">
+                    <div class="apo-dd-spec-label">Implementation</div>
+                    <div class="apo-dd-spec-value">Driver + Firmware</div>
+                </div>
+                <div class="apo-dd-spec-item">
+                    <div class="apo-dd-spec-label">Classification Engine</div>
+                    <div class="apo-dd-spec-value">LPNPU Co-Pilot</div>
+                </div>
+                <div class="apo-dd-spec-item">
+                    <div class="apo-dd-spec-label">Classification Latency</div>
+                    <div class="apo-dd-spec-value">&lt;2 milliseconds</div>
+                </div>
+                <div class="apo-dd-spec-item">
+                    <div class="apo-dd-spec-label">Supported APIs</div>
+                    <div class="apo-dd-spec-value">DX11/12, Vulkan, OpenGL</div>
+                </div>
+                <div class="apo-dd-spec-item">
+                    <div class="apo-dd-spec-label">OS Support</div>
+                    <div class="apo-dd-spec-value">Windows 11, Linux 6.6+</div>
+                </div>
+                <div class="apo-dd-spec-item">
+                    <div class="apo-dd-spec-label">Thread Director Integration</div>
+                    <div class="apo-dd-spec-value">Native Hardware</div>
+                </div>
+                <div class="apo-dd-spec-item">
+                    <div class="apo-dd-spec-label">V8 HyperBOOST Coordination</div>
+                    <div class="apo-dd-spec-value">Vsync-Synchronized</div>
+                </div>
+                <div class="apo-dd-spec-item">
+                    <div class="apo-dd-spec-label">CPU Overhead</div>
+                    <div class="apo-dd-spec-value">&lt;0.5% per thread</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION DIVIDER -->
+    <div class="apo-dd-divider"></div>
+</div>
