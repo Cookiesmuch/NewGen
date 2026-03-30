@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = 3000;
-const ROOT = __dirname;
+const ROOT = path.resolve(__dirname, '..');
 const URL = `http://localhost:${PORT}`;
 const DEFAULT_ROUTE = '/Intel/Eventide';
 const IS_CMD_LAUNCH = process.argv.includes('--from-bat');
@@ -94,7 +94,7 @@ const server = http.createServer((req, res) => {
   // If the request has no file extension it is a page route — serve the SPA shell
   const ext = path.extname(urlPath).toLowerCase();
   if (!ext) {
-    serveFile(path.join(ROOT, 'NewGen.html'), res, req.url);
+    serveFile(path.join(ROOT, 'Index.HTML'), res, req.url);
     return;
   }
 
@@ -181,7 +181,7 @@ server.listen(PORT, () => {
     printStatus('Launched from start-newgen.bat');
   } else {
     console.log('[5/5] Browser action : Skipped (manual node invocation).');
-    printStatus('Manual node server.js');
+    printStatus('Manual node Server/server.js');
   }
 });
 

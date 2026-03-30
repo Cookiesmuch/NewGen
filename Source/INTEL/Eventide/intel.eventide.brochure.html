@@ -5528,8 +5528,10 @@ async function loadDynamicSegments() {
 
         applySegmentStyles(iframeDoc, src);
         const bodyHtml = ((iframeDoc.body && iframeDoc.body.innerHTML) || '')
-          .replaceAll('src="MustangOutline.svg"', 'src="../MustangOutline.svg"')
-          .replaceAll('src="MustangLogo.svg"', 'src="../MustangLogo.svg"');
+          .replaceAll('src="../Media/MustangOutline.svg"', 'src="Media/MustangOutline.svg"')
+          .replaceAll('src="../Media/MustangLogo.svg"', 'src="Media/MustangLogo.svg"')
+          .replaceAll('src="MustangOutline.svg"', 'src="Media/MustangOutline.svg"')
+          .replaceAll('src="MustangLogo.svg"', 'src="Media/MustangLogo.svg"');
         node.innerHTML = bodyHtml;
         cleanup();
         resolve(true);
