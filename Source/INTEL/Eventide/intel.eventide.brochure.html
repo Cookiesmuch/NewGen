@@ -2832,44 +2832,6 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 async function loadDynamicSegments() {
   const segmentNodes = Array.from(document.querySelectorAll('[data-segment-src]'));
-  const loadedSegmentStyles = new Set();
-
-  const applySegmentStyles = (doc, src) => {
-    const styleNodes = Array.from(doc.querySelectorAll('style'));
-    for (const styleNode of styleNodes) {
-      const styleText = styleNode.textContent || '';
-      const styleKey = src + '::style::' + styleText;
-      if (loadedSegmentStyles.has(styleKey)) {
-        continue;
-      }
-
-      const injectedStyle = document.createElement('style');
-      injectedStyle.setAttribute('data-segment-style', src);
-      injectedStyle.textContent = styleText;
-      document.head.appendChild(injectedStyle);
-      loadedSegmentStyles.add(styleKey);
-    }
-
-    const stylesheetLinks = Array.from(doc.querySelectorAll('link[rel="stylesheet"][href]'));
-    for (const linkNode of stylesheetLinks) {
-      const href = linkNode.href;
-      if (!href) {
-        continue;
-      }
-
-      const linkKey = src + '::link::' + href;
-      if (loadedSegmentStyles.has(linkKey)) {
-        continue;
-      }
-
-      const injectedLink = document.createElement('link');
-      injectedLink.rel = 'stylesheet';
-      injectedLink.href = href;
-      injectedLink.setAttribute('data-segment-style', src);
-      document.head.appendChild(injectedLink);
-      loadedSegmentStyles.add(linkKey);
-    }
-  };
 
   const loadSegmentViaIframe = (src, node) => new Promise((resolve) => {
     const iframe = document.createElement('iframe');
@@ -2891,11 +2853,7 @@ async function loadDynamicSegments() {
         if (!iframeDoc) {
           throw new Error('Iframe document unavailable for ' + src);
         }
-
-        applySegmentStyles(iframeDoc, src);
         const bodyHtml = ((iframeDoc.body && iframeDoc.body.innerHTML) || '')
-          .replace(/<link[^>]*rel=["']?stylesheet["']?[^>]*>/gi, '')
-          .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
           .replaceAll('src="../Media/MustangOutline.svg"', 'src="Media/MustangOutline.svg"')
           .replaceAll('src="../Media/MustangLogo.svg"', 'src="Media/MustangLogo.svg"')
           .replaceAll('src="MustangOutline.svg"', 'src="Media/MustangOutline.svg"')
