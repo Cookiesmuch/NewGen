@@ -32,7 +32,7 @@
 - **Sony a0**
 - **Sony XCD-LED**
 
-The app is intentionally simple and fast: a Node.js static server powers a polished browser shell (`NewGen.html`) that loads brochure pages in an iframe with one-click navigation, while History API routes keep the browser URL in sync for direct linking and refresh.
+The app is intentionally simple and fast: a Node.js static server powers a polished browser shell (`Index.HTML`) that loads brochure pages in an iframe with one-click navigation, while History API routes keep the browser URL in sync for direct linking and refresh.
 
 ---
 
@@ -40,7 +40,7 @@ The app is intentionally simple and fast: a Node.js static server powers a polis
 
 - 🎛️ **Dynamic page switching** from a top navigation bar
 - 🧭 **History API routing** with URL-aware navigation and back/forward support
-- 🖥️ **Single local server** (`server.js`) with static file delivery
+- 🖥️ **Single local server** (`Server/server.js`) with static file delivery
 - 📦 **No framework overhead** (vanilla Node.js + HTML/CSS/JS)
 - 🧭 **Cross-platform startup scripts** for Windows CMD and PowerShell
 - 🧰 **Verbose Windows launcher UX** with structured startup diagnostics
@@ -52,19 +52,25 @@ The app is intentionally simple and fast: a Node.js static server powers a polis
 
 ```text
 NewGen/
-├── NewGen.html                 # Main dynamic loader UI
-├── server.js                   # Node.js static server (port 3000)
+├── Index.HTML                  # Main dynamic loader UI
+├── Server/
+│   └── server.js               # Node.js static server (port 3000)
 ├── start-newgen.bat            # Windows batch launcher
 ├── start-newgen.ps1            # PowerShell launcher
-├── INTEL/
-│   └── Eventide/
-│       └── Source/
-│           └── intel.eventide.brochure.html
-└── SONY/
-    ├── ILCE-0/
-    │   └── sony.a0.brochure.html
-    └── XCD-LED/
-        └── sony,XCDLED.brochure.html
+└── Source/
+    ├── INTEL/
+    │   └── Eventide/
+    │       ├── intel.eventide.brochure.html
+    │       ├── CPU.Architectures/
+    │       ├── GPU.architectures/
+    │       ├── Technologies/
+    │       ├── Tiles/
+    │       └── Media/
+    └── SONY/
+        ├── ILCE-0/
+        │   └── sony.a0.brochure.html
+        └── XCD-LED/
+            └── sony,XCDLED.brochure.html
 ```
 
 ---
@@ -84,7 +90,7 @@ npm install
 ### Launch
 
 ```bash
-node server.js
+node Server/server.js
 ```
 
 Then open:
@@ -100,7 +106,7 @@ http://localhost:3000
 ### Standard (all platforms)
 
 ```bash
-node server.js
+node Server/server.js
 ```
 
 ### Windows CMD
@@ -110,8 +116,8 @@ start-newgen.bat
 ```
 
 The batch launcher:
-- starts `server.js` in CMD mode
-- delegates verbose startup logs and browser open flow to `server.js`
+- starts `Server/server.js` in CMD mode
+- delegates verbose startup logs and browser open flow to `Server/server.js`
 - opens the browser automatically (or reuses an already-running server)
 - keeps output and shutdown/watcher behavior centralized in one script
 
@@ -136,9 +142,9 @@ The batch launcher:
 
 ## ⚙️ How It Works
 
-1. `server.js` starts a local HTTP server on port **3000**.
-2. URL paths without file extensions (for example `/Intel/Eventide`) resolve to `NewGen.html`.
-3. `NewGen.html` renders the top navigation and iframe viewer.
+1. `Server/server.js` starts a local HTTP server on port **3000**.
+2. URL paths without file extensions (for example `/Intel/Eventide`) resolve to `Index.HTML`.
+3. `Index.HTML` renders the top navigation and iframe viewer.
 4. Clicking a nav button updates browser history (`pushState`) and swaps the iframe source to the selected brochure file.
 5. Browser back/forward (`popstate`) restores the correct brochure view.
 6. Static assets and brochure files are served directly from disk.
