@@ -48,7 +48,14 @@ echo.
 if not defined SERVER_ALREADY_RUNNING (
   echo [06/08] Launching NewGen server process...
   echo [INFO ] Server output will be written to: %SERVER_LOG%
-  start "NewGen Server" /B node "%ROOT%server.js" 1>>"%SERVER_LOG%" 2>>&1
+  start "NewGen Server" /B node "%ROOT%server.js" 1>>"%SERVER_LOG%" 2>&1
+  if not "%ERRORLEVEL%"=="0" (
+    echo [ERROR] Failed to launch Node.js server process.
+    echo [HINT ] Verify Node.js is installed and accessible from PATH.
+    echo.
+    pause
+    exit /b 1
+  )
   echo [ OK  ] Launch command submitted.
   echo.
 
