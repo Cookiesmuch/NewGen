@@ -1,0 +1,90 @@
+:root {
+    --bg: #0b0f17;
+    --surface: #101726;
+    --surface-2: #0f1d31;
+    --text: #e7edf9;
+    --muted: #8da0bd;
+    --accent: #4da3ff;
+    --accent-2: #f0b848;
+    --border: #20314f;
+    --mono: "IBM Plex Mono", "Cascadia Mono", monospace;
+    --sans: "Segoe UI", "Inter", sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: radial-gradient(circle at 10% 10%, #16223a 0%, #0b0f17 45%, #070b12 100%);
+    color: var(--text);
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10, 16, 28, 0.88);
+    backdrop-filter: blur(8px);
+  }
+
+  .brand {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .brand strong {
+    color: var(--accent-2);
+    font-weight: 600;
+  }
+
+  .nav {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .nav button {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+  }
+
+  .nav button:hover {
+    border-color: var(--accent);
+    color: #ffffff;
+  }
+
+  .nav button.active {
+    border-color: var(--accent);
+    background: var(--surface-2);
+    color: #ffffff;
+  }
+
+  .viewer {
+    width: 100%;
+    height: calc(100vh - 58px);
+    border: none;
+    background: #ffffff;
+  }
+
+  @media (max-width: 760px) {
+    .topbar { padding: 12px; }
+    .brand { font-size: 10px; letter-spacing: 0.1em; }
+    .nav button { font-size: 10px; padding: 7px 10px; }
+  }

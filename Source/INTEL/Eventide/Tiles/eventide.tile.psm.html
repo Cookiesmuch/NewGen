@@ -1,500 +1,6 @@
+<link rel="stylesheet" href="eventide.tile.psm.html.css">
   <!-- Z-ANGLE MEMORY: psm-dd- | PSM Deep-Dive Section -->
-  <style>
-    .psm-dd-wrap {
-      max-width: none;
-      margin: 0;
-      width: 100%;
-      padding: 60px 40px;
-      background:
-        linear-gradient(90deg, rgba(248,113,113,0.03) 1px, transparent 1px),
-        linear-gradient(rgba(248,113,113,0.03) 1px, transparent 1px),
-        linear-gradient(135deg, #080000 0%, #0F0000 100%);
-      background-size: 40px 40px, 40px 40px, 100% 100%;
-      position: relative;
-    }
-
-    .psm-dd-section {
-      max-width: 1200px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* INSERT LOCATION: After the I/O Controller deep-dive and its divider */
-
-    .psm-dd-wrap .section {
-      margin-bottom: 80px;
-    }
-
-    /* ===== HERO SECTION ===== */
-    .psm-dd-hero {
-      text-align: center;
-      margin-bottom: 100px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .psm-dd-eyebrow {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #FCA5A5;
-      margin-bottom: 16px;
-      font-weight: 600;
-    }
-
-    .psm-dd-headline {
-      font-family: 'Bebas Neue', serif;
-      font-size: 64px;
-      letter-spacing: -2px;
-      font-weight: 400;
-      margin-bottom: 16px;
-      line-height: 1.1;
-      color: #fff;
-    }
-
-    .psm-dd-subhead {
-      font-size: 18px;
-      color: #d1d5db;
-      max-width: 800px;
-      margin: 0 auto;
-      font-weight: 400;
-      line-height: 1.7;
-    }
-
-    /* ===== STAT BLOCK ===== */
-    .psm-dd-stat-block {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 24px;
-      margin: 60px 0;
-    }
-
-    .psm-dd-stat {
-      background: rgba(15, 0, 0, 0.6);
-      border: 1px solid rgba(248, 113, 113, 0.20);
-      border-radius: 8px;
-      padding: 32px 24px;
-      text-align: center;
-      backdrop-filter: blur(10px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .psm-dd-stat::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(248,113,113,0.5), transparent);
-    }
-
-    .psm-dd-stat-value {
-      font-family: 'Bebas Neue', serif;
-      font-size: 36px;
-      color: #FCA5A5;
-      font-weight: 400;
-      margin-bottom: 8px;
-    }
-
-    .psm-dd-stat-label {
-      font-size: 14px;
-      color: #9ca3af;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 600;
-    }
-
-    /* ===== SECTION STRUCTURE ===== */
-    .psm-dd-section {
-      margin-bottom: 60px;
-    }
-
-    .psm-dd-section-title {
-      font-family: 'Bebas Neue', serif;
-      font-size: 40px;
-      letter-spacing: -1px;
-      margin-bottom: 24px;
-      color: #fff;
-      font-weight: 400;
-    }
-
-    .psm-dd-section-subtitle {
-      font-size: 16px;
-      color: #FCA5A5;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 16px;
-      font-family: 'IBM Plex Mono', monospace;
-    }
-
-    .psm-dd-section p {
-      font-size: 16px;
-      color: #d1d5db;
-      margin-bottom: 16px;
-      line-height: 1.8;
-    }
-
-    .psm-dd-section ul {
-      margin: 24px 0 24px 24px;
-      color: #d1d5db;
-    }
-
-    .psm-dd-section li {
-      margin-bottom: 12px;
-      line-height: 1.8;
-    }
-
-    .psm-dd-section strong {
-      color: #FCA5A5;
-      font-weight: 600;
-    }
-
-    /* ===== COLLAB BADGES ===== */
-    .psm-dd-collab-badges {
-      display: flex;
-      gap: 16px;
-      margin: 24px 0 40px 0;
-      flex-wrap: wrap;
-    }
-
-    .psm-dd-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(248, 113, 113, 0.10);
-      border: 1px solid rgba(248, 113, 113, 0.25);
-      border-radius: 6px;
-      padding: 8px 16px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #FCA5A5;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .psm-dd-badge::before {
-      content: '●';
-      color: #F87171;
-    }
-
-    /* ===== DUAL ROOT ARCHITECTURE ===== */
-    .psm-dd-dual-root-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-      margin: 40px 0;
-    }
-
-    .psm-dd-root-path {
-      background: rgba(15, 0, 0, 0.5);
-      border: 1px solid rgba(248, 113, 113, 0.20);
-      border-radius: 8px;
-      padding: 32px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .psm-dd-root-path::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background:
-        linear-gradient(135deg, rgba(248,113,113,0.05) 0%, transparent 100%);
-      pointer-events: none;
-    }
-
-    .psm-dd-root-path-title {
-      font-family: 'Bebas Neue', serif;
-      font-size: 24px;
-      color: #F87171;
-      margin-bottom: 16px;
-      font-weight: 400;
-      letter-spacing: -0.5px;
-    }
-
-    .psm-dd-root-path p {
-      font-size: 15px;
-      color: #d1d5db;
-      margin-bottom: 16px;
-      line-height: 1.8;
-    }
-
-    .psm-dd-root-features {
-      list-style: none;
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(248, 113, 113, 0.15);
-    }
-
-    .psm-dd-root-features li {
-      font-size: 14px;
-      color: #9ca3af;
-      margin-bottom: 10px;
-      padding-left: 20px;
-      position: relative;
-    }
-
-    .psm-dd-root-features li::before {
-      content: '→';
-      position: absolute;
-      left: 0;
-      color: #F87171;
-      font-weight: 700;
-    }
-
-    @media (max-width: 768px) {
-      .psm-dd-dual-root-container {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* ===== FEATURE CARDS ===== */
-    .psm-dd-feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 24px;
-      margin: 40px 0;
-    }
-
-    .psm-dd-feature-card {
-      background: rgba(15, 0, 0, 0.6);
-      border: 1px solid rgba(248, 113, 113, 0.20);
-      border-radius: 8px;
-      padding: 28px;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s ease;
-    }
-
-    .psm-dd-feature-card:hover {
-      background: rgba(15, 0, 0, 0.8);
-      border-color: rgba(248, 113, 113, 0.35);
-      box-shadow: 0 0 20px rgba(248, 113, 113, 0.15);
-    }
-
-    .psm-dd-feature-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #F87171, transparent);
-    }
-
-    .psm-dd-feature-title {
-      font-family: 'Bebas Neue', serif;
-      font-size: 22px;
-      color: #fff;
-      margin-bottom: 12px;
-      font-weight: 400;
-      letter-spacing: -0.5px;
-    }
-
-    .psm-dd-feature-desc {
-      font-size: 14px;
-      color: #d1d5db;
-      line-height: 1.7;
-    }
-
-    /* ===== SPEC TABLE ===== */
-    .psm-dd-spec-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 40px 0;
-      background: rgba(15, 0, 0, 0.5);
-      border: 1px solid rgba(248, 113, 113, 0.20);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .psm-dd-spec-table thead {
-      background: rgba(248, 113, 113, 0.10);
-      border-bottom: 2px solid rgba(248, 113, 113, 0.25);
-    }
-
-    .psm-dd-spec-table th {
-      padding: 16px 20px;
-      text-align: left;
-      font-weight: 600;
-      color: #FCA5A5;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 13px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .psm-dd-spec-table td {
-      padding: 16px 20px;
-      border-bottom: 1px solid rgba(248, 113, 113, 0.10);
-      font-size: 15px;
-      color: #d1d5db;
-    }
-
-    .psm-dd-spec-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    .psm-dd-spec-table tr:nth-child(even) {
-      background: rgba(248, 113, 113, 0.03);
-    }
-
-    .psm-dd-spec-category {
-      color: #F87171;
-      font-weight: 600;
-    }
-
-    /* ===== USE-CASE GRID ===== */
-    .psm-dd-usecase-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 28px;
-      margin: 40px 0;
-    }
-
-    .psm-dd-usecase {
-      background: linear-gradient(135deg, rgba(248,113,113,0.08) 0%, rgba(248,113,113,0.02) 100%);
-      border: 1px solid rgba(248, 113, 113, 0.25);
-      border-radius: 8px;
-      padding: 32px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .psm-dd-usecase::before {
-      content: '';
-      position: absolute;
-      top: -1px;
-      left: -1px;
-      width: 120px;
-      height: 120px;
-      background: radial-gradient(circle, rgba(248,113,113,0.3) 0%, transparent 70%);
-      filter: blur(30px);
-      pointer-events: none;
-    }
-
-    .psm-dd-usecase-icon {
-      font-family: 'Bebas Neue', serif;
-      font-size: 48px;
-      color: #F87171;
-      margin-bottom: 12px;
-      font-weight: 400;
-    }
-
-    .psm-dd-usecase-title {
-      font-family: 'Bebas Neue', serif;
-      font-size: 20px;
-      color: #fff;
-      margin-bottom: 12px;
-      font-weight: 400;
-      letter-spacing: -0.5px;
-    }
-
-    .psm-dd-usecase-desc {
-      font-size: 14px;
-      color: #d1d5db;
-      line-height: 1.7;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* ===== SECTION DIVIDER ===== */
-    .psm-dd-divider {
-      width: 100%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(248,113,113,0.3), transparent);
-      margin: 80px 0;
-      position: relative;
-    }
-
-    .psm-dd-divider::before {
-      content: '';
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      width: 8px;
-      height: 8px;
-      background: rgba(248, 113, 113, 0.5);
-      border-radius: 50%;
-      border: 2px solid #080000;
-    }
-
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 1024px) {
-      .psm-dd-headline {
-        font-size: 48px;
-      }
-
-      .psm-dd-stat-block {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .psm-dd-section-title {
-        font-size: 32px;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .psm-dd-wrap {
-        padding: 40px 16px;
-      }
-
-      .psm-dd-headline {
-        font-size: 36px;
-      }
-
-      .psm-dd-stat-block {
-        grid-template-columns: 1fr;
-      }
-
-      .psm-dd-section-title {
-        font-size: 28px;
-      }
-
-      .psm-dd-section p {
-        font-size: 15px;
-      }
-
-      .psm-dd-spec-table th,
-      .psm-dd-spec-table td {
-        padding: 12px 14px;
-        font-size: 12px;
-      }
-    }
-
-    /* ===== ACCENT HIGHLIGHTS ===== */
-    .psm-dd-highlight {
-      color: #FCA5A5;
-      font-weight: 600;
-    }
-
-    .psm-dd-mono {
-      font-family: 'IBM Plex Mono', monospace;
-      color: #FCA5A5;
-      font-size: 0.95em;
-    }
-
-    /* ===== VISUAL ACCENTS ===== */
-    .psm-dd-accent-box {
-      background: linear-gradient(135deg, rgba(248,113,113,0.12) 0%, rgba(248,113,113,0.04) 100%);
-      border-left: 4px solid #F87171;
-      border-radius: 4px;
-      padding: 20px;
-      margin: 24px 0;
-      font-size: 15px;
-      color: #d1d5db;
-      line-height: 1.8;
-    }
-  </style>
+  
   <div class="psm-dd-wrap">
     <!-- INSERT LOCATION: After the I/O Controller deep-dive and its divider -->
 
@@ -586,10 +92,10 @@
       </p>
 
       <div class="psm-dd-accent-box">
-        <strong style="color: #F87171;">Key Property:</strong> EGP keys never leave the PSM tile. All cryptographic operations (signing, attestation, key derivation) occur in isolated hardware. The protocol ensures that even a full compromise of the main OS yields no access to EGP key material or measurement secrets.
+        <strong class="ng-inline-1">Key Property:</strong> EGP keys never leave the PSM tile. All cryptographic operations (signing, attestation, key derivation) occur in isolated hardware. The protocol ensures that even a full compromise of the main OS yields no access to EGP key material or measurement secrets.
       </div>
 
-      <h3 style="font-family: 'Bebas Neue', serif; font-size: 22px; color: #fff; margin-top: 32px; margin-bottom: 16px; font-weight: 400;">Core Functions</h3>
+      <h3 class="ng-inline-2">Core Functions</h3>
 
       <div class="psm-dd-feature-grid">
         <div class="psm-dd-feature-card">
@@ -636,7 +142,7 @@
       </div>
 
       <div class="psm-dd-accent-box">
-        <strong style="color: #F87171;">Enterprise Value:</strong> EGP enables hardware-rooted supply chain verification. Container images can be signed with EGP attestation, proving they ran in the declared environment. Ransomware and code-injection attacks fail to generate valid attestations, preventing lateral movement.
+        <strong class="ng-inline-1">Enterprise Value:</strong> EGP enables hardware-rooted supply chain verification. Container images can be signed with EGP attestation, proving they ran in the declared environment. Ransomware and code-injection attacks fail to generate valid attestations, preventing lateral movement.
       </div>
     </div>
 
@@ -648,19 +154,19 @@
         Microsoft Pluton 2.1 is a dedicated security processor integrated into the CPU die, operating independently of the main cores. It provides hardware-rooted TPM 2.1 functionality without reliance on discrete chips or firmware subsystems that could be compromised.
       </p>
 
-      <h3 style="font-family: 'Bebas Neue', serif; font-size: 22px; color: #fff; margin-top: 32px; margin-bottom: 16px; font-weight: 400;">Key Capabilities</h3>
+      <h3 class="ng-inline-2">Key Capabilities</h3>
 
-      <ul style="margin-left: 24px; color: #d1d5db; line-height: 1.8;">
-        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Hardware Credential Storage:</span> Encryption keys, certificates, and passwords are sealed in hardware. Extraction requires Pluton's private key, which is never exposed even in kernel dumps.</li>
-        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">BitLocker Key Isolation:</span> Windows disk encryption keys are stored in Pluton. Even with administrator privileges, BitLocker keys remain inaccessible to Windows processes.</li>
-        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Windows Hello Hardware Root:</span> Biometric credentials are bound to Pluton hardware. Cloned or VM-based identities cannot forge Hello authentication.</li>
-        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Firmware Updates via Windows Update:</span> Pluton firmware is updated through the Windows Update infrastructure, ensuring synchronized security patches across enterprises.</li>
-        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Physical Memory Attack Resistance:</span> Pluton memory is isolated from the main processor and RAM. DMA attacks, cold-boot attacks, and hardware probes cannot extract Pluton data.</li>
-        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">FIPS 140-3 Level 2 Certified:</span> Pluton meets federal cryptographic standards for classified and sensitive government workloads.</li>
+      <ul class="ng-inline-3">
+        <li class="ng-inline-4"><span class="psm-dd-highlight">Hardware Credential Storage:</span> Encryption keys, certificates, and passwords are sealed in hardware. Extraction requires Pluton's private key, which is never exposed even in kernel dumps.</li>
+        <li class="ng-inline-4"><span class="psm-dd-highlight">BitLocker Key Isolation:</span> Windows disk encryption keys are stored in Pluton. Even with administrator privileges, BitLocker keys remain inaccessible to Windows processes.</li>
+        <li class="ng-inline-4"><span class="psm-dd-highlight">Windows Hello Hardware Root:</span> Biometric credentials are bound to Pluton hardware. Cloned or VM-based identities cannot forge Hello authentication.</li>
+        <li class="ng-inline-4"><span class="psm-dd-highlight">Firmware Updates via Windows Update:</span> Pluton firmware is updated through the Windows Update infrastructure, ensuring synchronized security patches across enterprises.</li>
+        <li class="ng-inline-4"><span class="psm-dd-highlight">Physical Memory Attack Resistance:</span> Pluton memory is isolated from the main processor and RAM. DMA attacks, cold-boot attacks, and hardware probes cannot extract Pluton data.</li>
+        <li class="ng-inline-4"><span class="psm-dd-highlight">FIPS 140-3 Level 2 Certified:</span> Pluton meets federal cryptographic standards for classified and sensitive government workloads.</li>
       </ul>
 
       <div class="psm-dd-accent-box">
-        <strong style="color: #F87171;">Coexistence with EGP:</strong> Pluton and EGP operate independently. Windows deployments use Pluton for Windows security functions; Alloy OS uses EGP. Both can coexist on the same physical system, each with its own measurement chains and key stores. This enables hybrid organizations to run mixed OS fleets on identical hardware.
+        <strong class="ng-inline-1">Coexistence with EGP:</strong> Pluton and EGP operate independently. Windows deployments use Pluton for Windows security functions; Alloy OS uses EGP. Both can coexist on the same physical system, each with its own measurement chains and key stores. This enables hybrid organizations to run mixed OS fleets on identical hardware.
       </div>
     </div>
 
@@ -672,7 +178,7 @@
         Intel CSME 2.0 is a discrete management processor embedded on the PSM tile. It provides out-of-band access, hardware DRM enforcement, and secure firmware loading for all other processor tiles — including compute, I/O, and memory controllers.
       </p>
 
-      <h3 style="font-family: 'Bebas Neue', serif; font-size: 22px; color: #fff; margin-top: 32px; margin-bottom: 16px; font-weight: 400;">Core Functions</h3>
+      <h3 class="ng-inline-2">Core Functions</h3>
 
       <div class="psm-dd-feature-grid">
         <div class="psm-dd-feature-card">
@@ -705,7 +211,7 @@
       </div>
 
       <div class="psm-dd-accent-box">
-        <strong style="color: #F87171;">Enterprise Deployment:</strong> CSME 2.0 enables datacenter-scale fleet management. Out-of-band channels bypass OS firewalls and network stacks, giving IT control even when systems are misconfigured or compromised. Combined with vPro, this creates enterprise resilience infrastructure.
+        <strong class="ng-inline-1">Enterprise Deployment:</strong> CSME 2.0 enables datacenter-scale fleet management. Out-of-band channels bypass OS firewalls and network stacks, giving IT control even when systems are misconfigured or compromised. Combined with vPro, this creates enterprise resilience infrastructure.
       </div>
     </div>
 
@@ -717,34 +223,34 @@
         vPro is Intel's managed platform certification, mandatory for Xeon 500 class deployments. It bundles AMT, hardware virtualization, and threat detection. <strong>Threat Detection Technology (TDT)</strong> is the newest vPro component — an AI-driven security system that detects ransomware, cryptojacking, and supply chain attacks before they reach the OS.
       </p>
 
-      <h3 style="font-family: 'Bebas Neue', serif; font-size: 22px; color: #fff; margin-top: 32px; margin-bottom: 16px; font-weight: 400;">Threat Detection Technology (TDT)</h3>
+      <h3 class="ng-inline-2">Threat Detection Technology (TDT)</h3>
 
       <p>
         TDT combines a dedicated NPU (Neural Processing Unit) on the PSM tile with hardware performance monitoring. It continuously observes processor activity — cache behavior, memory access patterns, execution timing — looking for anomalies consistent with ransomware encryption, mining loops, or fuzzing activity.
       </p>
 
       <div class="psm-dd-accent-box">
-        <strong style="color: #F87171;">How TDT Works:</strong> Machine learning models trained on known ransomware, cryptojacking, and exploitation patterns run on the NPU. The hardware performance monitor feeds events at line rate. When anomalies are detected, TDT can trigger hardware breakpoints, pause execution, or alert the hypervisor/OS without requiring OS cooperation.
+        <strong class="ng-inline-1">How TDT Works:</strong> Machine learning models trained on known ransomware, cryptojacking, and exploitation patterns run on the NPU. The hardware performance monitor feeds events at line rate. When anomalies are detected, TDT can trigger hardware breakpoints, pause execution, or alert the hypervisor/OS without requiring OS cooperation.
       </div>
 
-      <h3 style="font-family: 'Bebas Neue', serif; font-size: 22px; color: #fff; margin-top: 32px; margin-bottom: 16px; font-weight: 400;">Detection Coverage</h3>
+      <h3 class="ng-inline-2">Detection Coverage</h3>
 
-      <ul style="margin-left: 24px; color: #d1d5db; line-height: 1.8;">
-        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">150+ MITRE ATT&CK Behaviors:</span> TDT models cover execution, privilege escalation, defense evasion, and exfiltration tactics from the MITRE framework.</li>
-        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Ransomware Encryption Detection:</span> Rapid repeated memory writes + encryption instructions trigger alerts before file systems are compromised.</li>
-        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Cryptojacking Detection:</span> Long-running AES/SHA loops with cache patterns consistent with mining trigger alerts.</li>
-        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Supply Chain Attack Detection:</span> Unusual code injection, DLL side-loading, and module load anomalies are flagged for inspection.</li>
-        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Hardware-Immune Detection:</span> TDT sees behavior that OS-level EDR cannot — memory access patterns, cache behavior, raw CPU cycles — enabling detection of attacks that evade userspace monitoring.</li>
+      <ul class="ng-inline-3">
+        <li class="ng-inline-4"><span class="psm-dd-highlight">150+ MITRE ATT&CK Behaviors:</span> TDT models cover execution, privilege escalation, defense evasion, and exfiltration tactics from the MITRE framework.</li>
+        <li class="ng-inline-4"><span class="psm-dd-highlight">Ransomware Encryption Detection:</span> Rapid repeated memory writes + encryption instructions trigger alerts before file systems are compromised.</li>
+        <li class="ng-inline-4"><span class="psm-dd-highlight">Cryptojacking Detection:</span> Long-running AES/SHA loops with cache patterns consistent with mining trigger alerts.</li>
+        <li class="ng-inline-4"><span class="psm-dd-highlight">Supply Chain Attack Detection:</span> Unusual code injection, DLL side-loading, and module load anomalies are flagged for inspection.</li>
+        <li class="ng-inline-4"><span class="psm-dd-highlight">Hardware-Immune Detection:</span> TDT sees behavior that OS-level EDR cannot — memory access patterns, cache behavior, raw CPU cycles — enabling detection of attacks that evade userspace monitoring.</li>
       </ul>
 
-      <h3 style="font-family: 'Bebas Neue', serif; font-size: 22px; color: #fff; margin-top: 32px; margin-bottom: 16px; font-weight: 400;">vPro Platform Requirements</h3>
+      <h3 class="ng-inline-2">vPro Platform Requirements</h3>
 
-      <ul style="margin-left: 24px; color: #d1d5db; line-height: 1.8;">
-        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Active Management Technology (AMT):</span> Out-of-band management and provisioning.</li>
-        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">VT-x & VT-d:</span> Hardware virtualization and DMA remapping for hypervisor deployments.</li>
-        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Intel Trusted Execution Technology:</span> Hardware-protected execution enclaves.</li>
-        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Control-Flow Enforcement Technology (CET):</span> Hardware protection against return-oriented programming (ROP) and jump-oriented programming (JOP) exploits.</li>
-        <li style="margin-bottom: 12px;"><span class="psm-dd-highlight">Threat Detection Technology:</span> NPU-assisted anomaly detection.</li>
+      <ul class="ng-inline-3">
+        <li class="ng-inline-4"><span class="psm-dd-highlight">Active Management Technology (AMT):</span> Out-of-band management and provisioning.</li>
+        <li class="ng-inline-4"><span class="psm-dd-highlight">VT-x & VT-d:</span> Hardware virtualization and DMA remapping for hypervisor deployments.</li>
+        <li class="ng-inline-4"><span class="psm-dd-highlight">Intel Trusted Execution Technology:</span> Hardware-protected execution enclaves.</li>
+        <li class="ng-inline-4"><span class="psm-dd-highlight">Control-Flow Enforcement Technology (CET):</span> Hardware protection against return-oriented programming (ROP) and jump-oriented programming (JOP) exploits.</li>
+        <li class="ng-inline-4"><span class="psm-dd-highlight">Threat Detection Technology:</span> NPU-assisted anomaly detection.</li>
       </ul>
     </div>
 

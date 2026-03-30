@@ -1,0 +1,18 @@
+.ng-inline-1 { position:relative; z-index:1; }
+.ng-inline-2 { font-family:var(--font-mono);font-size:8px;letter-spacing:0.18em;color:rgba(96,180,255,0.48);margin-bottom:14px; }
+.ng-inline-3 { width:100%;height:auto; }
+.ng-inline-4 { margin-top:0; }
+.ng-inline-5 { flex:0.30 }
+.ng-inline-6 { flex:0.45 }
+.ng-inline-7 { flex:0.7 }
+.ng-inline-8 { color:rgba(0,104,181,0.4); }
+.ng-inline-9 { flex:0.82 }
+.ng-inline-10 { color:rgba(147,51,234,0.35); }
+.ng-inline-11 { color:rgba(192,132,252,0.5); }
+.ng-inline-12 { flex:1 }
+.ng-inline-13 { color:rgba(147,51,234,0.5); }
+.ng-inline-14 { width:80% }
+.ng-inline-15 { width:100% }
+.ng-inline-16 { width:60%; opacity:0.8 }
+.ng-inline-17 { width:70%; opacity:0.75 }
+.ng-inline-18 { max-width:720px; }

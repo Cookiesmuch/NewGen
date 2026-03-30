@@ -1,5 +1,6 @@
+<link rel="stylesheet" href="eventide.CPU.venusmont.html.css">
 <div class="spe-showcase-wrap">
-<div class="section" style="position:relative; z-index:1;">
+<div class="section ng-inline-1">
 
   <!-- HEADER -->
   <div class="spe-eyebrow">Compute Tile · Intel 04A · SPE Core · Architecture Deep Dive</div>
@@ -56,7 +57,7 @@
     </div>
     <div>
       <div class="spe-info-card">
-        <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.18em;color:rgba(147,51,234,0.5);margin-bottom:14px;">FULL CORE SPECIFICATION</div>
+        <div class="ng-inline-2">FULL CORE SPECIFICATION</div>
         <div class="spe-spec-row"><span class="spe-spec-key">Core class</span><span class="spe-spec-val glow">SPE — Spammable E-Core</span></div>
         <div class="spe-spec-row"><span class="spe-spec-key">Codename</span><span class="spe-spec-val glow">Venusmont</span></div>
         <div class="spe-spec-row"><span class="spe-spec-key">Process node</span><span class="spe-spec-val">Intel 04A · 0.4nm-class GAA</span></div>
@@ -81,7 +82,7 @@
         <span class="spe-isa-pill absent">P-SMT</span>
         <span class="spe-isa-pill absent">TBM 5.0</span>
       </div>
-      <p style="font-size:10px; color:rgba(192,132,252,0.35); margin-top:8px; font-style:italic;">Strikethrough = not available on SPE tier</p>
+      <p class="ng-inline-3">Strikethrough = not available on SPE tier</p>
     </div>
   </div>
 
@@ -106,7 +107,7 @@
       <!-- Density comparison SVG -->
       <div class="spe-pipeline-wrap">
         <div class="spe-pipeline-label">DIE AREA COMPARISON · SAME 04A FOOTPRINT</div>
-        <svg viewBox="0 0 480 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+        <svg viewBox="0 0 480 240" xmlns="http://www.w3.org/2000/svg" class="ng-inline-4">
           <!-- UHP single core -->
           <text x="100" y="18" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="rgba(255,107,53,0.55)">1× UHP SOLAR ECLIPSE</text>
           <rect x="10" y="24" width="180" height="180" rx="4" fill="rgba(255,107,53,0.12)" stroke="rgba(255,107,53,0.55)" stroke-width="1.5"/>
@@ -149,30 +150,30 @@
         <div class="spe-scale-title">PARALLELISM SCALING · ILLUSTRATIVE THREAD UTILIZATION</div>
         <div class="spe-scale-row">
           <div class="spe-scale-label">8T — light batch tasks</div>
-          <div class="spe-scale-track"><div class="spe-scale-fill" style="width:10%"></div></div>
+          <div class="spe-scale-track"><div class="spe-scale-fill ng-inline-5"></div></div>
           <div class="spe-scale-count">8 / 288+ cores</div>
         </div>
         <div class="spe-scale-row">
           <div class="spe-scale-label">32T — 3D rendering frame</div>
-          <div class="spe-scale-track"><div class="spe-scale-fill" style="width:22%"></div></div>
+          <div class="spe-scale-track"><div class="spe-scale-fill ng-inline-6"></div></div>
           <div class="spe-scale-count">32 / 288+ cores</div>
         </div>
         <div class="spe-scale-row">
           <div class="spe-scale-label">64T — simulation sweep</div>
-          <div class="spe-scale-track"><div class="spe-scale-fill" style="width:44%"></div></div>
+          <div class="spe-scale-track"><div class="spe-scale-fill ng-inline-7"></div></div>
           <div class="spe-scale-count">64 / 288+ cores</div>
         </div>
         <div class="spe-scale-row">
           <div class="spe-scale-label">128T — parallel compile</div>
-          <div class="spe-scale-track"><div class="spe-scale-fill" style="width:72%"></div></div>
+          <div class="spe-scale-track"><div class="spe-scale-fill ng-inline-8"></div></div>
           <div class="spe-scale-count">128 / 288+ cores</div>
         </div>
         <div class="spe-scale-row">
           <div class="spe-scale-label">288T — full saturation</div>
-          <div class="spe-scale-track"><div class="spe-scale-fill" style="width:100%"></div></div>
+          <div class="spe-scale-track"><div class="spe-scale-fill ng-inline-9"></div></div>
           <div class="spe-scale-count">288+ / 288+ cores</div>
         </div>
-        <p style="font-size:9px; color:rgba(147,51,234,0.35); margin-top:12px; font-style:italic;">Illustrative scaling curves — not claimed benchmark results</p>
+        <p class="ng-inline-10">Illustrative scaling curves — not claimed benchmark results</p>
       </div>
     </div>
   </div>
@@ -200,7 +201,7 @@
     <div>
       <div class="spe-pipeline-wrap">
         <div class="spe-pipeline-label">VENUSMONT SPE · 4-WIDE PIPELINE · 9-SPE CLUSTER TOPOLOGY</div>
-        <svg viewBox="0 0 480 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+        <svg viewBox="0 0 480 340" xmlns="http://www.w3.org/2000/svg" class="ng-inline-4">
           <defs>
             <marker id="arr-spe" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
               <path d="M0,0 L5,2.5 L0,5 Z" fill="rgba(147,51,234,0.45)"/>
@@ -298,7 +299,7 @@
         <div class="spe-cache-strip">
           <div class="spe-cache-row">
             <div class="spe-cache-tier">L0</div>
-            <div class="spe-cache-bar spe-c-l0" style="flex:0.22">
+            <div class="spe-cache-bar spe-c-l0 ng-inline-11">
               <span class="spe-cache-name">Per-Core L0</span>
               <span class="spe-cache-sz">24 KB / core</span>
             </div>
@@ -306,7 +307,7 @@
           <div class="spe-cache-conn">&#8595; miss</div>
           <div class="spe-cache-row">
             <div class="spe-cache-tier">L1</div>
-            <div class="spe-cache-bar spe-c-l1" style="flex:0.3">
+            <div class="spe-cache-bar spe-c-l1 ng-inline-12">
               <span class="spe-cache-name">Cluster-Shared L1</span>
               <span class="spe-cache-sz">128 KB / 9-cluster</span>
             </div>
@@ -315,31 +316,31 @@
           <div class="spe-cache-conn">&#8595; miss</div>
           <div class="spe-cache-row">
             <div class="spe-cache-tier">L2</div>
-            <div class="spe-cache-bar spe-c-l2" style="flex:0.48">
+            <div class="spe-cache-bar spe-c-l2 ng-inline-13">
               <span class="spe-cache-name">Cluster-Shared L2</span>
               <span class="spe-cache-sz">2 MB / 9-cluster</span>
             </div>
           </div>
-          <div class="spe-cache-note" style="color:rgba(147,51,234,0.32);">9 cores share 2 MB &mdash; primary bulk cache for cluster-wide working sets</div>
+          <div class="spe-cache-note ng-inline-14">9 cores share 2 MB &mdash; primary bulk cache for cluster-wide working sets</div>
           <div class="spe-cache-conn">&#8595; miss</div>
           <div class="spe-cache-row">
             <div class="spe-cache-tier">L3</div>
-            <div class="spe-cache-bar spe-c-l3" style="flex:0.82">
+            <div class="spe-cache-bar spe-c-l3 ng-inline-15">
               <span class="spe-cache-name">Compute Tile Shared L3</span>
               <span class="spe-cache-sz">12 MB / tile &middot; 48 MB total</span>
             </div>
           </div>
-          <div class="spe-cache-note" style="color:rgba(147,51,234,0.28);">Shared across all UHP + DP + SPE on Compute Tile &mdash; 4 tiles &times; 12 MB</div>
+          <div class="spe-cache-note ng-inline-16">Shared across all UHP + DP + SPE on Compute Tile &mdash; 4 tiles &times; 12 MB</div>
           <div class="spe-cache-conn">&#8595; miss &rarr; FOveros 2.0 photonic fabric</div>
           <div class="spe-cache-row">
-            <div class="spe-cache-tier" style="color:rgba(192,132,252,0.4);">L4</div>
-            <div class="spe-cache-bar spe-c-bllc" style="flex:1">
+            <div class="spe-cache-tier ng-inline-17">L4</div>
+            <div class="spe-cache-bar spe-c-bllc ng-inline-18">
               <span class="spe-cache-name">Kache Kore&trade; bLLC</span>
               <span class="spe-cache-sz">4 GB &middot; APU-shared</span>
             </div>
           </div>
-          <div class="spe-cache-note" style="color:rgba(147,51,234,0.25);">Shared across all CPU, GPU, and NPU tiles &mdash; &minus;70% latency vs DRAM</div>
-          <div class="spe-cache-conn" style="color:rgba(147,51,234,0.2);">&#8595; miss &rarr; ZAM / DDR6</div>
+          <div class="spe-cache-note ng-inline-19">Shared across all CPU, GPU, and NPU tiles &mdash; &minus;70% latency vs DRAM</div>
+          <div class="spe-cache-conn ng-inline-20">&#8595; miss &rarr; ZAM / DDR6</div>
         </div>
       </div>
     </div>
@@ -351,33 +352,33 @@
   <div class="spe-two-col">
     <div>
       <div class="spe-section-label">Gen-on-Gen · vs Panther Lake E-Core</div>
-      <div class="spe-gog-block" style="margin-top:0;">
+      <div class="spe-gog-block ng-inline-21">
         <div class="spe-gog-title">Gen-on-Gen Performance · vs Panther Lake E-Core</div>
         <div class="spe-gog-row">
           <div class="spe-gog-metric">Core density</div>
-          <div class="spe-gog-track"><div class="spe-gog-fill" style="width:100%"></div></div>
+          <div class="spe-gog-track"><div class="spe-gog-fill ng-inline-9"></div></div>
           <div class="spe-gog-num">+320%</div>
         </div>
         <div class="spe-gog-row">
           <div class="spe-gog-metric">MT throughput</div>
-          <div class="spe-gog-track"><div class="spe-gog-fill" style="width:88%; opacity:0.88"></div></div>
+          <div class="spe-gog-track"><div class="spe-gog-fill ng-inline-22"></div></div>
           <div class="spe-gog-num">+280%</div>
         </div>
         <div class="spe-gog-row">
           <div class="spe-gog-metric">Perf/W (parallel)</div>
-          <div class="spe-gog-track"><div class="spe-gog-fill" style="width:52%; opacity:0.75"></div></div>
+          <div class="spe-gog-track"><div class="spe-gog-fill ng-inline-23"></div></div>
           <div class="spe-gog-num">+38%</div>
         </div>
         <div class="spe-gog-row">
           <div class="spe-gog-metric">Max thread count</div>
-          <div class="spe-gog-track"><div class="spe-gog-fill" style="width:100%"></div></div>
+          <div class="spe-gog-track"><div class="spe-gog-fill ng-inline-9"></div></div>
           <div class="spe-gog-num">+900%+</div>
         </div>
       </div>
     </div>
     <div>
       <div class="spe-section-label">Key Features</div>
-      <div class="spe-feature-grid" style="margin-top:0;">
+      <div class="spe-feature-grid ng-inline-21">
         <div class="spe-feature-row">
           <div class="spe-feature-icon">⚡</div>
           <div>

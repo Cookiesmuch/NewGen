@@ -1,0 +1,702 @@
+/* ====== KLANGKERNE DEEP-DIVE WRAPPER ====== */
+        .klang-dd-wrap {
+            position: relative;
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 120px 0;
+            background: linear-gradient(135deg, #050300 0%, #0A0600 100%);
+            overflow: hidden;
+        }
+
+        .klang-dd-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Subtle animated grid background */
+        .klang-dd-wrap::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(240, 184, 72, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(240, 184, 72, 0.04) 1px, transparent 1px);
+            background-size: 80px 80px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        .klang-dd-wrap > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ====== SECTION STRUCTURE ====== */
+        .klang-dd-section {
+            margin-bottom: 80px;
+        }
+
+        .klang-dd-section:last-of-type {
+            margin-bottom: 0;
+        }
+
+        /* ====== HERO SECTION ====== */
+        .klang-dd-hero {
+            text-align: center;
+            margin-bottom: 100px;
+        }
+
+        .klang-dd-eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #F0B848;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .klang-dd-hero h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 72px;
+            line-height: 1.1;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #F0B848 0%, #F5C842 50%, #E8A020 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .klang-dd-hero-subhead {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #C0C0C0;
+            margin-bottom: 40px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 300;
+        }
+
+        /* Badge cluster */
+        .klang-dd-badge-cluster {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 40px;
+        }
+
+        .klang-dd-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background: rgba(240, 184, 72, 0.08);
+            border: 1px solid rgba(240, 184, 72, 0.22);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #F0B848;
+            backdrop-filter: blur(10px);
+        }
+
+        .klang-dd-badge.collab {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: #FFFFFF;
+        }
+
+        /* ====== STAT BLOCK ====== */
+        .klang-dd-stat-block {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 80px;
+        }
+
+        .klang-dd-stat-cell {
+            padding: 40px;
+            background: rgba(240, 184, 72, 0.05);
+            border: 1px solid rgba(240, 184, 72, 0.22);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .klang-dd-stat-cell::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(240, 184, 72, 0), #F0B848, rgba(240, 184, 72, 0));
+        }
+
+        .klang-dd-stat-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 42px;
+            font-weight: 400;
+            color: #F5C842;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .klang-dd-stat-label {
+            font-size: 14px;
+            color: #B0B0B0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        /* ====== PROBLEM/SOLUTION SECTION ====== */
+        .klang-dd-problem-solve {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 80px;
+            align-items: center;
+        }
+
+        .klang-dd-ps-column h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            color: #F0B848;
+            margin-bottom: 30px;
+            letter-spacing: 0.5px;
+        }
+
+        .klang-dd-ps-column.old h3 {
+            color: #D0746F;
+        }
+
+        .klang-dd-ps-column.new h3 {
+            color: #6FD08F;
+        }
+
+        .klang-dd-stack {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(240, 184, 72, 0.15);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .klang-dd-stack-item {
+            padding: 12px 16px;
+            background: rgba(240, 184, 72, 0.04);
+            border-left: 2px solid rgba(240, 184, 72, 0.22);
+            margin-bottom: 10px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #D0D0D0;
+            font-family: 'IBM Plex Mono', monospace;
+            border-radius: 2px;
+        }
+
+        .klang-dd-stack-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .klang-dd-ps-meta {
+            background: rgba(240, 184, 72, 0.08);
+            border-left: 3px solid #F0B848;
+            padding: 20px;
+            border-radius: 2px;
+            font-size: 13px;
+            color: #C0C0C0;
+            margin-top: 20px;
+        }
+
+        .klang-dd-ps-meta strong {
+            color: #F0B848;
+        }
+
+        @media (max-width: 900px) {
+            .klang-dd-problem-solve {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        /* ====== B&O COLLABORATION SECTION ====== */
+        .klang-dd-bo-collab {
+            margin-bottom: 80px;
+        }
+
+        .klang-dd-bo-collab h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px;
+            color: #F0B848;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
+
+        .klang-dd-bo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .klang-dd-bo-card {
+            background: rgba(240, 184, 72, 0.06);
+            border: 1px solid rgba(240, 184, 72, 0.18);
+            border-radius: 8px;
+            padding: 40px 30px;
+            backdrop-filter: blur(5px);
+            position: relative;
+        }
+
+        .klang-dd-bo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #F0B848, #C8922A);
+        }
+
+        .klang-dd-bo-card h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            color: #F0B848;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+            font-weight: 400;
+        }
+
+        .klang-dd-bo-card p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #B8B8B8;
+        }
+
+        .klang-dd-bo-context {
+            background: linear-gradient(135deg, rgba(240, 184, 72, 0.08), rgba(200, 146, 42, 0.04));
+            border: 1px solid rgba(240, 184, 72, 0.2);
+            border-radius: 8px;
+            padding: 40px;
+            margin-top: 50px;
+        }
+
+        .klang-dd-bo-context h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            color: #FFFFFF;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .klang-dd-bo-context p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #C0C0C0;
+            margin-bottom: 12px;
+        }
+
+        .klang-dd-bo-context p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ====== DOLBY ATMOS SECTION ====== */
+        .klang-dd-atmos {
+            margin-bottom: 80px;
+        }
+
+        .klang-dd-atmos h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px;
+            color: #F0B848;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
+
+        .klang-dd-atmos-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .klang-dd-atmos-col {
+            background: rgba(240, 184, 72, 0.05);
+            border: 1px solid rgba(240, 184, 72, 0.18);
+            padding: 40px;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+        }
+
+        .klang-dd-atmos-col h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 26px;
+            color: #F0B848;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+            font-weight: 400;
+        }
+
+        .klang-dd-atmos-col p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #B8B8B8;
+            margin-bottom: 12px;
+        }
+
+        .klang-dd-atmos-col p:last-child {
+            margin-bottom: 0;
+        }
+
+        .klang-dd-atmos-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .klang-dd-atmos-list li {
+            padding: 10px 0;
+            font-size: 13px;
+            color: #C0C0C0;
+            border-bottom: 1px solid rgba(240, 184, 72, 0.1);
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .klang-dd-atmos-list li:last-child {
+            border-bottom: none;
+        }
+
+        .klang-dd-atmos-list li::before {
+            content: '▸';
+            color: #F0B848;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 900px) {
+            .klang-dd-atmos-row {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        /* ====== SOUND API SECTION ====== */
+        .klang-dd-api {
+            margin-bottom: 80px;
+        }
+
+        .klang-dd-api h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px;
+            color: #F0B848;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
+
+        .klang-dd-api-desc {
+            background: rgba(240, 184, 72, 0.06);
+            border: 1px solid rgba(240, 184, 72, 0.18);
+            border-radius: 8px;
+            padding: 40px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(5px);
+        }
+
+        .klang-dd-api-desc p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #C0C0C0;
+            margin-bottom: 12px;
+        }
+
+        .klang-dd-api-desc p:last-child {
+            margin-bottom: 0;
+        }
+
+        .klang-dd-api-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .klang-dd-api-feature {
+            background: rgba(240, 184, 72, 0.04);
+            border: 1px solid rgba(240, 184, 72, 0.15);
+            border-radius: 6px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .klang-dd-api-feature::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #F0B848, #C8922A);
+            border-radius: 6px 0 0 6px;
+        }
+
+        .klang-dd-api-feature-name {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #F0B848;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .klang-dd-api-feature-desc {
+            font-size: 13px;
+            color: #B0B0B0;
+            line-height: 1.6;
+        }
+
+        .klang-dd-api-compat {
+            background: linear-gradient(135deg, rgba(200, 146, 42, 0.08), rgba(240, 184, 72, 0.04));
+            border: 1px solid rgba(240, 184, 72, 0.2);
+            border-radius: 8px;
+            padding: 40px;
+            margin-top: 40px;
+        }
+
+        .klang-dd-api-compat h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            color: #FFFFFF;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .klang-dd-api-compat p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #C0C0C0;
+        }
+
+        /* ====== SPEC TABLE ====== */
+        .klang-dd-specs {
+            margin-bottom: 80px;
+        }
+
+        .klang-dd-specs h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px;
+            color: #F0B848;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
+
+        .klang-dd-spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(240, 184, 72, 0.03);
+            border: 1px solid rgba(240, 184, 72, 0.18);
+            border-radius: 8px;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .klang-dd-spec-table thead {
+            background: rgba(240, 184, 72, 0.1);
+            border-bottom: 2px solid rgba(240, 184, 72, 0.22);
+        }
+
+        .klang-dd-spec-table th {
+            padding: 20px;
+            text-align: left;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            color: #F0B848;
+            font-weight: 400;
+            text-transform: uppercase;
+        }
+
+        .klang-dd-spec-table td {
+            padding: 18px 20px;
+            border-top: 1px solid rgba(240, 184, 72, 0.08);
+            font-size: 13px;
+            color: #C0C0C0;
+            font-weight: 400;
+        }
+
+        .klang-dd-spec-table tr:hover {
+            background: rgba(240, 184, 72, 0.05);
+        }
+
+        .klang-dd-spec-label {
+            font-weight: 600;
+            color: #D0D0D0;
+        }
+
+        /* ====== USE CASE GRID ====== */
+        .klang-dd-usecases {
+            margin-bottom: 0;
+        }
+
+        .klang-dd-usecases h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px;
+            color: #F0B848;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
+
+        .klang-dd-usecase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .klang-dd-usecase {
+            position: relative;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(240, 184, 72, 0.08), rgba(240, 184, 72, 0.03));
+            border: 1px solid rgba(240, 184, 72, 0.22);
+            border-radius: 8px;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .klang-dd-usecase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 100% 0%, rgba(240, 184, 72, 0.1), transparent 70%);
+            pointer-events: none;
+        }
+
+        .klang-dd-usecase:hover {
+            border-color: rgba(240, 184, 72, 0.4);
+            background: linear-gradient(135deg, rgba(240, 184, 72, 0.12), rgba(240, 184, 72, 0.06));
+            box-shadow: 0 10px 40px rgba(240, 184, 72, 0.1);
+        }
+
+        .klang-dd-usecase-icon {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            color: #F0B848;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        .klang-dd-usecase h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+
+        .klang-dd-usecase p {
+            font-size: 13px;
+            color: #B0B0B0;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ====== SECTION DIVIDER ====== */
+        .klang-dd-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(240, 184, 72, 0.22), transparent);
+            margin: 120px 0;
+        }
+
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 768px) {
+            .klang-dd-wrap {
+                padding: 80px 24px;
+            }
+
+            .klang-dd-hero h1 {
+                font-size: 48px;
+            }
+
+            .klang-dd-hero-subhead {
+                font-size: 16px;
+            }
+
+            .klang-dd-stat-block {
+                grid-template-columns: 1fr;
+            }
+
+            .klang-dd-ps-column h3,
+            .klang-dd-bo-collab h2,
+            .klang-dd-atmos h2,
+            .klang-dd-api h2,
+            .klang-dd-specs h2,
+            .klang-dd-usecases h2 {
+                font-size: 32px;
+            }
+
+            .klang-dd-problem-solve {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .klang-dd-wrap {
+                padding: 60px 16px;
+            }
+
+            .klang-dd-hero h1 {
+                font-size: 36px;
+            }
+
+            .klang-dd-badge-cluster {
+                gap: 8px;
+            }
+
+            .klang-dd-badge {
+                font-size: 11px;
+                padding: 6px 12px;
+            }
+        }
+
+.ng-inline-1 { font-family: var(--font-display); font-size: 32px; line-height: 1.4; color: #F0B848; margin: 20px 0 40px 0; letter-spacing: 0.5px; }
+.ng-inline-2 { background: rgba(240, 184, 72, 0.04); border-left-color: rgba(240, 184, 72, 0.5); margin-top: 12px; }
+.ng-inline-3 { margin-top: 20px; }
+.ng-inline-4 { margin-top: 16px; }
+.ng-inline-5 { background: rgba(240, 184, 72, 0.05); border: 1px solid rgba(240, 184, 72, 0.18); border-radius: 8px; padding: 30px; margin-top: 40px; }
+.ng-inline-6 { font-size: 13px; color: #B8B8B8; line-height: 1.8; }
+.ng-inline-7 { color: #F0B848; }
+.ng-inline-8 { margin-bottom: 20px; }
+.ng-inline-9 { font-style: italic; color: #A8A8A8; }
+.ng-inline-10 { background: linear-gradient(135deg, rgba(240, 184, 72, 0.06), rgba(240, 184, 72, 0.02)); border: 1px solid rgba(240, 184, 72, 0.18); border-radius: 8px; padding: 40px; margin-bottom: 40px; margin-top: 40px; }
+.ng-inline-11 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #F0B848; margin-bottom: 24px; letter-spacing: 0.5px; }
+.ng-inline-12 { font-size: 14px; line-height: 1.8; color: #C0C0C0; margin-bottom: 20px; }
+.ng-inline-13 { background: rgba(0, 0, 0, 0.2); border-left: 3px solid #D0746F; padding: 20px; border-radius: 4px; margin-bottom: 20px; }
+.ng-inline-14 { margin-bottom: 16px; }
+.ng-inline-15 { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #D0746F; font-weight: 600; margin-bottom: 8px; }
+.ng-inline-16 { list-style: none; margin: 0; }
+.ng-inline-17 { padding: 6px 0; font-size: 13px; color: #B8B8B8; }
+.ng-inline-18 { background: rgba(111, 208, 143, 0.08); border-left: 3px solid #6FD08F; padding: 20px; border-radius: 4px; margin-bottom: 0; }
+.ng-inline-19 { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #6FD08F; font-weight: 600; margin-bottom: 8px; }
+.ng-inline-20 { font-size: 13px; line-height: 1.7; color: #A8A8A8; margin-top: 20px; font-style: italic; }
+.ng-inline-21 { margin-top: 16px; font-size: 13px; color: #A8A8A8; }

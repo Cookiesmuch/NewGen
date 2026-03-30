@@ -1,5 +1,6 @@
+<link rel="stylesheet" href="eventide.tile.z_angle_memory.html.css">
 <div class="zam-dd-wrap">
-<div class="section" style="position:relative; z-index:1;">
+<div class="section ng-inline-1">
 
     <!-- ── Section Header ── -->
     <div class="zam-dd-eyebrow">Memory Architecture &middot; Intel Z-Angle Memory &middot; Deep Dive</div>
@@ -49,10 +50,10 @@
     <!-- ═══════════════════════════════════════════════════════════
          BLOCK 01 — ZAM Architecture
          ═══════════════════════════════════════════════════════════ -->
-    <div class="zam-dd-block" style="flex-wrap:wrap;">
+    <div class="zam-dd-block ng-inline-2">
         <div class="zam-dd-num">01</div>
 
-        <div style="flex:1; min-width:0;">
+        <div class="ng-inline-3">
             <div class="zam-dd-label">CHIP TECHNOLOGY &middot; BANDWIDTH-OPTIMIZED MEMORY</div>
             <div class="zam-dd-name">Z-Angle Memory</div>
             <p class="zam-dd-body">
@@ -66,7 +67,7 @@
                 maximising the number of parallel data channels per unit area &mdash; achieving bandwidth
                 density that conventional planar DRAM cannot approach.
             </p>
-            <p class="zam-dd-body" style="margin-top:14px;">
+            <p class="zam-dd-body ng-inline-4">
                 Each ZAM stack contains multiple DRAM dies connected via <strong>wide I/O interfaces</strong>,
                 delivering 2&ndash;3&nbsp;TB/s per controller &mdash; bandwidth that dwarfs DDR6 by an order
                 of magnitude and exceeds discrete GDDR7 by roughly 3&times;. The chips mount directly on the
@@ -106,23 +107,23 @@
                     <div class="gog-label">ZAM vs GDDR7 (DISCRETE GPU MEMORY)</div>
                     <div class="gog-row">
                         <div class="gog-metric">Peak bandwidth</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:95%; background:#4DD9EC;"></div></div>
-                        <div class="gog-num" style="color:#4DD9EC;">+~3&times;</div>
+                        <div class="gog-track"><div class="gog-fill ng-inline-5"></div></div>
+                        <div class="gog-num ng-inline-6">+~3&times;</div>
                     </div>
                     <div class="gog-row">
                         <div class="gog-metric">Power efficiency</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:88%; background:#4DD9EC;"></div></div>
-                        <div class="gog-num" style="color:#4DD9EC;">&minus;75%</div>
+                        <div class="gog-track"><div class="gog-fill ng-inline-7"></div></div>
+                        <div class="gog-num ng-inline-6">&minus;75%</div>
                     </div>
                     <div class="gog-row">
                         <div class="gog-metric">BW density/mm&sup2;</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:80%; background:#4DD9EC;"></div></div>
-                        <div class="gog-num" style="color:#4DD9EC;">+~2.5&times;</div>
+                        <div class="gog-track"><div class="gog-fill ng-inline-8"></div></div>
+                        <div class="gog-num ng-inline-6">+~2.5&times;</div>
                     </div>
                     <div class="gog-row">
                         <div class="gog-metric">Raw latency</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:35%; background:#F87171;"></div></div>
-                        <div class="gog-num" style="color:#F87171;">+40%</div>
+                        <div class="gog-track"><div class="gog-fill ng-inline-9"></div></div>
+                        <div class="gog-num ng-inline-10">+40%</div>
                     </div>
                 </div>
             </div>
@@ -149,10 +150,10 @@
     <!-- ═══════════════════════════════════════════════════════════
          BLOCK 02 — Memory Controller Tile
          ═══════════════════════════════════════════════════════════ -->
-    <div class="zam-dd-block" style="flex-wrap:wrap;">
+    <div class="zam-dd-block ng-inline-2">
         <div class="zam-dd-num">02</div>
 
-        <div style="flex:1; min-width:0;">
+        <div class="ng-inline-3">
             <div class="zam-dd-label">CONTROLLER SILICON &middot; INTEL 14A-E PROCESS</div>
             <div class="zam-dd-name">Memory Controller Tile</div>
             <p class="zam-dd-body">
@@ -163,7 +164,7 @@
                 <strong>unified address space</strong> to all compute tiles &mdash; every CPU core, every
                 Xe5 shader, every NPU engine sees the same flat memory map.
             </p>
-            <p class="zam-dd-body" style="margin-top:14px;">
+            <p class="zam-dd-body ng-inline-4">
                 The controller tile connects to the ZAM stacks through the FOveros&nbsp;2.0 photonic
                 substrate, using <strong>silicon photonic waveguides</strong> rather than electrical traces.
                 Memory requests travel at the speed of light through on-package optical interconnects with
@@ -203,18 +204,18 @@
                     <div class="gog-label">vs CONVENTIONAL DDR5 MEMORY CONTROLLER</div>
                     <div class="gog-row">
                         <div class="gog-metric">Aggregate BW</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:95%; background:#4DD9EC;"></div></div>
-                        <div class="gog-num" style="color:#4DD9EC;">+~8&times;</div>
+                        <div class="gog-track"><div class="gog-fill ng-inline-5"></div></div>
+                        <div class="gog-num ng-inline-6">+~8&times;</div>
                     </div>
                     <div class="gog-row">
                         <div class="gog-metric">Controller power</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:72%; background:#4DD9EC;"></div></div>
-                        <div class="gog-num" style="color:#4DD9EC;">&minus;60%</div>
+                        <div class="gog-track"><div class="gog-fill ng-inline-11"></div></div>
+                        <div class="gog-num ng-inline-6">&minus;60%</div>
                     </div>
                     <div class="gog-row">
                         <div class="gog-metric">HW scheduling</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:65%; background:#4DD9EC;"></div></div>
-                        <div class="gog-num" style="color:#4DD9EC;">Per-tile</div>
+                        <div class="gog-track"><div class="gog-fill ng-inline-12"></div></div>
+                        <div class="gog-num ng-inline-6">Per-tile</div>
                     </div>
                 </div>
             </div>
@@ -239,10 +240,10 @@
     <!-- ═══════════════════════════════════════════════════════════
          BLOCK 03 — DDR6 / LPDDR6X Integration
          ═══════════════════════════════════════════════════════════ -->
-    <div class="zam-dd-block" style="flex-wrap:wrap;">
+    <div class="zam-dd-block ng-inline-2">
         <div class="zam-dd-num">03</div>
 
-        <div style="flex:1; min-width:0;">
+        <div class="ng-inline-3">
             <div class="zam-dd-label">CONVENTIONAL MEMORY &middot; HIGHER-SKU EXPANSION</div>
             <div class="zam-dd-name">DDR6 / LPDDR6X</div>
             <p class="zam-dd-body">
@@ -255,7 +256,7 @@
                 DirectStorage&nbsp;2.0 pipeline where entire game worlds can be pre-loaded before streaming
                 into ZAM at runtime.
             </p>
-            <p class="zam-dd-body" style="margin-top:14px;">
+            <p class="zam-dd-body ng-inline-4">
                 DDR6-9600+ represents the fastest conventional memory standard, offering <strong>lower
                 latency than ZAM</strong> but substantially lower bandwidth per channel. For
                 latency-sensitive CPU workloads with small working sets that miss the bLLC, DDR6 provides
@@ -290,18 +291,18 @@
                     <div class="gog-label">DDR6-9600 vs DDR5-6400 (PRIOR GEN)</div>
                     <div class="gog-row">
                         <div class="gog-metric">Transfer rate</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:78%; background:#4DD9EC;"></div></div>
-                        <div class="gog-num" style="color:#4DD9EC;">+50%</div>
+                        <div class="gog-track"><div class="gog-fill ng-inline-13"></div></div>
+                        <div class="gog-num ng-inline-6">+50%</div>
                     </div>
                     <div class="gog-row">
                         <div class="gog-metric">BW per channel</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:75%; background:#4DD9EC;"></div></div>
-                        <div class="gog-num" style="color:#4DD9EC;">+50%</div>
+                        <div class="gog-track"><div class="gog-fill ng-inline-14"></div></div>
+                        <div class="gog-num ng-inline-6">+50%</div>
                     </div>
                     <div class="gog-row">
                         <div class="gog-metric">Max capacity</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:65%; background:#4DD9EC;"></div></div>
-                        <div class="gog-num" style="color:#4DD9EC;">1 TB</div>
+                        <div class="gog-track"><div class="gog-fill ng-inline-12"></div></div>
+                        <div class="gog-num ng-inline-6">1 TB</div>
                     </div>
                 </div>
             </div>
@@ -326,10 +327,10 @@
     <!-- ═══════════════════════════════════════════════════════════
          BLOCK 04 — Unified Memory Architecture
          ═══════════════════════════════════════════════════════════ -->
-    <div class="zam-dd-block" style="flex-wrap:wrap;">
+    <div class="zam-dd-block ng-inline-2">
         <div class="zam-dd-num">04</div>
 
-        <div style="flex:1; min-width:0;">
+        <div class="ng-inline-3">
             <div class="zam-dd-label">COHERENCY &middot; APU-WIDE MEMORY SHARING</div>
             <div class="zam-dd-name">Unified Memory</div>
             <p class="zam-dd-body">
@@ -343,7 +344,7 @@
                 GPU&rsquo;s view of that address is automatically updated through the coherency protocol
                 &mdash; no memcpy, no staging buffer, no driver intervention.
             </p>
-            <p class="zam-dd-body" style="margin-top:14px;">
+            <p class="zam-dd-body ng-inline-4">
                 The elimination of CPU-to-GPU copies has profound implications for real-world workloads. In
                 traditional discrete GPU architectures, transferring a 256&nbsp;MB texture from system memory
                 to GPU memory takes measurable time and consumes PCIe bandwidth. On Eventide, the texture is
@@ -381,18 +382,18 @@
                     <div class="gog-label">vs DISCRETE GPU (SEPARATE VRAM)</div>
                     <div class="gog-row">
                         <div class="gog-metric">Copy overhead</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:100%; background:#4DD9EC;"></div></div>
-                        <div class="gog-num" style="color:#4DD9EC;">Elim.</div>
+                        <div class="gog-track"><div class="gog-fill ng-inline-15"></div></div>
+                        <div class="gog-num ng-inline-6">Elim.</div>
                     </div>
                     <div class="gog-row">
                         <div class="gog-metric">Memory util.</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:85%; background:#4DD9EC;"></div></div>
-                        <div class="gog-num" style="color:#4DD9EC;">+~40%</div>
+                        <div class="gog-track"><div class="gog-fill ng-inline-16"></div></div>
+                        <div class="gog-num ng-inline-6">+~40%</div>
                     </div>
                     <div class="gog-row">
                         <div class="gog-metric">AI model load</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:78%; background:#4DD9EC;"></div></div>
-                        <div class="gog-num" style="color:#4DD9EC;">&minus;90%</div>
+                        <div class="gog-track"><div class="gog-fill ng-inline-13"></div></div>
+                        <div class="gog-num ng-inline-6">&minus;90%</div>
                     </div>
                 </div>
             </div>
@@ -418,10 +419,10 @@
     <!-- ═══════════════════════════════════════════════════════════
          BLOCK 05 — Intel DirectStorage 2.0
          ═══════════════════════════════════════════════════════════ -->
-    <div class="zam-dd-block" style="flex-wrap:wrap; border-bottom:none;">
+    <div class="zam-dd-block ng-inline-17">
         <div class="zam-dd-num">05</div>
 
-        <div style="flex:1; min-width:0;">
+        <div class="ng-inline-3">
             <div class="zam-dd-label">DATA PIPELINE &middot; STORAGE TO CACHE</div>
             <div class="zam-dd-name">DirectStorage 2.0</div>
             <p class="zam-dd-body">
@@ -434,7 +435,7 @@
                 pinned in the <strong>Kache Kore&trade; 4&nbsp;GB bLLC</strong> at approximately 8&nbsp;ns
                 latency, comparable to dedicated GDDR7 on discrete GPUs.
             </p>
-            <p class="zam-dd-body" style="margin-top:14px;">
+            <p class="zam-dd-body ng-inline-4">
                 What makes this &ldquo;vertical integration&rdquo; is that Intel controls every layer: the
                 NVMe controller, the PCIe&nbsp;6.0 PHY, the DDR6 memory controller, the ZAM controllers, the
                 Kache Kore bLLC, and the GPU L2/L1 caches. <strong>Every handoff between tiers is optimised
@@ -471,25 +472,25 @@
                     <div class="gog-label">vs CONVENTIONAL DIRECTSTORAGE 1.x</div>
                     <div class="gog-row">
                         <div class="gog-metric">Asset load latency</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:88%; background:#4DD9EC;"></div></div>
-                        <div class="gog-num" style="color:#4DD9EC;">&minus;85%</div>
+                        <div class="gog-track"><div class="gog-fill ng-inline-7"></div></div>
+                        <div class="gog-num ng-inline-6">&minus;85%</div>
                     </div>
                     <div class="gog-row">
                         <div class="gog-metric">Shader stall freq</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:95%; background:#4DD9EC;"></div></div>
-                        <div class="gog-num" style="color:#4DD9EC;">&minus;95%</div>
+                        <div class="gog-track"><div class="gog-fill ng-inline-5"></div></div>
+                        <div class="gog-num ng-inline-6">&minus;95%</div>
                     </div>
                     <div class="gog-row">
                         <div class="gog-metric">CPU staging</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:100%; background:#4DD9EC;"></div></div>
-                        <div class="gog-num" style="color:#4DD9EC;">Elim.</div>
+                        <div class="gog-track"><div class="gog-fill ng-inline-15"></div></div>
+                        <div class="gog-num ng-inline-6">Elim.</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- SVG Memory Hierarchy Diagram (replaces aside) -->
-        <div class="zam-dd-aside" style="width:320px;">
+        <div class="zam-dd-aside ng-inline-18">
             <div class="zam-dd-pipeline-wrap">
                 <div class="zam-dd-pipeline-label">Memory Hierarchy &middot; Data Flow</div>
                 <svg class="zam-dd-pipeline-svg" viewBox="0 0 280 440" fill="none" xmlns="http://www.w3.org/2000/svg">

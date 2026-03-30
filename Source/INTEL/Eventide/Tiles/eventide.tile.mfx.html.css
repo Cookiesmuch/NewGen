@@ -1,0 +1,537 @@
+:root {
+      --mfx-primary: #C084FC;
+      --mfx-primary-dark: #A066E8;
+      --mfx-stat-num: #D8A4FF;
+      --mfx-bg-dark: #060010;
+      --mfx-bg-base: #0A0018;
+      --mfx-grid-glow: rgba(192, 132, 252, 0.03);
+      --mfx-border-accent: rgba(192, 132, 252, 0.20);
+      --mfx-border-light: rgba(192, 132, 252, 0.10);
+      --mfx-text-primary: #FFFFFF;
+      --mfx-text-secondary: #E0D5FF;
+      --mfx-text-tertiary: #B8A0D0;
+    }
+
+    /* ========================================
+       MFX DEEP-DIVE WRAPPER
+       ======================================== */
+    .mfx-dd-wrap {
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: 80px 0;
+      background: linear-gradient(135deg, var(--mfx-bg-dark) 0%, var(--mfx-bg-base) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mfx-dd-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Subtle grid background */
+    .mfx-dd-wrap::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image:
+        linear-gradient(0deg, var(--mfx-grid-glow) 1px, transparent 1px),
+        linear-gradient(90deg, var(--mfx-grid-glow) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .mfx-dd-wrap > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ========================================
+       INSERT LOCATION COMMENT
+       ======================================== */
+    /* INSERT LOCATION: After the BionzXR deep-dive and its divider */
+
+    /* ========================================
+       SECTION BASE STYLES
+       ======================================== */
+    .mfx-dd-wrap .section {
+      margin-bottom: 80px;
+    }
+
+    .mfx-dd-wrap .section:last-of-type {
+      margin-bottom: 40px;
+    }
+
+    /* ========================================
+       HERO SECTION
+       ======================================== */
+    .mfx-dd-hero {
+      margin-bottom: 100px;
+      text-align: center;
+    }
+
+    .mfx-dd-eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--mfx-primary);
+      margin-bottom: 16px;
+      display: inline-block;
+      padding: 8px 16px;
+      border: 1px solid var(--mfx-border-accent);
+      border-radius: 4px;
+      background: rgba(192, 132, 252, 0.05);
+    }
+
+    .mfx-dd-headline {
+      font-family: 'Bebas Neue', serif;
+      font-size: 72px;
+      font-weight: 400;
+      letter-spacing: 1px;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--mfx-primary) 0%, var(--mfx-stat-num) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .mfx-dd-subhead {
+      font-size: 18px;
+      color: var(--mfx-text-secondary);
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ========================================
+       STAT BLOCK
+       ======================================== */
+    .mfx-dd-stat-block {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+      margin-bottom: 80px;
+      padding: 48px;
+      border: 1px solid var(--mfx-border-accent);
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(192, 132, 252, 0.03) 0%, rgba(160, 102, 232, 0.02) 100%);
+      position: relative;
+    }
+
+    .mfx-dd-stat-block::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border: 1px solid var(--mfx-border-accent);
+      border-radius: 8px;
+      background: radial-gradient(circle at top right, rgba(192, 132, 252, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .mfx-dd-stat {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .mfx-dd-stat-value {
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--mfx-stat-num);
+      margin-bottom: 12px;
+      font-family: 'Bebas Neue', serif;
+      letter-spacing: 0.5px;
+    }
+
+    .mfx-dd-stat-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--mfx-text-tertiary);
+    }
+
+    /* ========================================
+       TWO-COLUMN SECTION
+       ======================================== */
+    .mfx-dd-two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: start;
+      margin-bottom: 80px;
+    }
+
+    .mfx-dd-left {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .mfx-dd-left p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--mfx-text-secondary);
+    }
+
+    .mfx-dd-left strong {
+      color: var(--mfx-primary);
+      font-weight: 600;
+    }
+
+    /* Spec Table */
+    .mfx-dd-spec-table {
+      border: 1px solid var(--mfx-border-accent);
+      border-radius: 8px;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(192, 132, 252, 0.02) 0%, transparent 100%);
+    }
+
+    .mfx-dd-spec-table table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .mfx-dd-spec-table th {
+      padding: 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--mfx-border-accent);
+      background: rgba(192, 132, 252, 0.05);
+      font-weight: 600;
+      color: var(--mfx-primary);
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .mfx-dd-spec-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--mfx-border-light);
+      color: var(--mfx-text-secondary);
+    }
+
+    .mfx-dd-spec-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .mfx-dd-spec-table tr:hover {
+      background: rgba(192, 132, 252, 0.03);
+    }
+
+    .mfx-dd-spec-table td:first-child {
+      font-weight: 600;
+      color: var(--mfx-text-primary);
+    }
+
+    /* ========================================
+       DECODE CODEC TABLE
+       ======================================== */
+    .mfx-dd-codec-section {
+      margin-bottom: 80px;
+    }
+
+    .mfx-dd-section-title {
+      font-family: 'Bebas Neue', serif;
+      font-size: 32px;
+      font-weight: 400;
+      letter-spacing: 1px;
+      margin-bottom: 32px;
+      color: var(--mfx-text-primary);
+      position: relative;
+      padding-bottom: 16px;
+    }
+
+    .mfx-dd-section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--mfx-primary) 0%, transparent 100%);
+    }
+
+    .mfx-dd-codec-table {
+      border: 1px solid var(--mfx-border-accent);
+      border-radius: 8px;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(192, 132, 252, 0.02) 0%, transparent 100%);
+    }
+
+    .mfx-dd-codec-table table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .mfx-dd-codec-table th {
+      padding: 18px;
+      text-align: left;
+      border-bottom: 1px solid var(--mfx-border-accent);
+      background: rgba(192, 132, 252, 0.05);
+      font-weight: 600;
+      color: var(--mfx-primary);
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .mfx-dd-codec-table td {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--mfx-border-light);
+      color: var(--mfx-text-secondary);
+    }
+
+    .mfx-dd-codec-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .mfx-dd-codec-table tr:hover {
+      background: rgba(192, 132, 252, 0.03);
+    }
+
+    .mfx-dd-codec-table td:first-child {
+      font-weight: 600;
+      color: var(--mfx-primary);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    /* ========================================
+       POWER EFFICIENCY SECTION
+       ======================================== */
+    .mfx-dd-power-section {
+      margin-bottom: 80px;
+    }
+
+    .mfx-dd-power-bars {
+      display: flex;
+      gap: 40px;
+      align-items: flex-end;
+    }
+
+    .mfx-dd-power-item {
+      flex: 1;
+      text-align: center;
+    }
+
+    .mfx-dd-power-bar-container {
+      height: 300px;
+      background: rgba(192, 132, 252, 0.05);
+      border: 1px solid var(--mfx-border-light);
+      border-radius: 8px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .mfx-dd-power-bar {
+      width: 70%;
+      background: linear-gradient(180deg, var(--mfx-primary) 0%, var(--mfx-primary-dark) 100%);
+      border-radius: 4px 4px 0 0;
+      position: relative;
+      box-shadow: 0 0 20px rgba(192, 132, 252, 0.4);
+    }
+
+    .mfx-dd-power-bar.alt {
+      background: linear-gradient(180deg, #7C3AED 0%, #5B21B6 100%);
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+    }
+
+    .mfx-dd-power-bar.reduced {
+      background: linear-gradient(180deg, #10B981 0%, #059669 100%);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+    }
+
+    .mfx-dd-power-value {
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--mfx-stat-num);
+      font-family: 'Bebas Neue', serif;
+    }
+
+    .mfx-dd-power-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--mfx-text-primary);
+      margin-bottom: 8px;
+    }
+
+    .mfx-dd-power-desc {
+      font-size: 12px;
+      color: var(--mfx-text-tertiary);
+    }
+
+    /* ========================================
+       USE-CASE GRID
+       ======================================== */
+    .mfx-dd-usecase-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-bottom: 80px;
+    }
+
+    .mfx-dd-usecase-card {
+      padding: 32px;
+      border: 1px solid var(--mfx-border-accent);
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(192, 132, 252, 0.03) 0%, rgba(160, 102, 232, 0.01) 100%);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .mfx-dd-usecase-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--mfx-primary) 0%, transparent 100%);
+    }
+
+    .mfx-dd-usecase-card:hover {
+      border-color: var(--mfx-primary);
+      background: linear-gradient(135deg, rgba(192, 132, 252, 0.08) 0%, rgba(160, 102, 232, 0.04) 100%);
+      box-shadow: 0 0 30px rgba(192, 132, 252, 0.15);
+    }
+
+    .mfx-dd-usecase-icon {
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+
+    .mfx-dd-usecase-title {
+      font-family: 'Bebas Neue', serif;
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      color: var(--mfx-text-primary);
+    }
+
+    .mfx-dd-usecase-desc {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--mfx-text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .mfx-dd-usecase-benefit {
+      font-size: 12px;
+      color: var(--mfx-primary);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* ========================================
+       COLLAB BADGE
+       ======================================== */
+    .mfx-dd-collab-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border: 1px solid var(--mfx-border-accent);
+      border-radius: 4px;
+      background: rgba(192, 132, 252, 0.05);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--mfx-primary);
+      margin-bottom: 40px;
+    }
+
+    .mfx-dd-collab-badge::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--mfx-primary);
+    }
+
+    /* ========================================
+       SECTION DIVIDER
+       ======================================== */
+    .mfx-dd-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--mfx-border-accent) 50%, transparent 100%);
+      margin: 80px 0;
+    }
+
+    /* ========================================
+       RESPONSIVE
+       ======================================== */
+    @media (max-width: 1024px) {
+      .mfx-dd-two-column {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .mfx-dd-usecase-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .mfx-dd-power-bars {
+        gap: 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .mfx-dd-wrap {
+        padding: 40px 24px;
+      }
+
+      .mfx-dd-headline {
+        font-size: 48px;
+      }
+
+      .mfx-dd-stat-block {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 32px;
+      }
+
+      .mfx-dd-usecase-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mfx-dd-power-bars {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .mfx-dd-section-title {
+        font-size: 24px;
+      }
+    }
+
+.ng-inline-1 { margin-bottom: 48px; color: var(--mfx-text-secondary); font-size: 14px; }
+.ng-inline-2 { height: 100%; position: relative; }
+.ng-inline-3 { height: 65%; position: relative; }
+.ng-inline-4 { height: 62%; position: relative; }

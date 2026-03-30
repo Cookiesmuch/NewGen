@@ -1,5 +1,6 @@
+<link rel="stylesheet" href="eventide.CPU.sunset_cove.html.css">
 <div class="dp-showcase-wrap">
-<div class="section" style="position:relative; z-index:1;">
+<div class="section ng-inline-1">
 
   <!-- HEADER -->
   <div class="dp-eyebrow">Compute Tile · Intel 04A · DP Core · Architecture Deep Dive</div>
@@ -56,7 +57,7 @@
     </div>
     <div>
       <div class="dp-info-card">
-        <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:0.18em;color:rgba(96,180,255,0.48);margin-bottom:14px;">FULL CORE SPECIFICATION</div>
+        <div class="ng-inline-2">FULL CORE SPECIFICATION</div>
         <div class="dp-spec-row"><span class="dp-spec-key">Core class</span><span class="dp-spec-val cool">DP — Dense Performance</span></div>
         <div class="dp-spec-row"><span class="dp-spec-key">Codename</span><span class="dp-spec-val cool">Sunset Cove</span></div>
         <div class="dp-spec-row"><span class="dp-spec-key">Process node</span><span class="dp-spec-val">Intel 04A · 0.4nm-class GAA</span></div>
@@ -145,7 +146,7 @@
     <div>
       <div class="dp-pipeline-wrap">
         <div class="dp-pipeline-label">SUNSET COVE · P-SMT PIPELINE DIAGRAM</div>
-        <svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+        <svg viewBox="0 0 520 420" xmlns="http://www.w3.org/2000/svg" class="ng-inline-3">
           <defs>
             <marker id="arr-dp" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
               <path d="M0,0 L5,2.5 L0,5 Z" fill="rgba(96,180,255,0.45)"/>
@@ -221,13 +222,13 @@
     </div>
     <div>
       <!-- Cache hierarchy -->
-      <div class="dp-section-label" style="margin-top:0;">Cache Hierarchy · Sunset Cove</div>
+      <div class="dp-section-label ng-inline-4">Cache Hierarchy · Sunset Cove</div>
       <p class="dp-body-text">The Sunset Cove carries the largest private cache of any core in the Eventide lineup. The <strong>128 KB L0 extra-LLC</strong>, the <strong>256 KB private L1</strong>, and the <strong>6 MB private L2</strong> are all sized for the bandwidth requirements of two active hardware threads simultaneously feeding a 10-wide decode front-end. L2 misses are absorbed first by the <strong>12 MB Compute Tile shared L3</strong> before reaching the photonic fabric.</p>
 
       <div class="dp-cache-strip">
         <div class="dp-cache-row">
           <div class="dp-cache-tier">L0</div>
-          <div class="dp-cache-bar dp-c-l0" style="flex:0.30">
+          <div class="dp-cache-bar dp-c-l0 ng-inline-5">
             <span class="dp-cache-name">L0 Extra-LLC</span>
             <span class="dp-cache-sz">128 KB / core</span>
           </div>
@@ -236,7 +237,7 @@
         <div class="dp-cache-conn">&#8595; miss</div>
         <div class="dp-cache-row">
           <div class="dp-cache-tier">L1</div>
-          <div class="dp-cache-bar dp-c-l1" style="flex:0.45">
+          <div class="dp-cache-bar dp-c-l1 ng-inline-6">
             <span class="dp-cache-name">L1 I-Cache + D-Cache</span>
             <span class="dp-cache-sz">256 KB / core</span>
           </div>
@@ -244,52 +245,52 @@
         <div class="dp-cache-conn">&#8595; miss</div>
         <div class="dp-cache-row">
           <div class="dp-cache-tier">L2</div>
-          <div class="dp-cache-bar dp-c-l2" style="flex:0.7">
+          <div class="dp-cache-bar dp-c-l2 ng-inline-7">
             <span class="dp-cache-name">Private L2 Cache</span>
             <span class="dp-cache-sz">6 MB / core</span>
           </div>
         </div>
-        <div class="dp-cache-note" style="color:rgba(0,104,181,0.4);">Largest per-core L2 on-chip — 6 MB shared across 2 hardware threads</div>
+        <div class="dp-cache-note ng-inline-8">Largest per-core L2 on-chip — 6 MB shared across 2 hardware threads</div>
         <div class="dp-cache-conn">&#8595; miss</div>
         <div class="dp-cache-row">
           <div class="dp-cache-tier">L3</div>
-          <div class="dp-cache-bar dp-c-l3" style="flex:0.82">
+          <div class="dp-cache-bar dp-c-l3 ng-inline-9">
             <span class="dp-cache-name">Compute Tile Shared L3</span>
             <span class="dp-cache-sz">12 MB / tile &middot; 48 MB total</span>
           </div>
         </div>
-        <div class="dp-cache-note" style="color:rgba(147,51,234,0.35);">Shared across all UHP + DP + SPE cores on Compute Tile &mdash; 4 tiles &times; 12 MB</div>
+        <div class="dp-cache-note ng-inline-10">Shared across all UHP + DP + SPE cores on Compute Tile &mdash; 4 tiles &times; 12 MB</div>
         <div class="dp-cache-conn">&#8595; miss &rarr; FOveros 2.0 photonic</div>
         <div class="dp-cache-row">
-          <div class="dp-cache-tier" style="color:rgba(192,132,252,0.5);">L4</div>
-          <div class="dp-cache-bar dp-c-bllc" style="flex:1">
+          <div class="dp-cache-tier ng-inline-11">L4</div>
+          <div class="dp-cache-bar dp-c-bllc ng-inline-12">
             <span class="dp-cache-name">Kache Kore™ bLLC</span>
             <span class="dp-cache-sz">4 GB · APU-shared</span>
           </div>
         </div>
-        <div class="dp-cache-note" style="color:rgba(147,51,234,0.5);">Shared across all CPU + GPU + NPU tiles via photonic fabric</div>
+        <div class="dp-cache-note ng-inline-13">Shared across all CPU + GPU + NPU tiles via photonic fabric</div>
       </div>
 
       <div class="dp-gog-block">
         <div class="dp-gog-title">Gen-on-Gen Performance · vs Panther Lake P-Core (Cougar Cove)</div>
         <div class="dp-gog-row">
           <div class="dp-gog-metric">IPC — single-thread</div>
-          <div class="dp-gog-track"><div class="dp-gog-fill" style="width:80%"></div></div>
+          <div class="dp-gog-track"><div class="dp-gog-fill ng-inline-14"></div></div>
           <div class="dp-gog-num">+38%</div>
         </div>
         <div class="dp-gog-row">
           <div class="dp-gog-metric">MT throughput</div>
-          <div class="dp-gog-track"><div class="dp-gog-fill" style="width:100%"></div></div>
+          <div class="dp-gog-track"><div class="dp-gog-fill ng-inline-15"></div></div>
           <div class="dp-gog-num">+92%</div>
         </div>
         <div class="dp-gog-row">
           <div class="dp-gog-metric">Perf/W (multi-thread)</div>
-          <div class="dp-gog-track"><div class="dp-gog-fill" style="width:60%; opacity:0.8"></div></div>
+          <div class="dp-gog-track"><div class="dp-gog-fill ng-inline-16"></div></div>
           <div class="dp-gog-num">+44%</div>
         </div>
         <div class="dp-gog-row">
           <div class="dp-gog-metric">ROB depth increase</div>
-          <div class="dp-gog-track"><div class="dp-gog-fill" style="width:70%; opacity:0.75"></div></div>
+          <div class="dp-gog-track"><div class="dp-gog-fill ng-inline-17"></div></div>
           <div class="dp-gog-num">+2.4×</div>
         </div>
       </div>
@@ -301,7 +302,7 @@
   <div class="dp-section-label">Workload Scenarios · Where DP Dominates</div>
   <div class="dp-body-heading">Where <span>IPC</span> Is Everything</div>
 
-  <p class="dp-body-text" style="max-width:720px;">
+  <p class="dp-body-text ng-inline-18">
     The Sunset Cove core is the Hardware Thread Director's choice for workloads that are IPC-bound and multi-threaded simultaneously — scenarios where raw instruction throughput per core matters more than frequency headroom or core density. These are the workloads where the 720-entry ROB, 20-port disjoint execution array, and P-SMT combine into a result that no single-threaded or density-optimized core can match.
   </p>
 

@@ -1,0 +1,31 @@
+.ng-inline-1 { position:relative; z-index:1; }
+.ng-inline-2 { font-family:var(--font-mono);font-size:8px;letter-spacing:0.18em;color:rgba(255,107,53,0.5);margin-bottom:14px; }
+.ng-inline-3 { width:100%;height:auto; }
+.ng-inline-4 { flex:0.25 }
+.ng-inline-5 { flex:0.45 }
+.ng-inline-6 { flex:0.6 }
+.ng-inline-7 { color:rgba(255,107,53,0.35); }
+.ng-inline-8 { flex:0.82 }
+.ng-inline-9 { color:rgba(147,51,234,0.35); }
+.ng-inline-10 { color:rgba(192,132,252,0.5); }
+.ng-inline-11 { flex:1 }
+.ng-inline-12 { color:rgba(147,51,234,0.55); }
+.ng-inline-13 { color:rgba(147,51,234,0.3); }
+.ng-inline-14 { width:85% }
+.ng-inline-15 { width:28%; opacity:0.75 }
+.ng-inline-16 { width:100% }
+.ng-inline-17 { width:76%; opacity:0.8 }
+.ng-inline-18 { width:60%; opacity:0.75 }
+.ng-inline-19 { flex-shrink:0; white-space:nowrap; }
+.ng-inline-20 { position:absolute; left:-12%; top:50%; transform:translateY(-50%); height:100%; width:auto; opacity:0.07; pointer-events:none; user-select:none; z-index:0; }
+.ng-inline-21 { position:absolute; right:2%; top:50%; transform:translateY(-50%); height:55%; width:auto; opacity:0.08; pointer-events:none; user-select:none; z-index:0; }
+.ng-inline-22 { color: rgba(255,107,53,0.8); }
+.ng-inline-23 { color: white; margin-bottom: 12px; }
+.ng-inline-24 { color: var(--eventide-sunrise); }
+.ng-inline-25 { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.ng-inline-26 { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.75; margin-bottom: 20px; max-width: 520px; }
+.ng-inline-27 { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,107,53,0.2); border-radius: 10px; padding: 20px; }
+.ng-inline-28 { font-family: var(--font-mono); font-size: 9px; color: rgba(255,107,53,0.5); letter-spacing: 0.15em; text-align: center; margin-bottom: 14px; }
+.ng-inline-29 { margin-top: 16px; background: rgba(255,107,53,0.06); border: 1px solid rgba(255,107,53,0.15); border-radius: 6px; padding: 14px; }
+.ng-inline-30 { color:rgba(255,255,255,0.4); }
+.ng-inline-31 { color:var(--eventide-sunrise); }

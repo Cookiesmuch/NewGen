@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="eventide.tile.killer_s1.html.css">
 <!-- Z-ANGLE MEMORY: s1-dd- | Killer SignalBoost S1 Deep-Dive Section -->
 <!-- ══════════════════════════════════════════════════════
      INTEL KILLER SIGNALBOOST S1 — DEEP-DIVE SECTION
@@ -8,547 +9,7 @@
      Grid/glow: rgba(74,222,128,0.03) lines
      ══════════════════════════════════════════════════════ -->
 
-<style>
-/* ════════════════════════════════════════════════════════════════════════════
-   KILLER SIGNALBOOST S1 DEEP-DIVE — Scoped Styles (s1-dd- prefix)
-   Green theme: #4ADE80 primary, #16A34A secondary, #010A04 base
-   ════════════════════════════════════════════════════════════════════════════ */
 
-/* ── Wrapper Background ──────────────────────────────────────────────────── */
-.s1-dd-wrap {
-  background:
-    radial-gradient(ellipse 75% 55% at 12% 20%, rgba(74,222,128,0.11) 0%, transparent 65%),
-    radial-gradient(ellipse 60% 70% at 88% 80%, rgba(22,163,74,0.07) 0%, transparent 58%),
-    linear-gradient(180deg, #010A04 0%, #020E06 60%, #010804 100%);
-  position: relative;
-  overflow: hidden;
-}
-
-.s1-dd-wrap::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(74,222,128,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(74,222,128,0.03) 1px, transparent 1px);
-  background-size: 56px 56px;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.s1-dd-wrap::after {
-  content: '';
-  position: absolute;
-  top: -40%;
-  right: -20%;
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(74,222,128,0.08) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ── Section Container ──────────────────────────────────────────────────── */
-.s1-dd-section {
-  position: relative;
-  z-index: 2;
-}
-
-/* ── Eyebrow / Breadcrumb ───────────────────────────────────────────────── */
-.s1-dd-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.25em;
-  color: rgba(74,222,128,0.55);
-  text-transform: uppercase;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.s1-dd-eyebrow::before {
-  content: '■';
-  font-size: 7px;
-  color: #4ADE80;
-}
-
-/* ── Main Headline ──────────────────────────────────────────────────────── */
-.s1-dd-headline {
-  font-family: var(--font-display);
-  font-size: clamp(48px, 7vw, 72px);
-  line-height: 1.0;
-  letter-spacing: -0.02em;
-  color: white;
-  margin-bottom: 6px;
-  font-weight: 900;
-}
-
-.s1-dd-headline span {
-  display: block;
-  color: #4ADE80;
-  font-weight: 900;
-}
-
-/* ── Subheadline ────────────────────────────────────────────────────────── */
-.s1-dd-subhead {
-  font-size: 15px;
-  line-height: 1.8;
-  color: rgba(255,255,255,0.65);
-  margin-bottom: 24px;
-  max-width: 720px;
-}
-
-.s1-dd-subhead strong {
-  color: #86EFAC;
-  font-weight: 600;
-}
-
-/* ── Badge Row ──────────────────────────────────────────────────────────── */
-.s1-dd-badge-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 32px;
-  margin-top: 20px;
-}
-
-.s1-dd-badge {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  padding: 6px 12px;
-  border-radius: 4px;
-  background: rgba(74,222,128,0.12);
-  border: 1px solid rgba(74,222,128,0.25);
-  color: rgba(134,239,172,0.85);
-  text-transform: uppercase;
-  font-weight: 500;
-}
-
-.s1-dd-badge.hot {
-  background: rgba(74,222,128,0.20);
-  border-color: rgba(74,222,128,0.35);
-  color: #86EFAC;
-}
-
-/* ── Stat Block (Hero Stats) ────────────────────────────────────────────── */
-.s1-dd-stat-block {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 48px;
-  margin-top: 28px;
-}
-
-.s1-dd-stat-cell {
-  background: rgba(74,222,128,0.08);
-  border: 1px solid rgba(74,222,128,0.20);
-  border-radius: 8px;
-  padding: 20px 16px;
-  text-align: center;
-}
-
-.s1-dd-stat-num {
-  font-family: var(--font-display);
-  font-size: 36px;
-  font-weight: 800;
-  color: #4ADE80;
-  line-height: 1.0;
-}
-
-.s1-dd-stat-label {
-  font-size: 11px;
-  color: rgba(255,255,255,0.45);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-top: 6px;
-  font-weight: 500;
-}
-
-.s1-dd-stat-sub {
-  font-size: 9px;
-  color: rgba(134,239,172,0.50);
-  margin-top: 4px;
-  font-family: var(--font-mono);
-}
-
-/* ── Block Container (flex layout) ──────────────────────────────────────── */
-.s1-dd-block {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-  margin-top: 36px;
-  margin-bottom: 48px;
-  align-items: flex-start;
-}
-
-/* ── Content Column ──────────────────────────────────────────────────────── */
-.s1-dd-content {
-  flex: 1;
-  min-width: 320px;
-}
-
-.s1-dd-content-title {
-  font-family: var(--font-display);
-  font-size: 28px;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 16px;
-  letter-spacing: -0.01em;
-}
-
-.s1-dd-content-title .s1-dd-accent {
-  color: #4ADE80;
-}
-
-.s1-dd-content p {
-  font-size: 14px;
-  line-height: 1.75;
-  color: rgba(255,255,255,0.70);
-  margin-bottom: 12px;
-}
-
-.s1-dd-content p strong {
-  color: #86EFAC;
-  font-weight: 600;
-}
-
-.s1-dd-content p.s1-dd-callout {
-  background: rgba(74,222,128,0.08);
-  border-left: 3px solid #4ADE80;
-  padding: 12px 16px;
-  border-radius: 4px;
-  color: rgba(255,255,255,0.75);
-  margin: 16px 0;
-}
-
-/* ── Spec List ──────────────────────────────────────────────────────────── */
-.s1-dd-spec-list {
-  list-style: none;
-  padding: 0;
-  margin: 16px 0 0 0;
-}
-
-.s1-dd-spec-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(74,222,128,0.08);
-  font-size: 13px;
-  gap: 16px;
-}
-
-.s1-dd-spec-item:last-child {
-  border-bottom: none;
-}
-
-.s1-dd-spec-key {
-  color: rgba(255,255,255,0.35);
-  font-weight: 500;
-  min-width: 140px;
-}
-
-.s1-dd-spec-val {
-  color: rgba(134,239,172,0.80);
-  text-align: right;
-  flex-shrink: 0;
-}
-
-.s1-dd-spec-val.hot {
-  color: #4ADE80;
-  font-weight: 600;
-}
-
-/* ── Two-Column Layout ──────────────────────────────────────────────────── */
-.s1-dd-two-col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: start;
-  margin-top: 16px;
-}
-
-.s1-dd-two-col > div {
-  color: rgba(255,255,255,0.72);
-}
-
-.s1-dd-two-col > div p {
-  color: rgba(255,255,255,0.72);
-}
-
-.s1-dd-two-col > div strong {
-  color: #86EFAC;
-}
-
-.s1-dd-wrap p,
-.s1-dd-wrap li,
-.s1-dd-wrap td,
-.s1-dd-wrap th {
-  color: rgba(255,255,255,0.72);
-}
-
-.s1-dd-wrap strong {
-  color: #86EFAC;
-}
-
-/* ── Collab Badge Chips ─────────────────────────────────────────────────── */
-.s1-dd-collab-chips {
-  display: flex;
-  gap: 8px;
-  margin-top: 16px;
-  flex-wrap: wrap;
-}
-
-.s1-dd-collab-chip {
-  font-family: var(--font-mono);
-  font-size: 8px;
-  letter-spacing: 0.15em;
-  padding: 4px 10px;
-  background: rgba(22,163,74,0.25);
-  border: 1px solid rgba(74,222,128,0.30);
-  border-radius: 3px;
-  color: #86EFAC;
-  text-transform: uppercase;
-  font-weight: 600;
-}
-
-/* ── Hero Grid (Left + Right) ──────────────────────────────────────────── */
-.s1-dd-hero-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: start;
-  margin-bottom: 48px;
-}
-
-/* ── Card Container ────────────────────────────────────────────────────── */
-.s1-dd-card {
-  background: rgba(1,10,4,0.50);
-  border: 1px solid rgba(74,222,128,0.15);
-  border-radius: 12px;
-  padding: 24px;
-  backdrop-filter: blur(10px);
-}
-
-.s1-dd-card-title {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: rgba(74,222,128,0.55);
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-
-.s1-dd-card-headline {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 16px;
-}
-
-/* ── Grid 4-col (Use Cases / Features) ─────────────────────────────────── */
-.s1-dd-grid-4 {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-  margin-top: 24px;
-}
-
-.s1-dd-grid-item {
-  background: rgba(74,222,128,0.06);
-  border: 1px solid rgba(74,222,128,0.12);
-  border-radius: 8px;
-  padding: 20px;
-  text-align: center;
-}
-
-.s1-dd-grid-item-icon {
-  font-size: 32px;
-  margin-bottom: 12px;
-}
-
-.s1-dd-grid-item-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: white;
-  margin-bottom: 8px;
-}
-
-.s1-dd-grid-item-desc {
-  font-size: 12px;
-  color: rgba(255,255,255,0.55);
-  line-height: 1.5;
-}
-
-/* ── Subsection Header ─────────────────────────────────────────────────── */
-.s1-dd-section-header {
-  font-family: var(--font-display);
-  font-size: 24px;
-  font-weight: 700;
-  color: white;
-  margin-top: 44px;
-  margin-bottom: 20px;
-  letter-spacing: -0.01em;
-  padding-top: 24px;
-  border-top: 1px solid rgba(74,222,128,0.10);
-}
-
-.s1-dd-section-header .s1-dd-accent {
-  color: #4ADE80;
-}
-
-/* ── Bluetooth Deep-Dive Subsections ────────────────────────────────────── */
-.s1-dd-bt-subsection {
-  margin-bottom: 36px;
-}
-
-.s1-dd-bt-subsection-title {
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 600;
-  color: #86EFAC;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.s1-dd-bt-subsection-title::before {
-  content: '→';
-  color: #4ADE80;
-}
-
-.s1-dd-bt-subsection p {
-  font-size: 13px;
-  line-height: 1.7;
-  color: rgba(255,255,255,0.65);
-  margin-bottom: 10px;
-}
-
-/* ── Feature List ──────────────────────────────────────────────────────── */
-.s1-dd-feature-list {
-  list-style: none;
-  padding: 0;
-  margin: 12px 0;
-}
-
-.s1-dd-feature-item {
-  padding: 8px 0;
-  padding-left: 20px;
-  position: relative;
-  font-size: 13px;
-  color: rgba(255,255,255,0.60);
-  line-height: 1.6;
-}
-
-.s1-dd-feature-item::before {
-  content: '◆';
-  position: absolute;
-  left: 0;
-  color: #4ADE80;
-  font-size: 8px;
-}
-
-/* ── Spec Table ────────────────────────────────────────────────────────── */
-.s1-dd-spec-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 24px;
-  border: 1px solid rgba(74,222,128,0.10);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.s1-dd-spec-table thead {
-  background: rgba(74,222,128,0.08);
-}
-
-.s1-dd-spec-table th {
-  padding: 12px 16px;
-  text-align: left;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  color: rgba(74,222,128,0.70);
-  text-transform: uppercase;
-  font-weight: 600;
-  border-bottom: 1px solid rgba(74,222,128,0.15);
-}
-
-.s1-dd-spec-table td {
-  padding: 14px 16px;
-  font-size: 13px;
-  color: rgba(255,255,255,0.70);
-  border-bottom: 1px solid rgba(74,222,128,0.06);
-}
-
-.s1-dd-spec-table tr:last-child td {
-  border-bottom: none;
-}
-
-.s1-dd-spec-table tr:hover {
-  background: rgba(74,222,128,0.04);
-}
-
-.s1-dd-spec-table .s1-dd-spec-key {
-  font-weight: 600;
-  color: rgba(255,255,255,0.50);
-  width: 200px;
-}
-
-.s1-dd-spec-table .s1-dd-spec-val {
-  color: rgba(134,239,172,0.85);
-}
-
-.s1-dd-spec-table .s1-dd-spec-val.hot {
-  color: #4ADE80;
-  font-weight: 600;
-}
-
-/* ── Responsive ────────────────────────────────────────────────────────── */
-@media (max-width: 1200px) {
-  .s1-dd-two-col {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-
-  .s1-dd-hero-grid {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-
-  .s1-dd-block {
-    flex-direction: column;
-    gap: 28px;
-  }
-}
-
-@media (max-width: 768px) {
-  .s1-dd-headline {
-    font-size: clamp(36px, 6vw, 48px);
-  }
-
-  .s1-dd-stat-block {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .s1-dd-grid-4 {
-    grid-template-columns: 1fr;
-  }
-
-  .s1-dd-spec-table {
-    font-size: 12px;
-  }
-
-  .s1-dd-spec-table td,
-  .s1-dd-spec-table th {
-    padding: 10px 12px;
-  }
-}
-</style>
 
 <!-- ══════════════════════════════════════════════════════════════════════════
      INTEL KILLER SIGNALBOOST S1 DEEP-DIVE CONTENT
@@ -563,7 +24,7 @@
 
   <div class="s1-dd-eyebrow">Wireless · Killer SignalBoost S1 · Intel × OPPO · Intel 14A-E</div>
 
-  <div style="margin-bottom: 8px;">
+  <div class="ng-inline-1">
     <div class="s1-dd-headline">Eight Bands.<br><span>One Intelligence.</span></div>
   </div>
 
@@ -638,8 +99,8 @@
         <li><strong>DoubleShot Pro:</strong> Simultaneous multi-adapter throughput aggregation. When configured with 2× S1 chips, DoubleShot Pro combines both WiFi 7 chips' bandwidth for non-gaming downloads, then instantly segregates back to single-chip operation for gaming latency prioritization.</li>
       </ul>
 
-      <p style="margin-top: 16px; padding: 12px 14px; background: rgba(74,222,128,0.08); border-left: 3px solid #4ADE80; border-radius: 4px;">
-        <strong style="color: #86EFAC;">What this means:</strong> Gaming latency remains consistently ~30ms even when heavy downloads run concurrently. Compare this to standard WiFi without Killer Engine: latency spikes to 80–160ms under load.
+      <p class="ng-inline-2">
+        <strong class="ng-inline-3">What this means:</strong> Gaming latency remains consistently ~30ms even when heavy downloads run concurrently. Compare this to standard WiFi without Killer Engine: latency spikes to 80–160ms under load.
       </p>
     </div>
 
@@ -660,7 +121,7 @@
         <li><strong>Cloud Game Signal Algorithm:</strong> Specialized latency prediction and bandwidth allocation for cloud gaming (GeForce NOW, PlayStation Plus Premium) — maintains 1-bar gameplay without stuttering.</li>
       </ul>
 
-      <p style="margin-top: 16px;">
+      <p class="ng-inline-4">
         The S1 re-engineers these OPPO innovations for Intel's 14A-E Eventide APU package,
         embedding the same RF engineering discipline into the modem and antenna co-design.
       </p>
@@ -688,24 +149,24 @@
         This is the foundation of Killer SignalBoost S1's performance:
       </p>
 
-      <div class="s1-dd-two-col" style="margin-top: 16px; gap: 24px;">
+      <div class="s1-dd-two-col ng-inline-5">
         <div>
-          <div style="color: #86EFAC; font-weight: 600; margin-bottom: 8px;">Low-Latency Gaming Band</div>
-          <p style="font-size: 13px;">
+          <div class="ng-inline-6">Low-Latency Gaming Band</div>
+          <p class="ng-inline-7">
             One band (e.g., 5 GHz or 6 GHz, less congested) dedicated to UDP gaming traffic.
             Single-path, minimal hops, ~8ms latency. Killer Engine steers gaming packets here exclusively.
           </p>
         </div>
         <div>
-          <div style="color: #86EFAC; font-weight: 600; margin-bottom: 8px;">High-Throughput Band</div>
-          <p style="font-size: 13px;">
+          <div class="ng-inline-6">High-Throughput Band</div>
+          <p class="ng-inline-7">
             Another band simultaneously carrying bulk downloads, streaming, background OS tasks.
             DoubleShot Pro aggregates all available bandwidth for non-latency-critical work.
           </p>
         </div>
       </div>
 
-      <p style="margin-top: 16px;">
+      <p class="ng-inline-4">
         <strong>Per-Chip Specifications:</strong>
       </p>
       <ul class="s1-dd-feature-list">
@@ -723,7 +184,7 @@
 
   <div class="s1-dd-section-header">Bluetooth Core 6.2: A New Era of Low-Latency <span class="s1-dd-accent">Wireless Gaming</span></div>
 
-  <p style="font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.65); margin-bottom: 24px;">
+  <p class="ng-inline-8">
     Bluetooth Core 6.2 (approved 2024) introduces significant latency reductions, enhanced power efficiency,
     and a new <strong>isochronous stream architecture</strong> purpose-built for real-time audio/video synchronization.
     The Killer SignalBoost S1 integrates full Bluetooth 6.2 support alongside WiFi 7, enabling simultaneous
@@ -820,9 +281,9 @@
       The S1 implements a three-layer coexistence strategy:
     </p>
 
-    <div class="s1-dd-card" style="margin-top: 12px;">
-      <p style="font-size: 13px; margin: 0;">
-        <strong style="color: #86EFAC;">Layer 1 — Frequency Hopping:</strong><br>
+    <div class="s1-dd-card ng-inline-9">
+      <p class="ng-inline-10">
+        <strong class="ng-inline-3">Layer 1 — Frequency Hopping:</strong><br>
         Bluetooth hops across 40 channels in the 2.4 GHz band (2402–2480 MHz) 1600 times per second.
         WiFi's wider channels can't follow Bluetooth hops; instead, the Killer Intelligence Engine analyzes
         which WiFi channels are in use and provides a blacklist to the Bluetooth modem.
@@ -830,18 +291,18 @@
       </p>
     </div>
 
-    <div class="s1-dd-card" style="margin-top: 12px;">
-      <p style="font-size: 13px; margin: 0;">
-        <strong style="color: #86EFAC;">Layer 2 — Dynamic Spectrum Sensing:</strong><br>
+    <div class="s1-dd-card ng-inline-9">
+      <p class="ng-inline-10">
+        <strong class="ng-inline-3">Layer 2 — Dynamic Spectrum Sensing:</strong><br>
         The S1 includes a spectral monitor on the 2.4 GHz RF frontend. In real-time, it detects
         non-WiFi/non-Bluetooth interference (e.g., microwave ovens, cordless phones) and signals this
         to the Bluetooth PHY layer for immediate channel map adaptation.
       </p>
     </div>
 
-    <div class="s1-dd-card" style="margin-top: 12px;">
-      <p style="font-size: 13px; margin: 0;">
-        <strong style="color: #86EFAC;">Layer 3 — Band Offload to 5/6 GHz:</strong><br>
+    <div class="s1-dd-card ng-inline-9">
+      <p class="ng-inline-10">
+        <strong class="ng-inline-3">Layer 3 — Band Offload to 5/6 GHz:</strong><br>
         For devices supporting WiFi 6E (802.11ax on 6 GHz), the S1 can offload WiFi traffic to the
         less-contested 6 GHz band entirely, freeing 5 GHz and 2.4 GHz for Bluetooth-only operation.
         This is the ideal scenario for gaming: Bluetooth controller on 2.4 GHz undisturbed, gaming data on 6 GHz.
@@ -865,7 +326,7 @@
       <li><strong>SBC (Baseline):</strong> Classic Sub-band Coding, 128–345 kbps. Universal compatibility, lower quality, but still acceptable for casual listening.</li>
     </ul>
 
-    <p style="margin-top: 12px;">
+    <p class="ng-inline-9">
       <strong>Gaming Recommendation:</strong> aptX Low Latency HD or LC3 codec + &lt;20ms render delay = competitive esports-grade wireless audio.
     </p>
   </div>
@@ -892,7 +353,7 @@
 
   <div class="s1-dd-section-header">Dual-Chip Configuration: Eventide Standard vs. <span class="s1-dd-accent">X500 Class</span></div>
 
-  <p style="font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.65); margin-bottom: 24px;">
+  <p class="ng-inline-8">
     The Killer SignalBoost S1 can operate as a single chip or paired configuration.
     Higher-tier Eventide X500 systems ship with 2× S1 chips, unlocking full spatial diversity and capacity:
   </p>
@@ -901,7 +362,7 @@
     <div class="s1-dd-card">
       <div class="s1-dd-card-title">Single S1 (Standard)</div>
       <div class="s1-dd-card-headline">4 Bands</div>
-      <ul class="s1-dd-spec-list" style="margin-top: 12px;">
+      <ul class="s1-dd-spec-list ng-inline-9">
         <li class="s1-dd-spec-item">
           <span class="s1-dd-spec-key">Bands</span>
           <span class="s1-dd-spec-val">2× 5 GHz, 1× 2.4 GHz, 1× 6 GHz</span>
@@ -924,7 +385,7 @@
     <div class="s1-dd-card">
       <div class="s1-dd-card-title">Dual S1 (X500 Class)</div>
       <div class="s1-dd-card-headline">8 Bands</div>
-      <ul class="s1-dd-spec-list" style="margin-top: 12px;">
+      <ul class="s1-dd-spec-list ng-inline-9">
         <li class="s1-dd-spec-item">
           <span class="s1-dd-spec-key">Bands</span>
           <span class="s1-dd-spec-val hot">4× 5 GHz, 2× 2.4 GHz, 2× 6 GHz</span>
@@ -947,7 +408,7 @@
     <div class="s1-dd-card">
       <div class="s1-dd-card-title">Diversity Gain (Dual)</div>
       <div class="s1-dd-card-headline">2x Spatial</div>
-      <ul class="s1-dd-spec-list" style="margin-top: 12px;">
+      <ul class="s1-dd-spec-list ng-inline-9">
         <li class="s1-dd-spec-item">
           <span class="s1-dd-spec-key">MIMO Streams</span>
           <span class="s1-dd-spec-val">Full 8×8 MIMO capacity</span>
@@ -970,7 +431,7 @@
     <div class="s1-dd-card">
       <div class="s1-dd-card-title">Traffic Segregation (Dual)</div>
       <div class="s1-dd-card-headline">Dedicated Bands</div>
-      <ul class="s1-dd-spec-list" style="margin-top: 12px;">
+      <ul class="s1-dd-spec-list ng-inline-9">
         <li class="s1-dd-spec-item">
           <span class="s1-dd-spec-key">Gaming Band</span>
           <span class="s1-dd-spec-val">Chip 1, dedicated 5/6 GHz</span>
@@ -1014,8 +475,8 @@
         <li><strong>Privacy by Design:</strong> No thermal imaging, no camera, no audio. Only WiFi signal analysis, with all processing local to the device (no cloud upload).</li>
       </ul>
 
-      <p style="margin-top: 16px; padding: 12px 14px; background: rgba(74,222,128,0.08); border-left: 3px solid #4ADE80; border-radius: 4px;">
-        <strong style="color: #86EFAC;">Use Cases:</strong> Display auto-wake on user approach. Auto-dim when user steps away.
+      <p class="ng-inline-2">
+        <strong class="ng-inline-3">Use Cases:</strong> Display auto-wake on user approach. Auto-dim when user steps away.
         Pause video on idle. Mute microphone if room is empty (conference call safety).
         Anti-theft: alert if laptop moved while unattended.
       </p>
@@ -1043,7 +504,7 @@
         <li><strong>Carrier Aggregation:</strong> Bond up to 3× 5G Sub-6 carriers for peak throughput (e.g., AT&T + T-Mobile roaming integration).</li>
       </ul>
 
-      <p style="margin-top: 16px;">
+      <p class="ng-inline-4">
         <strong>Eventide Advantage:</strong> Unlike traditional mobile processors tied to specific carriers or bands,
         Eventide's 5G modem is fully software-configurable via the Killer Intelligence Center,
         allowing operators to push firmware updates for new 5G standards (e.g., 5G Advanced) without hardware redesign.
@@ -1057,7 +518,7 @@
 
   <div class="s1-dd-section-header">Killer Intelligence <span class="s1-dd-accent">Center: Software Control</span></div>
 
-  <p style="font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.65); margin-bottom: 24px;">
+  <p class="ng-inline-8">
     The Killer Prioritization Engine is fully configurable via the <strong>Killer Intelligence Center</strong>,
     a system utility providing real-time network monitoring, per-application traffic rules, and manual override controls:
   </p>
@@ -1118,7 +579,7 @@
 
   <div class="s1-dd-section-header">Complete Specifications <span class="s1-dd-accent">Reference</span></div>
 
-  <table class="s1-dd-spec-table" style="margin-top: 20px;">
+  <table class="s1-dd-spec-table ng-inline-11">
     <thead>
       <tr>
         <th>Category</th>
@@ -1284,7 +745,7 @@
   <div class="s1-dd-grid-4">
     <div class="s1-dd-card">
       <div class="s1-dd-card-title">Competitive Gaming</div>
-      <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.70); margin-top: 12px;">
+      <p class="ng-inline-12">
         Dedicated low-latency WiFi band for game traffic. Killer Prioritization suppresses all background
         updates. Bluetooth LLL mode for controller (&lt;8ms). SONAR auto-pauses on idle. Result:
         consistent &lt;30ms gaming latency even under network load.
@@ -1293,7 +754,7 @@
 
     <div class="s1-dd-card">
       <div class="s1-dd-card-title">Content Creator Upload</div>
-      <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.70); margin-top: 12px;">
+      <p class="ng-inline-12">
         DoubleShot Pro aggregates both S1 chips (11.5 Gbps) for YouTube/Twitch upload acceleration.
         Dual 5G mmWave on-device backup. Killer Intelligence prioritizes upload queue vs. preview rendering.
         Multi-Gigabit upload finishes in minutes, not hours.
@@ -1302,7 +763,7 @@
 
     <div class="s1-dd-card">
       <div class="s1-dd-card-title">Remote Work on 5G</div>
-      <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.70); margin-top: 12px;">
+      <p class="ng-inline-12">
         Primary connectivity via 5G Sub-6 when away from WiFi. VoLTE ensures call clarity. Simultaneous
         Bluetooth headset (LC3 codec, &lt;20ms latency) and mouse (Bluetooth LE). Zero WiFi dependency.
         Fail-safe: 4G LTE fallback if 5G drops.
@@ -1311,7 +772,7 @@
 
     <div class="s1-dd-card">
       <div class="s1-dd-card-title">Always-On SONAR Presence</div>
-      <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.70); margin-top: 12px;">
+      <p class="ng-inline-12">
         Display auto-wakes as you approach (&lt;3m SONAR range). Auto-dims when you step away.
         Conference call auto-mutes if room is empty. Anti-theft: alerts on movement while locked.
         All powered by &lt;10 mW LPNPU processing.
@@ -1323,12 +784,12 @@
        CLOSING SUMMARY
        ════════════════════════════════════════════════════════════════════════ -->
 
-  <div style="margin-top: 56px; padding: 28px; background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.15); border-radius: 12px;">
-    <div style="font-family: var(--font-display); font-size: 20px; font-weight: 700; color: white; margin-bottom: 12px; letter-spacing: -0.01em;">
+  <div class="ng-inline-13">
+    <div class="ng-inline-14">
       The Wireless Foundation of Eventide
     </div>
-    <p style="font-size: 14px; line-height: 1.8; color: rgba(255,255,255,0.70);">
-      The <strong style="color: #86EFAC;">Killer SignalBoost S1</strong> is not just a modem tile — it's a
+    <p class="ng-inline-15">
+      The <strong class="ng-inline-3">Killer SignalBoost S1</strong> is not just a modem tile — it's a
       comprehensive wireless platform that unifies Intel's 15+ years of gaming network intelligence
       with OPPO Semiconductor's proven hardware RF expertise. Eight simultaneous frequency bands,
       sub-30ms gaming latency, Bluetooth 6.2 dual-mode operation with &lt;8ms controller response,
@@ -1341,7 +802,7 @@
     </p>
   </div>
 
-  <div class="s1-dd-collab-chips" style="margin-top: 32px; justify-content: center;">
+  <div class="s1-dd-collab-chips ng-inline-16">
     <span class="s1-dd-collab-chip">INTEL KILLER × OPPO</span>
     <span class="s1-dd-collab-chip">EVENTIDE WIRELESS PLATFORM</span>
     <span class="s1-dd-collab-chip">INTEL 14A-E</span>

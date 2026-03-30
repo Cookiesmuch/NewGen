@@ -1,0 +1,556 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   KILLER SIGNALBOOST S1 DEEP-DIVE — Scoped Styles (s1-dd- prefix)
+   Green theme: #4ADE80 primary, #16A34A secondary, #010A04 base
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Wrapper Background ──────────────────────────────────────────────────── */
+.s1-dd-wrap {
+  background:
+    radial-gradient(ellipse 75% 55% at 12% 20%, rgba(74,222,128,0.11) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 70% at 88% 80%, rgba(22,163,74,0.07) 0%, transparent 58%),
+    linear-gradient(180deg, #010A04 0%, #020E06 60%, #010804 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.s1-dd-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(74,222,128,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74,222,128,0.03) 1px, transparent 1px);
+  background-size: 56px 56px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.s1-dd-wrap::after {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74,222,128,0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Section Container ──────────────────────────────────────────────────── */
+.s1-dd-section {
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Eyebrow / Breadcrumb ───────────────────────────────────────────────── */
+.s1-dd-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  color: rgba(74,222,128,0.55);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.s1-dd-eyebrow::before {
+  content: '■';
+  font-size: 7px;
+  color: #4ADE80;
+}
+
+/* ── Main Headline ──────────────────────────────────────────────────────── */
+.s1-dd-headline {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 7vw, 72px);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  color: white;
+  margin-bottom: 6px;
+  font-weight: 900;
+}
+
+.s1-dd-headline span {
+  display: block;
+  color: #4ADE80;
+  font-weight: 900;
+}
+
+/* ── Subheadline ────────────────────────────────────────────────────────── */
+.s1-dd-subhead {
+  font-size: 15px;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 24px;
+  max-width: 720px;
+}
+
+.s1-dd-subhead strong {
+  color: #86EFAC;
+  font-weight: 600;
+}
+
+/* ── Badge Row ──────────────────────────────────────────────────────────── */
+.s1-dd-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 32px;
+  margin-top: 20px;
+}
+
+.s1-dd-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  padding: 6px 12px;
+  border-radius: 4px;
+  background: rgba(74,222,128,0.12);
+  border: 1px solid rgba(74,222,128,0.25);
+  color: rgba(134,239,172,0.85);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.s1-dd-badge.hot {
+  background: rgba(74,222,128,0.20);
+  border-color: rgba(74,222,128,0.35);
+  color: #86EFAC;
+}
+
+/* ── Stat Block (Hero Stats) ────────────────────────────────────────────── */
+.s1-dd-stat-block {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 48px;
+  margin-top: 28px;
+}
+
+.s1-dd-stat-cell {
+  background: rgba(74,222,128,0.08);
+  border: 1px solid rgba(74,222,128,0.20);
+  border-radius: 8px;
+  padding: 20px 16px;
+  text-align: center;
+}
+
+.s1-dd-stat-num {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 800;
+  color: #4ADE80;
+  line-height: 1.0;
+}
+
+.s1-dd-stat-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+.s1-dd-stat-sub {
+  font-size: 9px;
+  color: rgba(134,239,172,0.50);
+  margin-top: 4px;
+  font-family: var(--font-mono);
+}
+
+/* ── Block Container (flex layout) ──────────────────────────────────────── */
+.s1-dd-block {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-top: 36px;
+  margin-bottom: 48px;
+  align-items: flex-start;
+}
+
+/* ── Content Column ──────────────────────────────────────────────────────── */
+.s1-dd-content {
+  flex: 1;
+  min-width: 320px;
+}
+
+.s1-dd-content-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+.s1-dd-content-title .s1-dd-accent {
+  color: #4ADE80;
+}
+
+.s1-dd-content p {
+  font-size: 14px;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.70);
+  margin-bottom: 12px;
+}
+
+.s1-dd-content p strong {
+  color: #86EFAC;
+  font-weight: 600;
+}
+
+.s1-dd-content p.s1-dd-callout {
+  background: rgba(74,222,128,0.08);
+  border-left: 3px solid #4ADE80;
+  padding: 12px 16px;
+  border-radius: 4px;
+  color: rgba(255,255,255,0.75);
+  margin: 16px 0;
+}
+
+/* ── Spec List ──────────────────────────────────────────────────────────── */
+.s1-dd-spec-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0 0;
+}
+
+.s1-dd-spec-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(74,222,128,0.08);
+  font-size: 13px;
+  gap: 16px;
+}
+
+.s1-dd-spec-item:last-child {
+  border-bottom: none;
+}
+
+.s1-dd-spec-key {
+  color: rgba(255,255,255,0.35);
+  font-weight: 500;
+  min-width: 140px;
+}
+
+.s1-dd-spec-val {
+  color: rgba(134,239,172,0.80);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.s1-dd-spec-val.hot {
+  color: #4ADE80;
+  font-weight: 600;
+}
+
+/* ── Two-Column Layout ──────────────────────────────────────────────────── */
+.s1-dd-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+  margin-top: 16px;
+}
+
+.s1-dd-two-col > div {
+  color: rgba(255,255,255,0.72);
+}
+
+.s1-dd-two-col > div p {
+  color: rgba(255,255,255,0.72);
+}
+
+.s1-dd-two-col > div strong {
+  color: #86EFAC;
+}
+
+.s1-dd-wrap p,
+.s1-dd-wrap li,
+.s1-dd-wrap td,
+.s1-dd-wrap th {
+  color: rgba(255,255,255,0.72);
+}
+
+.s1-dd-wrap strong {
+  color: #86EFAC;
+}
+
+/* ── Collab Badge Chips ─────────────────────────────────────────────────── */
+.s1-dd-collab-chips {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.s1-dd-collab-chip {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  padding: 4px 10px;
+  background: rgba(22,163,74,0.25);
+  border: 1px solid rgba(74,222,128,0.30);
+  border-radius: 3px;
+  color: #86EFAC;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* ── Hero Grid (Left + Right) ──────────────────────────────────────────── */
+.s1-dd-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+  margin-bottom: 48px;
+}
+
+/* ── Card Container ────────────────────────────────────────────────────── */
+.s1-dd-card {
+  background: rgba(1,10,4,0.50);
+  border: 1px solid rgba(74,222,128,0.15);
+  border-radius: 12px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.s1-dd-card-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: rgba(74,222,128,0.55);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.s1-dd-card-headline {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 16px;
+}
+
+/* ── Grid 4-col (Use Cases / Features) ─────────────────────────────────── */
+.s1-dd-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.s1-dd-grid-item {
+  background: rgba(74,222,128,0.06);
+  border: 1px solid rgba(74,222,128,0.12);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.s1-dd-grid-item-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.s1-dd-grid-item-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.s1-dd-grid-item-desc {
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.5;
+}
+
+/* ── Subsection Header ─────────────────────────────────────────────────── */
+.s1-dd-section-header {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+  margin-top: 44px;
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+  padding-top: 24px;
+  border-top: 1px solid rgba(74,222,128,0.10);
+}
+
+.s1-dd-section-header .s1-dd-accent {
+  color: #4ADE80;
+}
+
+/* ── Bluetooth Deep-Dive Subsections ────────────────────────────────────── */
+.s1-dd-bt-subsection {
+  margin-bottom: 36px;
+}
+
+.s1-dd-bt-subsection-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: #86EFAC;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.s1-dd-bt-subsection-title::before {
+  content: '→';
+  color: #4ADE80;
+}
+
+.s1-dd-bt-subsection p {
+  font-size: 13px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 10px;
+}
+
+/* ── Feature List ──────────────────────────────────────────────────────── */
+.s1-dd-feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+}
+
+.s1-dd-feature-item {
+  padding: 8px 0;
+  padding-left: 20px;
+  position: relative;
+  font-size: 13px;
+  color: rgba(255,255,255,0.60);
+  line-height: 1.6;
+}
+
+.s1-dd-feature-item::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  color: #4ADE80;
+  font-size: 8px;
+}
+
+/* ── Spec Table ────────────────────────────────────────────────────────── */
+.s1-dd-spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 24px;
+  border: 1px solid rgba(74,222,128,0.10);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.s1-dd-spec-table thead {
+  background: rgba(74,222,128,0.08);
+}
+
+.s1-dd-spec-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: rgba(74,222,128,0.70);
+  text-transform: uppercase;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(74,222,128,0.15);
+}
+
+.s1-dd-spec-table td {
+  padding: 14px 16px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.70);
+  border-bottom: 1px solid rgba(74,222,128,0.06);
+}
+
+.s1-dd-spec-table tr:last-child td {
+  border-bottom: none;
+}
+
+.s1-dd-spec-table tr:hover {
+  background: rgba(74,222,128,0.04);
+}
+
+.s1-dd-spec-table .s1-dd-spec-key {
+  font-weight: 600;
+  color: rgba(255,255,255,0.50);
+  width: 200px;
+}
+
+.s1-dd-spec-table .s1-dd-spec-val {
+  color: rgba(134,239,172,0.85);
+}
+
+.s1-dd-spec-table .s1-dd-spec-val.hot {
+  color: #4ADE80;
+  font-weight: 600;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .s1-dd-two-col {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .s1-dd-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .s1-dd-block {
+    flex-direction: column;
+    gap: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .s1-dd-headline {
+    font-size: clamp(36px, 6vw, 48px);
+  }
+
+  .s1-dd-stat-block {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .s1-dd-grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .s1-dd-spec-table {
+    font-size: 12px;
+  }
+
+  .s1-dd-spec-table td,
+  .s1-dd-spec-table th {
+    padding: 10px 12px;
+  }
+}
+
+.ng-inline-1 { margin-bottom: 8px; }
+.ng-inline-2 { margin-top: 16px; padding: 12px 14px; background: rgba(74,222,128,0.08); border-left: 3px solid #4ADE80; border-radius: 4px; }
+.ng-inline-3 { color: #86EFAC; }
+.ng-inline-4 { margin-top: 16px; }
+.ng-inline-5 { margin-top: 16px; gap: 24px; }
+.ng-inline-6 { color: #86EFAC; font-weight: 600; margin-bottom: 8px; }
+.ng-inline-7 { font-size: 13px; }
+.ng-inline-8 { font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.65); margin-bottom: 24px; }
+.ng-inline-9 { margin-top: 12px; }
+.ng-inline-10 { font-size: 13px; margin: 0; }
+.ng-inline-11 { margin-top: 20px; }
+.ng-inline-12 { font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.70); margin-top: 12px; }
+.ng-inline-13 { margin-top: 56px; padding: 28px; background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.15); border-radius: 12px; }
+.ng-inline-14 { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: white; margin-bottom: 12px; letter-spacing: -0.01em; }
+.ng-inline-15 { font-size: 14px; line-height: 1.8; color: rgba(255,255,255,0.70); }
+.ng-inline-16 { margin-top: 32px; justify-content: center; }

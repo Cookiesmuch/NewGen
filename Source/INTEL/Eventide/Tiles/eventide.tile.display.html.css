@@ -1,0 +1,460 @@
+/* INSERT LOCATION: After the Klangkerne deep-dive and its divider */
+
+        .de-dd-wrap {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 80px 40px;
+            background: linear-gradient(135deg, #010A08 0%, #010D0A 100%);
+            position: relative;
+            margin-top: -3px;
+        }
+
+        .de-dd-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* HERO SECTION */
+        .de-dd-hero {
+            text-align: center;
+            margin-bottom: 120px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .de-dd-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(45,212,191,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .de-dd-eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #5EEAD4;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .de-dd-headline {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 64px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: #2DD4BF;
+            margin-bottom: 16px;
+            line-height: 1.1;
+        }
+
+        .de-dd-subhead {
+            font-size: 18px;
+            color: #9CA3AF;
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        /* STAT BLOCK */
+        .de-dd-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 80px;
+        }
+
+        .de-dd-stat-cell {
+            background: linear-gradient(135deg, rgba(45,212,191,0.05) 0%, rgba(15,118,110,0.03) 100%);
+            border: 1px solid rgba(45,212,191,0.20);
+            border-radius: 8px;
+            padding: 32px 24px;
+            text-align: center;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+
+        .de-dd-stat-cell:hover {
+            background: linear-gradient(135deg, rgba(45,212,191,0.08) 0%, rgba(15,118,110,0.05) 100%);
+            border-color: rgba(45,212,191,0.35);
+            transform: translateY(-2px);
+        }
+
+        .de-dd-stat-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #5EEAD4;
+            margin-bottom: 8px;
+        }
+
+        .de-dd-stat-label {
+            font-size: 14px;
+            color: #B0B9C3;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* SECTION STYLING */
+        .de-dd-section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: #2DD4BF;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .de-dd-section-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 32px;
+            background: linear-gradient(180deg, #2DD4BF 0%, #0F766E 100%);
+            border-radius: 2px;
+        }
+
+        .de-dd-content-block {
+            background: rgba(1,13,10,0.5);
+            border-left: 3px solid #2DD4BF;
+            padding: 32px;
+            border-radius: 4px;
+            margin-bottom: 32px;
+        }
+
+        .de-dd-content-block p {
+            margin-bottom: 16px;
+            font-size: 15px;
+            line-height: 1.8;
+            color: #D1D5DB;
+        }
+
+        .de-dd-content-block p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* NO-MUX ARCHITECTURE */
+        .de-dd-architecture-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 48px;
+            align-items: center;
+        }
+
+        @media (max-width: 1024px) {
+            .de-dd-architecture-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .de-dd-architecture-diagram {
+            background: linear-gradient(135deg, rgba(45,212,191,0.08) 0%, rgba(15,118,110,0.04) 100%);
+            border: 1px solid rgba(45,212,191,0.15);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .de-dd-architecture-item {
+            margin-bottom: 16px;
+            padding: 12px;
+            background: rgba(15,118,110,0.15);
+            border-radius: 6px;
+            border: 1px solid rgba(45,212,191,0.20);
+        }
+
+        .de-dd-architecture-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #5EEAD4;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .de-dd-architecture-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            color: #2DD4BF;
+        }
+
+        .de-dd-connector {
+            font-size: 24px;
+            color: #0F766E;
+            margin: 16px 0;
+        }
+
+        /* EXAMPLE BOX */
+        .de-dd-example {
+            background: linear-gradient(135deg, rgba(45,212,191,0.03) 0%, transparent 100%);
+            border: 1px solid rgba(45,212,191,0.15);
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #B0B9C3;
+        }
+
+        .de-dd-example-title {
+            color: #5EEAD4;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* iDP DEEP-DIVE */
+        .de-dd-specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .de-dd-spec-card {
+            background: linear-gradient(135deg, rgba(45,212,191,0.04) 0%, rgba(15,118,110,0.02) 100%);
+            border: 1px solid rgba(45,212,191,0.15);
+            border-radius: 6px;
+            padding: 24px;
+        }
+
+        .de-dd-spec-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #5EEAD4;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .de-dd-spec-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            color: #2DD4BF;
+            margin-bottom: 12px;
+        }
+
+        .de-dd-spec-description {
+            font-size: 13px;
+            color: #9CA3AF;
+            line-height: 1.6;
+        }
+
+        /* INTERFACE TABLE */
+        .de-dd-table-wrap {
+            overflow-x: auto;
+            margin-bottom: 48px;
+        }
+
+        .de-dd-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: linear-gradient(135deg, rgba(45,212,191,0.03) 0%, transparent 100%);
+        }
+
+        .de-dd-table thead {
+            background: rgba(15,118,110,0.2);
+            border: 1px solid rgba(45,212,191,0.20);
+        }
+
+        .de-dd-table th {
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #5EEAD4;
+            border-bottom: 1px solid rgba(45,212,191,0.15);
+        }
+
+        .de-dd-table td {
+            padding: 16px 20px;
+            font-size: 14px;
+            color: #D1D5DB;
+            border-bottom: 1px solid rgba(45,212,191,0.08);
+        }
+
+        .de-dd-table tr:hover td {
+            background-color: rgba(45,212,191,0.03);
+        }
+
+        .de-dd-table-highlight {
+            color: #2DD4BF;
+            font-weight: 600;
+        }
+
+        /* 96-BIT COLOR SECTION */
+        .de-dd-color-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .de-dd-color-channel {
+            background: linear-gradient(135deg, rgba(45,212,191,0.06) 0%, rgba(15,118,110,0.03) 100%);
+            border: 1px solid rgba(45,212,191,0.20);
+            border-radius: 6px;
+            padding: 28px 24px;
+            text-align: center;
+        }
+
+        .de-dd-channel-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            color: #5EEAD4;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .de-dd-channel-bits {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #9CA3AF;
+            margin-bottom: 12px;
+        }
+
+        .de-dd-channel-desc {
+            font-size: 13px;
+            color: #B0B9C3;
+            line-height: 1.6;
+        }
+
+        /* USE-CASE GRID */
+        .de-dd-usecases {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 28px;
+            margin-bottom: 48px;
+        }
+
+        .de-dd-usecase-card {
+            background: linear-gradient(135deg, rgba(45,212,191,0.05) 0%, rgba(15,118,110,0.03) 100%);
+            border: 1px solid rgba(45,212,191,0.20);
+            border-radius: 8px;
+            padding: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .de-dd-usecase-card:hover {
+            background: linear-gradient(135deg, rgba(45,212,191,0.08) 0%, rgba(15,118,110,0.05) 100%);
+            border-color: rgba(45,212,191,0.35);
+            transform: translateY(-4px);
+        }
+
+        .de-dd-usecase-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #2DD4BF 0%, #0F766E 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+        }
+
+        .de-dd-usecase-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            color: #2DD4BF;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .de-dd-usecase-desc {
+            font-size: 14px;
+            color: #B0B9C3;
+            line-height: 1.7;
+        }
+
+        /* COLLAB BADGE */
+        .de-dd-collab-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(45,212,191,0.1) 0%, rgba(15,118,110,0.05) 100%);
+            border: 1px solid rgba(45,212,191,0.25);
+            border-radius: 4px;
+            padding: 8px 16px;
+            margin-bottom: 24px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #5EEAD4;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* DIVIDER */
+        .de-dd-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(45,212,191,0.20) 50%, transparent 100%);
+            margin: 120px 0;
+        }
+
+        /* MONO TEXT */
+        .de-dd-mono {
+            font-family: 'IBM Plex Mono', monospace;
+            color: #5EEAD4;
+            font-size: 13px;
+            background: rgba(15,118,110,0.15);
+            padding: 2px 6px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .de-dd-wrap {
+                padding: 40px 20px;
+            }
+
+            .de-dd-headline {
+                font-size: 42px;
+            }
+
+            .de-dd-section-title {
+                font-size: 28px;
+            }
+
+            .de-dd-stats {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 16px;
+            }
+
+            .de-dd-stat-number {
+                font-size: 28px;
+            }
+
+            .de-dd-content-block {
+                padding: 20px;
+            }
+        }
+
+.ng-inline-1 { font-size: 16px; color: #2DD4BF; margin-bottom: 24px; font-weight: 600; }
+.ng-inline-2 { color: #0F766E; font-size: 18px; margin: 12px 0; }
+.ng-inline-3 { background: rgba(45,212,191,0.15); border-color: rgba(45,212,191,0.35); }
+.ng-inline-4 { font-size: 18px; color: #5EEAD4; margin: 40px 0 20px; font-weight: 600; }
+.ng-inline-5 { font-family: 'IBM Plex Mono', monospace; background: rgba(15,118,110,0.2); padding: 16px; border-radius: 4px; margin-bottom: 0; }
+.ng-inline-6 { margin-top: 16px; }
+.ng-inline-7 { text-align: center; padding: 60px 0; }
+.ng-inline-8 { border: none; background: linear-gradient(135deg, rgba(45,212,191,0.08) 0%, rgba(15,118,110,0.04) 100%); border: 1px solid rgba(45,212,191,0.15); }
+.ng-inline-9 { font-size: 18px; margin-bottom: 0; }
