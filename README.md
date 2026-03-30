@@ -32,16 +32,18 @@
 - **Sony a0**
 - **Sony XCD-LED**
 
-The app is intentionally simple and fast: a Node.js static server powers a polished browser shell (`NewGen.html`) that loads brochure pages in an iframe with one-click navigation.
+The app is intentionally simple and fast: a Node.js static server powers a polished browser shell (`NewGen.html`) that loads brochure pages in an iframe with one-click navigation, while History API routes keep the browser URL in sync for direct linking and refresh.
 
 ---
 
 ## 🚀 Features
 
 - 🎛️ **Dynamic page switching** from a top navigation bar
+- 🧭 **History API routing** with URL-aware navigation and back/forward support
 - 🖥️ **Single local server** (`server.js`) with static file delivery
 - 📦 **No framework overhead** (vanilla Node.js + HTML/CSS/JS)
 - 🧭 **Cross-platform startup scripts** for Windows CMD and PowerShell
+- 🧰 **Verbose Windows launcher UX** with structured startup diagnostics
 - 🎨 **Modern visual shell** with dark UI, gradients, and responsive behavior
 
 ---
@@ -107,6 +109,12 @@ node server.js
 start-newgen.bat
 ```
 
+The batch launcher:
+- starts `server.js` in CMD mode
+- delegates verbose startup logs and browser open flow to `server.js`
+- opens the browser automatically (or reuses an already-running server)
+- keeps output and shutdown/watcher behavior centralized in one script
+
 ### PowerShell
 
 ```powershell
@@ -129,10 +137,11 @@ start-newgen.bat
 ## ⚙️ How It Works
 
 1. `server.js` starts a local HTTP server on port **3000**.
-2. Visiting `/` resolves to `NewGen.html`.
+2. URL paths without file extensions (for example `/Intel/Eventide`) resolve to `NewGen.html`.
 3. `NewGen.html` renders the top navigation and iframe viewer.
-4. Clicking a nav button swaps the iframe source to the selected brochure file.
-5. Static assets and pages are served directly from disk.
+4. Clicking a nav button updates browser history (`pushState`) and swaps the iframe source to the selected brochure file.
+5. Browser back/forward (`popstate`) restores the correct brochure view.
+6. Static assets and brochure files are served directly from disk.
 
 ---
 
@@ -162,4 +171,3 @@ Thank you for shaping NewGen through human + AI collaboration.
 ## 📄 License
 
 Licensed under the **ISC License** (see `package.json`).
-

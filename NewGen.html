@@ -101,32 +101,105 @@
   <header class="topbar">
     <div class="brand"><strong>NewGen</strong> dynamic page loader</div>
     <nav class="nav" aria-label="Page Navigation">
-      <button type="button" data-page="INTEL/Eventide/Source/intel.eventide.brochure.html" class="active">Intel Eventide</button>
-      <button type="button" data-page="SONY/ILCE-0/sony.a0.brochure.html">Sony a0</button>
-      <button type="button" data-page="SONY/XCD-LED/sony,XCDLED.brochure.html">Sony XCD-LED</button>
+      <button type="button" data-path="/Intel/Eventide">Intel Eventide</button>
+      <button type="button" data-path="/Sony/ILCE-0">Sony a0</button>
+      <button type="button" data-path="/Sony/XCD-LED">Sony XCD-LED</button>
     </nav>
   </header>
 
-  <iframe id="page-frame" class="viewer" title="Dynamic Content Viewer" src="INTEL/Eventide/Source/intel.eventide.brochure.html"></iframe>
+  <iframe id="page-frame" class="viewer" title="Dynamic Content Viewer"></iframe>
 
 <script>
+  // Page registry — add new routes here to extend the system.
+  const PAGES = [
+    { path: '/Intel/Eventide', src: '/INTEL/Eventide/Source/intel.eventide.brochure.html' },
+    { path: '/Sony/ILCE-0',    src: '/SONY/ILCE-0/sony.a0.brochure.html' },
+    { path: '/Sony/XCD-LED',   src: '/SONY/XCD-LED/sony,XCDLED.brochure.html' },
+  ];
+
   const frame = document.getElementById('page-frame');
   const buttons = Array.from(document.querySelectorAll('.nav button'));
+  const HEARTBEAT_INTERVAL_MS = 2000;
+  const PING_INTERVAL_MS = 3000;
+  let launcherWatchdog = false;
+  let heartbeatTimer = null;
+  let pingTimer = null;
 
-  function setActive(targetButton) {
-    buttons.forEach((button) => button.classList.toggle('active', button === targetButton));
+  function findPage(pathname) {
+    return PAGES.find((p) => p.path === pathname) || PAGES[0];
   }
 
-  buttons.forEach((button) => {
-    button.addEventListener('click', () => {
-      const page = button.getAttribute('data-page');
-      if (!page) {
-        return;
-      }
+  function navigate(page, pushState) {
+    if (pushState) {
+      history.pushState({ path: page.path }, '', page.path);
+    }
+    frame.src = page.src;
+    buttons.forEach((btn) => btn.classList.toggle('active', btn.dataset.path === page.path));
+  }
 
-      frame.src = page;
-      setActive(button);
+  async function safeFetch(url, options = {}) {
+    const response = await fetch(url, {
+      cache: 'no-store',
+      ...options,
     });
+    if (!response.ok && response.status !== 204) {
+      throw new Error(`Request failed: ${response.status}`);
+    }
+    return response;
+  }
+
+  async function setupWatchdog() {
+    try {
+      const status = await safeFetch('/__launcher/status').then((r) => r.json());
+      launcherWatchdog = Boolean(status.watchdog);
+      if (!launcherWatchdog) return;
+    } catch {
+      return;
+    }
+
+    heartbeatTimer = window.setInterval(() => {
+      safeFetch('/__launcher/heartbeat', { method: 'POST', keepalive: true }).catch(() => {});
+    }, HEARTBEAT_INTERVAL_MS);
+
+    pingTimer = window.setInterval(async () => {
+      try {
+        await safeFetch('/__launcher/ping');
+      } catch {
+        window.clearInterval(heartbeatTimer);
+        window.clearInterval(pingTimer);
+        window.close();
+      }
+    }, PING_INTERVAL_MS);
+  }
+
+  // Load the page that matches the current URL on first visit
+  if (window.location.pathname === '/') {
+    const defaultPage = findPage('/Intel/Eventide');
+    history.replaceState({ path: defaultPage.path }, '', defaultPage.path);
+  }
+  navigate(findPage(window.location.pathname), false);
+  setupWatchdog();
+
+  // Handle browser back / forward
+  window.addEventListener('popstate', () => {
+    navigate(findPage(window.location.pathname), false);
+  });
+
+  // Handle nav button clicks
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const page = findPage(btn.dataset.path);
+      if (page.path !== window.location.pathname) {
+        navigate(page, true);
+      }
+    });
+  });
+
+  window.addEventListener('beforeunload', () => {
+    if (!launcherWatchdog) return;
+    try {
+      navigator.sendBeacon('/__launcher/closed');
+    } catch {}
   });
 </script>
 </body>
