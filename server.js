@@ -8,9 +8,24 @@ const PORT = 3000;
 const ROOT = __dirname;
 const URL = `http://localhost:${PORT}`;
 const IS_CMD_LAUNCH = process.argv.includes('--from-bat');
+const SHUTDOWN_TIMEOUT_MS = 2000;
+const BOX_RULE = '+------------------------------------------------------------------+';
+const BOX_INNER_WIDTH = BOX_RULE.length - 2;
 
 let browserOpened = false;
 let shuttingDown = false;
+
+function boxLine(content) {
+  return `|${content.padEnd(BOX_INNER_WIDTH)}|`;
+}
+
+function centerText(content) {
+  const text = content.length > BOX_INNER_WIDTH ? content.slice(0, BOX_INNER_WIDTH) : content;
+  const totalPadding = BOX_INNER_WIDTH - text.length;
+  const leftPadding = Math.floor(totalPadding / 2);
+  const rightPadding = totalPadding - leftPadding;
+  return `${' '.repeat(leftPadding)}${text}${' '.repeat(rightPadding)}`;
+}
 
 const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
@@ -59,9 +74,9 @@ const server = http.createServer((req, res) => {
 
 function printBanner() {
   console.log('');
-  console.log('+------------------------------------------------------------------+');
-  console.log('|                           NEWGEN SERVER                           |');
-  console.log('+------------------------------------------------------------------+');
+  console.log(BOX_RULE);
+  console.log(boxLine(centerText('NEWGEN SERVER')));
+  console.log(BOX_RULE);
   console.log(`[1/5] Root directory : ${ROOT}`);
   console.log(`[2/5] Listen URL     : ${URL}`);
   console.log('[3/5] Boot sequence  : Initializing HTTP server...');
@@ -69,12 +84,12 @@ function printBanner() {
 
 function printStatus(mode) {
   console.log('');
-  console.log('+------------------------------------------------------------------+');
-  console.log('| STATUS: RUNNING                                                   |');
-  console.log(`| Mode : ${mode.padEnd(57)}|`);
-  console.log(`| URL  : ${URL.padEnd(57)}|`);
-  console.log('| NOTE : Close this window (or Ctrl+C) to stop the server.         |');
-  console.log('+------------------------------------------------------------------+');
+  console.log(BOX_RULE);
+  console.log(boxLine(' STATUS: RUNNING                                                   '));
+  console.log(boxLine(` Mode : ${mode}`));
+  console.log(boxLine(` URL  : ${URL}`));
+  console.log(boxLine(' NOTE : Close this window (or Ctrl+C) to stop the server.         '));
+  console.log(BOX_RULE);
   console.log('');
 }
 
@@ -106,7 +121,8 @@ function shutdown(signal) {
     process.exit(0);
   });
 
-  setTimeout(() => process.exit(0), 2000).unref();
+  // Fallback to avoid hanging forever if close callback never fires.
+  setTimeout(() => process.exit(1), SHUTDOWN_TIMEOUT_MS).unref();
 }
 
 printBanner();
