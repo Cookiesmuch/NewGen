@@ -11,6 +11,7 @@ set "MAX_WAIT_SECONDS=20"
 set "WATCHDOG_MAX_SECONDS=43200"
 set "BROWSER_PID="
 set "LAUNCHER_PID="
+set "SERVER_ALREADY_RUNNING="
 
 echo.
 echo ╔══════════════════════════════════════════════════════════════════════╗
@@ -37,59 +38,51 @@ echo.
 echo [05/08] Checking whether NewGen is already running...
 call :probe_server
 if not errorlevel 1 (
+  set "SERVER_ALREADY_RUNNING=1"
   echo [INFO ] Existing NewGen instance detected on %URL%.
-  echo [INFO ] Skipping server start and opening browser directly...
-  call :open_browser_session
+  echo [INFO ] Server startup will be skipped.
+) else (
+  echo [ OK  ] No active server was detected on port %PORT%.
+)
+echo.
+
+if not defined SERVER_ALREADY_RUNNING (
+  echo [06/08] Launching NewGen server process...
+  pushd "%ROOT%"
+  start "NewGen Server" /B node server.js
+  popd
+  echo [ OK  ] Launch command submitted.
   echo.
-  echo ╔══════════════════════════════════════════════════════════════════════╗
-  call :boxline "SESSION STATUS: ATTACHED TO EXISTING SERVER"
-  echo ╠══════════════════════════════════════════════════════════════════════╣
-  call :boxline "Browser opened successfully."
-  if defined BROWSER_PID (
-    call :boxline "Browser PID tracked : !BROWSER_PID!"
-    call :boxline "Bidirectional close link active (CMD <-> Browser)."
-  ) else (
-    call :boxline "Browser process tracking unavailable."
-    call :boxline "Auto-close on CMD exit is not supported for this browser."
+
+  echo [07/08] Waiting for server readiness (up to %MAX_WAIT_SECONDS%s)...
+  set "READY="
+  for /L %%I in (1,1,%MAX_WAIT_SECONDS%) do (
+    call :probe_server
+    if not errorlevel 1 (
+      set "READY=1"
+      set "READY_AT=%%I"
+      goto :SERVER_READY
+    )
+    <nul set /p "=."
+    timeout /t 1 /nobreak >nul
   )
-  call :boxline "Existing server process retained."
-  echo ╚══════════════════════════════════════════════════════════════════════╝
+
+  :SERVER_READY
   echo.
-  pause
-  exit /b 0
-)
-echo [ OK  ] No active server was detected on port %PORT%.
-echo.
-
-echo [06/08] Launching NewGen server process...
-start "NewGen Server" /B cmd /c "cd /d \"%ROOT%\" && node server.js"
-echo [ OK  ] Launch command submitted.
-echo.
-
-echo [07/08] Waiting for server readiness (up to %MAX_WAIT_SECONDS%s)...
-set "READY="
-for /L %%I in (1,1,%MAX_WAIT_SECONDS%) do (
-  call :probe_server
-  if not errorlevel 1 (
-    set "READY=1"
-    set "READY_AT=%%I"
-    goto :SERVER_READY
+  if not defined READY (
+    echo [WARN ] NewGen did not respond within %MAX_WAIT_SECONDS% seconds.
+    echo [HINT ] Check this terminal for server errors and retry.
+    echo.
+    pause
+    exit /b 1
   )
-  <nul set /p "=."
-  timeout /t 1 /nobreak >nul
+  echo [ OK  ] NewGen responded after !READY_AT! second(s).
+) else (
+  echo [06/08] Startup skipped (existing server in use).
+  echo [07/08] Readiness check skipped (existing server already responded).
 )
-
-:SERVER_READY
 echo.
-if not defined READY (
-  echo [WARN ] NewGen did not respond within %MAX_WAIT_SECONDS% seconds.
-  echo [HINT ] Check the server output in this window for error details.
-  echo.
-  pause
-  exit /b 1
-)
 
-echo [ OK  ] NewGen responded after !READY_AT! second(s).
 echo [08/08] Opening browser at %URL%...
 call :open_browser_session
 echo.
@@ -99,14 +92,19 @@ echo ╠════════════════════════
 call :boxline "Browser opened successfully."
 if defined BROWSER_PID (
   call :boxline "Browser PID tracked : !BROWSER_PID!"
-  call :boxline "Bidirectional close link active (CMD <-> Browser)."
+  call :boxline "Closing CMD will close this browser window."
+  call :boxline "Closing this browser window will close CMD."
 ) else (
   call :boxline "Browser process tracking unavailable."
-  call :boxline "Auto-close on CMD exit is not supported for this browser."
+  call :boxline "Bidirectional close sync unavailable for this browser."
+)
+if defined SERVER_ALREADY_RUNNING (
+  call :boxline "Server mode: Attached to existing server."
+) else (
+  call :boxline "Server mode: Started by this launcher."
 )
 call :boxline "Health check status : READY"
 call :boxline "Runtime engine      : Node.js"
-call :boxline "Tip: Close this launcher window to end the session."
 echo ╚══════════════════════════════════════════════════════════════════════╝
 echo.
 pause
@@ -134,11 +132,11 @@ if not defined BROWSER_PID (
   exit /b 0
 )
 
-for /f %%P in ('powershell -NoProfile -Command "$pp=(Get-CimInstance Win32_Process -Filter \"ProcessId=$PID\").ParentProcessId; Write-Output $pp"') do (
+for /f %%P in ('powershell -NoProfile -Command "(Get-CimInstance Win32_Process -Filter \"ProcessId=$PID\").ParentProcessId"') do (
   set "LAUNCHER_PID=%%P"
 )
 
 if defined LAUNCHER_PID (
-  start "" powershell -NoProfile -WindowStyle Hidden -Command "$launcherPid=%LAUNCHER_PID%; $browserPid=%BROWSER_PID%; $maxSeconds=%WATCHDOG_MAX_SECONDS%; $elapsed=0; while ($elapsed -lt $maxSeconds) { $launcherAlive = Get-Process -Id $launcherPid -ErrorAction SilentlyContinue; $browserAlive = Get-Process -Id $browserPid -ErrorAction SilentlyContinue; if (-not $launcherAlive) { Stop-Process -Id $browserPid -Force -ErrorAction SilentlyContinue; break }; if (-not $browserAlive) { Stop-Process -Id $launcherPid -Force -ErrorAction SilentlyContinue; break }; Start-Sleep -Milliseconds 500; $elapsed += 0.5 }; if ($elapsed -ge $maxSeconds) { Stop-Process -Id $browserPid -Force -ErrorAction SilentlyContinue }" >nul 2>nul
+  start "" powershell -NoProfile -WindowStyle Hidden -Command "$launcherPid=%LAUNCHER_PID%; $browserPid=%BROWSER_PID%; $maxSeconds=%WATCHDOG_MAX_SECONDS%; $elapsed=0; while ($elapsed -lt $maxSeconds) { $launcherAlive = Get-Process -Id $launcherPid -ErrorAction SilentlyContinue; $browserAlive = Get-Process -Id $browserPid -ErrorAction SilentlyContinue; if (-not $launcherAlive) { Stop-Process -Id $browserPid -Force -ErrorAction SilentlyContinue; break }; if (-not $browserAlive) { Stop-Process -Id $launcherPid -Force -ErrorAction SilentlyContinue; break }; Start-Sleep -Milliseconds 500; $elapsed += 0.5 }" >nul 2>nul
 )
 exit /b 0
