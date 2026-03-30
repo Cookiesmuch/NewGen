@@ -6,34 +6,25 @@ const path = require('path');
 const PORT = 3000;
 const ROOT = __dirname;
 
-const server = http.createServer((req, res) => {
-  const url = req.url === '/' ? '/NewGen.html' : req.url;
-  let filePath = path.join(ROOT, url);
-  
-  // Resolve directory requests to index/default
-  if (filePath.endsWith('/')) {
-    filePath = path.join(filePath, 'NewGen.html');
-  }
+const mimeTypes = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'application/javascript',
+  '.css': 'text/css',
+  '.json': 'application/json',
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.gif': 'image/gif',
+};
 
+function serveFile(filePath, res, fallbackUrl) {
   const ext = path.extname(filePath).toLowerCase();
-  const mimeTypes = {
-    '.html': 'text/html; charset=utf-8',
-    '.js': 'application/javascript',
-    '.css': 'text/css',
-    '.json': 'application/json',
-    '.svg': 'image/svg+xml',
-    '.png': 'image/png',
-    '.jpg': 'image/jpeg',
-    '.gif': 'image/gif',
-  };
-
   const contentType = mimeTypes[ext] || 'application/octet-stream';
-
   fs.readFile(filePath, (err, content) => {
     if (err) {
       if (err.code === 'ENOENT') {
         res.writeHead(404, { 'Content-Type': 'text/html' });
-        res.end(`<h1>404 Not Found</h1><p>${req.url}</p>`);
+        res.end(`<h1>404 Not Found</h1><p>${fallbackUrl}</p>`);
       } else {
         res.writeHead(500, { 'Content-Type': 'text/html' });
         res.end(`<h1>500 Server Error</h1>`);
@@ -43,6 +34,21 @@ const server = http.createServer((req, res) => {
       res.end(content);
     }
   });
+}
+
+const server = http.createServer((req, res) => {
+  // Strip query string
+  const urlPath = req.url.split('?')[0];
+
+  // If the request has no file extension it is a page route — serve the SPA shell
+  const ext = path.extname(urlPath).toLowerCase();
+  if (!ext) {
+    serveFile(path.join(ROOT, 'NewGen.html'), res, req.url);
+    return;
+  }
+
+  // Otherwise serve the static asset directly
+  serveFile(path.join(ROOT, urlPath), res, req.url);
 });
 
 server.listen(PORT, () => {
