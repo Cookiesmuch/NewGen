@@ -1,0 +1,1098 @@
+<!-- THREAD DIRECTOR: td-dd- | Thread Director Deep-Dive Section -->
+<style>
+    :root {
+        --td-dd-primary: #60B4FF;
+        --td-dd-primary-light: #7BC8FF;
+        --td-dd-secondary: #4A90E2;
+        --td-dd-accent: #5EC4FF;
+        --td-dd-dark-base: #010810;
+        --td-dd-dark-gradient: linear-gradient(135deg, #010810 0%, #020C1C 100%);
+        --td-dd-grid-glow: rgba(96, 180, 255, 0.03);
+        --td-dd-border-accent: rgba(96, 180, 255, 0.22);
+        --td-dd-stat-number: #7BC8FF;
+        --td-dd-text-primary: #E8E8E8;
+        --td-dd-text-secondary: #A0A0A0;
+        --td-dd-text-accent: #60B4FF;
+        --td-dd-warning: #FF6B35;
+        --td-dd-success: #4AE380;
+    }
+
+    .td-dd-wrap {
+        width: 100%;
+        background: var(--td-dd-dark-gradient);
+        color: var(--td-dd-text-primary);
+        font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .td-dd-section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 64px 48px;
+        position: relative;
+    }
+
+    /* ===== HERO SECTION ===== */
+    .td-dd-hero {
+        margin-bottom: 96px;
+    }
+
+    .td-dd-eyebrow {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--td-dd-primary);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .td-dd-eyebrow::before {
+        content: '';
+        width: 24px;
+        height: 2px;
+        background: var(--td-dd-primary);
+    }
+
+    .td-dd-hero-headline {
+        font-family: 'Bebas Neue', display;
+        font-size: 72px;
+        font-weight: 400;
+        letter-spacing: -1px;
+        line-height: 1;
+        margin-bottom: 24px;
+        background: linear-gradient(180deg, var(--td-dd-primary-light) 0%, var(--td-dd-primary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .td-dd-hero-subhead {
+        font-size: 18px;
+        line-height: 1.6;
+        color: var(--td-dd-text-secondary);
+        margin-bottom: 32px;
+        max-width: 740px;
+    }
+
+    .td-dd-badge-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .td-dd-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 14px;
+        border: 1px solid var(--td-dd-border-accent);
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--td-dd-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        background: rgba(96, 180, 255, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .td-dd-badge:hover {
+        background: rgba(96, 180, 255, 0.12);
+        border-color: var(--td-dd-primary);
+    }
+
+    /* ===== STAT BLOCK ===== */
+    .td-dd-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 24px;
+        margin-bottom: 96px;
+        padding: 48px;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--td-dd-border-accent);
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .td-dd-stats::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+            linear-gradient(90deg, var(--td-dd-grid-glow) 1px, transparent 1px),
+            linear-gradient(0deg, var(--td-dd-grid-glow) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+    }
+
+    .td-dd-stat-cell {
+        position: relative;
+        z-index: 1;
+        padding: 24px;
+        text-align: center;
+    }
+
+    .td-dd-stat-number {
+        font-family: 'Bebas Neue', display;
+        font-size: 48px;
+        font-weight: 400;
+        letter-spacing: -1px;
+        color: var(--td-dd-stat-number);
+        margin-bottom: 8px;
+        line-height: 1;
+    }
+
+    .td-dd-stat-label {
+        font-size: 14px;
+        color: var(--td-dd-text-secondary);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* ===== CORE ARCHITECTURE SECTION ===== */
+    .td-dd-core-arch {
+        margin-bottom: 96px;
+    }
+
+    .td-dd-section-title {
+        font-family: 'Bebas Neue', display;
+        font-size: 48px;
+        font-weight: 400;
+        letter-spacing: -0.5px;
+        margin-bottom: 24px;
+        color: var(--td-dd-text-primary);
+    }
+
+    .td-dd-section-intro {
+        font-size: 16px;
+        line-height: 1.8;
+        color: var(--td-dd-text-secondary);
+        margin-bottom: 48px;
+        max-width: 800px;
+    }
+
+    .td-dd-core-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        margin-bottom: 48px;
+    }
+
+    .td-dd-core-card {
+        padding: 32px;
+        border: 1px solid var(--td-dd-border-accent);
+        border-radius: 12px;
+        background: rgba(1, 8, 16, 0.5);
+        backdrop-filter: blur(8px);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .td-dd-core-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, var(--td-dd-primary), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .td-dd-core-card:hover {
+        border-color: var(--td-dd-primary);
+        background: rgba(1, 8, 16, 0.8);
+        transform: translateY(-4px);
+    }
+
+    .td-dd-core-card:hover::before {
+        opacity: 1;
+    }
+
+    .td-dd-core-type {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 12px;
+        color: var(--td-dd-primary);
+        margin-bottom: 12px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+    }
+
+    .td-dd-core-name {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: var(--td-dd-text-primary);
+    }
+
+    .td-dd-core-desc {
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--td-dd-text-secondary);
+        margin-bottom: 16px;
+    }
+
+    .td-dd-core-spec {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 12px;
+        color: var(--td-dd-accent);
+        padding-top: 16px;
+        border-top: 1px solid rgba(96, 180, 255, 0.1);
+    }
+
+    /* ===== ARCHITECTURE DIAGRAM ===== */
+    .td-dd-architecture {
+        margin-bottom: 96px;
+        padding: 48px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--td-dd-border-accent);
+        border-radius: 12px;
+    }
+
+    .td-dd-arch-diagram {
+        display: grid;
+        grid-template-columns: 1fr 80px 1fr;
+        gap: 32px;
+        align-items: center;
+        margin-top: 32px;
+    }
+
+    .td-dd-arch-left,
+    .td-dd-arch-right {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .td-dd-arch-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .td-dd-arch-box {
+        padding: 20px;
+        background: rgba(96, 180, 255, 0.08);
+        border: 1px solid var(--td-dd-border-accent);
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        text-align: center;
+        color: var(--td-dd-text-primary);
+    }
+
+    .td-dd-arch-core {
+        background: rgba(96, 180, 255, 0.25);
+        border-color: var(--td-dd-primary);
+        font-weight: 600;
+        padding: 32px 20px;
+        font-size: 16px;
+        color: var(--td-dd-primary-light);
+    }
+
+    .td-dd-arch-arrow {
+        font-size: 28px;
+        color: var(--td-dd-primary);
+        margin: 8px 0;
+    }
+
+    /* ===== SCHEDULING PROCESS ===== */
+    .td-dd-scheduling {
+        margin-bottom: 96px;
+    }
+
+    .td-dd-process-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .td-dd-step {
+        padding: 32px;
+        background: rgba(96, 180, 255, 0.05);
+        border: 1px solid var(--td-dd-border-accent);
+        position: relative;
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+    }
+
+    .td-dd-step:first-child {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    .td-dd-step:last-child {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        background: rgba(96, 180, 255, 0.12);
+    }
+
+    .td-dd-step:not(:last-child) {
+        border-bottom: none;
+    }
+
+    .td-dd-step::after {
+        content: '';
+        position: absolute;
+        right: 32px;
+        top: 100%;
+        width: 2px;
+        height: 16px;
+        background: var(--td-dd-primary);
+    }
+
+    .td-dd-step:last-child::after {
+        display: none;
+    }
+
+    .td-dd-step-number {
+        font-family: 'Bebas Neue', display;
+        font-size: 32px;
+        color: var(--td-dd-primary);
+        margin-right: 24px;
+        font-weight: 400;
+        min-width: 40px;
+    }
+
+    .td-dd-step-content {
+        flex: 1;
+    }
+
+    .td-dd-step-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--td-dd-text-primary);
+    }
+
+    .td-dd-step-desc {
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--td-dd-text-secondary);
+    }
+
+    /* ===== LPNPU CO-PILOT SECTION ===== */
+    .td-dd-copilot {
+        margin-bottom: 96px;
+    }
+
+    .td-dd-copilot-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 48px;
+        align-items: start;
+    }
+
+    .td-dd-copilot-prose {
+        font-size: 16px;
+        line-height: 1.8;
+        color: var(--td-dd-text-secondary);
+    }
+
+    .td-dd-copilot-prose h3 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--td-dd-text-primary);
+        margin-bottom: 24px;
+    }
+
+    .td-dd-copilot-prose p {
+        margin-bottom: 16px;
+    }
+
+    .td-dd-copilot-prose strong {
+        color: var(--td-dd-primary);
+        font-weight: 600;
+    }
+
+    .td-dd-benefit-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .td-dd-benefit-list li {
+        padding: 12px 0 12px 32px;
+        position: relative;
+        border-bottom: 1px solid rgba(96, 180, 255, 0.1);
+    }
+
+    .td-dd-benefit-list li:last-child {
+        border-bottom: none;
+    }
+
+    .td-dd-benefit-list li::before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: var(--td-dd-primary);
+        font-weight: 600;
+    }
+
+    /* ===== COMPARISON TABLE ===== */
+    .td-dd-comparison {
+        margin-bottom: 96px;
+    }
+
+    .td-dd-comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--td-dd-border-accent);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .td-dd-comparison-table th,
+    .td-dd-comparison-table td {
+        padding: 24px 32px;
+        text-align: left;
+        border-bottom: 1px solid var(--td-dd-border-accent);
+    }
+
+    .td-dd-comparison-table th:last-child,
+    .td-dd-comparison-table td:last-child {
+        text-align: center;
+    }
+
+    .td-dd-comparison-table th {
+        background: rgba(96, 180, 255, 0.1);
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--td-dd-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .td-dd-comparison-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .td-dd-comparison-table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+
+    .td-dd-comparison-table tbody tr:hover {
+        background: rgba(96, 180, 255, 0.05);
+    }
+
+    .td-dd-comparison-label {
+        font-weight: 500;
+        color: var(--td-dd-text-primary);
+    }
+
+    .td-dd-comparison-value {
+        font-family: 'IBM Plex Mono', monospace;
+        color: var(--td-dd-text-secondary);
+        font-size: 14px;
+    }
+
+    .td-dd-hw-row {
+        background: rgba(96, 180, 255, 0.15);
+    }
+
+    .td-dd-hw-row td {
+        font-weight: 600;
+    }
+
+    .td-dd-check-yes {
+        color: var(--td-dd-success);
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .td-dd-check-no {
+        color: var(--td-dd-warning);
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    /* ===== CAPABILITIES SECTION ===== */
+    .td-dd-capabilities {
+        margin-bottom: 96px;
+    }
+
+    .td-dd-capability-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 32px;
+    }
+
+    .td-dd-capability-card {
+        padding: 32px;
+        border: 1px solid var(--td-dd-border-accent);
+        border-radius: 12px;
+        background: rgba(1, 8, 16, 0.5);
+        backdrop-filter: blur(8px);
+        transition: all 0.3s ease;
+    }
+
+    .td-dd-capability-card:hover {
+        border-color: var(--td-dd-primary);
+        background: rgba(1, 8, 16, 0.8);
+    }
+
+    .td-dd-capability-icon {
+        font-size: 36px;
+        margin-bottom: 16px;
+    }
+
+    .td-dd-capability-name {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: var(--td-dd-text-primary);
+    }
+
+    .td-dd-capability-desc {
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--td-dd-text-secondary);
+    }
+
+    /* ===== TECHNICAL SPECS ===== */
+    .td-dd-specs {
+        margin-bottom: 96px;
+        padding: 48px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--td-dd-border-accent);
+        border-radius: 12px;
+    }
+
+    .td-dd-spec-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        margin-top: 32px;
+    }
+
+    .td-dd-spec-item {
+        padding: 24px;
+        background: rgba(96, 180, 255, 0.05);
+        border: 1px solid var(--td-dd-border-accent);
+        border-radius: 8px;
+    }
+
+    .td-dd-spec-label {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 12px;
+        color: var(--td-dd-primary);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    .td-dd-spec-value {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 18px;
+        color: var(--td-dd-text-primary);
+        font-weight: 600;
+    }
+
+    /* ===== SECTION DIVIDER ===== */
+    .td-dd-divider {
+        margin: 64px 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--td-dd-border-accent) 20%, var(--td-dd-border-accent) 80%, transparent);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 968px) {
+        .td-dd-arch-diagram {
+            grid-template-columns: 1fr;
+        }
+
+        .td-dd-arch-center {
+            order: 2;
+        }
+
+        .td-dd-arch-arrow {
+            transform: rotate(90deg);
+        }
+
+        .td-dd-copilot-grid {
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .td-dd-section {
+            padding: 48px 32px;
+        }
+
+        .td-dd-hero-headline {
+            font-size: 48px;
+        }
+
+        .td-dd-hero-subhead {
+            font-size: 16px;
+        }
+
+        .td-dd-stats {
+            grid-template-columns: repeat(2, 1fr);
+            padding: 32px;
+        }
+
+        .td-dd-section-title {
+            font-size: 36px;
+        }
+
+        .td-dd-comparison-table th,
+        .td-dd-comparison-table td {
+            padding: 16px;
+            font-size: 13px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .td-dd-section {
+            padding: 32px 16px;
+        }
+
+        .td-dd-hero-headline {
+            font-size: 36px;
+        }
+
+        .td-dd-stats {
+            grid-template-columns: 1fr;
+            padding: 24px;
+        }
+
+        .td-dd-badge-group {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .td-dd-badge {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="td-dd-wrap">
+    <div class="td-dd-section">
+        <!-- HERO SECTION -->
+        <div class="td-dd-hero">
+            <div class="td-dd-eyebrow">Dedicated Scheduler Silicon · Hardware Thread Director</div>
+            <h1 class="td-dd-hero-headline">Intelligence That<br>Never Waits.</h1>
+            <p class="td-dd-hero-subhead">
+                The Hardware Thread Director is not a software scheduler. It is <strong>dedicated silicon</strong>—a
+                purpose-built scheduling tile that operates independently of all CPU cores, orchestrating Eventide's
+                unprecedented 5-class heterogeneous architecture at sub-100ns latency. With cores spanning two process
+                nodes and five distinct performance classes, OS schedulers cannot respond fast enough. The Thread Director
+                makes these decisions in hardware, monitoring thermal headroom, instruction profiles, and workload priority
+                simultaneously, reassigning threads without OS intervention.
+            </p>
+            <div class="td-dd-badge-group">
+                <div class="td-dd-badge">Dedicated Tile</div>
+                <div class="td-dd-badge">Sub-100ns</div>
+                <div class="td-dd-badge">5-Class Scheduling</div>
+                <div class="td-dd-badge">LPNPU Co-Pilot</div>
+                <div class="td-dd-badge">Hardware Native</div>
+            </div>
+        </div>
+
+        <!-- STAT BLOCK -->
+        <div class="td-dd-stats">
+            <div class="td-dd-stat-cell">
+                <div class="td-dd-stat-number">&lt;100ns</div>
+                <div class="td-dd-stat-label">Decision Latency</div>
+            </div>
+            <div class="td-dd-stat-cell">
+                <div class="td-dd-stat-number">5</div>
+                <div class="td-dd-stat-label">Core Classes</div>
+            </div>
+            <div class="td-dd-stat-cell">
+                <div class="td-dd-stat-number">500+</div>
+                <div class="td-dd-stat-label">Total Cores</div>
+            </div>
+            <div class="td-dd-stat-cell">
+                <div class="td-dd-stat-number">2</div>
+                <div class="td-dd-stat-label">Process Nodes</div>
+            </div>
+        </div>
+
+        <!-- CORE ARCHITECTURE SECTION -->
+        <div class="td-dd-core-arch">
+            <h2 class="td-dd-section-title">Five Core Classes.<br>One Unified Intelligence.</h2>
+            <p class="td-dd-section-intro">
+                Eventide's five-class heterogeneous core architecture represents the most segmented x86 design in history.
+                Each core type is purpose-built for a specific performance and efficiency envelope. The Hardware Thread
+                Director monitors and orchestrates all classes simultaneously, ensuring optimal core selection based on
+                workload characteristics, thermal budget, and system state.
+            </p>
+            <div class="td-dd-core-grid">
+                <div class="td-dd-core-card">
+                    <div class="td-dd-core-type">Ultra High Performance</div>
+                    <div class="td-dd-core-name">UHP · Solar Eclipse</div>
+                    <p class="td-dd-core-desc">
+                        Flagship P-cores built on Intel 04A. Peak single-thread performance optimized for latency-critical
+                        workloads. Thread Director targets UHP for burst compute, game physics, and V8 HyperBOOST sequencing.
+                    </p>
+                    <div class="td-dd-core-spec">8 cores · 8T base · 10 GHz burst</div>
+                </div>
+                <div class="td-dd-core-card">
+                    <div class="td-dd-core-type">Data Path</div>
+                    <div class="td-dd-core-name">DP · Lunar Eclipse</div>
+                    <p class="td-dd-core-desc">
+                        Balanced performance-efficiency P-cores. Optimized for sustained multi-threaded workloads.
+                        Thread Director uses DP for parallel compute, compilation, and data processing tasks.
+                    </p>
+                    <div class="td-dd-core-spec">32 cores · 6.2 GHz sustained</div>
+                </div>
+                <div class="td-dd-core-card">
+                    <div class="td-dd-core-type">Spatial Processing Engine</div>
+                    <div class="td-dd-core-name">SPE · Venusmont</div>
+                    <p class="td-dd-core-desc">
+                        Ultra-dense E-cores engineered for massive parallelism. Thread Director dispatches SPE for
+                        throughput-bound tasks requiring hundreds of threads simultaneously—server workloads, ray tracing, encoding.
+                    </p>
+                    <div class="td-dd-core-spec">288+ cores · Intel 04A · 9-core clusters</div>
+                </div>
+                <div class="td-dd-core-card">
+                    <div class="td-dd-core-type">Ultra High Efficiency</div>
+                    <div class="td-dd-core-name">UHE · Sunset Cove</div>
+                    <p class="td-dd-core-desc">
+                        Efficiency-focused E-cores on Intel 06E. Thread Director routes background tasks and
+                        light workloads to UHE, preserving thermal headroom for performance tiles.
+                    </p>
+                    <div class="td-dd-core-spec">24 cores · Intel 06E · Low power</div>
+                </div>
+                <div class="td-dd-core-card">
+                    <div class="td-dd-core-type">Low Power Execution</div>
+                    <div class="td-dd-core-name">LPE · Darkmont</div>
+                    <p class="td-dd-core-desc">
+                        Always-on LP island E-cores. Thread Director keeps LPE active during standby for
+                        wake-on-voice response, background monitoring, and system maintenance without waking compute tiles.
+                    </p>
+                    <div class="td-dd-core-spec">8 cores · Intel 06E · Always-on</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ARCHITECTURE DIAGRAM -->
+        <div class="td-dd-architecture">
+            <h3 class="td-dd-section-title" style="font-size: 36px;">Hardware Arbitration Architecture</h3>
+            <p class="td-dd-section-intro">
+                The Thread Director sits at the center of Eventide's tile interconnect, receiving telemetry from all
+                cores and making dispatch decisions before the OS scheduler becomes aware of runnable threads.
+            </p>
+            <div class="td-dd-arch-diagram">
+                <div class="td-dd-arch-left">
+                    <div class="td-dd-arch-box">UHP Cores<br>(Solar Eclipse)</div>
+                    <div class="td-dd-arch-box">DP Cores<br>(Lunar Eclipse)</div>
+                    <div class="td-dd-arch-box">SPE Cores<br>(Venusmont)</div>
+                    <div class="td-dd-arch-box">UHE Cores<br>(Sunset Cove)</div>
+                    <div class="td-dd-arch-box">LPE Cores<br>(Darkmont)</div>
+                </div>
+                <div class="td-dd-arch-center">
+                    <div class="td-dd-arch-arrow">→</div>
+                    <div class="td-dd-arch-core">Thread<br>Director<br>Tile</div>
+                    <div class="td-dd-arch-arrow">←</div>
+                </div>
+                <div class="td-dd-arch-right">
+                    <div class="td-dd-arch-box">Thermal Monitor</div>
+                    <div class="td-dd-arch-box">LPNPU Co-Pilot</div>
+                    <div class="td-dd-arch-box">Power Budget</div>
+                    <div class="td-dd-arch-box">GPU Escalation</div>
+                    <div class="td-dd-arch-box">FOveros 2.0 Bus</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCHEDULING PROCESS -->
+        <div class="td-dd-scheduling">
+            <h2 class="td-dd-section-title">Hardware Scheduling Pipeline</h2>
+            <p class="td-dd-section-intro">
+                Thread Director operates in a continuous decision loop, monitoring system state and making real-time
+                arbitration decisions. Each step executes in hardware, ensuring deterministic latency.
+            </p>
+            <div class="td-dd-process-steps">
+                <div class="td-dd-step">
+                    <div class="td-dd-step-number">01</div>
+                    <div class="td-dd-step-content">
+                        <div class="td-dd-step-title">Thread Classification</div>
+                        <p class="td-dd-step-desc">
+                            Monitor instruction mix, branch patterns, and memory access profiles for all runnable threads.
+                            Classify workload as latency-bound, throughput-bound, or memory-bound.
+                        </p>
+                    </div>
+                </div>
+                <div class="td-dd-step">
+                    <div class="td-dd-step-number">02</div>
+                    <div class="td-dd-step-content">
+                        <div class="td-dd-step-title">LPNPU Prediction</div>
+                        <p class="td-dd-step-desc">
+                            LPNPU co-pilot analyzes thread runqueue state using lightweight on-chip AI. Predicts workload
+                            class and optimal core target before OS scheduler becomes aware of runnable threads.
+                        </p>
+                    </div>
+                </div>
+                <div class="td-dd-step">
+                    <div class="td-dd-step-number">03</div>
+                    <div class="td-dd-step-content">
+                        <div class="td-dd-step-title">Thermal & Power Analysis</div>
+                        <p class="td-dd-step-desc">
+                            Query per-core thermal headroom and system power budget. Determine which core classes have
+                            available capacity for new threads without violating TDP limits.
+                        </p>
+                    </div>
+                </div>
+                <div class="td-dd-step">
+                    <div class="td-dd-step-number">04</div>
+                    <div class="td-dd-step-content">
+                        <div class="td-dd-step-title">Core Selection & Dispatch</div>
+                        <p class="td-dd-step-desc">
+                            Select optimal core class based on workload profile, thermal budget, and power state.
+                            Signal OS scheduler with dispatch hint. Pre-stage core frequency and voltage for incoming thread.
+                        </p>
+                    </div>
+                </div>
+                <div class="td-dd-step">
+                    <div class="td-dd-step-number">05</div>
+                    <div class="td-dd-step-content">
+                        <div class="td-dd-step-title">Continuous Monitoring</div>
+                        <p class="td-dd-step-desc">
+                            Monitor thread execution in real-time. If workload characteristics change, migrate thread
+                            to more appropriate core class. Coordinate V8 HyperBOOST sequencing for UHP burst windows.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LPNPU CO-PILOT SECTION -->
+        <div class="td-dd-copilot">
+            <h2 class="td-dd-section-title">LPNPU Co-Pilot Mode</h2>
+            <div class="td-dd-copilot-grid">
+                <div class="td-dd-copilot-prose">
+                    <h3>Predictive AI-Assisted Dispatch</h3>
+                    <p>
+                        New in Eventide: the Hardware Thread Director operates in <strong>co-pilot mode</strong> with
+                        the always-on Low Power NPU. The LPNPU (88 TOPS, Intel 06E) runs a lightweight on-chip AI
+                        scheduling model that predicts workload class before threads become runnable.
+                    </p>
+                    <p>
+                        By analyzing instruction patterns, memory access behavior, and historical execution profiles,
+                        the LPNPU feeds <strong>predictive dispatch signals</strong> to the Thread Director tile.
+                        This allows proactive core preparation—frequency scaling, voltage adjustments, and cache
+                        pre-warming—before the OS scheduler even sees the thread.
+                    </p>
+                    <p>
+                        The result: <strong>smarter core selection</strong>, fewer thermal missteps, and better
+                        sustained performance over time. The LPNPU learns user behavior patterns, adapting its
+                        predictions to match real-world usage without manual tuning.
+                    </p>
+                </div>
+                <div>
+                    <div class="td-dd-specs" style="margin: 0;">
+                        <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600; color: var(--td-dd-text-primary); margin-bottom: 24px;">Co-Pilot Benefits</h3>
+                        <ul class="td-dd-benefit-list">
+                            <li>
+                                <strong>Sub-100ns Dispatch Advantage</strong><br>
+                                <span style="font-size: 13px; color: var(--td-dd-text-secondary);">
+                                    Pre-staging eliminates OS scheduler latency
+                                </span>
+                            </li>
+                            <li>
+                                <strong>Predictive Core Preparation</strong><br>
+                                <span style="font-size: 13px; color: var(--td-dd-text-secondary);">
+                                    Frequency and voltage targets set before thread arrives
+                                </span>
+                            </li>
+                            <li>
+                                <strong>Behavioral Learning</strong><br>
+                                <span style="font-size: 13px; color: var(--td-dd-text-secondary);">
+                                    Adapts to user patterns without manual configuration
+                                </span>
+                            </li>
+                            <li>
+                                <strong>Thermal Optimization</strong><br>
+                                <span style="font-size: 13px; color: var(--td-dd-text-secondary);">
+                                    Avoids thermal violations through workload prediction
+                                </span>
+                            </li>
+                            <li>
+                                <strong>Energy Efficiency</strong><br>
+                                <span style="font-size: 13px; color: var(--td-dd-text-secondary);">
+                                    Right-sizes core selection to avoid power waste
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPARISON TABLE -->
+        <div class="td-dd-comparison">
+            <h2 class="td-dd-section-title">Hardware vs. Software Scheduling</h2>
+            <table class="td-dd-comparison-table">
+                <thead>
+                    <tr>
+                        <th>Capability</th>
+                        <th>HW Thread Director</th>
+                        <th>OS Scheduler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="td-dd-hw-row">
+                        <td class="td-dd-comparison-label">Decision Latency</td>
+                        <td class="td-dd-comparison-value">&lt;100ns</td>
+                        <td class="td-dd-comparison-value">~10-50μs</td>
+                    </tr>
+                    <tr>
+                        <td class="td-dd-comparison-label">Core Class Awareness</td>
+                        <td class="td-dd-check-yes">✓</td>
+                        <td class="td-dd-check-yes">✓</td>
+                    </tr>
+                    <tr>
+                        <td class="td-dd-comparison-label">Real-Time Thermal Monitoring</td>
+                        <td class="td-dd-check-yes">✓</td>
+                        <td class="td-dd-check-no">✗</td>
+                    </tr>
+                    <tr>
+                        <td class="td-dd-comparison-label">Predictive AI Co-Pilot</td>
+                        <td class="td-dd-check-yes">✓</td>
+                        <td class="td-dd-check-no">✗</td>
+                    </tr>
+                    <tr>
+                        <td class="td-dd-comparison-label">Pre-Thread Frequency Scaling</td>
+                        <td class="td-dd-check-yes">✓</td>
+                        <td class="td-dd-check-no">✗</td>
+                    </tr>
+                    <tr>
+                        <td class="td-dd-comparison-label">V8 HyperBOOST Coordination</td>
+                        <td class="td-dd-check-yes">✓</td>
+                        <td class="td-dd-check-no">✗</td>
+                    </tr>
+                    <tr>
+                        <td class="td-dd-comparison-label">GPU/NPU Escalation</td>
+                        <td class="td-dd-check-yes">✓</td>
+                        <td class="td-dd-check-no">✗</td>
+                    </tr>
+                    <tr>
+                        <td class="td-dd-comparison-label">Tile Sleep/Wake Control</td>
+                        <td class="td-dd-check-yes">✓</td>
+                        <td class="td-dd-check-no">✗</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- CAPABILITIES SECTION -->
+        <div class="td-dd-capabilities">
+            <h2 class="td-dd-section-title">Core Capabilities</h2>
+            <div class="td-dd-capability-grid">
+                <div class="td-dd-capability-card">
+                    <div class="td-dd-capability-icon">⚡</div>
+                    <div class="td-dd-capability-name">5-Class Core Arbitration</div>
+                    <p class="td-dd-capability-desc">
+                        Real-time selection between UHP, DP, SPE, UHE, and LPE core classes based on workload profile,
+                        thermal budget, and system state. Hardware-native decision making without OS involvement.
+                    </p>
+                </div>
+                <div class="td-dd-capability-card">
+                    <div class="td-dd-capability-icon">🔥</div>
+                    <div class="td-dd-capability-name">Thermal Budget Management</div>
+                    <p class="td-dd-capability-desc">
+                        Continuous per-core thermal monitoring with predictive headroom analysis. Prevents thermal
+                        violations by routing threads away from hot cores before throttling occurs.
+                    </p>
+                </div>
+                <div class="td-dd-capability-card">
+                    <div class="td-dd-capability-icon">🎯</div>
+                    <div class="td-dd-capability-name">V8 HyperBOOST Sequencing</div>
+                    <p class="td-dd-capability-desc">
+                        Coordinates UHP core firing in Ford Mustang V8 offset sequence. Pre-schedules burst windows
+                        and manages thermal budget allocation to sustain effective 10 GHz throughput.
+                    </p>
+                </div>
+                <div class="td-dd-capability-card">
+                    <div class="td-dd-capability-icon">🧠</div>
+                    <div class="td-dd-capability-name">GPU/NPU Escalation</div>
+                    <p class="td-dd-capability-desc">
+                        Identifies workloads better suited for GPU or NPU execution. Automatically escalates eligible
+                        tasks to Arc E1080 GPU tiles or HNPU/LPNPU for optimal performance per watt.
+                    </p>
+                </div>
+                <div class="td-dd-capability-card">
+                    <div class="td-dd-capability-icon">💤</div>
+                    <div class="td-dd-capability-name">Tile Sleep/Wake Control</div>
+                    <p class="td-dd-capability-desc">
+                        Hardware power-gating of compute tiles based on workload demand. Wakes tiles proactively
+                        based on LPNPU predictions, eliminating wake latency penalty.
+                    </p>
+                </div>
+                <div class="td-dd-capability-card">
+                    <div class="td-dd-capability-icon">📊</div>
+                    <div class="td-dd-capability-name">Performance Telemetry</div>
+                    <p class="td-dd-capability-desc">
+                        Real-time instruction profiling, branch prediction accuracy, and memory bandwidth utilization
+                        monitoring. Feeds telemetry to LPNPU for continuous learning and adaptation.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TECHNICAL SPECS -->
+        <div class="td-dd-specs">
+            <h3 class="td-dd-section-title" style="font-size: 36px;">Technical Specifications</h3>
+            <div class="td-dd-spec-grid">
+                <div class="td-dd-spec-item">
+                    <div class="td-dd-spec-label">Tile Type</div>
+                    <div class="td-dd-spec-value">Dedicated Scheduler</div>
+                </div>
+                <div class="td-dd-spec-item">
+                    <div class="td-dd-spec-label">Process Node</div>
+                    <div class="td-dd-spec-value">Intel 04A</div>
+                </div>
+                <div class="td-dd-spec-item">
+                    <div class="td-dd-spec-label">Decision Latency</div>
+                    <div class="td-dd-spec-value">&lt;100 nanoseconds</div>
+                </div>
+                <div class="td-dd-spec-item">
+                    <div class="td-dd-spec-label">Core Classes</div>
+                    <div class="td-dd-spec-value">5 (UHP/DP/SPE/UHE/LPE)</div>
+                </div>
+                <div class="td-dd-spec-item">
+                    <div class="td-dd-spec-label">Co-Pilot</div>
+                    <div class="td-dd-spec-value">LPNPU AI Model</div>
+                </div>
+                <div class="td-dd-spec-item">
+                    <div class="td-dd-spec-label">Interconnect</div>
+                    <div class="td-dd-spec-value">FOveros 2.0 Photonic</div>
+                </div>
+                <div class="td-dd-spec-item">
+                    <div class="td-dd-spec-label">Thermal Monitoring</div>
+                    <div class="td-dd-spec-value">Per-Core Real-Time</div>
+                </div>
+                <div class="td-dd-spec-item">
+                    <div class="td-dd-spec-label">Power Draw</div>
+                    <div class="td-dd-spec-value">~2-3W Typical</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION DIVIDER -->
+    <div class="td-dd-divider"></div>
+</div>
