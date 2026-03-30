@@ -110,10 +110,10 @@ start-newgen.bat
 ```
 
 The batch launcher:
-- prints clean, verbose, step-by-step startup logs
-- validates Node.js availability
-- waits for server readiness before opening the browser
-- keeps launcher output open for diagnostics instead of auto-closing
+- starts `server.js` in CMD mode
+- delegates verbose startup logs and browser open flow to `server.js`
+- opens the browser automatically (or reuses an already-running server)
+- keeps output and shutdown/watcher behavior centralized in one script
 
 ### PowerShell
 
