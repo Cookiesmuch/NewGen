@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eventide Deep Dive</title>
+
+<style>
+  :root {
+    --intel-blue: #0068B5;
+    --intel-blue-dark: #004A86;
+    --eventide-gold: #C8922A;
+    --eventide-gold-light: #F0B848;
+    --eventide-dusk: #1A0A2E;
+    --text-primary: #0F0F0F;
+    --surface: #FFFFFF;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'Space Grotesk', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--text-primary);
+    background: var(--surface);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  .back-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    padding: 12px 20px;
+    background: rgba(0, 104, 181, 0.95);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+    backdrop-filter: blur(8px);
+  }
+
+  .back-button:hover {
+    background: rgba(0, 104, 181, 1);
+    transform: translateY(-1px);
+  }
+
+  .back-button:active {
+    transform: translateY(0);
+  }
+
+  .deepdive-container {
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  .error-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 48px 24px;
+    text-align: center;
+  }
+
+  .error-message h1 {
+    font-family: var(--font-display);
+    font-size: 48px;
+    color: var(--intel-blue);
+    margin-bottom: 16px;
+  }
+
+  .error-message p {
+    font-size: 16px;
+    color: #666;
+    max-width: 600px;
+  }
+</style>
+</head>
+<body>
+  <button class="back-button" onclick="goBack()">← Back to Overview</button>
+  <div id="deepdive-container" class="deepdive-container"></div>
+
+<script>
+// Mapping of URL paths to deepdive source files
+const DEEPDIVE_MAPPINGS = {
+  // CPU Architectures
+  '/Intel/Eventide/CPU/SolarEclipse': './CPU.Architectures/eventide.CPU.solar_eclipse.html',
+  '/Intel/Eventide/CPU/SunsetCove': './CPU.Architectures/eventide.CPU.sunset_cove.html',
+  '/Intel/Eventide/CPU/Venusmont': './CPU.Architectures/eventide.CPU.venusmont.html',
+  '/Intel/Eventide/CPU/UHE': './CPU.Architectures/eventide.CPU.lunar_eclipse.html',
+  '/Intel/Eventide/CPU/Darkmont': './CPU.Architectures/eventide.CPU.darkmont.html',
+
+  // GPU Architectures
+  '/Intel/Eventide/GPU/Elementalist': './GPU.architectures/eventide.GPU.elementalist.html',
+  '/Intel/Eventide/GPU/Druid': './GPU.architectures/eventide.GPU.druid.html',
+  '/Intel/Eventide/GPU/2DKanvas': './GPU.architectures/eventide.GPU.2d_kanvas_renderer.html',
+
+  // Tiles
+  '/Intel/Eventide/Tile/ZAM': './Tiles/eventide.tile.z_angle_memory.html',
+  '/Intel/Eventide/Tile/HNPU': './Tiles/eventide.tile.hnpu.html',
+  '/Intel/Eventide/Tile/LPNPU': './Tiles/eventide.tile.lpnpu.html',
+  '/Intel/Eventide/Tile/GNA': './Tiles/eventide.tile.gna.html',
+  '/Intel/Eventide/Tile/BionzXR': './Tiles/eventide.tile.bionzxr.html',
+  '/Intel/Eventide/Tile/MFX': './Tiles/eventide.tile.mfx.html',
+  '/Intel/Eventide/Tile/IPU': './Tiles/eventide.tile.ipu.html',
+  '/Intel/Eventide/Tile/Klangkerne': './Tiles/eventide.tile.klangkerne.html',
+  '/Intel/Eventide/Tile/Display': './Tiles/eventide.tile.display.html',
+  '/Intel/Eventide/Tile/KillerS1': './Tiles/eventide.tile.killer_s1.html',
+  '/Intel/Eventide/Tile/IO': './Tiles/eventide.tile.io.html',
+  '/Intel/Eventide/Tile/PSM': './Tiles/eventide.tile.psm.html',
+};
+
+async function loadDeepdive() {
+  const container = document.getElementById('deepdive-container');
+  const currentPath = window.location.pathname;
+
+  const deepdiveSrc = DEEPDIVE_MAPPINGS[currentPath];
+
+  if (!deepdiveSrc) {
+    container.innerHTML = `
+      <div class="error-message">
+        <h1>Deep Dive Not Found</h1>
+        <p>The requested deep dive section could not be found for path: <strong>${currentPath}</strong></p>
+        <p style="margin-top: 16px;">
+          <a href="/Intel/Eventide" style="color: var(--intel-blue); text-decoration: none;">← Return to Overview</a>
+        </p>
+      </div>
+    `;
+    return;
+  }
+
+  try {
+    // Load the deepdive content via iframe and inject it
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = deepdiveSrc;
+
+    iframe.onload = () => {
+      try {
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        if (!iframeDoc) {
+          throw new Error('Unable to access iframe document');
+        }
+
+        // Extract and inject styles
+        const styleNodes = Array.from(iframeDoc.querySelectorAll('style'));
+        styleNodes.forEach((styleNode) => {
+          const injectedStyle = document.createElement('style');
+          injectedStyle.textContent = styleNode.textContent || '';
+          document.head.appendChild(injectedStyle);
+        });
+
+        // Extract and inject body content
+        let bodyHtml = (iframeDoc.body && iframeDoc.body.innerHTML) || '';
+
+        // Fix relative image paths
+        bodyHtml = bodyHtml
+          .replaceAll('src="../Media/MustangOutline.svg"', 'src="Media/MustangOutline.svg"')
+          .replaceAll('src="../Media/MustangLogo.svg"', 'src="Media/MustangLogo.svg"')
+          .replaceAll('src="MustangOutline.svg"', 'src="Media/MustangOutline.svg"')
+          .replaceAll('src="MustangLogo.svg"', 'src="Media/MustangLogo.svg"');
+
+        container.innerHTML = bodyHtml;
+
+        // Cleanup iframe
+        iframe.remove();
+      } catch (error) {
+        console.error('Error processing deepdive content:', error);
+        container.innerHTML = `
+          <div class="error-message">
+            <h1>Error Loading Deep Dive</h1>
+            <p>An error occurred while loading the deep dive content.</p>
+            <p style="margin-top: 16px;">
+              <a href="/Intel/Eventide" style="color: var(--intel-blue); text-decoration: none;">← Return to Overview</a>
+            </p>
+          </div>
+        `;
+        iframe.remove();
+      }
+    };
+
+    iframe.onerror = () => {
+      container.innerHTML = `
+        <div class="error-message">
+          <h1>Failed to Load Deep Dive</h1>
+          <p>The deep dive content file could not be loaded.</p>
+          <p style="margin-top: 16px;">
+            <a href="/Intel/Eventide" style="color: var(--intel-blue); text-decoration: none;">← Return to Overview</a>
+          </p>
+        </div>
+      `;
+      iframe.remove();
+    };
+
+    document.body.appendChild(iframe);
+  } catch (error) {
+    console.error('Error loading deepdive:', error);
+    container.innerHTML = `
+      <div class="error-message">
+        <h1>Unexpected Error</h1>
+        <p>An unexpected error occurred while loading the deep dive.</p>
+        <p style="margin-top: 16px;">
+          <a href="/Intel/Eventide" style="color: var(--intel-blue); text-decoration: none;">← Return to Overview</a>
+        </p>
+      </div>
+    `;
+  }
+}
+
+function goBack() {
+  window.history.back();
+}
+
+// Load the deepdive content when the page loads
+loadDeepdive();
+</script>
+</body>
+</html>
