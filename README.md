@@ -113,7 +113,7 @@ The batch launcher:
 - prints clean, verbose, step-by-step startup logs
 - validates Node.js availability
 - waits for server readiness before opening the browser
-- links the launched browser window and CMD session bidirectionally (when browser tracking is available)
+- keeps launcher output open for diagnostics instead of auto-closing
 
 ### PowerShell
 

@@ -1,16 +1,15 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 title NewGen Launcher
+chcp 65001 >nul
 color 0B
 cls
 
 set "PORT=3000"
 set "URL=http://localhost:%PORT%"
 set "ROOT=%~dp0"
+set "SERVER_LOG=%ROOT%newgen-server.log"
 set "MAX_WAIT_SECONDS=20"
-set "WATCHDOG_MAX_SECONDS=43200"
-set "BROWSER_PID="
-set "LAUNCHER_PID="
 set "SERVER_ALREADY_RUNNING="
 
 echo.
@@ -48,9 +47,8 @@ echo.
 
 if not defined SERVER_ALREADY_RUNNING (
   echo [06/08] Launching NewGen server process...
-  pushd "%ROOT%"
-  start "NewGen Server" /B node server.js
-  popd
+  echo [INFO ] Server output will be written to: %SERVER_LOG%
+  start "NewGen Server" /B node "%ROOT%server.js" 1>>"%SERVER_LOG%" 2>>&1
   echo [ OK  ] Launch command submitted.
   echo.
 
@@ -90,14 +88,6 @@ echo ╔════════════════════════
 call :boxline "SESSION STATUS: RUNNING"
 echo ╠══════════════════════════════════════════════════════════════════════╣
 call :boxline "Browser opened successfully."
-if defined BROWSER_PID (
-  call :boxline "Browser PID tracked : !BROWSER_PID!"
-  call :boxline "Closing CMD will close this browser window."
-  call :boxline "Closing this browser window will close CMD."
-) else (
-  call :boxline "Browser process tracking unavailable."
-  call :boxline "Bidirectional close sync unavailable for this browser."
-)
 if defined SERVER_ALREADY_RUNNING (
   call :boxline "Server mode: Attached to existing server."
 ) else (
@@ -105,6 +95,7 @@ if defined SERVER_ALREADY_RUNNING (
 )
 call :boxline "Health check status : READY"
 call :boxline "Runtime engine      : Node.js"
+call :boxline "Server log          : %SERVER_LOG%"
 echo ╚══════════════════════════════════════════════════════════════════════╝
 echo.
 pause
@@ -122,21 +113,5 @@ powershell -NoProfile -Command "try { $r = Invoke-WebRequest -Uri '%URL%' -UseBa
 exit /b %errorlevel%
 
 :open_browser_session
-set "BROWSER_PID="
-for /f %%P in ('powershell -NoProfile -Command "$url='%URL%'; $edge=Join-Path $env:ProgramFiles 'Microsoft\Edge\Application\msedge.exe'; $chrome=Join-Path $env:ProgramFiles 'Google\Chrome\Application\chrome.exe'; if (Test-Path $edge) { $p=Start-Process -FilePath $edge -ArgumentList '--new-window', $url -PassThru; $p.Id; exit 0 }; if (Test-Path $chrome) { $p=Start-Process -FilePath $chrome -ArgumentList '--new-window', $url -PassThru; $p.Id; exit 0 }; exit 1"') do (
-  set "BROWSER_PID=%%P"
-)
-
-if not defined BROWSER_PID (
-  start "" "%URL%"
-  exit /b 0
-)
-
-for /f %%P in ('powershell -NoProfile -Command "(Get-CimInstance Win32_Process -Filter \"ProcessId=$PID\").ParentProcessId"') do (
-  set "LAUNCHER_PID=%%P"
-)
-
-if defined LAUNCHER_PID (
-  start "" powershell -NoProfile -WindowStyle Hidden -Command "$launcherPid=%LAUNCHER_PID%; $browserPid=%BROWSER_PID%; $maxSeconds=%WATCHDOG_MAX_SECONDS%; $elapsed=0; while ($elapsed -lt $maxSeconds) { $launcherAlive = Get-Process -Id $launcherPid -ErrorAction SilentlyContinue; $browserAlive = Get-Process -Id $browserPid -ErrorAction SilentlyContinue; if (-not $launcherAlive) { Stop-Process -Id $browserPid -Force -ErrorAction SilentlyContinue; break }; if (-not $browserAlive) { Stop-Process -Id $launcherPid -Force -ErrorAction SilentlyContinue; break }; Start-Sleep -Milliseconds 500; $elapsed += 0.5 }" >nul 2>nul
-)
+start "" "%URL%"
 exit /b 0

@@ -1,53 +1,82 @@
 #!/usr/bin/env pwsh
-# NewGen Server Launcher
-# Starts server, opens browser, and cleanly shuts down when done
 
 $port = 3000
 $url = "http://localhost:$port"
+$root = Split-Path -Parent $MyInvocation.MyCommand.Path
+$boxInnerWidth = 50
+$maxWaitSeconds = 20
+$serverProcess = $null
+$existingServer = $false
 
-Write-Host "`n╔════════════════════════════════════════╗" -ForegroundColor Cyan
-Write-Host "║  NewGen Server Launcher                ║" -ForegroundColor Cyan
-Write-Host "╚════════════════════════════════════════╝`n" -ForegroundColor Cyan
+Write-Host "`n╔════════════════════════════════════════════════════╗" -ForegroundColor Cyan
+Write-Host "║                NewGen PS Launcher                 ║" -ForegroundColor Cyan
+Write-Host "╚════════════════════════════════════════════════════╝`n" -ForegroundColor Cyan
+Write-Host "[01/06] Workspace: $root" -ForegroundColor Gray
+Write-Host "[02/06] Target   : $url" -ForegroundColor Gray
 
-Write-Host "Starting Node.js server on port $port..." -ForegroundColor Green
-
-# Start Node server as a background job
-$serverJob = Start-Job -ScriptBlock { node server.js } -ErrorAction Stop
-
-# Wait for server to be ready
-Start-Sleep -Seconds 2
-
-# Check if server job is still running
-if ($serverJob.State -eq "Failed") {
-  Write-Host "Failed to start server!" -ForegroundColor Red
-  Receive-Job -Job $serverJob
-  exit 1
+Write-Host "[03/06] Checking existing server..." -ForegroundColor Yellow
+try {
+  $probe = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 2
+  if ($probe.StatusCode -ge 200 -and $probe.StatusCode -lt 400) {
+    $existingServer = $true
+    Write-Host "[ OK ] Existing NewGen instance detected." -ForegroundColor Green
+  }
+} catch {
+  Write-Host "[ OK ] No existing server detected." -ForegroundColor Green
 }
 
-Write-Host "Server started (Job ID: $($serverJob.Id))" -ForegroundColor Green
-Write-Host "Opening browser at $url..." -ForegroundColor Green
+if (-not $existingServer) {
+  Write-Host "[04/06] Starting Node.js server..." -ForegroundColor Yellow
+  try {
+    $serverProcess = Start-Process -FilePath "node" -ArgumentList "server.js" -WorkingDirectory $root -PassThru -ErrorAction Stop
+  } catch {
+    Write-Host "[ERR ] Failed to start Node.js server. Ensure Node.js is installed and available in PATH." -ForegroundColor Red
+    exit 1
+  }
 
-# Open browser
+  Write-Host "[05/06] Waiting for readiness (up to $maxWaitSeconds s)..." -ForegroundColor Yellow
+  $ready = $false
+  for ($i = 1; $i -le $maxWaitSeconds; $i++) {
+    try {
+      $probe = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 2
+      if ($probe.StatusCode -ge 200 -and $probe.StatusCode -lt 400) {
+        $ready = $true
+        Write-Host "[ OK ] Server responded after $i second(s)." -ForegroundColor Green
+        break
+      }
+    } catch {}
+    Start-Sleep -Seconds 1
+  }
+
+  if (-not $ready) {
+    Write-Host "[ERR ] Server did not become ready in time." -ForegroundColor Red
+    if ($serverProcess) {
+      Stop-Process -Id $serverProcess.Id -Force -ErrorAction SilentlyContinue
+    }
+    exit 1
+  }
+} else {
+  Write-Host "[04/06] Start skipped (already running)." -ForegroundColor DarkCyan
+  Write-Host "[05/06] Readiness wait skipped." -ForegroundColor DarkCyan
+}
+
+Write-Host "[06/06] Opening browser..." -ForegroundColor Yellow
 Start-Process $url
 
-Write-Host "`n✓ NewGen is running!" -ForegroundColor Green
-Write-Host "  Browser: $url" -ForegroundColor Cyan
-Write-Host "  Press Ctrl+C to stop`n" -ForegroundColor Yellow
-
-# Wait for server job to complete or user interruption
-try {
-  Wait-Job -Job $serverJob -ErrorAction Stop
-} catch {
-  # Ctrl+C or other interruption
+Write-Host "`n╔════════════════════════════════════════════════════╗" -ForegroundColor Cyan
+Write-Host "║ Status: Running                                   ║" -ForegroundColor Cyan
+if ($existingServer) {
+  Write-Host "║ Mode  : Attached to existing server               ║" -ForegroundColor Cyan
+} else {
+  Write-Host "║ Mode  : Started by launcher                       ║" -ForegroundColor Cyan
 }
+$urlLine = "URL   : $url"
+$urlLine = ($urlLine + (" " * $boxInnerWidth)).Substring(0, $boxInnerWidth)
+Write-Host "║ $urlLine ║" -ForegroundColor Cyan
+Write-Host "╚════════════════════════════════════════════════════╝`n" -ForegroundColor Cyan
 
-Write-Host "`nShutting down..." -ForegroundColor Yellow
+Read-Host "Press Enter to close launcher"
 
-# Kill the server job
-Stop-Job -Job $serverJob -ErrorAction SilentlyContinue
-Remove-Job -Job $serverJob -ErrorAction SilentlyContinue
-
-# Try to close ANY remaining node processes (in case of orphans)
-Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
-
-Write-Host "Server stopped. Goodbye!`n" -ForegroundColor Green
+if ($serverProcess) {
+  Stop-Process -Id $serverProcess.Id -Force -ErrorAction SilentlyContinue
+}
