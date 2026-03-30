@@ -36,7 +36,7 @@ echo.
 
 echo [05/08] Checking whether NewGen is already running...
 call :probe_server
-if not errorlevel 1 (
+if "%ERRORLEVEL%"=="0" (
   set "SERVER_ALREADY_RUNNING=1"
   echo [INFO ] Existing NewGen instance detected on %URL%.
   echo [INFO ] Server startup will be skipped.
@@ -56,7 +56,7 @@ if not defined SERVER_ALREADY_RUNNING (
   set "READY="
   for /L %%I in (1,1,%MAX_WAIT_SECONDS%) do (
     call :probe_server
-    if not errorlevel 1 (
+    if "!ERRORLEVEL!"=="0" (
       set "READY=1"
       set "READY_AT=%%I"
       goto :SERVER_READY
@@ -109,8 +109,8 @@ echo ║ !BOX_LINE! ║
 exit /b 0
 
 :probe_server
-powershell -NoProfile -Command "try { $r = Invoke-WebRequest -Uri '%URL%' -UseBasicParsing -TimeoutSec 2; if ($r.StatusCode -ge 200 -and $r.StatusCode -lt 400) { exit 0 } else { exit 1 } } catch { exit 1 }" >nul 2>nul
-exit /b %errorlevel%
+powershell -NoProfile -Command "try { $response = Invoke-WebRequest -Uri '%URL%' -UseBasicParsing -TimeoutSec 2 -ErrorAction Stop; if ($response.StatusCode -ge 200 -and $response.StatusCode -lt 400) { exit 0 } else { exit 1 } } catch { exit 1 }" >nul 2>nul
+exit /b
 
 :open_browser_session
 start "" "%URL%"
