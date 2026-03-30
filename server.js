@@ -7,13 +7,17 @@ const path = require('path');
 const PORT = 3000;
 const ROOT = __dirname;
 const URL = `http://localhost:${PORT}`;
+const DEFAULT_ROUTE = '/Intel/Eventide';
 const IS_CMD_LAUNCH = process.argv.includes('--from-bat');
 const SHUTDOWN_TIMEOUT_MS = 2000;
+const WATCHDOG_TIMEOUT_MS = 10000;
+const WATCHDOG_POLL_INTERVAL_MS = 2000;
 const BOX_RULE = '+------------------------------------------------------------------+';
 const BOX_INNER_WIDTH = BOX_RULE.length - 2;
 
 let browserOpened = false;
 let shuttingDown = false;
+let launcherHeartbeatAt = Date.now();
 
 function boxLine(content) {
   return `|${content.padEnd(BOX_INNER_WIDTH)}|`;
@@ -58,6 +62,32 @@ function serveFile(filePath, res, fallbackUrl) {
 }
 
 const server = http.createServer((req, res) => {
+  if (req.url === '/__launcher/status') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+    res.end(JSON.stringify({ watchdog: IS_CMD_LAUNCH }));
+    return;
+  }
+
+  if (req.url === '/__launcher/heartbeat') {
+    launcherHeartbeatAt = Date.now();
+    res.writeHead(204);
+    res.end();
+    return;
+  }
+
+  if (req.url === '/__launcher/closed') {
+    res.writeHead(204);
+    res.end();
+    shutdown('BROWSER_CLOSED');
+    return;
+  }
+
+  if (req.url === '/__launcher/ping') {
+    res.writeHead(204, { 'Cache-Control': 'no-store' });
+    res.end();
+    return;
+  }
+
   // Strip query string
   const urlPath = req.url.split('?')[0];
 
@@ -87,7 +117,7 @@ function printStatus(mode) {
   console.log(BOX_RULE);
   console.log(boxLine(' STATUS: RUNNING                                                   '));
   console.log(boxLine(` Mode : ${mode}`));
-  console.log(boxLine(` URL  : ${URL}`));
+  console.log(boxLine(` URL  : ${URL}${DEFAULT_ROUTE}`));
   console.log(boxLine(' NOTE : Close this window (or Ctrl+C) to stop the server.         '));
   console.log(BOX_RULE);
   console.log('');
@@ -99,7 +129,7 @@ function openBrowser() {
 
   const platform = process.platform;
   const command = platform === 'win32' ? 'cmd' : platform === 'darwin' ? 'open' : 'xdg-open';
-  const args = platform === 'win32' ? ['/c', 'start', '', URL] : [URL];
+  const args = platform === 'win32' ? ['/c', 'start', '', `${URL}${DEFAULT_ROUTE}`] : [`${URL}${DEFAULT_ROUTE}`];
 
   const child = spawn(command, args, {
     detached: true,
@@ -125,6 +155,20 @@ function shutdown(signal) {
   setTimeout(() => process.exit(1), SHUTDOWN_TIMEOUT_MS).unref();
 }
 
+function startLauncherWatchdog() {
+  if (!IS_CMD_LAUNCH) {
+    return;
+  }
+
+  setInterval(() => {
+    if (Date.now() - launcherHeartbeatAt > WATCHDOG_TIMEOUT_MS) {
+      console.log('');
+      console.log('[WATCHER] Browser heartbeat timed out.');
+      shutdown('WATCHDOG_TIMEOUT');
+    }
+  }, WATCHDOG_POLL_INTERVAL_MS).unref();
+}
+
 printBanner();
 
 server.listen(PORT, () => {
@@ -132,6 +176,7 @@ server.listen(PORT, () => {
   if (IS_CMD_LAUNCH) {
     console.log('[5/5] Browser action : Opening default browser...');
     openBrowser();
+    startLauncherWatchdog();
     console.log('[ OK ] Browser launch command submitted.');
     printStatus('Launched from start-newgen.bat');
   } else {

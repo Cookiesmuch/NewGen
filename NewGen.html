@@ -119,6 +119,11 @@
 
   const frame = document.getElementById('page-frame');
   const buttons = Array.from(document.querySelectorAll('.nav button'));
+  const HEARTBEAT_INTERVAL_MS = 2000;
+  const PING_INTERVAL_MS = 3000;
+  let launcherWatchdog = false;
+  let heartbeatTimer = null;
+  let pingTimer = null;
 
   function findPage(pathname) {
     return PAGES.find((p) => p.path === pathname) || PAGES[0];
@@ -132,8 +137,48 @@
     buttons.forEach((btn) => btn.classList.toggle('active', btn.dataset.path === page.path));
   }
 
+  async function safeFetch(url, options = {}) {
+    const response = await fetch(url, {
+      cache: 'no-store',
+      ...options,
+    });
+    if (!response.ok && response.status !== 204) {
+      throw new Error(`Request failed: ${response.status}`);
+    }
+    return response;
+  }
+
+  async function setupWatchdog() {
+    try {
+      const status = await safeFetch('/__launcher/status').then((r) => r.json());
+      launcherWatchdog = Boolean(status.watchdog);
+      if (!launcherWatchdog) return;
+    } catch {
+      return;
+    }
+
+    heartbeatTimer = window.setInterval(() => {
+      safeFetch('/__launcher/heartbeat', { method: 'POST', keepalive: true }).catch(() => {});
+    }, HEARTBEAT_INTERVAL_MS);
+
+    pingTimer = window.setInterval(async () => {
+      try {
+        await safeFetch('/__launcher/ping');
+      } catch {
+        window.clearInterval(heartbeatTimer);
+        window.clearInterval(pingTimer);
+        window.close();
+      }
+    }, PING_INTERVAL_MS);
+  }
+
   // Load the page that matches the current URL on first visit
+  if (window.location.pathname === '/') {
+    const defaultPage = findPage('/Intel/Eventide');
+    history.replaceState({ path: defaultPage.path }, '', defaultPage.path);
+  }
   navigate(findPage(window.location.pathname), false);
+  setupWatchdog();
 
   // Handle browser back / forward
   window.addEventListener('popstate', () => {
@@ -148,6 +193,13 @@
         navigate(page, true);
       }
     });
+  });
+
+  window.addEventListener('beforeunload', () => {
+    if (!launcherWatchdog) return;
+    try {
+      navigator.sendBeacon('/__launcher/closed');
+    } catch {}
   });
 </script>
 </body>
