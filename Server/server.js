@@ -127,7 +127,7 @@ const server = http.createServer((req, res) => {
   // If the request has no file extension it is a page route — serve the SPA shell
   const ext = path.extname(urlPath).toLowerCase();
   if (!ext) {
-    serveFile(path.join(ROOT, 'Index.HTML'), res, req.url);
+    serveFile(path.join(ROOT, 'index.html'), res, req.url);
     return;
   }
 

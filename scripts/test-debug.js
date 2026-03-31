@@ -176,13 +176,13 @@ async function main() {
     throw new Error(`Missing server entry: ${SERVER_ENTRY}`);
   }
 
-  const indexPath = path.join(ROOT, 'Index.HTML');
+  const indexPath = path.join(ROOT, 'index.html');
   const deepDiveViewerPath = path.join(ROOT, 'Source', 'INTEL', 'Eventide', 'eventide.deepdive.viewer.html');
 
   const { routes, navRoutes } = extractPageRoutes(indexPath);
   const deepDiveMappings = parseDeepDiveMappings(deepDiveViewerPath);
 
-  info('Discovered routes from Index.HTML', `(total=${routes.length}, nav=${navRoutes.length})`);
+  info('Discovered routes from index.html', `(total=${routes.length}, nav=${navRoutes.length})`);
   info('Discovered deep-dive mappings', `(total=${deepDiveMappings.length})`);
 
   const serverProcess = startServer();
@@ -317,7 +317,7 @@ async function main() {
 
     const orphanCandidates = allHtmlFiles
       .map((absPath) => relativePath(absPath))
-      .filter((relPath) => relPath !== 'Index.HTML' && !explicitlyReferenced.has(relPath))
+      .filter((relPath) => relPath !== 'index.html' && !explicitlyReferenced.has(relPath))
       .sort();
 
     if (orphanCandidates.length === 0) {
@@ -332,7 +332,7 @@ async function main() {
 
     console.log('');
     console.log('================ DEBUG SUMMARY ================');
-    console.log(`Routes declared in Index.HTML : ${routes.length}`);
+    console.log(`Routes declared in index.html : ${routes.length}`);
     console.log(`Top-nav routes discovered     : ${navRoutes.length}`);
     console.log(`Routes loaded successfully    : ${loadedRoutes.length}`);
     console.log(`Routes with failures          : ${missingRoutes.length}`);

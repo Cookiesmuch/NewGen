@@ -32,7 +32,7 @@
 - **Sony a0**
 - **Sony XCD-LED**
 
-The app is intentionally simple and fast: a Node.js static server powers a polished browser shell (`Index.HTML`) that loads brochure pages in an iframe with one-click navigation, while History API routes keep the browser URL in sync for direct linking and refresh.
+The app is intentionally simple and fast: a Node.js static server powers a polished browser shell (`index.html`) that loads brochure pages in an iframe with one-click navigation, while History API routes keep the browser URL in sync for direct linking and refresh.
 
 ---
 
@@ -52,7 +52,7 @@ The app is intentionally simple and fast: a Node.js static server powers a polis
 
 ```text
 NewGen/
-├── Index.HTML                  # Main dynamic loader UI
+├── index.html                  # Main dynamic loader UI
 ├── Server/
 │   └── server.js               # Node.js static server (port 3000)
 ├── start-newgen.bat            # Windows batch launcher
@@ -143,8 +143,8 @@ The batch launcher:
 ## ⚙️ How It Works
 
 1. `Server/server.js` starts a local HTTP server on port **3000**.
-2. URL paths without file extensions (for example `/Intel/Eventide`) resolve to `Index.HTML`.
-3. `Index.HTML` renders the top navigation and iframe viewer.
+2. URL paths without file extensions (for example `/Intel/Eventide`) resolve to `index.html`.
+3. `index.html` renders the top navigation and iframe viewer.
 4. Clicking a nav button updates browser history (`pushState`) and swaps the iframe source to the selected brochure file.
 5. Browser back/forward (`popstate`) restores the correct brochure view.
 6. Static assets and brochure files are served directly from disk.
@@ -155,7 +155,7 @@ The batch launcher:
 
 - `npm test` runs `scripts/test-debug.js`, a verbose diagnostics test that:
   - validates watchdog endpoints (`/__launcher/status`, `/__launcher/heartbeat`, `/__launcher/ping`, `/__launcher/closed`)
-  - checks route navigability for declared `Index.HTML` paths
+  - checks route navigability for declared `index.html` paths
   - verifies declared source pages and deep-dive mapping targets are loadable
   - reports potential orphaned `.html` files that are not referenced by route/deep-dive mappings
 - There is currently no configured linter/build pipeline in `package.json`.
