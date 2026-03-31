@@ -154,18 +154,38 @@
   let launcherWatchdog = false;
   let heartbeatTimer = null;
   let pingTimer = null;
+  const scrollPositions = {};
 
   function findPage(pathname) {
     return PAGES.find((p) => p.path === pathname) || PAGES[0];
   }
 
   function navigate(page, pushState) {
+    // Save the scroll position of the page we are leaving so we can restore it later.
+    const fromPath = window.location.pathname;
+    try {
+      if (frame.contentWindow) {
+        scrollPositions[fromPath] = frame.contentWindow.scrollY || 0;
+      }
+    } catch (e) { /* cross-origin guard */ }
+
     if (pushState) {
       history.pushState({ path: page.path }, '', page.path);
     }
     frame.src = page.src;
     buttons.forEach((btn) => btn.classList.toggle('active', btn.dataset.path === page.path));
   }
+
+  // Restore scroll position after the iframe finishes loading.
+  frame.addEventListener('load', () => {
+    const currentPath = window.location.pathname;
+    const savedY = scrollPositions[currentPath];
+    if (savedY) {
+      try {
+        frame.contentWindow.scrollTo(0, savedY);
+      } catch (e) { /* cross-origin guard */ }
+    }
+  });
 
   // Expose navigation function for iframe content
   window.navigateToPath = function(pathname) {
@@ -206,6 +226,13 @@
         window.close();
       }
     }, PING_INTERVAL_MS);
+
+    // Send a close beacon when the tab is truly closed. The server applies a
+    // 3-second grace period: if a heartbeat arrives in time (e.g. from a page
+    // reload triggered by address-bar navigation) the shutdown is cancelled.
+    window.addEventListener('beforeunload', () => {
+      navigator.sendBeacon('/__launcher/closed');
+    });
   }
 
   // Load the page that matches the current URL on first visit
@@ -230,12 +257,6 @@
       }
     });
   });
-
-  // Note: We intentionally do NOT send a closed beacon on beforeunload anymore.
-  // This is because manual address bar navigation causes a page reload, which would
-  // incorrectly signal the server to shut down. Instead, we rely on the heartbeat
-  // mechanism - if the tab truly closes, heartbeats will stop and the watchdog will
-  // detect it and shut down gracefully.
 </script>
 </body>
 </html>

@@ -18,6 +18,7 @@ const BOX_INNER_WIDTH = BOX_RULE.length - 2;
 let browserOpened = false;
 let shuttingDown = false;
 let launcherHeartbeatAt = Date.now();
+let pendingShutdownTimer = null;
 
 function boxLine(content) {
   return `|${content.padEnd(BOX_INNER_WIDTH)}|`;
@@ -70,6 +71,12 @@ const server = http.createServer((req, res) => {
 
   if (req.url === '/__launcher/heartbeat') {
     launcherHeartbeatAt = Date.now();
+    // Cancel any pending close-triggered shutdown — a heartbeat means this was
+    // a page navigation (e.g. address bar), not a true tab close.
+    if (pendingShutdownTimer) {
+      clearTimeout(pendingShutdownTimer);
+      pendingShutdownTimer = null;
+    }
     res.writeHead(204);
     res.end();
     return;
@@ -78,7 +85,14 @@ const server = http.createServer((req, res) => {
   if (req.url === '/__launcher/closed') {
     res.writeHead(204);
     res.end();
-    shutdown('BROWSER_CLOSED');
+    // Use a short grace period before shutting down. If a new heartbeat arrives
+    // within 3 s the beforeunload fired during a page navigation, not a true close.
+    if (!pendingShutdownTimer) {
+      pendingShutdownTimer = setTimeout(() => {
+        pendingShutdownTimer = null;
+        shutdown('BROWSER_CLOSED');
+      }, 3000);
+    }
     return;
   }
 
