@@ -151,6 +151,20 @@
   color: rgba(255,255,255,0.5);
 }
 
+.s1-dd-oppo-collab-chip {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  padding: 3px 8px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 2px;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+}
+
+.s1-dd-oppo-collab-row { margin-bottom: 10px; }
+
 .s1-dd-stat-block {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -331,6 +345,66 @@
 
 .s1-dd-bt-subsection { margin-bottom: 18px; }
 
+.s1-dd-card-headered {
+  position: relative;
+  overflow: hidden;
+  padding: 96px 16px 16px;
+}
+
+.s1-dd-card-headered::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 82px;
+  background: linear-gradient(135deg, #141420 0%, #1E1E30 60%, #141420 100%);
+  border-bottom: 1px solid rgba(20,20,32,0.35);
+  z-index: 0;
+}
+
+.s1-dd-card-headered::after {
+  content: '';
+  position: absolute;
+  top: -32px;
+  right: -28px;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  background: rgba(0,140,255,0.07);
+  box-shadow: -154px 44px 0 rgba(0,200,200,0.05);
+  z-index: 0;
+}
+
+.s1-dd-card-headered > * { position: relative; z-index: 1; }
+
+.s1-dd-card-headered .s1-dd-card-title {
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  right: 16px;
+  margin: 0;
+  color: rgba(255,255,255,0.5);
+}
+
+.s1-dd-card-headered .s1-dd-card-headline {
+  position: absolute;
+  top: 34px;
+  left: 16px;
+  right: 16px;
+  margin: 0;
+  color: #FFF;
+}
+
+.s1-dd-card .s1-dd-spec-item { align-items: flex-start; }
+.s1-dd-card .s1-dd-spec-key { min-width: 0; }
+.s1-dd-card .s1-dd-spec-val {
+  flex-shrink: 1;
+  max-width: 62%;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
 .s1-dd-bt-subsection-title {
   font-family: var(--font-display);
   font-size: 16px;
@@ -423,6 +497,7 @@
        ════════════════════════════════════════════════════════════════════════ -->
 
   <div class="s1-dd-eyebrow">Wireless · Killer SignalBoost S1 · Intel × OPPO · Intel 14A-E</div>
+  <div class="s1-dd-oppo-collab-row"><span class="s1-dd-oppo-collab-chip">INTEL × OPPO</span></div>
 
   <div style="margin-bottom: 8px;">
     <div class="s1-dd-headline">Eight Bands.<br><span>One Intelligence.</span></div>
@@ -584,7 +659,7 @@
 
   <div class="s1-dd-section-header">Bluetooth Core 6.2: A New Era of Low-Latency <span class="s1-dd-accent">Wireless Gaming</span></div>
 
-  <p style="font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.65); margin-bottom: 24px;">
+  <p style="font-size: 14px; line-height: 1.75; color: #475569; margin-bottom: 24px;">
     Bluetooth Core 6.2 (approved 2024) introduces significant latency reductions, enhanced power efficiency,
     and a new <strong>isochronous stream architecture</strong> purpose-built for real-time audio/video synchronization.
     The Killer SignalBoost S1 integrates full Bluetooth 6.2 support alongside WiFi 7, enabling simultaneous
@@ -753,7 +828,7 @@
 
   <div class="s1-dd-section-header">Dual-Chip Configuration: Eventide Standard vs. <span class="s1-dd-accent">X500 Class</span></div>
 
-  <p style="font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.65); margin-bottom: 24px;">
+  <p style="font-size: 14px; line-height: 1.75; color: #475569; margin-bottom: 24px;">
     The Killer SignalBoost S1 can operate as a single chip or paired configuration.
     Higher-tier Eventide X500 systems ship with 2× S1 chips, unlocking full spatial diversity and capacity:
   </p>
@@ -918,7 +993,7 @@
 
   <div class="s1-dd-section-header">Killer Intelligence <span class="s1-dd-accent">Center: Software Control</span></div>
 
-  <p style="font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.65); margin-bottom: 24px;">
+  <p style="font-size: 14px; line-height: 1.75; color: #475569; margin-bottom: 24px;">
     The Killer Prioritization Engine is fully configurable via the <strong>Killer Intelligence Center</strong>,
     a system utility providing real-time network monitoring, per-application traffic rules, and manual override controls:
   </p>
@@ -1143,36 +1218,36 @@
   <div class="s1-dd-section-header">Optimized Use <span class="s1-dd-accent">Cases</span></div>
 
   <div class="s1-dd-grid-4">
-    <div class="s1-dd-card">
+    <div class="s1-dd-card s1-dd-card-headered">
       <div class="s1-dd-card-title">Competitive Gaming</div>
-      <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.70); margin-top: 12px;">
+      <p style="font-size: 14px; line-height: 1.6; color: #475569; margin-top: 12px;">
         Dedicated low-latency WiFi band for game traffic. Killer Prioritization suppresses all background
         updates. Bluetooth LLL mode for controller (&lt;8ms). SONAR auto-pauses on idle. Result:
         consistent &lt;30ms gaming latency even under network load.
       </p>
     </div>
 
-    <div class="s1-dd-card">
+    <div class="s1-dd-card s1-dd-card-headered">
       <div class="s1-dd-card-title">Content Creator Upload</div>
-      <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.70); margin-top: 12px;">
+      <p style="font-size: 14px; line-height: 1.6; color: #475569; margin-top: 12px;">
         DoubleShot Pro aggregates both S1 chips (11.5 Gbps) for YouTube/Twitch upload acceleration.
         Dual 5G mmWave on-device backup. Killer Intelligence prioritizes upload queue vs. preview rendering.
         Multi-Gigabit upload finishes in minutes, not hours.
       </p>
     </div>
 
-    <div class="s1-dd-card">
+    <div class="s1-dd-card s1-dd-card-headered">
       <div class="s1-dd-card-title">Remote Work on 5G</div>
-      <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.70); margin-top: 12px;">
+      <p style="font-size: 14px; line-height: 1.6; color: #475569; margin-top: 12px;">
         Primary connectivity via 5G Sub-6 when away from WiFi. VoLTE ensures call clarity. Simultaneous
         Bluetooth headset (LC3 codec, &lt;20ms latency) and mouse (Bluetooth LE). Zero WiFi dependency.
         Fail-safe: 4G LTE fallback if 5G drops.
       </p>
     </div>
 
-    <div class="s1-dd-card">
+    <div class="s1-dd-card s1-dd-card-headered">
       <div class="s1-dd-card-title">Always-On SONAR Presence</div>
-      <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.70); margin-top: 12px;">
+      <p style="font-size: 14px; line-height: 1.6; color: #475569; margin-top: 12px;">
         Display auto-wakes as you approach (&lt;3m SONAR range). Auto-dims when you step away.
         Conference call auto-mutes if room is empty. Anti-theft: alerts on movement while locked.
         All powered by &lt;10 mW LPNPU processing.
