@@ -9,158 +9,204 @@
      ══════════════════════════════════════════════════════ -->
 
 <style>
-/* ════════════════════════════════════════════════════════════════════════════
-   KILLER SIGNALBOOST S1 DEEP-DIVE — Scoped Styles (s1-dd- prefix)
-   Green theme: #4ADE80 primary, #16A34A secondary, #010A04 base
-   ════════════════════════════════════════════════════════════════════════════ */
-
-/* ── Wrapper Background ──────────────────────────────────────────────────── */
+/* Legacy-inspired light-card theme while preserving current S1 layout */
 .s1-dd-wrap {
-  background:
-    radial-gradient(ellipse 75% 55% at 12% 20%, rgba(74,222,128,0.11) 0%, transparent 65%),
-    radial-gradient(ellipse 60% 70% at 88% 80%, rgba(22,163,74,0.07) 0%, transparent 58%),
-    linear-gradient(180deg, #010A04 0%, #020E06 60%, #010804 100%);
+  background: linear-gradient(180deg, #0F1118 0%, #121621 60%, #0D1018 100%);
   position: relative;
   overflow: hidden;
+  padding: 56px 42px;
 }
 
 .s1-dd-wrap::before {
   content: '';
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(74,222,128,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(74,222,128,0.03) 1px, transparent 1px);
-  background-size: 56px 56px;
+  background: radial-gradient(ellipse 70% 55% at 50% 8%, rgba(255,255,255,0.06) 0%, transparent 70%);
   pointer-events: none;
-  z-index: 1;
 }
 
-.s1-dd-wrap::after {
-  content: '';
-  position: absolute;
-  top: -40%;
-  right: -20%;
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(74,222,128,0.08) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ── Section Container ──────────────────────────────────────────────────── */
 .s1-dd-section {
   position: relative;
   z-index: 2;
+  max-width: 1220px;
+  margin: 0 auto;
+  background: #F8F9FC;
+  border: 1px solid #E4E8F0;
+  border-radius: 16px;
+  padding: 40px 34px 30px;
+  box-shadow: 0 14px 36px rgba(0,0,0,0.24);
+  overflow: hidden;
 }
 
-/* ── Eyebrow / Breadcrumb ───────────────────────────────────────────────── */
+.s1-dd-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 208px;
+  background: linear-gradient(135deg, #141420 0%, #1E1E30 60%, #141420 100%);
+  border-bottom: 1px solid rgba(20,20,32,0.35);
+  z-index: 0;
+}
+
+.s1-dd-section::after {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: rgba(107,114,128,0.10);
+  box-shadow: -300px 105px 0 rgba(148,163,184,0.08);
+  z-index: 0;
+}
+
+.s1-dd-section > * {
+  position: relative;
+  z-index: 1;
+}
+
 .s1-dd-eyebrow {
   font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.25em;
-  color: rgba(74,222,128,0.55);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.4);
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .s1-dd-eyebrow::before {
-  content: '■';
-  font-size: 7px;
-  color: #4ADE80;
+  content: none;
 }
 
-/* ── Main Headline ──────────────────────────────────────────────────────── */
 .s1-dd-headline {
   font-family: var(--font-display);
-  font-size: clamp(48px, 7vw, 72px);
+  font-size: clamp(32px, 5vw, 52px);
   line-height: 1.0;
-  letter-spacing: -0.02em;
-  color: white;
-  margin-bottom: 6px;
-  font-weight: 900;
+  letter-spacing: 0.01em;
+  color: #FFF;
+  margin-bottom: 12px;
+  font-weight: 500;
 }
 
 .s1-dd-headline span {
   display: block;
-  color: #4ADE80;
-  font-weight: 900;
+  color: #FFF;
+  font-weight: 500;
 }
 
-/* ── Subheadline ────────────────────────────────────────────────────────── */
 .s1-dd-subhead {
-  font-size: 15px;
-  line-height: 1.8;
-  color: rgba(255,255,255,0.65);
-  margin-bottom: 24px;
-  max-width: 720px;
+  font-size: 14px;
+  line-height: 1.9;
+  color: #374151;
+  margin-bottom: 30px;
+  max-width: 520px;
 }
 
-.s1-dd-subhead strong {
-  color: #86EFAC;
+.s1-dd-subhead strong,
+.s1-dd-wrap strong {
+  color: #1F2937;
   font-weight: 600;
 }
 
-/* ── Badge Row ──────────────────────────────────────────────────────────── */
 .s1-dd-badge-row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
   margin-top: 20px;
 }
 
 .s1-dd-badge {
   font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  padding: 6px 12px;
-  border-radius: 4px;
-  background: rgba(74,222,128,0.12);
-  border: 1px solid rgba(74,222,128,0.25);
-  color: rgba(134,239,172,0.85);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  padding: 5px 12px;
+  border-radius: 2px;
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.1);
+  color: #333;
   text-transform: uppercase;
   font-weight: 500;
 }
 
 .s1-dd-badge.hot {
-  background: rgba(74,222,128,0.20);
-  border-color: rgba(74,222,128,0.35);
-  color: #86EFAC;
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.1);
+  color: #333;
 }
 
-/* ── Stat Block (Hero Stats) ────────────────────────────────────────────── */
+.s1-dd-badge.collab {
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  padding: 3px 8px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 2px;
+  color: rgba(255,255,255,0.5);
+}
+
+.s1-dd-oppo-collab-chip {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  padding: 3px 8px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 2px;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+}
+
+.s1-dd-oppo-collab-row { margin-bottom: 10px; }
+
 .s1-dd-stat-block {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 48px;
-  margin-top: 28px;
+  gap: 12px;
+  margin-bottom: 40px;
+  margin-top: 22px;
 }
 
-.s1-dd-stat-cell {
-  background: rgba(74,222,128,0.08);
-  border: 1px solid rgba(74,222,128,0.20);
-  border-radius: 8px;
-  padding: 20px 16px;
-  text-align: center;
+.s1-dd-stat-cell,
+.s1-dd-two-col > div,
+.s1-dd-card,
+.s1-dd-bt-subsection,
+.s1-dd-grid-item,
+.s1-dd-block .s1-dd-content {
+  background: #FFFFFF;
+  border: 1px solid #E4E8F0;
+  border-radius: 10px;
+}
+
+.s1-dd-stat-cell { padding: 16px 14px; text-align: center; }
+.s1-dd-two-col > div,
+.s1-dd-block .s1-dd-content,
+.s1-dd-bt-subsection { padding: 18px 20px; }
+
+.s1-dd-stat-num,
+.s1-dd-grid-item-title,
+.s1-dd-content-title,
+.s1-dd-card-headline,
+.s1-dd-section-header {
+  color: #111827;
 }
 
 .s1-dd-stat-num {
   font-family: var(--font-display);
-  font-size: 36px;
-  font-weight: 800;
-  color: #4ADE80;
+  font-size: 34px;
+  font-weight: 500;
   line-height: 1.0;
 }
 
 .s1-dd-stat-label {
-  font-size: 11px;
-  color: rgba(255,255,255,0.45);
+  font-size: 10px;
+  color: #6B7280;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-top: 6px;
@@ -169,174 +215,101 @@
 
 .s1-dd-stat-sub {
   font-size: 9px;
-  color: rgba(134,239,172,0.50);
+  color: #94A3B8;
   margin-top: 4px;
   font-family: var(--font-mono);
 }
 
-/* ── Block Container (flex layout) ──────────────────────────────────────── */
 .s1-dd-block {
   display: flex;
   flex-wrap: wrap;
-  gap: 40px;
-  margin-top: 36px;
-  margin-bottom: 48px;
-  align-items: flex-start;
+  gap: 24px;
+  margin-top: 28px;
+  margin-bottom: 36px;
+  align-items: stretch;
 }
 
-/* ── Content Column ──────────────────────────────────────────────────────── */
-.s1-dd-content {
-  flex: 1;
-  min-width: 320px;
-}
+.s1-dd-content { flex: 1; min-width: 320px; }
 
 .s1-dd-content-title {
   font-family: var(--font-display);
-  font-size: 28px;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 16px;
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 14px;
   letter-spacing: -0.01em;
 }
 
-.s1-dd-content-title .s1-dd-accent {
-  color: #4ADE80;
+.s1-dd-content-title .s1-dd-accent,
+.s1-dd-section-header .s1-dd-accent,
+.s1-dd-bt-subsection-title {
+  color: #4B5563;
 }
 
-.s1-dd-content p {
-  font-size: 14px;
-  line-height: 1.75;
-  color: rgba(255,255,255,0.70);
-  margin-bottom: 12px;
-}
-
-.s1-dd-content p strong {
-  color: #86EFAC;
-  font-weight: 600;
+.s1-dd-content p,
+.s1-dd-wrap p,
+.s1-dd-wrap li,
+.s1-dd-wrap td,
+.s1-dd-wrap th,
+.s1-dd-two-col > div,
+.s1-dd-two-col > div p,
+.s1-dd-grid-item-desc,
+.s1-dd-feature-item,
+.s1-dd-bt-subsection p {
+  color: #334155;
 }
 
 .s1-dd-content p.s1-dd-callout {
-  background: rgba(74,222,128,0.08);
-  border-left: 3px solid #4ADE80;
+  background: #F7F7F8;
+  border-left: 3px solid #6B7280;
   padding: 12px 16px;
   border-radius: 4px;
-  color: rgba(255,255,255,0.75);
+  color: #334155;
   margin: 16px 0;
 }
 
-/* ── Spec List ──────────────────────────────────────────────────────────── */
-.s1-dd-spec-list {
-  list-style: none;
-  padding: 0;
-  margin: 16px 0 0 0;
-}
+.s1-dd-spec-list { list-style: none; padding: 0; margin: 16px 0 0 0; }
 
 .s1-dd-spec-item {
   display: flex;
   justify-content: space-between;
   padding: 8px 0;
-  border-bottom: 1px solid rgba(74,222,128,0.08);
+  border-bottom: 1px solid #E5E7EB;
   font-size: 13px;
   gap: 16px;
 }
 
-.s1-dd-spec-item:last-child {
-  border-bottom: none;
-}
+.s1-dd-spec-key { color: #6B7280; font-weight: 500; min-width: 140px; }
+.s1-dd-spec-val { color: #111827; text-align: right; flex-shrink: 0; }
+.s1-dd-spec-val.hot { color: #4B5563; font-weight: 600; }
 
-.s1-dd-spec-key {
-  color: rgba(255,255,255,0.35);
-  font-weight: 500;
-  min-width: 140px;
-}
-
-.s1-dd-spec-val {
-  color: rgba(134,239,172,0.80);
-  text-align: right;
-  flex-shrink: 0;
-}
-
-.s1-dd-spec-val.hot {
-  color: #4ADE80;
-  font-weight: 600;
-}
-
-/* ── Two-Column Layout ──────────────────────────────────────────────────── */
 .s1-dd-two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 48px;
+  gap: 20px;
   align-items: start;
   margin-top: 16px;
 }
 
-.s1-dd-two-col > div {
-  color: rgba(255,255,255,0.72);
-}
-
-.s1-dd-two-col > div p {
-  color: rgba(255,255,255,0.72);
-}
-
-.s1-dd-two-col > div strong {
-  color: #86EFAC;
-}
-
-.s1-dd-wrap p,
-.s1-dd-wrap li,
-.s1-dd-wrap td,
-.s1-dd-wrap th {
-  color: rgba(255,255,255,0.72);
-}
-
-.s1-dd-wrap strong {
-  color: #86EFAC;
-}
-
-/* ── Collab Badge Chips ─────────────────────────────────────────────────── */
-.s1-dd-collab-chips {
-  display: flex;
-  gap: 8px;
-  margin-top: 16px;
-  flex-wrap: wrap;
-}
+.s1-dd-collab-chips { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
 
 .s1-dd-collab-chip {
   font-family: var(--font-mono);
   font-size: 8px;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
   padding: 4px 10px;
-  background: rgba(22,163,74,0.25);
-  border: 1px solid rgba(74,222,128,0.30);
+  background: #F3F4F6;
+  border: 1px solid #D1D5DB;
   border-radius: 3px;
-  color: #86EFAC;
+  color: #374151;
   text-transform: uppercase;
   font-weight: 600;
-}
-
-/* ── Hero Grid (Left + Right) ──────────────────────────────────────────── */
-.s1-dd-hero-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: start;
-  margin-bottom: 48px;
-}
-
-/* ── Card Container ────────────────────────────────────────────────────── */
-.s1-dd-card {
-  background: rgba(1,10,4,0.50);
-  border: 1px solid rgba(74,222,128,0.15);
-  border-radius: 12px;
-  padding: 24px;
-  backdrop-filter: blur(10px);
 }
 
 .s1-dd-card-title {
   font-family: var(--font-mono);
   font-size: 10px;
-  letter-spacing: 0.18em;
-  color: rgba(74,222,128,0.55);
+  letter-spacing: 0.14em;
+  color: #6B7280;
   text-transform: uppercase;
   margin-bottom: 12px;
 }
@@ -344,103 +317,119 @@
 .s1-dd-card-headline {
   font-family: var(--font-display);
   font-size: 22px;
-  font-weight: 700;
-  color: white;
+  font-weight: 500;
   margin-bottom: 16px;
 }
 
-/* ── Grid 4-col (Use Cases / Features) ─────────────────────────────────── */
 .s1-dd-grid-4 {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-  margin-top: 24px;
+  gap: 12px;
+  margin-top: 20px;
 }
 
-.s1-dd-grid-item {
-  background: rgba(74,222,128,0.06);
-  border: 1px solid rgba(74,222,128,0.12);
-  border-radius: 8px;
-  padding: 20px;
-  text-align: center;
-}
+.s1-dd-grid-item { padding: 16px; text-align: center; }
+.s1-dd-card { padding: 20px; }
+.s1-dd-grid-item-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.s1-dd-grid-item-icon { font-size: 32px; margin-bottom: 10px; }
 
-.s1-dd-grid-item-icon {
-  font-size: 32px;
-  margin-bottom: 12px;
-}
-
-.s1-dd-grid-item-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: white;
-  margin-bottom: 8px;
-}
-
-.s1-dd-grid-item-desc {
-  font-size: 12px;
-  color: rgba(255,255,255,0.55);
-  line-height: 1.5;
-}
-
-/* ── Subsection Header ─────────────────────────────────────────────────── */
 .s1-dd-section-header {
   font-family: var(--font-display);
   font-size: 24px;
-  font-weight: 700;
-  color: white;
-  margin-top: 44px;
-  margin-bottom: 20px;
+  font-weight: 500;
+  margin-top: 38px;
+  margin-bottom: 16px;
   letter-spacing: -0.01em;
-  padding-top: 24px;
-  border-top: 1px solid rgba(74,222,128,0.10);
+  padding-top: 20px;
+  border-top: 1px solid #E5E7EB;
 }
 
-.s1-dd-section-header .s1-dd-accent {
-  color: #4ADE80;
+.s1-dd-bt-subsection { margin-bottom: 18px; }
+
+.s1-dd-card-headered {
+  position: relative;
+  overflow: hidden;
+  padding: 122px 18px 20px;
 }
 
-/* ── Bluetooth Deep-Dive Subsections ────────────────────────────────────── */
-.s1-dd-bt-subsection {
-  margin-bottom: 36px;
+.s1-dd-card-headered::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 106px;
+  background: linear-gradient(135deg, #141420 0%, #1E1E30 60%, #141420 100%);
+  border-bottom: 1px solid rgba(20,20,32,0.35);
+  z-index: 0;
 }
+
+.s1-dd-card-headered::after {
+  content: '';
+  position: absolute;
+  top: -32px;
+  right: -28px;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  background: rgba(107,114,128,0.10);
+  box-shadow: -154px 44px 0 rgba(148,163,184,0.08);
+  z-index: 0;
+}
+
+.s1-dd-card-headered > * { position: relative; z-index: 1; }
+
+.s1-dd-card-headered .s1-dd-card-title {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+  right: 18px;
+  margin: 0;
+  line-height: 1.35;
+  overflow-wrap: break-word;
+  color: rgba(255,255,255,0.5);
+}
+
+.s1-dd-card-headered .s1-dd-card-headline {
+  position: absolute;
+  top: 38px;
+  left: 18px;
+  right: 18px;
+  margin: 0;
+  color: #FFF;
+}
+
+.s1-dd-card-headered > p { margin-top: 0; }
+
+.s1-dd-card .s1-dd-spec-item { align-items: flex-start; }
+.s1-dd-card .s1-dd-spec-key { min-width: 0; }
+.s1-dd-card .s1-dd-spec-val {
+  flex-shrink: 1;
+  max-width: 62%;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.s1-dd-card .s1-dd-spec-table .s1-dd-spec-val { max-width: none; }
 
 .s1-dd-bt-subsection-title {
   font-family: var(--font-display);
   font-size: 16px;
   font-weight: 600;
-  color: #86EFAC;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.s1-dd-bt-subsection-title::before {
-  content: '→';
-  color: #4ADE80;
-}
+.s1-dd-bt-subsection-title::before { content: '→'; color: #4B5563; }
 
-.s1-dd-bt-subsection p {
-  font-size: 13px;
-  line-height: 1.7;
-  color: rgba(255,255,255,0.65);
-  margin-bottom: 10px;
-}
-
-/* ── Feature List ──────────────────────────────────────────────────────── */
-.s1-dd-feature-list {
-  list-style: none;
-  padding: 0;
-  margin: 12px 0;
-}
+.s1-dd-feature-list { list-style: none; padding: 0; margin: 12px 0; }
 
 .s1-dd-feature-item {
-  padding: 8px 0;
-  padding-left: 20px;
+  padding: 8px 0 8px 18px;
   position: relative;
   font-size: 13px;
-  color: rgba(255,255,255,0.60);
   line-height: 1.6;
 }
 
@@ -448,105 +437,61 @@
   content: '◆';
   position: absolute;
   left: 0;
-  color: #4ADE80;
+  color: #4B5563;
   font-size: 8px;
 }
 
-/* ── Spec Table ────────────────────────────────────────────────────────── */
+.s1-dd-wrap p,
+.s1-dd-wrap li { line-height: 1.75; }
+
 .s1-dd-spec-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 24px;
-  border: 1px solid rgba(74,222,128,0.10);
+  margin-top: 18px;
+  border: 1px solid #E5E7EB;
   border-radius: 8px;
   overflow: hidden;
+  background: #FFF;
 }
 
-.s1-dd-spec-table thead {
-  background: rgba(74,222,128,0.08);
-}
+.s1-dd-spec-table thead { background: #F3F4F6; }
 
 .s1-dd-spec-table th {
-  padding: 12px 16px;
+  padding: 12px 14px;
   text-align: left;
   font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.12em;
-  color: rgba(74,222,128,0.70);
+  color: #6B7280;
   text-transform: uppercase;
   font-weight: 600;
-  border-bottom: 1px solid rgba(74,222,128,0.15);
+  border-bottom: 1px solid #E5E7EB;
 }
 
 .s1-dd-spec-table td {
-  padding: 14px 16px;
+  padding: 12px 14px;
   font-size: 13px;
-  color: rgba(255,255,255,0.70);
-  border-bottom: 1px solid rgba(74,222,128,0.06);
+  color: #334155;
+  border-bottom: 1px solid #EEF2F7;
 }
 
-.s1-dd-spec-table tr:last-child td {
-  border-bottom: none;
-}
+.s1-dd-spec-table tr:last-child td { border-bottom: none; }
+.s1-dd-spec-table tr:hover { background: #F8FAFC; }
+.s1-dd-spec-table .s1-dd-spec-key { font-weight: 600; color: #6B7280; width: 200px; }
 
-.s1-dd-spec-table tr:hover {
-  background: rgba(74,222,128,0.04);
-}
-
-.s1-dd-spec-table .s1-dd-spec-key {
-  font-weight: 600;
-  color: rgba(255,255,255,0.50);
-  width: 200px;
-}
-
-.s1-dd-spec-table .s1-dd-spec-val {
-  color: rgba(134,239,172,0.85);
-}
-
-.s1-dd-spec-table .s1-dd-spec-val.hot {
-  color: #4ADE80;
-  font-weight: 600;
-}
-
-/* ── Responsive ────────────────────────────────────────────────────────── */
 @media (max-width: 1200px) {
-  .s1-dd-two-col {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-
-  .s1-dd-hero-grid {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-
-  .s1-dd-block {
-    flex-direction: column;
-    gap: 28px;
-  }
+  .s1-dd-two-col { grid-template-columns: 1fr; gap: 16px; }
+  .s1-dd-block { flex-direction: column; gap: 16px; }
 }
 
 @media (max-width: 768px) {
-  .s1-dd-headline {
-    font-size: clamp(36px, 6vw, 48px);
-  }
-
-  .s1-dd-stat-block {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .s1-dd-grid-4 {
-    grid-template-columns: 1fr;
-  }
-
-  .s1-dd-spec-table {
-    font-size: 12px;
-  }
-
+  .s1-dd-wrap { padding: 28px 14px; }
+  .s1-dd-section { padding: 22px 16px 18px; }
+  .s1-dd-headline { font-size: clamp(34px, 9vw, 46px); }
+  .s1-dd-stat-block { grid-template-columns: repeat(2, 1fr); }
+  .s1-dd-grid-4 { grid-template-columns: 1fr; }
   .s1-dd-spec-table td,
-  .s1-dd-spec-table th {
-    padding: 10px 12px;
-  }
+  .s1-dd-spec-table th { padding: 10px 12px; }
 }
 </style>
 
@@ -562,6 +507,7 @@
        ════════════════════════════════════════════════════════════════════════ -->
 
   <div class="s1-dd-eyebrow">Wireless · Killer SignalBoost S1 · Intel × OPPO · Intel 14A-E</div>
+  <div class="s1-dd-oppo-collab-row"><span class="s1-dd-oppo-collab-chip">INTEL × OPPO</span></div>
 
   <div style="margin-bottom: 8px;">
     <div class="s1-dd-headline">Eight Bands.<br><span>One Intelligence.</span></div>
@@ -576,8 +522,8 @@
   </p>
 
   <div class="s1-dd-badge-row">
-    <span class="s1-dd-badge hot">Intel Killer</span>
-    <span class="s1-dd-badge hot">OPPO Semiconductor</span>
+    <span class="s1-dd-badge collab">Intel × OPPO</span>
+    <span class="s1-dd-badge">BBK Electronics</span>
     <span class="s1-dd-badge">WiFi 7 (802.11be)</span>
     <span class="s1-dd-badge">Bluetooth Core 6.2</span>
     <span class="s1-dd-badge">5G mmWave + Sub-6</span>
@@ -638,8 +584,8 @@
         <li><strong>DoubleShot Pro:</strong> Simultaneous multi-adapter throughput aggregation. When configured with 2× S1 chips, DoubleShot Pro combines both WiFi 7 chips' bandwidth for non-gaming downloads, then instantly segregates back to single-chip operation for gaming latency prioritization.</li>
       </ul>
 
-      <p style="margin-top: 16px; padding: 12px 14px; background: rgba(74,222,128,0.08); border-left: 3px solid #4ADE80; border-radius: 4px;">
-        <strong style="color: #86EFAC;">What this means:</strong> Gaming latency remains consistently ~30ms even when heavy downloads run concurrently. Compare this to standard WiFi without Killer Engine: latency spikes to 80–160ms under load.
+      <p style="margin-top: 16px; padding: 12px 14px; background: #F8FAFC; border-left: 3px solid #94A3B8; border-radius: 4px;">
+        <strong style="color: #4B5563;">What this means:</strong> Gaming latency remains consistently ~30ms even when heavy downloads run concurrently. Compare this to standard WiFi without Killer Engine: latency spikes to 80–160ms under load.
       </p>
     </div>
 
@@ -690,14 +636,14 @@
 
       <div class="s1-dd-two-col" style="margin-top: 16px; gap: 24px;">
         <div>
-          <div style="color: #86EFAC; font-weight: 600; margin-bottom: 8px;">Low-Latency Gaming Band</div>
+          <div style="color: #4B5563; font-weight: 600; margin-bottom: 8px;">Low-Latency Gaming Band</div>
           <p style="font-size: 13px;">
             One band (e.g., 5 GHz or 6 GHz, less congested) dedicated to UDP gaming traffic.
             Single-path, minimal hops, ~8ms latency. Killer Engine steers gaming packets here exclusively.
           </p>
         </div>
         <div>
-          <div style="color: #86EFAC; font-weight: 600; margin-bottom: 8px;">High-Throughput Band</div>
+          <div style="color: #4B5563; font-weight: 600; margin-bottom: 8px;">High-Throughput Band</div>
           <p style="font-size: 13px;">
             Another band simultaneously carrying bulk downloads, streaming, background OS tasks.
             DoubleShot Pro aggregates all available bandwidth for non-latency-critical work.
@@ -723,7 +669,7 @@
 
   <div class="s1-dd-section-header">Bluetooth Core 6.2: A New Era of Low-Latency <span class="s1-dd-accent">Wireless Gaming</span></div>
 
-  <p style="font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.65); margin-bottom: 24px;">
+  <p style="font-size: 14px; line-height: 1.75; color: #475569; margin-bottom: 24px;">
     Bluetooth Core 6.2 (approved 2024) introduces significant latency reductions, enhanced power efficiency,
     and a new <strong>isochronous stream architecture</strong> purpose-built for real-time audio/video synchronization.
     The Killer SignalBoost S1 integrates full Bluetooth 6.2 support alongside WiFi 7, enabling simultaneous
@@ -822,7 +768,7 @@
 
     <div class="s1-dd-card" style="margin-top: 12px;">
       <p style="font-size: 13px; margin: 0;">
-        <strong style="color: #86EFAC;">Layer 1 — Frequency Hopping:</strong><br>
+        <strong style="color: #4B5563;">Layer 1 — Frequency Hopping:</strong><br>
         Bluetooth hops across 40 channels in the 2.4 GHz band (2402–2480 MHz) 1600 times per second.
         WiFi's wider channels can't follow Bluetooth hops; instead, the Killer Intelligence Engine analyzes
         which WiFi channels are in use and provides a blacklist to the Bluetooth modem.
@@ -832,7 +778,7 @@
 
     <div class="s1-dd-card" style="margin-top: 12px;">
       <p style="font-size: 13px; margin: 0;">
-        <strong style="color: #86EFAC;">Layer 2 — Dynamic Spectrum Sensing:</strong><br>
+        <strong style="color: #4B5563;">Layer 2 — Dynamic Spectrum Sensing:</strong><br>
         The S1 includes a spectral monitor on the 2.4 GHz RF frontend. In real-time, it detects
         non-WiFi/non-Bluetooth interference (e.g., microwave ovens, cordless phones) and signals this
         to the Bluetooth PHY layer for immediate channel map adaptation.
@@ -841,7 +787,7 @@
 
     <div class="s1-dd-card" style="margin-top: 12px;">
       <p style="font-size: 13px; margin: 0;">
-        <strong style="color: #86EFAC;">Layer 3 — Band Offload to 5/6 GHz:</strong><br>
+        <strong style="color: #4B5563;">Layer 3 — Band Offload to 5/6 GHz:</strong><br>
         For devices supporting WiFi 6E (802.11ax on 6 GHz), the S1 can offload WiFi traffic to the
         less-contested 6 GHz band entirely, freeing 5 GHz and 2.4 GHz for Bluetooth-only operation.
         This is the ideal scenario for gaming: Bluetooth controller on 2.4 GHz undisturbed, gaming data on 6 GHz.
@@ -892,7 +838,7 @@
 
   <div class="s1-dd-section-header">Dual-Chip Configuration: Eventide Standard vs. <span class="s1-dd-accent">X500 Class</span></div>
 
-  <p style="font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.65); margin-bottom: 24px;">
+  <p style="font-size: 14px; line-height: 1.75; color: #475569; margin-bottom: 24px;">
     The Killer SignalBoost S1 can operate as a single chip or paired configuration.
     Higher-tier Eventide X500 systems ship with 2× S1 chips, unlocking full spatial diversity and capacity:
   </p>
@@ -1014,8 +960,8 @@
         <li><strong>Privacy by Design:</strong> No thermal imaging, no camera, no audio. Only WiFi signal analysis, with all processing local to the device (no cloud upload).</li>
       </ul>
 
-      <p style="margin-top: 16px; padding: 12px 14px; background: rgba(74,222,128,0.08); border-left: 3px solid #4ADE80; border-radius: 4px;">
-        <strong style="color: #86EFAC;">Use Cases:</strong> Display auto-wake on user approach. Auto-dim when user steps away.
+      <p style="margin-top: 16px; padding: 12px 14px; background: #F8FAFC; border-left: 3px solid #94A3B8; border-radius: 4px;">
+        <strong style="color: #4B5563;">Use Cases:</strong> Display auto-wake on user approach. Auto-dim when user steps away.
         Pause video on idle. Mute microphone if room is empty (conference call safety).
         Anti-theft: alert if laptop moved while unattended.
       </p>
@@ -1057,7 +1003,7 @@
 
   <div class="s1-dd-section-header">Killer Intelligence <span class="s1-dd-accent">Center: Software Control</span></div>
 
-  <p style="font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.65); margin-bottom: 24px;">
+  <p style="font-size: 14px; line-height: 1.75; color: #475569; margin-bottom: 24px;">
     The Killer Prioritization Engine is fully configurable via the <strong>Killer Intelligence Center</strong>,
     a system utility providing real-time network monitoring, per-application traffic rules, and manual override controls:
   </p>
@@ -1282,36 +1228,36 @@
   <div class="s1-dd-section-header">Optimized Use <span class="s1-dd-accent">Cases</span></div>
 
   <div class="s1-dd-grid-4">
-    <div class="s1-dd-card">
+    <div class="s1-dd-card s1-dd-card-headered">
       <div class="s1-dd-card-title">Competitive Gaming</div>
-      <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.70); margin-top: 12px;">
+      <p style="font-size: 14px; line-height: 1.6; color: #475569; margin-top: 12px;">
         Dedicated low-latency WiFi band for game traffic. Killer Prioritization suppresses all background
         updates. Bluetooth LLL mode for controller (&lt;8ms). SONAR auto-pauses on idle. Result:
         consistent &lt;30ms gaming latency even under network load.
       </p>
     </div>
 
-    <div class="s1-dd-card">
+    <div class="s1-dd-card s1-dd-card-headered">
       <div class="s1-dd-card-title">Content Creator Upload</div>
-      <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.70); margin-top: 12px;">
+      <p style="font-size: 14px; line-height: 1.6; color: #475569; margin-top: 12px;">
         DoubleShot Pro aggregates both S1 chips (11.5 Gbps) for YouTube/Twitch upload acceleration.
         Dual 5G mmWave on-device backup. Killer Intelligence prioritizes upload queue vs. preview rendering.
         Multi-Gigabit upload finishes in minutes, not hours.
       </p>
     </div>
 
-    <div class="s1-dd-card">
+    <div class="s1-dd-card s1-dd-card-headered">
       <div class="s1-dd-card-title">Remote Work on 5G</div>
-      <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.70); margin-top: 12px;">
+      <p style="font-size: 14px; line-height: 1.6; color: #475569; margin-top: 12px;">
         Primary connectivity via 5G Sub-6 when away from WiFi. VoLTE ensures call clarity. Simultaneous
         Bluetooth headset (LC3 codec, &lt;20ms latency) and mouse (Bluetooth LE). Zero WiFi dependency.
         Fail-safe: 4G LTE fallback if 5G drops.
       </p>
     </div>
 
-    <div class="s1-dd-card">
+    <div class="s1-dd-card s1-dd-card-headered">
       <div class="s1-dd-card-title">Always-On SONAR Presence</div>
-      <p style="font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.70); margin-top: 12px;">
+      <p style="font-size: 14px; line-height: 1.6; color: #475569; margin-top: 12px;">
         Display auto-wakes as you approach (&lt;3m SONAR range). Auto-dims when you step away.
         Conference call auto-mutes if room is empty. Anti-theft: alerts on movement while locked.
         All powered by &lt;10 mW LPNPU processing.
@@ -1323,12 +1269,12 @@
        CLOSING SUMMARY
        ════════════════════════════════════════════════════════════════════════ -->
 
-  <div style="margin-top: 56px; padding: 28px; background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.15); border-radius: 12px;">
-    <div style="font-family: var(--font-display); font-size: 20px; font-weight: 700; color: white; margin-bottom: 12px; letter-spacing: -0.01em;">
+  <div style="margin-top: 56px; padding: 28px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px;">
+    <div style="font-family: var(--font-display); font-size: 20px; font-weight: 700; color: #111827; margin-bottom: 12px; letter-spacing: -0.01em;">
       The Wireless Foundation of Eventide
     </div>
-    <p style="font-size: 14px; line-height: 1.8; color: rgba(255,255,255,0.70);">
-      The <strong style="color: #86EFAC;">Killer SignalBoost S1</strong> is not just a modem tile — it's a
+    <p style="font-size: 14px; line-height: 1.8; color: #334155;">
+      The <strong style="color: #4B5563;">Killer SignalBoost S1</strong> is not just a modem tile — it's a
       comprehensive wireless platform that unifies Intel's 15+ years of gaming network intelligence
       with OPPO Semiconductor's proven hardware RF expertise. Eight simultaneous frequency bands,
       sub-30ms gaming latency, Bluetooth 6.2 dual-mode operation with &lt;8ms controller response,

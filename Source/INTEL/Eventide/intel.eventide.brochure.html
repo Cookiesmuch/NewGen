@@ -756,28 +756,6 @@
   .dkr-compare-row:first-child .dkr-compare-cell { background: var(--surface-alt); font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; color: var(--text-muted); font-weight: 500; }
   .dkr-win { color: #16A34A; font-weight: 600; }
 
-  /* ── OPPO SIGNALBOOST ── */
-  .oppo-wrap { background: #F8F9FC; }
-  .oppo-hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
-  .oppo-card { background: white; border: 1px solid #E4E8F0; border-radius: 14px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.06); }
-  .oppo-card-header { padding: 24px 28px 20px; background: linear-gradient(135deg, #141420 0%, #1E1E30 60%, #141420 100%); position: relative; overflow: hidden; }
-  .oppo-card-header::before { content: ''; position: absolute; top: -40px; right: -40px; width: 140px; height: 140px; border-radius: 50%; background: rgba(0,140,255,0.07); }
-  .oppo-card-header::after { content: ''; position: absolute; bottom: -30px; left: 10px; width: 100px; height: 100px; border-radius: 50%; background: rgba(0,200,200,0.05); }
-  .oppo-brand-lockup { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; position: relative; z-index: 1; }
-  .oppo-collab-chip { font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.12em; padding: 3px 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 2px; color: rgba(255,255,255,0.5); }
-  .oppo-product-name { font-family: var(--font-display); font-size: 28px; color: white; position: relative; z-index: 1; letter-spacing: 0.03em; }
-  .oppo-product-sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 4px; position: relative; z-index: 1; }
-  .oppo-spec-body { padding: 20px 28px; }
-  .oppo-spec-row { display: flex; justify-content: space-between; align-items: baseline; padding: 9px 0; border-bottom: 1px solid #F2F4F8; font-size: 12px; }
-  .oppo-spec-row:last-child { border-bottom: none; }
-  .oppo-spec-key { color: #999; }
-  .oppo-spec-val { font-weight: 600; color: #111; text-align: right; }
-  .oppo-highlights { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 24px; }
-  .oppo-hi-box { background: white; border: 1px solid #E4E8F0; border-radius: 8px; padding: 16px; }
-  .oppo-hi-num { font-family: var(--font-display); font-size: 30px; color: var(--intel-blue); line-height: 1; }
-  .oppo-hi-label { font-size: 10px; color: #888; margin-top: 4px; }
-  .badge-clean { background: rgba(0,0,0,0.05); color: #333; border: 1px solid rgba(0,0,0,0.1); }
-
   /* ── XESS SECTION ── */
   .xess-wrap { background: linear-gradient(180deg, #020810 0%, #01040A 100%); }
   .xess-intro-grid { display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end; margin-bottom: 20px; }
@@ -811,7 +789,7 @@
 
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
-    .foveros-two-col, .kache-hero-grid, .v8-hero-grid, .htd-hero-grid, .dkr-grid, .oppo-hero-grid { grid-template-columns: 1fr; }
+    .foveros-two-col, .kache-hero-grid, .v8-hero-grid, .htd-hero-grid, .dkr-grid { grid-template-columns: 1fr; }
     .foveros-tile-grid { display: none; }
     .memory-controller-grid { grid-template-columns: 1fr; }
     .kache-vs-grid { grid-template-columns: 1fr; }
@@ -821,7 +799,6 @@
     .dkr-highlight-row { grid-template-columns: repeat(2, 1fr); }
     .mem-ds-grid { grid-template-columns: repeat(2, 1fr); }
     .foveros-stats { grid-template-columns: 1fr 1fr; }
-    .oppo-highlights { grid-template-columns: 1fr 1fr; }
     .hero-inner { grid-template-columns: 1fr; }
     .hero-chip-art { display: none; }
     .process-grid { grid-template-columns: 1fr; }
@@ -3421,68 +3398,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <div class="section-divider"></div>
 
-<!-- ══════════════════════════════════════════════════════
-     OPPO KILLER SIGNALBOOST X1
-══════════════════════════════════════════════════════ -->
-<div class="oppo-wrap">
-<div class="section">
-  <div class="oppo-hero-grid">
-    <div>
-      <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; color: #888; text-transform: uppercase; margin-bottom: 8px;">Connectivity · WiFi 7 Pro · 5G · BT 6.2</div>
-      <div style="font-family: var(--font-display); font-size: clamp(32px, 5vw, 52px); line-height: 1.0; letter-spacing: 0.03em; color: #111; margin-bottom: 12px;">Killer<br>SignalBoost X1</div>
-      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;">
-        <span class="badge badge-clean">Intel × OPPO</span>
-        <span class="badge badge-clean">BBK Electronics</span>
-        <span class="badge badge-clean">WiFi 7 · 802.11be</span>
-        <span class="badge badge-clean">5G mmWave + Sub-6</span>
-      </div>
-      <p style="font-size: 14px; color: #555; line-height: 1.8; margin-bottom: 24px; max-width: 520px;">
-        The Intel Killer SignalBoost X1 is the result of a precision collaboration between
-        <strong style="color: #111;">Intel Wireless Products Group</strong> and
-        <strong style="color: #111;">OPPO Semiconductor</strong> (BBK Electronics).
-        OPPO's expertise in ultra-dense antenna integration and low-latency modem design
-        — honed across millions of flagship devices — pairs with Intel's Killer networking intelligence
-        to deliver the most capable wireless subsystem ever integrated into a mobile processor package.
-        <br><br>
-        The X1 features quad-band WiFi 7 per chip, with dual-chip configurations giving X500-class
-        systems eight simultaneous frequency bands and 360° LinkBoost antenna coverage. The integrated
-        5G modem supports both Sub-6 GHz and mmWave. And the SONAR user-presence detection system
-        uses WiFi signals themselves to detect when a user approaches — enabling instant wake from deep sleep.
-      </p>
-      <div class="oppo-highlights">
-        <div class="oppo-hi-box"><div class="oppo-hi-num">8</div><div class="oppo-hi-label">Total WiFi bands (dual-chip)</div></div>
-        <div class="oppo-hi-box"><div class="oppo-hi-num">7</div><div class="oppo-hi-label">WiFi generation (802.11be)</div></div>
-        <div class="oppo-hi-box"><div class="oppo-hi-num">6.2</div><div class="oppo-hi-label">Bluetooth Core spec</div></div>
-        <div class="oppo-hi-box"><div class="oppo-hi-num">360°</div><div class="oppo-hi-label">LinkBoost antenna coverage</div></div>
-      </div>
-    </div>
-    <div>
-      <div class="oppo-card">
-        <div class="oppo-card-header">
-          <div class="oppo-brand-lockup">
-            <span class="oppo-collab-chip">INTEL × OPPO</span>
-          </div>
-          <div class="oppo-product-name">Killer SignalBoost X1</div>
-          <div class="oppo-product-sub">Intel 14A-E · Co-developed with OPPO Semiconductor / BBK Electronics</div>
-        </div>
-        <div class="oppo-spec-body">
-          <div class="oppo-spec-row"><div class="oppo-spec-key">WiFi Standard</div><div class="oppo-spec-val">WiFi 7 (802.11be) — Quad-band per chip</div></div>
-          <div class="oppo-spec-row"><div class="oppo-spec-key">Max Configuration</div><div class="oppo-spec-val">2× X1 chips — 8 bands total</div></div>
-          <div class="oppo-spec-row"><div class="oppo-spec-key">Bluetooth</div><div class="oppo-spec-val">Bluetooth Core 6.2</div></div>
-          <div class="oppo-spec-row"><div class="oppo-spec-key">Cellular</div><div class="oppo-spec-val">5G Sub-6 + mmWave · 4G LTE · VoLTE</div></div>
-          <div class="oppo-spec-row"><div class="oppo-spec-key">Antenna Support</div><div class="oppo-spec-val">Up to 2× 360° Intel LinkBoost</div></div>
-          <div class="oppo-spec-row"><div class="oppo-spec-key">SONAR Presence</div><div class="oppo-spec-val">WiFi-signal proximity detection</div></div>
-          <div class="oppo-spec-row"><div class="oppo-spec-key">Intel Killer Intelligence</div><div class="oppo-spec-val">Packet prioritisation, latency optimisation</div></div>
-          <div class="oppo-spec-row"><div class="oppo-spec-key">Process</div><div class="oppo-spec-val">Intel 14A-E</div></div>
-          <div class="oppo-spec-row"><div class="oppo-spec-key">Wake-on-WiFi SONAR</div><div class="oppo-spec-val">Yes — LPNPU-powered always-on detection</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-<div class="section-divider"></div>
 
 <style>
 /* ============================================================
@@ -4144,7 +4059,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <div class="spec-row"><div class="spec-row-key">PCIe Revision</div><div class="spec-row-val">PCIe 7.0 (primary GPU tile interconnect); PCIe 6.0 (storage / peripherals)</div></div>
       <div class="spec-row"><div class="spec-row-key">Thunderbolt Version</div><div class="spec-row-val">Thunderbolt 5 <span class="note">· 120 Gbps; supports Intel×Sony eDP 2.0 tunnel</span></div></div>
       <div class="spec-row"><div class="spec-row-key">USB Specification</div><div class="spec-row-val">USB4 Gen 4×2 (80 Gbps), USB 3.2 Gen 2×2</div></div>
-      <div class="spec-row"><div class="spec-row-key">WiFi Specification</div><div class="spec-row-val">Intel® Killer™ Wi-Fi 7 (802.11be) — via OPPO Killer SignalBoost X1</div></div>
+      <div class="spec-row"><div class="spec-row-key">WiFi Specification</div><div class="spec-row-val">Intel® Killer™ Wi-Fi 7 (802.11be) — via Killer SignalBoost S1</div></div>
       <div class="spec-row"><div class="spec-row-key">WiFi Chips</div><div class="spec-row-val">Up to 2× X1 chips; quad-band each = 8 total bands</div></div>
       <div class="spec-row"><div class="spec-row-key">Bluetooth</div><div class="spec-row-val">Bluetooth Core 6.2</div></div>
       <div class="spec-row"><div class="spec-row-key">Cellular</div><div class="spec-row-val">5G Sub-6 / mmWave, 4G LTE, VoLTE</div></div>
@@ -4181,7 +4096,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="spec-footer">
   Intel, the Intel logo, Core, Xeon, Arc, Thunderbolt, Killer, vPro, QuickSync, Thread Director, PowerVia, Foveros, and Turbo Boost are trademarks of Intel Corporation or its subsidiaries.<br>
   Sony, BionzXR are trademarks of Sony Group Corporation. Lightmatter FiberOptic integration is proprietary to the Intel-Lightmatter joint photonic development program.<br>
-  OPPO Killer SignalBoost X1 developed in collaboration with OPPO Semiconductor Division and Intel Wireless Products Group.<br>
+  Killer SignalBoost S1 developed in collaboration with OPPO Semiconductor Division and Intel Wireless Products Group.<br>
   Specifications subject to change. Performance numbers represent theoretical maximums under ideal conditions.<br>
   Core Xeon® 599HKX · Eventide Generation · Intel Corporation 2028 · All rights reserved.
 </div>
