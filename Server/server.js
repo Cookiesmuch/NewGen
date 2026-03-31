@@ -24,6 +24,7 @@ let pendingShutdownInterval = null;
 let pendingShutdownReason = null;
 let pendingShutdownStartedAt = 0;
 let watchdogTimeoutDetected = false;
+let serverRequestsClientClose = false;
 
 function boxLine(content) {
   return `|${content.padEnd(BOX_INNER_WIDTH)}|`;
@@ -93,6 +94,7 @@ const server = http.createServer((req, res) => {
       clearInterval(pendingShutdownInterval);
       pendingShutdownInterval = null;
     }
+    serverRequestsClientClose = false;
     res.writeHead(204);
     res.end();
     return;
@@ -111,7 +113,10 @@ const server = http.createServer((req, res) => {
   }
 
   if (req.url === '/__launcher/ping') {
-    res.writeHead(204, { 'Cache-Control': 'no-store' });
+    res.writeHead(204, {
+      'Cache-Control': 'no-store',
+      'X-NewGen-Close-Tab': serverRequestsClientClose ? '1' : '0',
+    });
     res.end();
     return;
   }
@@ -186,6 +191,7 @@ function shutdown(signal) {
 function startWatchdogShutdownCountdown(signal, seconds, cancelableByHeartbeat) {
   if (shuttingDown || pendingShutdownTimer) return;
 
+  serverRequestsClientClose = true;
   let remainingSeconds = seconds;
   pendingShutdownReason = signal;
   pendingShutdownStartedAt = Date.now();

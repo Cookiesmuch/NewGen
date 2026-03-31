@@ -184,6 +184,7 @@
   const REQUEST_TIMEOUT_MS = 2000;
   const MAX_WATCHDOG_INIT_RETRY_MS = 30000;
   const CLIENT_CLOSE_COUNTDOWN_S = 3;
+  const CLOSE_TAB_HEADER_VALUE = '1';
   let launcherWatchdog = false;
   let watchdogInitialized = false;
   let watchdogInitInProgress = false;
@@ -259,6 +260,7 @@
   }
 
   function closeTabFromWatchdog() {
+    sendClosedSignal();
     clearClientCloseCountdown();
     stopWatchdogTimers();
     window.close();
@@ -362,7 +364,10 @@
     console.log(`[WATCHDOG] Ping loop started (${PING_INTERVAL_MS}ms interval).`);
     pingTimer = window.setInterval(async () => {
       try {
-        await safeFetch('/__launcher/ping');
+        const pingResponse = await safeFetch('/__launcher/ping');
+        if (pingResponse.headers.get('x-newgen-close-tab') === CLOSE_TAB_HEADER_VALUE) {
+          startClientCloseCountdown('Launcher initiated shutdown');
+        }
       } catch (error) {
         console.error(`[WATCHDOG] Ping failed (${error?.message ?? 'unknown'}).`);
         startClientCloseCountdown('Launcher ping failed');
