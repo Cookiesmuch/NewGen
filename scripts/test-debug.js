@@ -199,7 +199,6 @@ async function main() {
       { path: '/__launcher/status', expectedStatus: 200, label: 'status endpoint' },
       { path: '/__launcher/heartbeat', expectedStatus: 204, label: 'heartbeat endpoint', method: 'POST' },
       { path: '/__launcher/ping', expectedStatus: 204, label: 'ping endpoint' },
-      { path: '/__launcher/closed', expectedStatus: 204, label: 'closed endpoint', method: 'POST' },
     ];
 
     for (const check of watchdogChecks) {
@@ -213,6 +212,33 @@ async function main() {
         failures += 1;
         fail(`Watchdog ${check.label} unexpected status`, `(expected=${check.expectedStatus}, got=${response.status}, duration=${duration}ms, body=${JSON.stringify(body.slice(0, 240))})`);
       }
+    }
+
+    const { response: normalPingResponse } = await fetchWithDiagnostics(`${BASE_URL}/__launcher/ping`);
+    if (normalPingResponse.headers.get('x-newgen-close-tab') === '0') {
+      ok('Watchdog ping close-tab header default is clear', '(x-newgen-close-tab=0)');
+    } else {
+      failures += 1;
+      fail('Watchdog ping close-tab header default mismatch', `(expected=0, got=${normalPingResponse.headers.get('x-newgen-close-tab') || 'null'})`);
+    }
+
+    await fetchWithDiagnostics(`${BASE_URL}/__launcher/closed`, { method: 'POST' });
+    ok('Watchdog closed endpoint responded', '(status=204)');
+    const { response: shutdownPingResponse } = await fetchWithDiagnostics(`${BASE_URL}/__launcher/ping`);
+    if (shutdownPingResponse.headers.get('x-newgen-close-tab') === '1') {
+      ok('Watchdog ping close-tab header set during shutdown countdown', '(x-newgen-close-tab=1)');
+    } else {
+      failures += 1;
+      fail('Watchdog ping close-tab header not set during shutdown countdown', `(expected=1, got=${shutdownPingResponse.headers.get('x-newgen-close-tab') || 'null'})`);
+    }
+
+    await fetchWithDiagnostics(`${BASE_URL}/__launcher/heartbeat`, { method: 'POST' });
+    const { response: recoveredPingResponse } = await fetchWithDiagnostics(`${BASE_URL}/__launcher/ping`);
+    if (recoveredPingResponse.headers.get('x-newgen-close-tab') === '0') {
+      ok('Watchdog ping close-tab header resets after heartbeat recovery', '(x-newgen-close-tab=0)');
+    } else {
+      failures += 1;
+      fail('Watchdog ping close-tab header failed to reset after heartbeat', `(expected=0, got=${recoveredPingResponse.headers.get('x-newgen-close-tab') || 'null'})`);
     }
 
     info('Checking route navigability and content loading');
