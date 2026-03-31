@@ -112,9 +112,39 @@
 <script>
   // Page registry — add new routes here to extend the system.
   const PAGES = [
+    // Main brochure pages
     { path: '/Intel/Eventide', src: '/Source/INTEL/Eventide/intel.eventide.brochure.html' },
     { path: '/Sony/ILCE-0',    src: '/Source/SONY/ILCE-0/sony.a0.brochure.html' },
     { path: '/Sony/XCD-LED',   src: '/Source/SONY/XCD-LED/sony,XCDLED.brochure.html' },
+
+    // CPU Architecture Deep Dives
+    { path: '/Intel/Eventide/CPU/SolarEclipse', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/CPU/SunsetCove', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/CPU/Venusmont', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/CPU/UHE', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/CPU/Darkmont', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+
+    // GPU Architecture Deep Dives
+    { path: '/Intel/Eventide/GPU/Elementalist', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/GPU/Druid', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/GPU/2DKanvas', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+
+    // Tile Deep Dives
+    { path: '/Intel/Eventide/Tile/ZAM', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/Tile/HNPU', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/Tile/LPNPU', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/Tile/GNA', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/Tile/BionzXR', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/Tile/MFX', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/Tile/IPU', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/Tile/Klangkerne', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/Tile/Display', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/Tile/KillerS1', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/Tile/IO', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/Tile/PSM', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+
+    // Technology Deep Dives
+    { path: '/Intel/Eventide/Technology/ThreadDirector', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
   ];
 
   const frame = document.getElementById('page-frame');
@@ -124,18 +154,44 @@
   let launcherWatchdog = false;
   let heartbeatTimer = null;
   let pingTimer = null;
+  const scrollPositions = {};
 
   function findPage(pathname) {
     return PAGES.find((p) => p.path === pathname) || PAGES[0];
   }
 
   function navigate(page, pushState) {
+    // Save the scroll position of the page we are leaving so we can restore it later.
+    const fromPath = window.location.pathname;
+    try {
+      if (frame.contentWindow) {
+        scrollPositions[fromPath] = frame.contentWindow.scrollY || 0;
+      }
+    } catch (e) { /* cross-origin guard */ }
+
     if (pushState) {
       history.pushState({ path: page.path }, '', page.path);
     }
     frame.src = page.src;
     buttons.forEach((btn) => btn.classList.toggle('active', btn.dataset.path === page.path));
   }
+
+  // Restore scroll position after the iframe finishes loading.
+  frame.addEventListener('load', () => {
+    const currentPath = window.location.pathname;
+    const savedY = scrollPositions[currentPath];
+    if (savedY) {
+      try {
+        frame.contentWindow.scrollTo(0, savedY);
+      } catch (e) { /* cross-origin guard */ }
+    }
+  });
+
+  // Expose navigation function for iframe content
+  window.navigateToPath = function(pathname) {
+    const page = findPage(pathname);
+    navigate(page, true);
+  };
 
   async function safeFetch(url, options = {}) {
     const response = await fetch(url, {
@@ -170,6 +226,13 @@
         window.close();
       }
     }, PING_INTERVAL_MS);
+
+    // Send a close beacon when the tab is truly closed. The server applies a
+    // 3-second grace period: if a heartbeat arrives in time (e.g. from a page
+    // reload triggered by address-bar navigation) the shutdown is cancelled.
+    window.addEventListener('beforeunload', () => {
+      navigator.sendBeacon('/__launcher/closed');
+    });
   }
 
   // Load the page that matches the current URL on first visit
@@ -193,13 +256,6 @@
         navigate(page, true);
       }
     });
-  });
-
-  window.addEventListener('beforeunload', () => {
-    if (!launcherWatchdog) return;
-    try {
-      navigator.sendBeacon('/__launcher/closed');
-    } catch {}
   });
 </script>
 </body>

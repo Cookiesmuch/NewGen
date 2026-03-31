@@ -1,3 +1,327 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --intel-blue: #0068B5;
+  --eventide-gold: #C8922A;
+  --eventide-dusk: #1A0A2E;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+.section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 64px 48px;
+}
+
+.section-divider {
+  height: 3px;
+  background: linear-gradient(90deg, var(--intel-blue), #6B21A8, var(--eventide-gold));
+}
+
+.gog-bar { margin-top: 20px; }
+.gog-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 6px;
+  letter-spacing: .05em;
+}
+.gog-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.gog-metric { font-size: 10px; color: rgba(255,255,255,0.35); width: 110px; flex-shrink: 0; }
+.gog-track { flex: 1; height: 5px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+.gog-fill { height: 100%; border-radius: 2px; background: #4DD9EC; }
+.gog-num { font-family: var(--font-mono); font-size: 10px; font-weight: 600; color: #4DD9EC; width: 55px; text-align: right; }
+
+@media (max-width: 900px) {
+  .section { padding: 40px 24px; }
+}
+</style>
+
+<style>
+/* ============================================================
+   ZAM Deep-Dive — Scoped classes (zam-dd- prefix)
+   Cyan theme: #4DD9EC primary, #020D18 base
+   ============================================================ */
+
+/* ── Wrapper ─────────────────────────────────────────────────── */
+.zam-dd-wrap {
+    background:
+      radial-gradient(ellipse 70% 50% at 15% 25%, rgba(77,217,236,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 85% 75%, rgba(0,180,200,0.08) 0%, transparent 55%),
+      linear-gradient(180deg, #020D18 0%, #010A14 60%, #020D18 100%);
+    position: relative;
+    overflow: hidden;
+}
+.zam-dd-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(77,217,236,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(77,217,236,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+}
+
+/* ── Eyebrow ─────────────────────────────────────────────────── */
+.zam-dd-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: rgba(77,217,236,0.55);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+/* ── Headline ────────────────────────────────────────────────── */
+.zam-dd-headline {
+    font-family: var(--font-display);
+    font-size: clamp(52px, 8vw, 96px);
+    line-height: 0.88;
+    color: white;
+    letter-spacing: 0.02em;
+    margin-bottom: 10px;
+}
+.zam-dd-headline span { color: #4DD9EC; }
+
+/* ── Subhead ─────────────────────────────────────────────────── */
+.zam-dd-subhead {
+    font-size: 15px;
+    color: rgba(255,255,255,0.48);
+    margin-bottom: 26px;
+    font-style: italic;
+    max-width: 640px;
+    line-height: 1.6;
+}
+
+/* ── Badge row ───────────────────────────────────────────────── */
+.zam-dd-badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 0;
+}
+.zam-dd-badge {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.13em;
+    padding: 4px 10px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    background: rgba(77,217,236,0.14);
+    color: rgba(77,217,236,0.85);
+    border: 1px solid rgba(77,217,236,0.32);
+}
+.zam-dd-badge.hot {
+    background: rgba(77,217,236,0.28);
+    color: #4DD9EC;
+    border: 1px solid rgba(77,217,236,0.65);
+    font-weight: 600;
+}
+
+/* ── Stat block ──────────────────────────────────────────────── */
+.zam-dd-stat-block {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(77,217,236,0.18);
+    border: 1px solid rgba(77,217,236,0.22);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 40px 0;
+}
+.zam-dd-stat-cell {
+    background: rgba(2,13,24,0.97);
+    padding: 26px 20px;
+    text-align: center;
+}
+.zam-dd-stat-num {
+    font-family: var(--font-display);
+    font-size: clamp(38px, 4.5vw, 56px);
+    color: #4DD9EC;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+.zam-dd-stat-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: rgba(255,255,255,0.32);
+    text-transform: uppercase;
+}
+.zam-dd-stat-sub {
+    font-size: 10px;
+    color: rgba(77,217,236,0.4);
+    margin-top: 3px;
+}
+
+/* ── Inner dividers ──────────────────────────────────────────── */
+.zam-dd-inner-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(77,217,236,0.18) 20%, rgba(77,217,236,0.18) 80%, transparent);
+    margin: 0;
+}
+
+/* ── Numbered tech blocks ────────────────────────────────────── */
+.zam-dd-block {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+    padding: 56px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    position: relative;
+    overflow: hidden;
+}
+.zam-dd-block:last-child { border-bottom: none; padding-bottom: 24px; }
+
+.zam-dd-num {
+    font-family: var(--font-display);
+    font-size: clamp(320px, 50vw, 520px);
+    color: rgba(77,217,236,0.025);
+    line-height: 0.75;
+    position: absolute;
+    left: -120px;
+    top: 50%;
+    transform: translateY(-50%);
+    user-select: none;
+    pointer-events: none;
+    z-index: 0;
+    letter-spacing: -0.05em;
+}
+.zam-dd-block > div:not(.zam-dd-num) { position: relative; z-index: 1; }
+
+.zam-dd-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #4DD9EC;
+    margin-bottom: 10px;
+}
+.zam-dd-name {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 5vw, 70px);
+    color: white;
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    margin-bottom: 20px;
+}
+.zam-dd-body {
+    font-size: 14px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.8;
+    max-width: 540px;
+}
+.zam-dd-body strong {
+    color: rgba(77,217,236,0.9);
+    font-weight: 600;
+}
+
+/* ── Stat boxes (inside blocks) ──────────────────────────────── */
+.zam-dd-stats {
+    display: flex;
+    gap: 14px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+}
+.zam-dd-stat-box {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(77,217,236,0.12);
+    border-radius: 8px;
+    padding: 14px 18px;
+    flex-shrink: 0;
+}
+.zam-dd-stat-box-val {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 700;
+    color: #4DD9EC;
+}
+.zam-dd-stat-box-key {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    margin-top: 3px;
+}
+
+/* ── GOG bars ────────────────────────────────────────────────── */
+.zam-dd-gog { margin-top: 32px; flex-basis: 100%; }
+
+/* ── Spec aside ──────────────────────────────────────────────── */
+.zam-dd-aside { width: 272px; flex-shrink: 0; }
+.zam-dd-aside-box {
+    background: rgba(77,217,236,0.04);
+    border: 1px solid rgba(77,217,236,0.14);
+    border-radius: 10px;
+    padding: 20px;
+}
+.zam-dd-aside-title {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: rgba(77,217,236,0.4);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+.zam-dd-aside-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(77,217,236,0.08);
+    gap: 10px;
+}
+.zam-dd-aside-row:last-child { border-bottom: none; }
+.zam-dd-aside-k { font-size: 11px; color: rgba(255,255,255,0.3); }
+.zam-dd-aside-v { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.75); text-align: right; }
+.zam-dd-aside-v.hot { color: #4DD9EC; }
+
+/* ── SVG pipeline container ──────────────────────────────────── */
+.zam-dd-pipeline-wrap {
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(77,217,236,0.14);
+    border-radius: 10px;
+    padding: 24px 20px 16px;
+}
+.zam-dd-pipeline-label {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.18em;
+    color: rgba(77,217,236,0.35);
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 12px;
+}
+.zam-dd-pipeline-svg { width: 100%; }
+.zam-dd-pipeline-note {
+    font-size: 10px;
+    color: rgba(77,217,236,0.35);
+    margin-top: 10px;
+    line-height: 1.5;
+}
+
+/* ── Two-col layout (Block 05) ───────────────────────────────── */
+.zam-dd-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+    margin-top: 16px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 900px) {
+    .zam-dd-block { flex-direction: column; gap: 24px; }
+    .zam-dd-num { font-size: clamp(200px, 40vw, 300px); left: -80px; top: 50%; transform: translateY(-50%); }
+    .zam-dd-aside { width: 100%; }
+    .zam-dd-stat-block { grid-template-columns: repeat(2, 1fr); }
+    .zam-dd-two-col { grid-template-columns: 1fr; gap: 28px; }
+}
+</style>
+
 <div class="zam-dd-wrap">
 <div class="section" style="position:relative; z-index:1;">
 
