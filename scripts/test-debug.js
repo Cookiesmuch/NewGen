@@ -76,10 +76,16 @@ function parseDeepDiveMappings(viewerPath) {
 
 async function fetchWithDiagnostics(url, options = {}) {
   const start = Date.now();
-  const response = await fetch(url, { cache: 'no-store', ...options });
-  const duration = Date.now() - start;
-  const body = await response.text();
-  return { response, body, duration };
+  try {
+    const response = await fetch(url, { cache: 'no-store', ...options });
+    const duration = Date.now() - start;
+    const body = await response.text();
+    return { response, body, duration };
+  } catch (error) {
+    const duration = Date.now() - start;
+    const method = options.method || 'GET';
+    throw new Error(`Fetch failed (${method} ${url}) after ${duration}ms: ${error.message}`);
+  }
 }
 
 function startServer() {
