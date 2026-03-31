@@ -30,7 +30,7 @@
   z-index: 2;
   max-width: 1220px;
   margin: 0 auto;
-  background: #FFFFFF;
+  background: #F8F9FC;
   border: 1px solid #E4E8F0;
   border-radius: 16px;
   padding: 34px 34px 30px;
@@ -44,22 +44,22 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 154px;
-  background: linear-gradient(180deg, #B8BEC8 0%, #D0D5DE 68%, rgba(255,255,255,0) 100%);
-  border-bottom: 1px solid #C5CCD8;
+  height: 176px;
+  background: linear-gradient(135deg, #141420 0%, #1E1E30 60%, #141420 100%);
+  border-bottom: 1px solid rgba(20,20,32,0.35);
   z-index: 0;
 }
 
 .s1-dd-section::after {
   content: '';
   position: absolute;
-  top: -38px;
-  right: -22px;
-  width: 155px;
-  height: 155px;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
-  background: rgba(111,122,141,0.24);
-  box-shadow: -66px 54px 0 rgba(142,152,168,0.22);
+  background: rgba(0,140,255,0.07);
+  box-shadow: -300px 105px 0 rgba(0,200,200,0.05);
   z-index: 0;
 }
 
@@ -70,44 +70,42 @@
 
 .s1-dd-eyebrow {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.2em;
-  color: #6B7280;
+  color: rgba(255,255,255,0.4);
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .s1-dd-eyebrow::before {
-  content: '■';
-  font-size: 7px;
-  color: #9CA3AF;
+  content: none;
 }
 
 .s1-dd-headline {
   font-family: var(--font-display);
-  font-size: clamp(46px, 6.8vw, 70px);
+  font-size: clamp(32px, 5vw, 52px);
   line-height: 1.0;
-  letter-spacing: -0.02em;
-  color: #111827;
-  margin-bottom: 6px;
+  letter-spacing: 0.03em;
+  color: #FFF;
+  margin-bottom: 12px;
   font-weight: 500;
 }
 
 .s1-dd-headline span {
   display: block;
-  color: #111827;
+  color: #FFF;
   font-weight: 500;
 }
 
 .s1-dd-subhead {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.8;
-  color: #374151;
+  color: #333;
   margin-bottom: 24px;
-  max-width: 780px;
+  max-width: 520px;
 }
 
 .s1-dd-subhead strong,
@@ -120,27 +118,37 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
   margin-top: 20px;
 }
 
 .s1-dd-badge {
   font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  padding: 6px 12px;
-  border-radius: 3px;
-  background: #F3F4F6;
-  border: 1px solid #D1D5DB;
-  color: #374151;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  padding: 5px 12px;
+  border-radius: 2px;
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.1);
+  color: #333;
   text-transform: uppercase;
   font-weight: 500;
 }
 
 .s1-dd-badge.hot {
-  background: #ECEFF3;
-  border-color: #C7CEDA;
-  color: #1F2937;
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.1);
+  color: #333;
+}
+
+.s1-dd-badge.collab {
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  padding: 3px 8px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 2px;
+  color: rgba(255,255,255,0.5);
 }
 
 .s1-dd-stat-block {
@@ -429,7 +437,7 @@
   </p>
 
   <div class="s1-dd-badge-row">
-    <span class="s1-dd-badge hot">Intel × OPPO</span>
+    <span class="s1-dd-badge collab">Intel × OPPO</span>
     <span class="s1-dd-badge">BBK Electronics</span>
     <span class="s1-dd-badge">WiFi 7 (802.11be)</span>
     <span class="s1-dd-badge">Bluetooth Core 6.2</span>
