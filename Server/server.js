@@ -12,6 +12,7 @@ const IS_CMD_LAUNCH = process.argv.includes('--from-bat');
 const SHUTDOWN_TIMEOUT_MS = 2000;
 const WATCHDOG_TIMEOUT_MS = 10000;
 const WATCHDOG_POLL_INTERVAL_MS = 2000;
+const WATCHDOG_SHUTDOWN_COUNTDOWN_S = 3;
 const BOX_RULE = '+------------------------------------------------------------------+';
 const BOX_INNER_WIDTH = BOX_RULE.length - 2;
 
@@ -19,6 +20,10 @@ let browserOpened = false;
 let shuttingDown = false;
 let launcherHeartbeatAt = Date.now();
 let pendingShutdownTimer = null;
+let pendingShutdownInterval = null;
+let pendingShutdownReason = null;
+let pendingShutdownStartedAt = 0;
+let watchdogTimeoutDetected = false;
 
 function boxLine(content) {
   return `|${content.padEnd(BOX_INNER_WIDTH)}|`;
@@ -70,12 +75,23 @@ const server = http.createServer((req, res) => {
   }
 
   if (req.url === '/__launcher/heartbeat') {
+    const heartbeatAgeMs = Date.now() - launcherHeartbeatAt;
     launcherHeartbeatAt = Date.now();
+    watchdogTimeoutDetected = false;
+    console.log(`[WATCHDOG] Heartbeat received (age=${heartbeatAgeMs}ms).`);
     // Cancel any pending close-triggered shutdown — a heartbeat means this was
     // a page navigation (e.g. address bar), not a true tab close.
     if (pendingShutdownTimer) {
+      const elapsedMs = Date.now() - pendingShutdownStartedAt;
+      console.log(`[WATCHDOG] Heartbeat cancelled pending "${pendingShutdownReason}" shutdown after ${elapsedMs}ms.`);
       clearTimeout(pendingShutdownTimer);
       pendingShutdownTimer = null;
+      pendingShutdownReason = null;
+      pendingShutdownStartedAt = 0;
+    }
+    if (pendingShutdownInterval) {
+      clearInterval(pendingShutdownInterval);
+      pendingShutdownInterval = null;
     }
     res.writeHead(204);
     res.end();
@@ -83,15 +99,13 @@ const server = http.createServer((req, res) => {
   }
 
   if (req.url === '/__launcher/closed') {
+    console.log('[WATCHDOG] Browser reported a close event. Starting graceful shutdown countdown.');
     res.writeHead(204);
     res.end();
     // Use a short grace period before shutting down. If a new heartbeat arrives
     // within 3 s the beforeunload fired during a page navigation, not a true close.
     if (!pendingShutdownTimer) {
-      pendingShutdownTimer = setTimeout(() => {
-        pendingShutdownTimer = null;
-        shutdown('BROWSER_CLOSED');
-      }, 3000);
+      startWatchdogShutdownCountdown('BROWSER_CLOSED', WATCHDOG_SHUTDOWN_COUNTDOWN_S, true);
     }
     return;
   }
@@ -169,16 +183,59 @@ function shutdown(signal) {
   setTimeout(() => process.exit(1), SHUTDOWN_TIMEOUT_MS).unref();
 }
 
+function startWatchdogShutdownCountdown(signal, seconds, cancelableByHeartbeat) {
+  if (shuttingDown || pendingShutdownTimer) return;
+
+  let remainingSeconds = seconds;
+  pendingShutdownReason = signal;
+  pendingShutdownStartedAt = Date.now();
+  console.log(`[WATCHDOG] ${signal}: shutdown countdown started (${seconds}s).`);
+  console.log(`[WATCHDOG] ${remainingSeconds}s remaining...`);
+  pendingShutdownInterval = setInterval(() => {
+    remainingSeconds -= 1;
+    if (remainingSeconds > 0) {
+      console.log(`[WATCHDOG] ${remainingSeconds}s remaining...`);
+      return;
+    }
+    clearInterval(pendingShutdownInterval);
+    pendingShutdownInterval = null;
+  }, 1000).unref();
+
+  pendingShutdownTimer = setTimeout(() => {
+    pendingShutdownTimer = null;
+    pendingShutdownReason = null;
+    pendingShutdownStartedAt = 0;
+    if (pendingShutdownInterval) {
+      clearInterval(pendingShutdownInterval);
+      pendingShutdownInterval = null;
+    }
+    shutdown(signal);
+  }, seconds * 1000);
+
+  if (!cancelableByHeartbeat) {
+    return;
+  }
+  console.log('[WATCHDOG] Waiting for heartbeat during countdown to cancel shutdown...');
+}
+
 function startLauncherWatchdog() {
   if (!IS_CMD_LAUNCH) {
     return;
   }
 
   setInterval(() => {
-    if (Date.now() - launcherHeartbeatAt > WATCHDOG_TIMEOUT_MS) {
+    const heartbeatAgeMs = Date.now() - launcherHeartbeatAt;
+    if (!pendingShutdownTimer && heartbeatAgeMs <= WATCHDOG_TIMEOUT_MS) {
+      watchdogTimeoutDetected = false;
+    }
+    if (heartbeatAgeMs > WATCHDOG_TIMEOUT_MS) {
+      if (watchdogTimeoutDetected) {
+        return;
+      }
+      watchdogTimeoutDetected = true;
       console.log('');
-      console.log('[WATCHER] Browser heartbeat timed out.');
-      shutdown('WATCHDOG_TIMEOUT');
+      console.log(`[WATCHDOG] Browser heartbeat timed out (age=${heartbeatAgeMs}ms, threshold=${WATCHDOG_TIMEOUT_MS}ms).`);
+      startWatchdogShutdownCountdown('WATCHDOG_TIMEOUT', WATCHDOG_SHUTDOWN_COUNTDOWN_S, false);
     }
   }, WATCHDOG_POLL_INTERVAL_MS).unref();
 }
