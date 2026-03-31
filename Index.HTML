@@ -167,6 +167,12 @@
     buttons.forEach((btn) => btn.classList.toggle('active', btn.dataset.path === page.path));
   }
 
+  // Expose navigation function for iframe content
+  window.navigateToPath = function(pathname) {
+    const page = findPage(pathname);
+    navigate(page, true);
+  };
+
   async function safeFetch(url, options = {}) {
     const response = await fetch(url, {
       cache: 'no-store',

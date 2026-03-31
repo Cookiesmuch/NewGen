@@ -5581,12 +5581,11 @@ function toggleSection(id) {
 
 // Navigate to deepdive section when overview card is clicked
 function navigateToDeepdive(path) {
-  if (window.parent && window.parent !== window) {
-    // We're in an iframe, need to update parent window location
-    window.parent.history.pushState({ path: path }, '', path);
-    window.parent.location.pathname = path;
+  if (window.parent && window.parent !== window && window.parent.navigateToPath) {
+    // We're in an iframe, use parent's navigation function to avoid reloading parent
+    window.parent.navigateToPath(path);
   } else {
-    // Direct navigation
+    // Direct navigation fallback
     window.location.href = path;
   }
 }
