@@ -16,6 +16,7 @@
     --border: #20314f;
     --mono: "IBM Plex Mono", "Cascadia Mono", monospace;
     --sans: "Segoe UI", "Inter", sans-serif;
+    --topbar-height: 58px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -85,9 +86,36 @@
 
   .viewer {
     width: 100%;
-    height: calc(100vh - 58px);
+    height: calc(100vh - var(--topbar-height));
     border: none;
     background: #ffffff;
+  }
+
+  .watchdog-banner {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: var(--topbar-height);
+    z-index: 1000;
+    background: linear-gradient(90deg, #6b1111 0%, #b32222 100%);
+    border-top: 1px solid #ff8585;
+    border-bottom: 1px solid #ff8585;
+    color: #fff2f2;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    text-align: center;
+    display: none;
+  }
+
+  .watchdog-banner.show {
+    display: block;
+  }
+
+  .watchdog-banner strong {
+    color: #ffffff;
   }
 
   @media (max-width: 760px) {
@@ -107,6 +135,7 @@
     </nav>
   </header>
 
+  <div id="watchdog-banner" class="watchdog-banner" role="status" aria-live="assertive"></div>
   <iframe id="page-frame" class="viewer" title="Dynamic Content Viewer"></iframe>
 
 <script>
@@ -150,11 +179,24 @@
   const frame = document.getElementById('page-frame');
   const buttons = Array.from(document.querySelectorAll('.nav button'));
   const HEARTBEAT_INTERVAL_MS = 2000;
+  const HEARTBEAT_FAILURE_THRESHOLD_COUNT = 2;
   const PING_INTERVAL_MS = 3000;
+  const REQUEST_TIMEOUT_MS = 2000;
+  const MAX_WATCHDOG_INIT_RETRY_MS = 30000;
+  const CLIENT_CLOSE_COUNTDOWN_S = 3;
   let launcherWatchdog = false;
+  let watchdogInitialized = false;
+  let watchdogInitInProgress = false;
+  let watchdogInitRetryDelayMs = HEARTBEAT_INTERVAL_MS;
   let heartbeatTimer = null;
   let pingTimer = null;
+  let consecutiveHeartbeatFailures = 0;
+  let clientCloseCountdownTimer = null;
+  let clientCloseCountdownInterval = null;
+  let clientCloseCountdownReason = '';
+  let clientCloseCountdownRemaining = 0;
   const scrollPositions = {};
+  const watchdogBanner = document.getElementById('watchdog-banner');
 
   function findPage(pathname) {
     return PAGES.find((p) => p.path === pathname) || PAGES[0];
@@ -193,37 +235,137 @@
     navigate(page, true);
   };
 
-  async function safeFetch(url, options = {}) {
-    const response = await fetch(url, {
-      cache: 'no-store',
-      ...options,
-    });
-    if (!response.ok && response.status !== 204) {
-      throw new Error(`Request failed: ${response.status}`);
+  async function safeFetch(url, options = {}, timeoutMs = REQUEST_TIMEOUT_MS) {
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetch(url, {
+        cache: 'no-store',
+        ...options,
+        signal: controller.signal,
+      });
+      if (!response.ok && response.status !== 204) {
+        throw new Error(`Request failed: ${response.status}`);
+      }
+      return response;
+    } finally {
+      window.clearTimeout(timeoutId);
     }
-    return response;
+  }
+
+  function stopWatchdogTimers() {
+    window.clearInterval(heartbeatTimer);
+    window.clearInterval(pingTimer);
+  }
+
+  function closeTabFromWatchdog() {
+    clearClientCloseCountdown();
+    stopWatchdogTimers();
+    window.close();
+  }
+
+  function renderWatchdogBanner() {
+    if (!watchdogBanner) return;
+    watchdogBanner.textContent = `[WATCHDOG] ${clientCloseCountdownReason}. Closing tab in ${clientCloseCountdownRemaining}s...`;
+    watchdogBanner.classList.add('show');
+  }
+
+  function clearClientCloseCountdown() {
+    if (clientCloseCountdownTimer) {
+      window.clearTimeout(clientCloseCountdownTimer);
+      clientCloseCountdownTimer = null;
+    }
+    if (clientCloseCountdownInterval) {
+      window.clearInterval(clientCloseCountdownInterval);
+      clientCloseCountdownInterval = null;
+    }
+    clientCloseCountdownReason = '';
+    clientCloseCountdownRemaining = 0;
+    if (watchdogBanner) {
+      watchdogBanner.textContent = '';
+      watchdogBanner.classList.remove('show');
+    }
+  }
+
+  function startClientCloseCountdown(reason, seconds = CLIENT_CLOSE_COUNTDOWN_S) {
+    if (clientCloseCountdownTimer) return;
+    clientCloseCountdownReason = reason;
+    clientCloseCountdownRemaining = seconds;
+    console.error(`[WATCHDOG] ${reason}. Closing tab countdown started (${seconds}s).`);
+    renderWatchdogBanner();
+    console.error(`[WATCHDOG] ${clientCloseCountdownRemaining}s remaining before forced tab close.`);
+    clientCloseCountdownInterval = window.setInterval(() => {
+      clientCloseCountdownRemaining -= 1;
+      if (clientCloseCountdownRemaining <= 0) {
+        window.clearInterval(clientCloseCountdownInterval);
+        clientCloseCountdownInterval = null;
+        return;
+      }
+      renderWatchdogBanner();
+      console.error(`[WATCHDOG] ${clientCloseCountdownRemaining}s remaining before forced tab close.`);
+    }, 1000);
+    clientCloseCountdownTimer = window.setTimeout(() => {
+      closeTabFromWatchdog();
+    }, seconds * 1000);
+  }
+
+  function sendClosedSignal() {
+    const sent = navigator.sendBeacon('/__launcher/closed');
+    if (!sent) {
+      fetch('/__launcher/closed', { method: 'POST', keepalive: true, cache: 'no-store' })
+        .catch((error) => {
+          console.warn(`[WATCHDOG] Fallback close signal failed (${error?.message ?? 'unknown'}).`);
+        });
+    }
   }
 
   async function setupWatchdog() {
+    if (watchdogInitialized || watchdogInitInProgress) return;
+    console.log('[WATCHDOG] Initializing launcher watchdog...');
+    watchdogInitInProgress = true;
     try {
       const status = await safeFetch('/__launcher/status').then((r) => r.json());
       launcherWatchdog = Boolean(status.watchdog);
+      watchdogInitialized = true;
+      watchdogInitRetryDelayMs = HEARTBEAT_INTERVAL_MS;
+      console.log(`[WATCHDOG] Launcher watchdog status detected: ${launcherWatchdog ? 'enabled' : 'disabled'}.`);
       if (!launcherWatchdog) return;
-    } catch {
+    } catch (error) {
+      const retryDelayMs = watchdogInitRetryDelayMs;
+      console.warn(`[WATCHDOG] Status probe failed (${error?.message ?? 'unknown'}). Retrying in ${retryDelayMs}ms.`);
+      watchdogInitRetryDelayMs = Math.min(watchdogInitRetryDelayMs * 2, MAX_WATCHDOG_INIT_RETRY_MS);
+      window.setTimeout(setupWatchdog, retryDelayMs);
       return;
+    } finally {
+      watchdogInitInProgress = false;
     }
 
+    console.log(`[WATCHDOG] Heartbeat loop started (${HEARTBEAT_INTERVAL_MS}ms interval).`);
     heartbeatTimer = window.setInterval(() => {
-      safeFetch('/__launcher/heartbeat', { method: 'POST', keepalive: true }).catch(() => {});
+      safeFetch('/__launcher/heartbeat', { method: 'POST', keepalive: true })
+        .then(() => {
+          if (consecutiveHeartbeatFailures > 0) {
+            console.log('[WATCHDOG] Heartbeat recovered after prior failures.');
+          }
+          clearClientCloseCountdown();
+          consecutiveHeartbeatFailures = 0;
+        })
+        .catch((error) => {
+          consecutiveHeartbeatFailures += 1;
+          console.warn(`[WATCHDOG] Heartbeat failure ${consecutiveHeartbeatFailures}/${HEARTBEAT_FAILURE_THRESHOLD_COUNT} (${error?.message ?? 'unknown'}).`);
+          if (consecutiveHeartbeatFailures >= HEARTBEAT_FAILURE_THRESHOLD_COUNT) {
+            startClientCloseCountdown('Server heartbeat is unavailable');
+          }
+        });
     }, HEARTBEAT_INTERVAL_MS);
 
+    console.log(`[WATCHDOG] Ping loop started (${PING_INTERVAL_MS}ms interval).`);
     pingTimer = window.setInterval(async () => {
       try {
         await safeFetch('/__launcher/ping');
-      } catch {
-        window.clearInterval(heartbeatTimer);
-        window.clearInterval(pingTimer);
-        window.close();
+      } catch (error) {
+        console.error(`[WATCHDOG] Ping failed (${error?.message ?? 'unknown'}).`);
+        startClientCloseCountdown('Launcher ping failed');
       }
     }, PING_INTERVAL_MS);
 
@@ -231,7 +373,10 @@
     // 3-second grace period: if a heartbeat arrives in time (e.g. from a page
     // reload triggered by address-bar navigation) the shutdown is cancelled.
     window.addEventListener('beforeunload', () => {
-      navigator.sendBeacon('/__launcher/closed');
+      sendClosedSignal();
+    });
+    window.addEventListener('pagehide', () => {
+      sendClosedSignal();
     });
   }
 
