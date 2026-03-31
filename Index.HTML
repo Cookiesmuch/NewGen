@@ -150,12 +150,17 @@
   const frame = document.getElementById('page-frame');
   const buttons = Array.from(document.querySelectorAll('.nav button'));
   const HEARTBEAT_INTERVAL_MS = 2000;
+  const HEARTBEAT_FAILURE_THRESHOLD_COUNT = 2;
   const PING_INTERVAL_MS = 3000;
   const REQUEST_TIMEOUT_MS = 2000;
+  const MAX_WATCHDOG_INIT_RETRY_MS = 30000;
   let launcherWatchdog = false;
   let watchdogInitialized = false;
+  let watchdogInitInProgress = false;
+  let watchdogInitRetryDelayMs = HEARTBEAT_INTERVAL_MS;
   let heartbeatTimer = null;
   let pingTimer = null;
+  let consecutiveHeartbeatFailures = 0;
   const scrollPositions = {};
 
   function findPage(pathname) {
@@ -231,19 +236,34 @@
   }
 
   async function setupWatchdog() {
-    if (watchdogInitialized) return;
+    if (watchdogInitialized || watchdogInitInProgress) return;
+    watchdogInitInProgress = true;
     try {
       const status = await safeFetch('/__launcher/status').then((r) => r.json());
       launcherWatchdog = Boolean(status.watchdog);
       watchdogInitialized = true;
+      watchdogInitRetryDelayMs = HEARTBEAT_INTERVAL_MS;
       if (!launcherWatchdog) return;
     } catch {
-      window.setTimeout(setupWatchdog, HEARTBEAT_INTERVAL_MS);
+      const retryDelayMs = watchdogInitRetryDelayMs;
+      watchdogInitRetryDelayMs = Math.min(watchdogInitRetryDelayMs * 2, MAX_WATCHDOG_INIT_RETRY_MS);
+      window.setTimeout(setupWatchdog, retryDelayMs);
       return;
+    } finally {
+      watchdogInitInProgress = false;
     }
 
     heartbeatTimer = window.setInterval(() => {
-      safeFetch('/__launcher/heartbeat', { method: 'POST', keepalive: true }).catch(closeTabFromWatchdog);
+      safeFetch('/__launcher/heartbeat', { method: 'POST', keepalive: true })
+        .then(() => {
+          consecutiveHeartbeatFailures = 0;
+        })
+        .catch(() => {
+          consecutiveHeartbeatFailures += 1;
+          if (consecutiveHeartbeatFailures >= HEARTBEAT_FAILURE_THRESHOLD_COUNT) {
+            closeTabFromWatchdog();
+          }
+        });
     }, HEARTBEAT_INTERVAL_MS);
 
     pingTimer = window.setInterval(async () => {
