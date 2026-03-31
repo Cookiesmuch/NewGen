@@ -139,6 +139,21 @@
   <iframe id="page-frame" class="viewer" title="Dynamic Content Viewer"></iframe>
 
 <script>
+  function stripBasePath(pathname, basePath) {
+    if (!basePath) return pathname;
+    if (pathname === basePath) return '/';
+    if (pathname.startsWith(`${basePath}/`)) {
+      return pathname.slice(basePath.length) || '/';
+    }
+    return pathname;
+  }
+
+  function withBasePath(pathname, basePath) {
+    if (!basePath) return pathname;
+    if (pathname === '/') return `${basePath}/`;
+    return `${basePath}${pathname}`;
+  }
+
   // Page registry — add new routes here to extend the system.
   const PAGES = [
     // Main brochure pages
@@ -176,8 +191,24 @@
     { path: '/Intel/Eventide/Technology/ThreadDirector', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
   ];
 
+  function detectAppBasePath(pathname, routePaths) {
+    const normalizedPath = pathname.replace(/\/+$/, '') || '/';
+    for (const routePath of routePaths) {
+      const markerIndex = normalizedPath.indexOf(routePath);
+      if (markerIndex > 0) {
+        return normalizedPath.slice(0, markerIndex);
+      }
+      if (markerIndex === 0) {
+        return '';
+      }
+    }
+    const segments = normalizedPath.split('/').filter(Boolean);
+    return segments.length ? `/${segments[0]}` : '';
+  }
+
   const frame = document.getElementById('page-frame');
   const buttons = Array.from(document.querySelectorAll('.nav button'));
+  const APP_BASE_PATH = detectAppBasePath(window.location.pathname, PAGES.map((page) => page.path));
   const HEARTBEAT_INTERVAL_MS = 2000;
   const HEARTBEAT_FAILURE_THRESHOLD_COUNT = 2;
   const PING_INTERVAL_MS = 3000;
@@ -205,7 +236,7 @@
 
   function navigate(page, pushState) {
     // Save the scroll position of the page we are leaving so we can restore it later.
-    const fromPath = window.location.pathname;
+    const fromPath = stripBasePath(window.location.pathname, APP_BASE_PATH);
     try {
       if (frame.contentWindow) {
         scrollPositions[fromPath] = frame.contentWindow.scrollY || 0;
@@ -213,15 +244,15 @@
     } catch (e) { /* cross-origin guard */ }
 
     if (pushState) {
-      history.pushState({ path: page.path }, '', page.path);
+      history.pushState({ path: page.path }, '', withBasePath(page.path, APP_BASE_PATH));
     }
-    frame.src = page.src;
+    frame.src = withBasePath(page.src, APP_BASE_PATH);
     buttons.forEach((btn) => btn.classList.toggle('active', btn.dataset.path === page.path));
   }
 
   // Restore scroll position after the iframe finishes loading.
   frame.addEventListener('load', () => {
-    const currentPath = window.location.pathname;
+    const currentPath = stripBasePath(window.location.pathname, APP_BASE_PATH);
     const savedY = scrollPositions[currentPath];
     if (savedY) {
       try {
@@ -386,16 +417,17 @@
   }
 
   // Load the page that matches the current URL on first visit
-  if (window.location.pathname === '/') {
+  const currentRoutePath = stripBasePath(window.location.pathname, APP_BASE_PATH);
+   if (currentRoutePath === '/') {
     const defaultPage = findPage('/Intel/Eventide');
-    history.replaceState({ path: defaultPage.path }, '', defaultPage.path);
+    history.replaceState({ path: defaultPage.path }, '', withBasePath(defaultPage.path, APP_BASE_PATH));
   }
-  navigate(findPage(window.location.pathname), false);
+  navigate(findPage(currentRoutePath), false);
   setupWatchdog();
 
   // Handle browser back / forward
   window.addEventListener('popstate', () => {
-    navigate(findPage(window.location.pathname), false);
+    navigate(findPage(stripBasePath(window.location.pathname, APP_BASE_PATH)), false);
   });
 
   // Handle nav button clicks
