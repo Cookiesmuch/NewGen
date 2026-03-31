@@ -156,75 +156,49 @@ async function loadDeepdive() {
   }
 
   try {
-    // Load the deepdive content via iframe and inject it
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = deepdiveSrc;
+    // Load the deepdive content via fetch and inject it directly
+    const response = await fetch(deepdiveSrc);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+    }
 
-    iframe.onload = () => {
-      try {
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        if (!iframeDoc) {
-          throw new Error('Unable to access iframe document');
-        }
+    let htmlContent = await response.text();
 
-        // Extract and inject styles
-        const styleNodes = Array.from(iframeDoc.querySelectorAll('style'));
-        styleNodes.forEach((styleNode) => {
-          const injectedStyle = document.createElement('style');
-          injectedStyle.textContent = styleNode.textContent || '';
-          document.head.appendChild(injectedStyle);
-        });
+    // Parse the HTML to extract styles and body content
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlContent, 'text/html');
 
-        // Extract and inject body content
-        let bodyHtml = (iframeDoc.body && iframeDoc.body.innerHTML) || '';
+    // Extract and inject styles
+    const styleNodes = Array.from(doc.querySelectorAll('style'));
+    styleNodes.forEach((styleNode) => {
+      const injectedStyle = document.createElement('style');
+      injectedStyle.textContent = styleNode.textContent || '';
+      document.head.appendChild(injectedStyle);
+    });
 
-        // Fix relative image paths
-        bodyHtml = bodyHtml
-          .replaceAll('src="../Media/MustangOutline.svg"', 'src="Media/MustangOutline.svg"')
-          .replaceAll('src="../Media/MustangLogo.svg"', 'src="Media/MustangLogo.svg"')
-          .replaceAll('src="MustangOutline.svg"', 'src="Media/MustangOutline.svg"')
-          .replaceAll('src="MustangLogo.svg"', 'src="Media/MustangLogo.svg"');
+    // Extract body content (or all content if no body tag)
+    let bodyHtml;
+    if (doc.body && doc.body.innerHTML) {
+      bodyHtml = doc.body.innerHTML;
+    } else {
+      // If no body tag, get all non-style content
+      bodyHtml = htmlContent.replace(/<style[\s\S]*?<\/style>/gi, '').trim();
+    }
 
-        container.innerHTML = bodyHtml;
+    // Fix relative image paths
+    bodyHtml = bodyHtml
+      .replaceAll('src="../Media/MustangOutline.svg"', 'src="Media/MustangOutline.svg"')
+      .replaceAll('src="../Media/MustangLogo.svg"', 'src="Media/MustangLogo.svg"')
+      .replaceAll('src="MustangOutline.svg"', 'src="Media/MustangOutline.svg"')
+      .replaceAll('src="MustangLogo.svg"', 'src="Media/MustangLogo.svg"');
 
-        // Cleanup iframe
-        iframe.remove();
-      } catch (error) {
-        console.error('Error processing deepdive content:', error);
-        container.innerHTML = `
-          <div class="error-message">
-            <h1>Error Loading Deep Dive</h1>
-            <p>An error occurred while loading the deep dive content.</p>
-            <p style="margin-top: 16px;">
-              <a href="/Intel/Eventide" style="color: var(--intel-blue); text-decoration: none;">← Return to Overview</a>
-            </p>
-          </div>
-        `;
-        iframe.remove();
-      }
-    };
-
-    iframe.onerror = () => {
-      container.innerHTML = `
-        <div class="error-message">
-          <h1>Failed to Load Deep Dive</h1>
-          <p>The deep dive content file could not be loaded.</p>
-          <p style="margin-top: 16px;">
-            <a href="/Intel/Eventide" style="color: var(--intel-blue); text-decoration: none;">← Return to Overview</a>
-          </p>
-        </div>
-      `;
-      iframe.remove();
-    };
-
-    document.body.appendChild(iframe);
+    container.innerHTML = bodyHtml;
   } catch (error) {
     console.error('Error loading deepdive:', error);
     container.innerHTML = `
       <div class="error-message">
-        <h1>Unexpected Error</h1>
-        <p>An unexpected error occurred while loading the deep dive.</p>
+        <h1>Error Loading Deep Dive</h1>
+        <p>An error occurred while loading the deep dive content: ${error.message}</p>
         <p style="margin-top: 16px;">
           <a href="/Intel/Eventide" style="color: var(--intel-blue); text-decoration: none;">← Return to Overview</a>
         </p>
