@@ -348,7 +348,7 @@
 .s1-dd-card-headered {
   position: relative;
   overflow: hidden;
-  padding: 96px 16px 16px;
+  padding: 110px 18px 18px;
 }
 
 .s1-dd-card-headered::before {
@@ -357,7 +357,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 82px;
+  height: 94px;
   background: linear-gradient(135deg, #141420 0%, #1E1E30 60%, #141420 100%);
   border-bottom: 1px solid rgba(20,20,32,0.35);
   z-index: 0;
@@ -380,21 +380,25 @@
 
 .s1-dd-card-headered .s1-dd-card-title {
   position: absolute;
-  top: 12px;
-  left: 16px;
-  right: 16px;
+  top: 14px;
+  left: 18px;
+  right: 18px;
   margin: 0;
+  line-height: 1.35;
+  overflow-wrap: break-word;
   color: rgba(255,255,255,0.5);
 }
 
 .s1-dd-card-headered .s1-dd-card-headline {
   position: absolute;
-  top: 34px;
-  left: 16px;
-  right: 16px;
+  top: 38px;
+  left: 18px;
+  right: 18px;
   margin: 0;
   color: #FFF;
 }
+
+.s1-dd-card-headered > p { margin-top: 0; }
 
 .s1-dd-card .s1-dd-spec-item { align-items: flex-start; }
 .s1-dd-card .s1-dd-spec-key { min-width: 0; }
