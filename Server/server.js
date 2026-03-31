@@ -49,6 +49,16 @@ const mimeTypes = {
   '.gif': 'image/gif',
 };
 
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (char) => (
+    char === '&' ? '&amp;'
+      : char === '<' ? '&lt;'
+        : char === '>' ? '&gt;'
+          : char === '"' ? '&quot;'
+            : '&#39;'
+  ));
+}
+
 function serveFile(filePath, res, fallbackUrl) {
   const ext = path.extname(filePath).toLowerCase();
   const contentType = mimeTypes[ext] || 'application/octet-stream';
@@ -56,7 +66,7 @@ function serveFile(filePath, res, fallbackUrl) {
     if (err) {
       if (err.code === 'ENOENT') {
         res.writeHead(404, { 'Content-Type': 'text/html' });
-        res.end(`<h1>404 Not Found</h1><p>${fallbackUrl}</p>`);
+        res.end(`<h1>404 Not Found</h1><p>${escapeHtml(fallbackUrl)}</p>`);
       } else {
         res.writeHead(500, { 'Content-Type': 'text/html' });
         res.end(`<h1>500 Server Error</h1>`);
@@ -127,7 +137,7 @@ const server = http.createServer((req, res) => {
   // If the request has no file extension it is a page route — serve the SPA shell
   const ext = path.extname(urlPath).toLowerCase();
   if (!ext) {
-    serveFile(path.join(ROOT, 'Index.HTML'), res, req.url);
+    serveFile(path.join(ROOT, 'index.html'), res, req.url);
     return;
   }
 
