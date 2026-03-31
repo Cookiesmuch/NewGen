@@ -1,3 +1,318 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --intel-blue: #0068B5;
+  --intel-blue-dark: #004A86;
+  --eventide-gold: #C8922A;
+  --eventide-gold-light: #F0B848;
+  --eventide-dusk: #1A0A2E;
+  --text-primary: #0F0F0F;
+  --text-muted: #7A7A7A;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+.section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 64px 48px;
+}
+
+.section-divider {
+  height: 3px;
+  background: linear-gradient(90deg, var(--intel-blue), #6B21A8, var(--eventide-gold));
+}
+
+.arc-gpu-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: #38bdf8;
+  margin-bottom: 10px;
+}
+
+.arc-gpu-heading {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 60px);
+  color: white;
+  line-height: .95;
+  letter-spacing: .03em;
+}
+
+.arc-gpu-intro {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.75;
+  max-width: 640px;
+  margin-top: 12px;
+}
+
+.xe5-tech-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 56px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  position: relative;
+  overflow: hidden;
+}
+
+.xe5-tech-block:last-child {
+  border-bottom: none;
+  padding-bottom: 24px;
+}
+
+.xe5-tech-num {
+  font-family: var(--font-display);
+  font-size: clamp(320px,50vw,520px);
+  color: rgba(255,255,255,0.025);
+  line-height: .75;
+  position: absolute;
+  left: -120px;
+  top: 50%;
+  transform: translateY(-50%);
+  user-select: none;
+  pointer-events: none;
+  z-index: 0;
+  letter-spacing: -.05em;
+}
+
+.xe5-tech-block > div:not(.xe5-tech-num) { position: relative; z-index: 1; }
+
+.xe5-tech-label,
+.xe4e-tech-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.xe5-tech-label { color: #F0B848; }
+.xe4e-tech-label { color: #34d399; }
+
+.xe5-tech-name,
+.xe4e-tech-name {
+  font-family: var(--font-display);
+  font-size: clamp(40px,5vw,70px);
+  color: white;
+  line-height: .92;
+  letter-spacing: .02em;
+  margin-bottom: 20px;
+}
+
+.xe5-tech-body {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.8;
+  max-width: 540px;
+}
+
+.xe5-tech-stats {
+  display: flex;
+  gap: 14px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.xe5-tech-stat {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 8px;
+  padding: 14px 18px;
+  flex-shrink: 0;
+}
+
+.xe5-tech-stat-val,
+.xe4e-stat-val {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.xe5-tech-stat-val { color: #F0B848; }
+.xe4e-stat-val { color: #34d399; }
+
+.xe5-tech-stat-key {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  margin-top: 3px;
+}
+
+.xe5-tech-aside { width: 272px; flex-shrink: 0; }
+
+.xe5-aside-box,
+.xe4e-aside-box {
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.xe5-aside-box {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+}
+
+.xe4e-aside-box {
+  background: rgba(15,118,110,0.08);
+  border: 1px solid rgba(52,211,153,0.2);
+}
+
+.xe5-aside-title,
+.xe4e-aside-title {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.xe5-aside-title { color: rgba(255,255,255,0.25); }
+.xe4e-aside-title { color: rgba(52,211,153,0.4); }
+
+.xe5-aside-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  gap: 10px;
+}
+
+.xe5-aside-row:last-child { border-bottom: none; }
+.xe5-aside-k { font-size: 11px; color: rgba(255,255,255,0.3); }
+.xe5-aside-v { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.75); text-align: right; }
+
+.gog-bar { margin-top: 20px; }
+.gog-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 6px;
+  letter-spacing: .05em;
+}
+.gog-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.gog-metric { font-size: 10px; color: rgba(255,255,255,0.35); width: 110px; flex-shrink: 0; }
+.gog-track { flex: 1; height: 5px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+.gog-fill { height: 100%; border-radius: 2px; background: #F0B848; }
+.gog-num { font-family: var(--font-mono); font-size: 10px; font-weight: 600; color: #F0B848; width: 55px; text-align: right; }
+
+@media (max-width: 900px) {
+  .section { padding: 40px 24px; }
+  .xe5-tech-block { flex-direction: column; gap: 24px; }
+  .xe5-tech-num { font-size: clamp(200px,40vw,300px); left: -80px; top: 50%; transform: translateY(-50%); }
+  .xe5-tech-aside { width: 100%; }
+}
+</style>
+
+<style>
+/* ── Xe4E Showcase Wrapper — Deep Forest Theme ──────────────── */
+.xe4e-showcase-wrap {
+  background:
+    radial-gradient(ellipse 70% 50% at 20% 20%, rgba(5,150,105,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 80% 80%, rgba(52,211,153,0.06) 0%, transparent 55%),
+    linear-gradient(180deg, #030E0A 0%, #020A07 60%, #030E0A 100%);
+  position: relative;
+  overflow: hidden;
+}
+.xe4e-showcase-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(52,211,153,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(52,211,153,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+/* ── Enhanced Section Header ────────────────────────────────── */
+.xe4e-section-heading {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 7vw, 88px);
+  line-height: 0.92;
+  color: white;
+  letter-spacing: 0.02em;
+  margin-bottom: 10px;
+}
+.xe4e-section-heading span { color: #34D399; }
+.xe4e-section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: rgba(52,211,153,0.55);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.xe4e-section-intro {
+  font-size: 15px;
+  color: rgba(255,255,255,0.48);
+  margin-bottom: 42px;
+  font-style: italic;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+/* ── Inner Divider ──────────────────────────────────────────── */
+.xe4e-inner-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(52,211,153,0.18) 20%, rgba(52,211,153,0.18) 80%, transparent);
+  margin: 52px 0;
+}
+
+/* ── GOG Bars (Gen-on-Gen) for Xe4E ─────────────────────────── */
+.xe4e-gog-bar { margin-top: 20px; }
+.xe4e-gog-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(52,211,153,0.4);
+  margin-bottom: 6px;
+  letter-spacing: 0.05em;
+}
+.xe4e-gog-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.xe4e-gog-metric {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  width: 110px;
+  flex-shrink: 0;
+}
+.xe4e-gog-track {
+  flex: 1;
+  height: 5px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.xe4e-gog-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: #34D399;
+}
+.xe4e-gog-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: #34D399;
+  width: 55px;
+  text-align: right;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media(max-width:900px) {
+  .xe5-tech-block { flex-direction: column; gap: 24px; }
+  .xe5-tech-num { font-size: clamp(200px, 40vw, 300px); left: -80px; top: 50%; transform: translateY(-50%); }
+  .xe5-tech-aside { width: 100%; }
+}
+</style>
+
 <div class="xe4e-showcase-wrap">
 <div class="section" style="position:relative; z-index:1;">
 
