@@ -91,13 +91,6 @@
   <div id="deepdive-container" class="deepdive-container"></div>
 
 <script>
-function detectAppBasePath(pathname) {
-  const segments = pathname.split('/').filter(Boolean);
-  if (!segments.length) return '';
-  if (segments[0] === 'Intel' || segments[0] === 'Sony') return '';
-  return `/${segments[0]}`;
-}
-
 function stripBasePath(pathname, basePath) {
   if (!basePath) return pathname;
   if (pathname === basePath) return '/';
@@ -145,6 +138,22 @@ const DEEPDIVE_MAPPINGS = {
   '/Intel/Eventide/Technology/ThreadDirector': './Technologies/eventide.technology.thread_director.html',
 };
 
+function detectAppBasePath(pathname) {
+  const normalizedPath = pathname.replace(/\/+$/, '') || '/';
+  const routePaths = Object.keys(DEEPDIVE_MAPPINGS);
+  for (const routePath of routePaths) {
+    const markerIndex = normalizedPath.indexOf(routePath);
+    if (markerIndex > 0) {
+      return normalizedPath.slice(0, markerIndex);
+    }
+    if (markerIndex === 0) {
+      return '';
+    }
+  }
+  const segments = normalizedPath.split('/').filter(Boolean);
+  return segments.length ? `/${segments[0]}` : '';
+}
+
 async function loadDeepdive() {
   const container = document.getElementById('deepdive-container');
   const appBasePath = detectAppBasePath(window.location.pathname);
@@ -169,7 +178,7 @@ async function loadDeepdive() {
   if (!deepdiveSrc) {
     container.innerHTML = `
       <div class="error-message">
-        <h1>403 Page Not Found</h1>
+        <h1>404 Page Not Found</h1>
         <p>The requested deep dive section could not be found for path: <strong>${currentPath}</strong></p>
         <p style="margin-top: 16px;">
           <a href="${withBasePath('/Intel/Eventide', appBasePath)}" style="color: var(--intel-blue); text-decoration: none;">← Return to Overview</a>

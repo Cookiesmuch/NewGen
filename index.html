@@ -139,13 +139,6 @@
   <iframe id="page-frame" class="viewer" title="Dynamic Content Viewer"></iframe>
 
 <script>
-  function detectAppBasePath(pathname) {
-    const segments = pathname.split('/').filter(Boolean);
-    if (!segments.length) return '';
-    if (segments[0] === 'Intel' || segments[0] === 'Sony') return '';
-    return `/${segments[0]}`;
-  }
-
   function stripBasePath(pathname, basePath) {
     if (!basePath) return pathname;
     if (pathname === basePath) return '/';
@@ -198,9 +191,24 @@
     { path: '/Intel/Eventide/Technology/ThreadDirector', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
   ];
 
+  function detectAppBasePath(pathname, routePaths) {
+    const normalizedPath = pathname.replace(/\/+$/, '') || '/';
+    for (const routePath of routePaths) {
+      const markerIndex = normalizedPath.indexOf(routePath);
+      if (markerIndex > 0) {
+        return normalizedPath.slice(0, markerIndex);
+      }
+      if (markerIndex === 0) {
+        return '';
+      }
+    }
+    const segments = normalizedPath.split('/').filter(Boolean);
+    return segments.length ? `/${segments[0]}` : '';
+  }
+
   const frame = document.getElementById('page-frame');
   const buttons = Array.from(document.querySelectorAll('.nav button'));
-  const APP_BASE_PATH = detectAppBasePath(window.location.pathname);
+  const APP_BASE_PATH = detectAppBasePath(window.location.pathname, PAGES.map((page) => page.path));
   const HEARTBEAT_INTERVAL_MS = 2000;
   const HEARTBEAT_FAILURE_THRESHOLD_COUNT = 2;
   const PING_INTERVAL_MS = 3000;
