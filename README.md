@@ -153,8 +153,11 @@ The batch launcher:
 
 ## 🧪 Development Notes
 
-- `npm test` is currently a placeholder script in `package.json`:
-  - It intentionally returns: `Error: no test specified`.
+- `npm test` runs `scripts/test-debug.js`, a verbose diagnostics test that:
+  - validates watchdog endpoints (`/__launcher/status`, `/__launcher/heartbeat`, `/__launcher/ping`, `/__launcher/closed`)
+  - checks route navigability for declared `Index.HTML` paths
+  - verifies declared source pages and deep-dive mapping targets are loadable
+  - reports potential orphaned `.html` files that are not referenced by route/deep-dive mappings
 - There is currently no configured linter/build pipeline in `package.json`.
 - This repository is focused on static brochure presentation and local hosting.
 
