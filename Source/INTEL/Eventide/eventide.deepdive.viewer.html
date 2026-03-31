@@ -125,14 +125,27 @@ const DEEPDIVE_MAPPINGS = {
 
 async function loadDeepdive() {
   const container = document.getElementById('deepdive-container');
-  const currentPath = window.location.pathname;
+
+  // Get the pathname from parent window if we're in an iframe, otherwise from current window
+  let currentPath;
+  try {
+    if (window.parent && window.parent !== window && window.parent.location) {
+      currentPath = window.parent.location.pathname;
+    } else {
+      currentPath = window.location.pathname;
+    }
+  } catch (e) {
+    // Cross-origin access blocked, fall back to URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    currentPath = urlParams.get('path') || window.location.pathname;
+  }
 
   const deepdiveSrc = DEEPDIVE_MAPPINGS[currentPath];
 
   if (!deepdiveSrc) {
     container.innerHTML = `
       <div class="error-message">
-        <h1>Deep Dive Not Found</h1>
+        <h1>403 Page Not Found</h1>
         <p>The requested deep dive section could not be found for path: <strong>${currentPath}</strong></p>
         <p style="margin-top: 16px;">
           <a href="/Intel/Eventide" style="color: var(--intel-blue); text-decoration: none;">← Return to Overview</a>
@@ -221,7 +234,14 @@ async function loadDeepdive() {
 }
 
 function goBack() {
-  window.history.back();
+  // Navigate back to the brochure page
+  if (window.parent && window.parent !== window && window.parent.navigateToPath) {
+    // We're in an iframe, use parent's navigation to go back to brochure
+    window.parent.navigateToPath('/Intel/Eventide');
+  } else {
+    // Direct navigation fallback
+    window.location.href = '/Intel/Eventide';
+  }
 }
 
 // Load the deepdive content when the page loads

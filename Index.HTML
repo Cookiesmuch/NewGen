@@ -231,12 +231,11 @@
     });
   });
 
-  window.addEventListener('beforeunload', () => {
-    if (!launcherWatchdog) return;
-    try {
-      navigator.sendBeacon('/__launcher/closed');
-    } catch {}
-  });
+  // Note: We intentionally do NOT send a closed beacon on beforeunload anymore.
+  // This is because manual address bar navigation causes a page reload, which would
+  // incorrectly signal the server to shut down. Instead, we rely on the heartbeat
+  // mechanism - if the tab truly closes, heartbeats will stop and the watchdog will
+  // detect it and shut down gracefully.
 </script>
 </body>
 </html>
