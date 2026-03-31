@@ -58,8 +58,8 @@
   width: 140px;
   height: 140px;
   border-radius: 50%;
-  background: rgba(0,140,255,0.07);
-  box-shadow: -300px 105px 0 rgba(0,200,200,0.05);
+  background: rgba(107,114,128,0.10);
+  box-shadow: -300px 105px 0 rgba(148,163,184,0.08);
   z-index: 0;
 }
 
@@ -88,7 +88,7 @@
   font-family: var(--font-display);
   font-size: clamp(32px, 5vw, 52px);
   line-height: 1.0;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.01em;
   color: #FFF;
   margin-bottom: 12px;
   font-weight: 500;
@@ -102,16 +102,16 @@
 
 .s1-dd-subhead {
   font-size: 14px;
-  line-height: 1.8;
-  color: #333;
+  line-height: 1.9;
+  color: #374151;
   margin-bottom: 30px;
   max-width: 520px;
 }
 
 .s1-dd-subhead strong,
 .s1-dd-wrap strong {
-  color: #111827;
-  font-weight: 700;
+  color: #1F2937;
+  font-weight: 600;
 }
 
 .s1-dd-badge-row {
@@ -242,7 +242,7 @@
 .s1-dd-content-title .s1-dd-accent,
 .s1-dd-section-header .s1-dd-accent,
 .s1-dd-bt-subsection-title {
-  color: #0068B5;
+  color: #4B5563;
 }
 
 .s1-dd-content p,
@@ -259,8 +259,8 @@
 }
 
 .s1-dd-content p.s1-dd-callout {
-  background: #F8FAFC;
-  border-left: 3px solid #94A3B8;
+  background: #F7F7F8;
+  border-left: 3px solid #6B7280;
   padding: 12px 16px;
   border-radius: 4px;
   color: #334155;
@@ -280,7 +280,7 @@
 
 .s1-dd-spec-key { color: #6B7280; font-weight: 500; min-width: 140px; }
 .s1-dd-spec-val { color: #111827; text-align: right; flex-shrink: 0; }
-.s1-dd-spec-val.hot { color: #0068B5; font-weight: 600; }
+.s1-dd-spec-val.hot { color: #4B5563; font-weight: 600; }
 
 .s1-dd-two-col {
   display: grid;
@@ -329,7 +329,7 @@
 }
 
 .s1-dd-grid-item { padding: 16px; text-align: center; }
-.s1-dd-card { padding: 18px; }
+.s1-dd-card { padding: 20px; }
 .s1-dd-grid-item-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
 .s1-dd-grid-item-icon { font-size: 32px; margin-bottom: 10px; }
 
@@ -372,8 +372,8 @@
   width: 108px;
   height: 108px;
   border-radius: 50%;
-  background: rgba(0,140,255,0.07);
-  box-shadow: -154px 44px 0 rgba(0,200,200,0.05);
+  background: rgba(107,114,128,0.10);
+  box-shadow: -154px 44px 0 rgba(148,163,184,0.08);
   z-index: 0;
 }
 
@@ -422,7 +422,7 @@
   gap: 8px;
 }
 
-.s1-dd-bt-subsection-title::before { content: '→'; color: #0068B5; }
+.s1-dd-bt-subsection-title::before { content: '→'; color: #4B5563; }
 
 .s1-dd-feature-list { list-style: none; padding: 0; margin: 12px 0; }
 
@@ -437,9 +437,12 @@
   content: '◆';
   position: absolute;
   left: 0;
-  color: #0068B5;
+  color: #4B5563;
   font-size: 8px;
 }
+
+.s1-dd-wrap p,
+.s1-dd-wrap li { line-height: 1.75; }
 
 .s1-dd-spec-table {
   width: 100%;
@@ -582,7 +585,7 @@
       </ul>
 
       <p style="margin-top: 16px; padding: 12px 14px; background: #F8FAFC; border-left: 3px solid #94A3B8; border-radius: 4px;">
-        <strong style="color: #0068B5;">What this means:</strong> Gaming latency remains consistently ~30ms even when heavy downloads run concurrently. Compare this to standard WiFi without Killer Engine: latency spikes to 80–160ms under load.
+        <strong style="color: #4B5563;">What this means:</strong> Gaming latency remains consistently ~30ms even when heavy downloads run concurrently. Compare this to standard WiFi without Killer Engine: latency spikes to 80–160ms under load.
       </p>
     </div>
 
@@ -633,14 +636,14 @@
 
       <div class="s1-dd-two-col" style="margin-top: 16px; gap: 24px;">
         <div>
-          <div style="color: #0068B5; font-weight: 600; margin-bottom: 8px;">Low-Latency Gaming Band</div>
+          <div style="color: #4B5563; font-weight: 600; margin-bottom: 8px;">Low-Latency Gaming Band</div>
           <p style="font-size: 13px;">
             One band (e.g., 5 GHz or 6 GHz, less congested) dedicated to UDP gaming traffic.
             Single-path, minimal hops, ~8ms latency. Killer Engine steers gaming packets here exclusively.
           </p>
         </div>
         <div>
-          <div style="color: #0068B5; font-weight: 600; margin-bottom: 8px;">High-Throughput Band</div>
+          <div style="color: #4B5563; font-weight: 600; margin-bottom: 8px;">High-Throughput Band</div>
           <p style="font-size: 13px;">
             Another band simultaneously carrying bulk downloads, streaming, background OS tasks.
             DoubleShot Pro aggregates all available bandwidth for non-latency-critical work.
@@ -765,7 +768,7 @@
 
     <div class="s1-dd-card" style="margin-top: 12px;">
       <p style="font-size: 13px; margin: 0;">
-        <strong style="color: #0068B5;">Layer 1 — Frequency Hopping:</strong><br>
+        <strong style="color: #4B5563;">Layer 1 — Frequency Hopping:</strong><br>
         Bluetooth hops across 40 channels in the 2.4 GHz band (2402–2480 MHz) 1600 times per second.
         WiFi's wider channels can't follow Bluetooth hops; instead, the Killer Intelligence Engine analyzes
         which WiFi channels are in use and provides a blacklist to the Bluetooth modem.
@@ -775,7 +778,7 @@
 
     <div class="s1-dd-card" style="margin-top: 12px;">
       <p style="font-size: 13px; margin: 0;">
-        <strong style="color: #0068B5;">Layer 2 — Dynamic Spectrum Sensing:</strong><br>
+        <strong style="color: #4B5563;">Layer 2 — Dynamic Spectrum Sensing:</strong><br>
         The S1 includes a spectral monitor on the 2.4 GHz RF frontend. In real-time, it detects
         non-WiFi/non-Bluetooth interference (e.g., microwave ovens, cordless phones) and signals this
         to the Bluetooth PHY layer for immediate channel map adaptation.
@@ -784,7 +787,7 @@
 
     <div class="s1-dd-card" style="margin-top: 12px;">
       <p style="font-size: 13px; margin: 0;">
-        <strong style="color: #0068B5;">Layer 3 — Band Offload to 5/6 GHz:</strong><br>
+        <strong style="color: #4B5563;">Layer 3 — Band Offload to 5/6 GHz:</strong><br>
         For devices supporting WiFi 6E (802.11ax on 6 GHz), the S1 can offload WiFi traffic to the
         less-contested 6 GHz band entirely, freeing 5 GHz and 2.4 GHz for Bluetooth-only operation.
         This is the ideal scenario for gaming: Bluetooth controller on 2.4 GHz undisturbed, gaming data on 6 GHz.
@@ -958,7 +961,7 @@
       </ul>
 
       <p style="margin-top: 16px; padding: 12px 14px; background: #F8FAFC; border-left: 3px solid #94A3B8; border-radius: 4px;">
-        <strong style="color: #0068B5;">Use Cases:</strong> Display auto-wake on user approach. Auto-dim when user steps away.
+        <strong style="color: #4B5563;">Use Cases:</strong> Display auto-wake on user approach. Auto-dim when user steps away.
         Pause video on idle. Mute microphone if room is empty (conference call safety).
         Anti-theft: alert if laptop moved while unattended.
       </p>
@@ -1271,7 +1274,7 @@
       The Wireless Foundation of Eventide
     </div>
     <p style="font-size: 14px; line-height: 1.8; color: #334155;">
-      The <strong style="color: #0068B5;">Killer SignalBoost S1</strong> is not just a modem tile — it's a
+      The <strong style="color: #4B5563;">Killer SignalBoost S1</strong> is not just a modem tile — it's a
       comprehensive wireless platform that unifies Intel's 15+ years of gaming network intelligence
       with OPPO Semiconductor's proven hardware RF expertise. Eight simultaneous frequency bands,
       sub-30ms gaming latency, Bluetooth 6.2 dual-mode operation with &lt;8ms controller response,
