@@ -23,6 +23,7 @@ let pendingShutdownTimer = null;
 let pendingShutdownInterval = null;
 let pendingShutdownReason = null;
 let pendingShutdownStartedAt = 0;
+let watchdogTimeoutDetected = false;
 
 function boxLine(content) {
   return `|${content.padEnd(BOX_INNER_WIDTH)}|`;
@@ -76,6 +77,7 @@ const server = http.createServer((req, res) => {
   if (req.url === '/__launcher/heartbeat') {
     const heartbeatAgeMs = Date.now() - launcherHeartbeatAt;
     launcherHeartbeatAt = Date.now();
+    watchdogTimeoutDetected = false;
     console.log(`[WATCHDOG] Heartbeat received (age=${heartbeatAgeMs}ms).`);
     // Cancel any pending close-triggered shutdown — a heartbeat means this was
     // a page navigation (e.g. address bar), not a true tab close.
@@ -223,7 +225,14 @@ function startLauncherWatchdog() {
 
   setInterval(() => {
     const heartbeatAgeMs = Date.now() - launcherHeartbeatAt;
+    if (!pendingShutdownTimer && heartbeatAgeMs <= WATCHDOG_TIMEOUT_MS) {
+      watchdogTimeoutDetected = false;
+    }
     if (heartbeatAgeMs > WATCHDOG_TIMEOUT_MS) {
+      if (watchdogTimeoutDetected) {
+        return;
+      }
+      watchdogTimeoutDetected = true;
       console.log('');
       console.log(`[WATCHDOG] Browser heartbeat timed out (age=${heartbeatAgeMs}ms, threshold=${WATCHDOG_TIMEOUT_MS}ms).`);
       startWatchdogShutdownCountdown('WATCHDOG_TIMEOUT', WATCHDOG_SHUTDOWN_COUNTDOWN_S, false);

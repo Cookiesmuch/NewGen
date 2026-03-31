@@ -16,6 +16,7 @@
     --border: #20314f;
     --mono: "IBM Plex Mono", "Cascadia Mono", monospace;
     --sans: "Segoe UI", "Inter", sans-serif;
+    --topbar-height: 58px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -85,7 +86,7 @@
 
   .viewer {
     width: 100%;
-    height: calc(100vh - 58px);
+    height: calc(100vh - var(--topbar-height));
     border: none;
     background: #ffffff;
   }
@@ -94,7 +95,7 @@
     position: fixed;
     left: 0;
     right: 0;
-    top: 58px;
+    top: var(--topbar-height);
     z-index: 1000;
     background: linear-gradient(90deg, #6b1111 0%, #b32222 100%);
     border-top: 1px solid #ff8585;
@@ -311,7 +312,10 @@
   function sendClosedSignal() {
     const sent = navigator.sendBeacon('/__launcher/closed');
     if (!sent) {
-      fetch('/__launcher/closed', { method: 'POST', keepalive: true, cache: 'no-store' }).catch(() => {});
+      fetch('/__launcher/closed', { method: 'POST', keepalive: true, cache: 'no-store' })
+        .catch((error) => {
+          console.warn(`[WATCHDOG] Fallback close signal failed (${error?.message ?? 'unknown'}).`);
+        });
     }
   }
 
@@ -328,7 +332,7 @@
       if (!launcherWatchdog) return;
     } catch (error) {
       const retryDelayMs = watchdogInitRetryDelayMs;
-      console.warn(`[WATCHDOG] Status probe failed (${error && error.message ? error.message : 'unknown'}). Retrying in ${retryDelayMs}ms.`);
+      console.warn(`[WATCHDOG] Status probe failed (${error?.message ?? 'unknown'}). Retrying in ${retryDelayMs}ms.`);
       watchdogInitRetryDelayMs = Math.min(watchdogInitRetryDelayMs * 2, MAX_WATCHDOG_INIT_RETRY_MS);
       window.setTimeout(setupWatchdog, retryDelayMs);
       return;
@@ -348,7 +352,7 @@
         })
         .catch((error) => {
           consecutiveHeartbeatFailures += 1;
-          console.warn(`[WATCHDOG] Heartbeat failure ${consecutiveHeartbeatFailures}/${HEARTBEAT_FAILURE_THRESHOLD_COUNT} (${error && error.message ? error.message : 'unknown'}).`);
+          console.warn(`[WATCHDOG] Heartbeat failure ${consecutiveHeartbeatFailures}/${HEARTBEAT_FAILURE_THRESHOLD_COUNT} (${error?.message ?? 'unknown'}).`);
           if (consecutiveHeartbeatFailures >= HEARTBEAT_FAILURE_THRESHOLD_COUNT) {
             startClientCloseCountdown('Server heartbeat is unavailable');
           }
@@ -360,7 +364,7 @@
       try {
         await safeFetch('/__launcher/ping');
       } catch (error) {
-        console.error(`[WATCHDOG] Ping failed (${error && error.message ? error.message : 'unknown'}).`);
+        console.error(`[WATCHDOG] Ping failed (${error?.message ?? 'unknown'}).`);
         startClientCloseCountdown('Launcher ping failed');
       }
     }, PING_INTERVAL_MS);
