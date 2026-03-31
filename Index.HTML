@@ -151,7 +151,9 @@
   const buttons = Array.from(document.querySelectorAll('.nav button'));
   const HEARTBEAT_INTERVAL_MS = 2000;
   const PING_INTERVAL_MS = 3000;
+  const REQUEST_TIMEOUT_MS = 2000;
   let launcherWatchdog = false;
+  let watchdogInitialized = false;
   let heartbeatTimer = null;
   let pingTimer = null;
   const scrollPositions = {};
@@ -193,37 +195,62 @@
     navigate(page, true);
   };
 
-  async function safeFetch(url, options = {}) {
-    const response = await fetch(url, {
-      cache: 'no-store',
-      ...options,
-    });
-    if (!response.ok && response.status !== 204) {
-      throw new Error(`Request failed: ${response.status}`);
+  async function safeFetch(url, options = {}, timeoutMs = REQUEST_TIMEOUT_MS) {
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetch(url, {
+        cache: 'no-store',
+        ...options,
+        signal: controller.signal,
+      });
+      if (!response.ok && response.status !== 204) {
+        throw new Error(`Request failed: ${response.status}`);
+      }
+      return response;
+    } finally {
+      window.clearTimeout(timeoutId);
     }
-    return response;
+  }
+
+  function stopWatchdogTimers() {
+    window.clearInterval(heartbeatTimer);
+    window.clearInterval(pingTimer);
+  }
+
+  function closeTabFromWatchdog() {
+    stopWatchdogTimers();
+    window.close();
+  }
+
+  function sendClosedSignal() {
+    const sent = navigator.sendBeacon('/__launcher/closed');
+    if (!sent) {
+      fetch('/__launcher/closed', { method: 'POST', keepalive: true, cache: 'no-store' }).catch(() => {});
+    }
   }
 
   async function setupWatchdog() {
+    if (watchdogInitialized) return;
     try {
       const status = await safeFetch('/__launcher/status').then((r) => r.json());
       launcherWatchdog = Boolean(status.watchdog);
+      watchdogInitialized = true;
       if (!launcherWatchdog) return;
     } catch {
+      window.setTimeout(setupWatchdog, HEARTBEAT_INTERVAL_MS);
       return;
     }
 
     heartbeatTimer = window.setInterval(() => {
-      safeFetch('/__launcher/heartbeat', { method: 'POST', keepalive: true }).catch(() => {});
+      safeFetch('/__launcher/heartbeat', { method: 'POST', keepalive: true }).catch(closeTabFromWatchdog);
     }, HEARTBEAT_INTERVAL_MS);
 
     pingTimer = window.setInterval(async () => {
       try {
         await safeFetch('/__launcher/ping');
       } catch {
-        window.clearInterval(heartbeatTimer);
-        window.clearInterval(pingTimer);
-        window.close();
+        closeTabFromWatchdog();
       }
     }, PING_INTERVAL_MS);
 
@@ -231,7 +258,10 @@
     // 3-second grace period: if a heartbeat arrives in time (e.g. from a page
     // reload triggered by address-bar navigation) the shutdown is cancelled.
     window.addEventListener('beforeunload', () => {
-      navigator.sendBeacon('/__launcher/closed');
+      sendClosedSignal();
+    });
+    window.addEventListener('pagehide', () => {
+      sendClosedSignal();
     });
   }
 
