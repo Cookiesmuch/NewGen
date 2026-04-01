@@ -101,7 +101,7 @@ function responseLooksLikeMissingContent(body) {
 }
 
 function extractIframeSrc(body) {
-  const iframeMatch = body.match(/<iframe[^>]*id="page-frame"[^>]*\s+src="([^"]+)"/i);
+  const iframeMatch = body.match(/<iframe[^>]*id="page-frame"[^>]*\s*src="([^"]+)"/i);
   return iframeMatch ? iframeMatch[1].replace(/&amp;/g, '&') : null;
 }
 
