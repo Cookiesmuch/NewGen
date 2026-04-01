@@ -7,7 +7,7 @@ const path = require('path');
 const PORT = 3000;
 const ROOT = path.resolve(__dirname, '..');
 const URL = `http://localhost:${PORT}`;
-const DEFAULT_ROUTE = '/Intel/Eventide';
+const DEFAULT_ROUTE = '/';
 const IS_CMD_LAUNCH = process.argv.includes('--from-bat');
 const SHUTDOWN_TIMEOUT_MS = 2000;
 const WATCHDOG_TIMEOUT_MS = 10000;
@@ -16,6 +16,8 @@ const WATCHDOG_SHUTDOWN_COUNTDOWN_S = 3;
 const WATCHDOG_CLOSE_GRACE_COUNTDOWN_S = 8;
 const BOX_RULE = '+------------------------------------------------------------------+';
 const BOX_INNER_WIDTH = BOX_RULE.length - 2;
+const ROUTE_REGEX = /\{\s*path:\s*([`'"])([^`'"]+)\1\s*,\s*src:\s*([`'"])([^`'"]+)\3\s*\}/g;
+const IFRAME_REGEX = /<iframe id="page-frame"([^>]*)(?:\/>|>\s*<\/iframe>)/i;
 
 let browserOpened = false;
 let shuttingDown = false;
@@ -26,6 +28,8 @@ let pendingShutdownReason = null;
 let pendingShutdownStartedAt = 0;
 let watchdogTimeoutDetected = false;
 let serverRequestsClientClose = false;
+let shellTemplateCache = null;
+let routeMapCache = null;
 
 function boxLine(content) {
   return `|${content.padEnd(BOX_INNER_WIDTH)}|`;
@@ -58,6 +62,56 @@ function escapeHtml(value) {
           : char === '"' ? '&quot;'
             : '&#39;'
   ));
+}
+
+function loadShellTemplate() {
+  if (shellTemplateCache) {
+    return shellTemplateCache;
+  }
+  shellTemplateCache = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  return shellTemplateCache;
+}
+
+function getRouteMap() {
+  if (routeMapCache) {
+    return routeMapCache;
+  }
+  const source = loadShellTemplate();
+  const map = new Map();
+  let match;
+  ROUTE_REGEX.lastIndex = 0;
+  while ((match = ROUTE_REGEX.exec(source)) !== null) {
+    map.set(match[2], match[4]);
+  }
+  routeMapCache = map;
+  return routeMapCache;
+}
+
+function build404IframeSrc(pathname, search) {
+  const params = new URLSearchParams();
+  params.set('ng_404_route', pathname);
+  if (search && search.length > 1) {
+    params.set('ng_404_search', search.slice(1));
+  }
+  return `/404.html?${params.toString()}`;
+}
+
+function buildInitialIframeSrc(pathname, search) {
+  const routeMap = getRouteMap();
+  const knownRouteSrc = routeMap.get(pathname);
+  if (knownRouteSrc) {
+    return knownRouteSrc;
+  }
+  return build404IframeSrc(pathname, search);
+}
+
+function renderShellWithInitialIframe(pathname, search) {
+  const shellTemplate = loadShellTemplate();
+  const initialIframeSrc = escapeHtml(buildInitialIframeSrc(pathname, search));
+  return shellTemplate.replace(
+    IFRAME_REGEX,
+    `<iframe id="page-frame"$1 src="${initialIframeSrc}"></iframe>`
+  );
 }
 
 function serveFile(filePath, res, fallbackUrl) {
@@ -132,13 +186,13 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Strip query string and decode URL-encoded path segments for filesystem lookup.
-  const urlPath = req.url.split('?')[0];
-  let fileSystemPath = urlPath;
+  // Parse path/search first, then decode URL-encoded path segments for filesystem lookup.
+  const parsedUrl = new globalThis.URL(req.url, URL);
+  let fileSystemPath = parsedUrl.pathname;
   try {
-    fileSystemPath = decodeURIComponent(urlPath);
+    fileSystemPath = decodeURIComponent(parsedUrl.pathname);
   } catch (error) {
-    const logPathPreview = urlPath.replace(/[\r\n\t]/g, ' ').slice(0, 120);
+    const logPathPreview = parsedUrl.pathname.replace(/[\r\n\t]/g, ' ').slice(0, 120);
     console.warn(`[WARN] Failed to decode URL path (preview="${logPathPreview}"): ${error.message}`);
     res.writeHead(400, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end('<h1>400 Bad Request</h1>');
@@ -153,7 +207,9 @@ const server = http.createServer((req, res) => {
   // If the request has no file extension it is a page route — serve the SPA shell
   const ext = path.extname(fileSystemPath).toLowerCase();
   if (!ext) {
-    serveFile(path.join(ROOT, 'index.html'), res, req.url);
+    const shellHtml = renderShellWithInitialIframe(fileSystemPath, parsedUrl.search);
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(shellHtml);
     return;
   }
 
