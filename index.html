@@ -29,13 +29,13 @@
     color: var(--text);
     min-height: 100vh;
     display: grid;
-    grid-template-columns: var(--sidebar-width) 1fr;
+    grid-template-columns: var(--sidebar-width-collapsed) 1fr;
     grid-template-rows: var(--topbar-height) 1fr;
-    transition: grid-template-columns 0.3s ease;
+    transition: grid-template-columns 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  body.sidebar-collapsed {
-    grid-template-columns: var(--sidebar-width-collapsed) 1fr;
+  body.sidebar-expanded {
+    grid-template-columns: var(--sidebar-width) 1fr;
   }
 
   .topbar {
@@ -87,50 +87,36 @@
     overflow-y: auto;
     overflow-x: hidden;
     padding: 20px 0;
-    transition: width 0.3s ease;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-  }
-
-  body.sidebar-collapsed .sidebar {
     width: var(--sidebar-width-collapsed);
   }
 
-  .sidebar-toggle {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 32px;
-    height: 32px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--muted);
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
+  body.sidebar-expanded .sidebar {
+    width: var(--sidebar-width);
   }
 
-  .sidebar-toggle:hover {
-    border-color: var(--accent);
-    color: var(--text);
+  /* Hide navigation text/icons when collapsed */
+  .sidebar .nav-category,
+  .sidebar .cat-items,
+  .sidebar .nav-item {
+    opacity: 0;
+    transition: opacity 0.25s ease;
   }
 
-  body.sidebar-collapsed .sidebar-toggle {
-    right: 10px;
+  body.sidebar-expanded .sidebar .nav-category,
+  body.sidebar-expanded .sidebar .cat-items,
+  body.sidebar-expanded .sidebar .nav-item {
+    opacity: 1;
+    transition: opacity 0.35s ease 0.1s;
   }
 
-  body.sidebar-collapsed .nav-category,
-  body.sidebar-collapsed .cat-items,
-  body.sidebar-collapsed .nav-item {
-    display: none;
+  .sidebar .cat-header {
+    opacity: 0;
   }
 
-  body.sidebar-collapsed .cat-header {
-    display: none;
+  body.sidebar-expanded .sidebar .cat-header {
+    opacity: 1;
   }
 
   .nav-category {
@@ -141,6 +127,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
     padding: 10px 18px;
     font-family: var(--mono);
     font-size: 10px;
@@ -152,11 +139,12 @@
     background: transparent;
     width: 100%;
     text-align: left;
-    transition: color 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .cat-header:hover {
     color: var(--text);
+    background: rgba(77, 163, 255, 0.05);
   }
 
   .cat-header.active {
@@ -164,7 +152,8 @@
   }
 
   .cat-icon {
-    transition: transform 0.2s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 8px;
   }
 
   .cat-header.active .cat-icon {
@@ -174,7 +163,7 @@
   .cat-items {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .cat-items.open {
@@ -182,7 +171,9 @@
   }
 
   .nav-item {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     padding: 9px 18px 9px 32px;
     font-family: var(--mono);
     font-size: 11px;
@@ -190,7 +181,7 @@
     color: var(--text);
     text-decoration: none;
     border-left: 2px solid transparent;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     background: none;
     border: none;
@@ -203,6 +194,7 @@
     background: rgba(77, 163, 255, 0.08);
     border-left-color: var(--accent);
     color: #ffffff;
+    transform: translateX(2px);
   }
 
   .nav-item.active {
@@ -211,11 +203,22 @@
     color: #ffffff;
   }
 
+  .nav-item-icon {
+    font-size: 14px;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  }
+
+  .nav-item:hover .nav-item-icon {
+    opacity: 1;
+  }
+
   /* Sub-category header */
   .sub-cat-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
     padding: 8px 18px 8px 32px;
     font-family: var(--mono);
     font-size: 9px;
@@ -227,11 +230,12 @@
     background: transparent;
     width: 100%;
     text-align: left;
-    transition: color 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .sub-cat-header:hover {
     color: var(--text);
+    background: rgba(77, 163, 255, 0.05);
   }
 
   .sub-cat-header.active {
@@ -239,8 +243,8 @@
   }
 
   .sub-cat-icon {
-    font-size: 8px;
-    transition: transform 0.2s ease;
+    font-size: 7px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .sub-cat-header.active .sub-cat-icon {
@@ -250,7 +254,7 @@
   .sub-cat-items {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .sub-cat-items.open {
@@ -265,6 +269,7 @@
 
   .nav-item.nested:hover {
     background: rgba(77, 163, 255, 0.06);
+    transform: translateX(2px);
   }
 
   .viewer {
@@ -279,7 +284,7 @@
       grid-template-columns: 1fr;
     }
 
-    body.sidebar-collapsed {
+    body.sidebar-expanded {
       grid-template-columns: 1fr;
     }
 
@@ -290,7 +295,7 @@
       width: var(--sidebar-width);
       height: calc(100vh - var(--topbar-height));
       z-index: 1000;
-      transition: left 0.3s ease;
+      transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
       border-right: 1px solid var(--border);
       background: rgba(10, 16, 28, 0.98);
       backdrop-filter: blur(8px);
@@ -300,20 +305,17 @@
       left: 0;
     }
 
-    .sidebar-toggle {
-      display: none;
-    }
-
     .menu-toggle {
       display: block;
     }
 
-    body.sidebar-collapsed .nav-category,
-    body.sidebar-collapsed .cat-items,
-    body.sidebar-collapsed .nav-item,
-    body.sidebar-collapsed .cat-header,
-    body.sidebar-collapsed .sub-cat-header {
-      display: block;
+    /* On mobile, always show navigation content when sidebar is visible */
+    .sidebar .nav-category,
+    .sidebar .cat-items,
+    .sidebar .nav-item,
+    .sidebar .cat-header,
+    .sidebar .sub-cat-header {
+      opacity: 1;
     }
   }
 
@@ -358,9 +360,6 @@
   </header>
 
   <nav class="sidebar" id="sidebar" aria-label="Company Navigation">
-    <button type="button" class="sidebar-toggle" id="sidebar-toggle" title="Toggle Sidebar">
-      <span id="toggle-icon">◀</span>
-    </button>
     <!-- Navigation will be generated dynamically -->
   </nav>
 
@@ -439,9 +438,53 @@
   const frame = document.getElementById('page-frame');
   const sidebar = document.getElementById('sidebar');
   const menuToggle = document.getElementById('menu-toggle');
-  const sidebarToggle = document.getElementById('sidebar-toggle');
-  const toggleIcon = document.getElementById('toggle-icon');
   const APP_BASE_PATH = detectAppBasePath(window.location.pathname, PAGES.map((page) => page.path));
+
+  // Icon mapping for companies, categories, and subcategories
+  const ICONS = {
+    companies: {
+      'Intel': '🔷',
+      'Sony': '📷',
+      'ASUS': '💎'
+    },
+    categories: {
+      'CPU Architectures': '🖥️',
+      'GPU Architectures': '🎨',
+      'Tiles': '🧩',
+      'Technologies': '⚡'
+    },
+    pages: {
+      'Eventide': '📘',
+      'Alpha 0 (a0)': '📸',
+      'XCD-LED': '🎥',
+      'Ceralumenesium Sapphire': '💠',
+      // CPU Architecture icons
+      'Solar Eclipse': '☀️',
+      'Sunset Cove': '🌅',
+      'Venusmont': '🌋',
+      'UHE': '⚙️',
+      'Darkmont': '🌙',
+      // GPU Architecture icons
+      'Elementalist': '✨',
+      'Druid': '🌿',
+      '2D Kanvas': '🎭',
+      // Tile icons
+      'ZAM': '🧠',
+      'HNPU': '🎯',
+      'LPNPU': '💡',
+      'GNA': '🔊',
+      'BionzXR': '📹',
+      'MFX': '🎬',
+      'IPU': '🖼️',
+      'Klangkerne': '🎵',
+      'Display': '🖥️',
+      'KillerS1': '📡',
+      'IO': '🔌',
+      'PSM': '🔋',
+      // Technology icons
+      'Thread Director': '🎛️'
+    }
+  };
 
   // Build navigation structure from PAGES with nested categories
   const NAV_STRUCTURE = {
@@ -495,29 +538,33 @@
   function buildNavigation() {
     let html = '';
     for (const [company, items] of Object.entries(NAV_STRUCTURE)) {
+      const companyIcon = ICONS.companies[company] || '📁';
       html += `
         <div class="nav-category">
           <button class="cat-header" data-company="${company}">
-            <span>${company}</span>
+            <span><span class="nav-item-icon">${companyIcon}</span> ${company}</span>
             <span class="cat-icon">▶</span>
           </button>
           <div class="cat-items">
             ${items.map(item => {
-              let itemHtml = `<button class="nav-item" data-path="${item.path}">${item.label}</button>`;
+              const pageIcon = ICONS.pages[item.label] || '📄';
+              let itemHtml = `<button class="nav-item" data-path="${item.path}"><span class="nav-item-icon">${pageIcon}</span> ${item.label}</button>`;
 
               // Add subcategories if they exist
               if (item.subCategories) {
                 for (const [subCatName, subItems] of Object.entries(item.subCategories)) {
+                  const categoryIcon = ICONS.categories[subCatName] || '📂';
                   itemHtml += `
                     <div class="sub-category">
                       <button class="sub-cat-header" data-subcat="${subCatName}">
-                        <span>${subCatName}</span>
+                        <span><span class="nav-item-icon">${categoryIcon}</span> ${subCatName}</span>
                         <span class="sub-cat-icon">▶</span>
                       </button>
                       <div class="sub-cat-items">
-                        ${subItems.map(subItem => `
-                          <button class="nav-item nested" data-path="${subItem.path}">${subItem.label}</button>
-                        `).join('')}
+                        ${subItems.map(subItem => {
+                          const subIcon = ICONS.pages[subItem.label] || '•';
+                          return `<button class="nav-item nested" data-path="${subItem.path}"><span class="nav-item-icon">${subIcon}</span> ${subItem.label}</button>`;
+                        }).join('')}
                       </div>
                     </div>
                   `;
@@ -529,7 +576,7 @@
         </div>
       `;
     }
-    sidebar.innerHTML = sidebar.querySelector('.sidebar-toggle').outerHTML + html;
+    sidebar.innerHTML = html;
 
     // Add event listeners for company headers
     document.querySelectorAll('.cat-header').forEach(header => {
@@ -564,11 +611,13 @@
     });
   }
 
-  // Sidebar collapse toggle
-  sidebarToggle.addEventListener('click', () => {
-    document.body.classList.toggle('sidebar-collapsed');
-    const isCollapsed = document.body.classList.contains('sidebar-collapsed');
-    toggleIcon.textContent = isCollapsed ? '▶' : '◀';
+  // Sidebar hover-based expand/collapse
+  sidebar.addEventListener('mouseenter', () => {
+    document.body.classList.add('sidebar-expanded');
+  });
+
+  sidebar.addEventListener('mouseleave', () => {
+    document.body.classList.remove('sidebar-expanded');
   });
 
   // Mobile menu toggle
