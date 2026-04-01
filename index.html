@@ -852,7 +852,7 @@
   function buildNavigation() {
     let html = `
       <div class="sidebar-home">
-        <button class="nav-item" data-path="/"><span class="nav-item-icon">🏠</span> NewGen Conglomerate</button>
+        <button class="nav-item" data-path="/" aria-label="Navigate to NewGen home page"><span class="nav-item-icon">🏠</span> NewGen Conglomerate</button>
       </div>
     `;
     for (const [company, items] of Object.entries(NAV_STRUCTURE)) {
