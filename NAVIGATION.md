@@ -98,6 +98,55 @@ const NAV_STRUCTURE = {
 };
 ```
 
+### Step 2.5: Document Sidebar Page Highlight Colors (Documentation Only)
+
+`NAVIGATION.md` is documentation-only.
+Runtime behavior and source-of-truth values live in `index.html` (`PRODUCT_HIGHLIGHT_COLORS`).
+Keep this section as explanatory documentation and examples only.
+
+When adding/changing a page:
+- Update `PRODUCT_HIGHLIGHT_COLORS` in `index.html` (runtime source of truth).
+- Update this doc example so documentation stays accurate.
+- Choose colors based on the page's vibe.
+
+```javascript
+const PRODUCT_HIGHLIGHT_COLORS = {
+  // Choose based on the page's vibe.
+  '/Intel/Eventide': {
+    soft: 'rgba(140, 112, 255, 0.10)',
+    row: 'rgba(140, 112, 255, 0.12)',
+    border: 'rgba(140, 112, 255, 0.45)'
+  },
+  '/Sony/ILCE-0': {
+    soft: 'rgba(184, 148, 42, 0.10)',
+    row: 'rgba(184, 148, 42, 0.12)',
+    border: 'rgba(184, 148, 42, 0.46)'
+  },
+  '/Sony/XCD-LED': {
+    soft: 'rgba(0, 180, 255, 0.10)',
+    row: 'rgba(0, 180, 255, 0.12)',
+    border: 'rgba(255, 45, 32, 0.52)'
+  },
+  '/ASUS/Ceralumenesium': {
+    soft: 'rgba(182, 246, 255, 0.10)',
+    row: 'rgba(182, 246, 255, 0.12)',
+    border: 'rgba(182, 246, 255, 0.46)'
+  }
+};
+```
+
+- `soft`: background for the expanded subcategory container
+- `row`: default background for each product/category/subpage row in that page section
+- `border`: left accent border tying the group to the parent page
+
+Hover and selected states now keep the page-section background and use a right-side blue motion indicator:
+- on hover: a blurry animated blue dot moves to the hovered row
+- on selected-only state: it becomes a blue vertical line aligned to the selected row
+- when hovering from selected state: it animates back into the moving dot
+- while page content is loading: it becomes a spinning blue loading glyph on the target row, then resolves to selected/hover state
+
+Page highlight backgrounds are now applied only to the currently active page section, while non-active sections remain neutral.
+
 ### Simple Product Without Subcategories
 
 If a product doesn't have subcategories yet, use the simple format:
