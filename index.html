@@ -268,6 +268,60 @@
     transform: translateX(2px);
   }
 
+  .product-group {
+    margin: 2px 0;
+  }
+
+  .product-row {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .nav-item.product-main {
+    flex: 1;
+  }
+
+  .product-toggle {
+    width: 34px;
+    border: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.06);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 8px;
+    font-family: var(--mono);
+  }
+
+  .product-toggle:hover {
+    color: var(--text);
+    background: rgba(77, 163, 255, 0.08);
+  }
+
+  .product-toggle.active {
+    color: var(--accent);
+  }
+
+  .product-toggle.active .product-toggle-icon {
+    display: inline-block;
+    transform: rotate(90deg);
+  }
+
+  .product-toggle-icon {
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .product-subcats {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .product-subcats.open {
+    max-height: 2000px;
+  }
+
   /* Collapsed sidebar page indicator */
   .collapsed-indicator {
     position: absolute;
@@ -495,6 +549,11 @@
   const SIDEBAR_COLLAPSE_DELAY_MS = 120;
   let sidebarFocusCollapseTimer = null;
   const APP_BASE_PATH = detectAppBasePath(window.location.pathname, PAGES.map((page) => page.path));
+  const autoExpandedState = {
+    companies: new Set(),
+    products: new Set(),
+    subCategories: new Set(),
+  };
 
   // Icon mapping for companies, categories, and subcategories
   const ICONS = {
@@ -608,11 +667,12 @@
 
               // Add subcategories if they exist
               if (item.subCategories) {
+                let subCategoriesHtml = '';
                 for (const [subCatName, subItems] of Object.entries(item.subCategories)) {
                   const categoryIcon = ICONS.categories[subCatName] || '📂';
-                  itemHtml += `
+                  subCategoriesHtml += `
                     <div class="sub-category">
-                      <button class="sub-cat-header" data-subcat="${subCatName}" aria-expanded="false">
+                      <button class="sub-cat-header" data-product-path="${item.path}" data-subcat="${subCatName}" aria-expanded="false">
                         <span><span class="nav-item-icon">${categoryIcon}</span> ${subCatName}</span>
                         <span class="sub-cat-icon">▶</span>
                       </button>
@@ -625,6 +685,19 @@
                     </div>
                   `;
                 }
+                itemHtml = `
+                  <div class="product-group" data-product-path="${item.path}">
+                    <div class="product-row">
+                      <button class="nav-item product-main" data-path="${item.path}"><span class="nav-item-icon">${pageIcon}</span> ${item.label}</button>
+                      <button class="product-toggle" data-product-path="${item.path}" aria-expanded="false" aria-label="Toggle ${item.label} subcategories">
+                        <span class="product-toggle-icon">▶</span>
+                      </button>
+                    </div>
+                    <div class="product-subcats">
+                      ${subCategoriesHtml}
+                    </div>
+                  </div>
+                `;
               }
               return itemHtml;
             }).join('')}
@@ -645,6 +718,7 @@
     // Add event listeners for company headers
     document.querySelectorAll('.cat-header').forEach(header => {
       header.addEventListener('click', () => {
+        autoExpandedState.companies.delete(header.dataset.company);
         header.classList.toggle('active');
         const items = header.nextElementSibling;
         items.classList.toggle('open');
@@ -652,9 +726,24 @@
       });
     });
 
+    // Add event listeners for product toggles
+    document.querySelectorAll('.product-toggle').forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const productPath = toggle.dataset.productPath;
+        autoExpandedState.products.delete(productPath);
+        const productSubcats = toggle.closest('.product-group')?.querySelector('.product-subcats');
+        if (!productSubcats) return;
+        productSubcats.classList.toggle('open');
+        toggle.classList.toggle('active', productSubcats.classList.contains('open'));
+        toggle.setAttribute('aria-expanded', productSubcats.classList.contains('open') ? 'true' : 'false');
+      });
+    });
+
     // Add event listeners for sub-category headers
     document.querySelectorAll('.sub-cat-header').forEach(header => {
       header.addEventListener('click', () => {
+        const subKey = `${header.dataset.productPath || ''}::${header.dataset.subcat || ''}`;
+        autoExpandedState.subCategories.delete(subKey);
         header.classList.toggle('active');
         const items = header.nextElementSibling;
         items.classList.toggle('open');
@@ -667,7 +756,7 @@
       btn.addEventListener('click', () => {
         const page = findPage(btn.dataset.path);
         if (page.path !== stripBasePath(window.location.pathname, APP_BASE_PATH)) {
-          navigate(page, true);
+          navigate(page, true, { source: 'sidebar' });
         }
         // Close mobile menu
         if (window.innerWidth <= 900) {
@@ -776,7 +865,93 @@
     return PAGES.find((p) => p.path === pathname) || PAGES[0];
   }
 
-  function navigate(page, pushState) {
+  function openCompanySection(companyItems, shouldTrackAuto) {
+    if (!companyItems) return;
+    const companyHeader = companyItems.previousElementSibling;
+    if (!companyHeader || !companyHeader.classList.contains('cat-header')) return;
+    const wasOpen = companyItems.classList.contains('open');
+    companyItems.classList.add('open');
+    companyHeader.classList.add('active');
+    companyHeader.setAttribute('aria-expanded', 'true');
+    const companyKey = companyHeader.dataset.company;
+    if (!companyKey) return;
+    if (!wasOpen && shouldTrackAuto) autoExpandedState.companies.add(companyKey);
+    if (!shouldTrackAuto) autoExpandedState.companies.delete(companyKey);
+  }
+
+  function openProductSection(activeButton, shouldTrackAuto) {
+    const productGroup = activeButton.closest('.product-group');
+    if (!productGroup) return;
+    const productPath = productGroup.dataset.productPath;
+    if (!productPath) return;
+    const productSubcats = productGroup.querySelector('.product-subcats');
+    const productToggle = productGroup.querySelector('.product-toggle');
+    if (!productSubcats || !productToggle) return;
+    const wasOpen = productSubcats.classList.contains('open');
+    productSubcats.classList.add('open');
+    productToggle.classList.add('active');
+    productToggle.setAttribute('aria-expanded', 'true');
+    if (!wasOpen && shouldTrackAuto) autoExpandedState.products.add(productPath);
+    if (!shouldTrackAuto) autoExpandedState.products.delete(productPath);
+  }
+
+  function openSubCategorySection(activeButton, shouldTrackAuto) {
+    const subCategoryItems = activeButton.closest('.sub-cat-items');
+    if (!subCategoryItems) return;
+    const subCategoryHeader = subCategoryItems.previousElementSibling;
+    if (!subCategoryHeader || !subCategoryHeader.classList.contains('sub-cat-header')) return;
+    const wasOpen = subCategoryItems.classList.contains('open');
+    subCategoryItems.classList.add('open');
+    subCategoryHeader.classList.add('active');
+    subCategoryHeader.setAttribute('aria-expanded', 'true');
+    const subKey = `${subCategoryHeader.dataset.productPath || ''}::${subCategoryHeader.dataset.subcat || ''}`;
+    if (!wasOpen && shouldTrackAuto) autoExpandedState.subCategories.add(subKey);
+    if (!shouldTrackAuto) autoExpandedState.subCategories.delete(subKey);
+  }
+
+  function collapseAutoExpandedForProduct(productPath) {
+    const productButton = document.querySelector(`.nav-item.product-main[data-path="${productPath}"]`) || document.querySelector(`.nav-item[data-path="${productPath}"]`);
+    const companyItemsForProduct = productButton?.closest('.cat-items') || null;
+    const companyHeaderForProduct = companyItemsForProduct?.previousElementSibling || null;
+    const companyKey = companyHeaderForProduct?.dataset?.company || '';
+
+    document.querySelectorAll('.sub-cat-header[data-product-path]').forEach((header) => {
+      const subKey = `${header.dataset.productPath || ''}::${header.dataset.subcat || ''}`;
+      if (header.dataset.productPath === productPath && autoExpandedState.subCategories.has(subKey)) {
+        const items = header.nextElementSibling;
+        if (items && items.classList.contains('sub-cat-items')) {
+          items.classList.remove('open');
+        }
+        header.classList.remove('active');
+        header.setAttribute('aria-expanded', 'false');
+        autoExpandedState.subCategories.delete(subKey);
+      }
+    });
+
+    const productToggle = document.querySelector(`.product-toggle[data-product-path="${productPath}"]`);
+    if (productToggle && autoExpandedState.products.has(productPath)) {
+      const productSubcats = productToggle.closest('.product-group')?.querySelector('.product-subcats');
+      if (productSubcats) {
+        productSubcats.classList.remove('open');
+      }
+      productToggle.classList.remove('active');
+      productToggle.setAttribute('aria-expanded', 'false');
+      autoExpandedState.products.delete(productPath);
+    }
+
+    if (companyKey && companyHeaderForProduct && autoExpandedState.companies.has(companyKey)) {
+      if (companyItemsForProduct && companyItemsForProduct.classList.contains('cat-items')) {
+        companyItemsForProduct.classList.remove('open');
+      }
+      companyHeaderForProduct.classList.remove('active');
+      companyHeaderForProduct.setAttribute('aria-expanded', 'false');
+      autoExpandedState.companies.delete(companyKey);
+    }
+  }
+
+  function navigate(page, pushState, options = {}) {
+    const source = options.source || 'external';
+    const shouldTrackAuto = source !== 'sidebar';
     // Save the scroll position of the page we are leaving so we can restore it later.
     const fromPath = stripBasePath(window.location.pathname, APP_BASE_PATH);
     try {
@@ -790,6 +965,10 @@
     }
     frame.src = withBasePath(page.src, APP_BASE_PATH);
 
+    if (source === 'return-to-main') {
+      collapseAutoExpandedForProduct(page.path);
+    }
+
     // Update active state and collapsed indicator
     document.querySelectorAll('.nav-item').forEach((btn) => {
       btn.classList.toggle('active', btn.dataset.path === page.path);
@@ -797,24 +976,9 @@
     const activeButton = [...document.querySelectorAll('.nav-item')].find((btn) => btn.dataset.path === page.path);
     if (activeButton) {
       const companyItems = activeButton.closest('.cat-items');
-      if (companyItems) {
-        companyItems.classList.add('open');
-        const companyHeader = companyItems.previousElementSibling;
-        if (companyHeader && companyHeader.classList.contains('cat-header')) {
-          companyHeader.classList.add('active');
-          companyHeader.setAttribute('aria-expanded', 'true');
-        }
-      }
-
-      const subCategoryItems = activeButton.closest('.sub-cat-items');
-      if (subCategoryItems) {
-        subCategoryItems.classList.add('open');
-        const subCategoryHeader = subCategoryItems.previousElementSibling;
-        if (subCategoryHeader && subCategoryHeader.classList.contains('sub-cat-header')) {
-          subCategoryHeader.classList.add('active');
-          subCategoryHeader.setAttribute('aria-expanded', 'true');
-        }
-      }
+      openCompanySection(companyItems, shouldTrackAuto);
+      openProductSection(activeButton, shouldTrackAuto);
+      openSubCategorySection(activeButton, shouldTrackAuto);
     }
     updateCollapsedIndicator(page);
   }
@@ -831,9 +995,9 @@
   });
 
   // Expose navigation function for iframe content
-  window.navigateToPath = function(pathname) {
+  window.navigateToPath = function(pathname, options = {}) {
     const page = findPage(pathname);
-    navigate(page, true);
+    navigate(page, true, options);
   };
 
   async function safeFetch(url, options = {}, timeoutMs = REQUEST_TIMEOUT_MS) {
