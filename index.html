@@ -1124,12 +1124,12 @@
   }
 
   function updateNavStateIndicator() {
-    if (suppressIndicatorUpdate) {
-      moveNavIndicatorToButton(null, 'dot');
-      return;
-    }
     if (navIsLoading && indicatorLoadingTarget) {
       moveNavIndicatorToButton(indicatorLoadingTarget, 'loading');
+      return;
+    }
+    if (suppressIndicatorUpdate) {
+      moveNavIndicatorToButton(null, 'dot');
       return;
     }
     const hoveredButton = indicatorHoverTarget && indicatorHoverTarget.matches('.nav-item') ? indicatorHoverTarget : null;

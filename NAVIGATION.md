@@ -98,14 +98,15 @@ const NAV_STRUCTURE = {
 };
 ```
 
-### Step 2.5: Define Sidebar Page Highlight Colors (Single Source of Truth)
+### Step 2.5: Document Sidebar Page Highlight Colors (Documentation Only)
 
-Use `index.html` as the **only** source of truth for sidebar highlight colors via `PRODUCT_HIGHLIGHT_COLORS`.
-Do **not** define or duplicate sidebar highlight colors in `NAVIGATION.md` or anywhere else.
+`NAVIGATION.md` is documentation-only.
+Runtime behavior and source-of-truth values live in `index.html` (`PRODUCT_HIGHLIGHT_COLORS`).
+Keep this section as explanatory documentation and examples only.
 
 When adding/changing a page:
-- Update `PRODUCT_HIGHLIGHT_COLORS` in `index.html`.
-- Keep this doc example in sync with those values.
+- Update `PRODUCT_HIGHLIGHT_COLORS` in `index.html` (runtime source of truth).
+- Update this doc example so documentation stays accurate.
 - Choose colors based on the page's vibe.
 
 ```javascript
