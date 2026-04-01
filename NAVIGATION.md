@@ -136,6 +136,9 @@ Hover and selected states now keep the page-section background and use a right-s
 - on hover: a blurry animated blue dot moves to the hovered row
 - on selected-only state: it becomes a blue vertical line aligned to the selected row
 - when hovering from selected state: it animates back into the moving dot
+- while page content is loading: it becomes a spinning blue loading glyph on the target row, then resolves to selected/hover state
+
+Page highlight backgrounds are now applied only to the currently active page section, while non-active sections remain neutral.
 
 ### Simple Product Without Subcategories
 
