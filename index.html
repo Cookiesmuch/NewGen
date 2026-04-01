@@ -660,7 +660,7 @@
       }
     }
     const segments = normalizedPath.split('/').filter(Boolean);
-    return segments.length ? `/${segments[0]}` : '';
+    return segments.length >= 2 ? `/${segments[0]}` : '';
   }
 
   const frame = document.getElementById('page-frame');
@@ -1495,18 +1495,43 @@
     history.replaceState({}, '', withBasePath(`${redirectRouteParam}${normalizedSearch}${normalizedHash}`, APP_BASE_PATH));
   }
 
+  function build404Url(pathname, search, hash) {
+    const params = new URLSearchParams();
+    params.set('ng_404_route', pathname);
+    if (search && search.length > 1) {
+      params.set('ng_404_search', search.slice(1));
+    }
+    if (hash && hash.length > 1) {
+      params.set('ng_404_hash', hash.slice(1));
+    }
+    return `${withBasePath('/404.html', APP_BASE_PATH)}?${params.toString()}`;
+  }
+
+  function routeTo404(pathname, search, hash) {
+    window.location.replace(build404Url(pathname, search, hash));
+  }
+
   // Load the page that matches the current URL on first visit
   const currentRoutePath = stripBasePath(window.location.pathname, APP_BASE_PATH);
-   if (currentRoutePath === '/') {
+  if (currentRoutePath === '/') {
     const defaultPage = findPage('/Intel/Eventide');
     history.replaceState({ path: defaultPage.path }, '', withBasePath(defaultPage.path, APP_BASE_PATH));
+    navigate(defaultPage, false);
+  } else if (!isKnownPagePath(currentRoutePath)) {
+    routeTo404(currentRoutePath, window.location.search, window.location.hash);
+  } else {
+    navigate(findPage(currentRoutePath), false);
   }
-  navigate(findPage(currentRoutePath), false);
   setupWatchdog();
 
   // Handle browser back / forward
   window.addEventListener('popstate', () => {
-    navigate(findPage(stripBasePath(window.location.pathname, APP_BASE_PATH)), false);
+    const popPath = stripBasePath(window.location.pathname, APP_BASE_PATH);
+    if (!isKnownPagePath(popPath)) {
+      routeTo404(popPath, window.location.search, window.location.hash);
+      return;
+    }
+    navigate(findPage(popPath), false);
   });
 </script>
 </body>
