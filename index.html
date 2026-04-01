@@ -69,6 +69,18 @@
     font-weight: 600;
   }
 
+  .brand-button {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    text-align: left;
+  }
+
+  .brand-button:hover {
+    color: var(--text);
+  }
+
   .menu-toggle {
     display: none;
     border: 1px solid var(--border);
@@ -119,6 +131,16 @@
 
   .nav-category {
     margin-bottom: 12px;
+  }
+
+  .sidebar-home {
+    margin: 0 0 12px;
+    padding: 0 0 10px;
+    border-bottom: 1px solid rgba(141, 160, 189, 0.22);
+  }
+
+  .sidebar-home .nav-item {
+    padding-left: 18px;
   }
 
   .cat-header {
@@ -579,7 +601,7 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="brand"><strong>NewGen</strong> dynamic page loader</div>
+    <button type="button" class="brand brand-button" id="brand-home"><strong>NewGen</strong> dynamic page loader</button>
     <button type="button" class="menu-toggle" id="menu-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button>
   </header>
 
@@ -681,6 +703,7 @@
   const frame = document.getElementById('page-frame');
   const sidebar = document.getElementById('sidebar');
   const menuToggle = document.getElementById('menu-toggle');
+  const brandHome = document.getElementById('brand-home');
   const SIDEBAR_COLLAPSE_DELAY_MS = 120;
   const SIDEBAR_EXPAND_TRANSITION_MS = 360;
   let sidebarFocusCollapseTimer = null;
@@ -827,7 +850,11 @@
 
   // Build sidebar navigation
   function buildNavigation() {
-    let html = '';
+    let html = `
+      <div class="sidebar-home">
+        <button class="nav-item" data-path="/"><span class="nav-item-icon">🏠</span> NewGen Conglomerate</button>
+      </div>
+    `;
     for (const [company, items] of Object.entries(NAV_STRUCTURE)) {
       const companyIcon = ICONS.companies[company] || '📁';
       html += `
@@ -1027,6 +1054,10 @@
   menuToggle.addEventListener('click', () => {
     sidebar.classList.toggle('open');
     menuToggle.setAttribute('aria-expanded', sidebar.classList.contains('open') ? 'true' : 'false');
+  });
+
+  brandHome.addEventListener('click', () => {
+    navigateToPath('/', { source: 'topbar-brand' });
   });
 
   // Initialize navigation
