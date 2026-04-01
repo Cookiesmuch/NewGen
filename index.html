@@ -18,6 +18,7 @@
     --sans: "Segoe UI", "Inter", sans-serif;
     --topbar-height: 58px;
     --sidebar-width: 280px;
+    --sidebar-width-collapsed: 52px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,6 +31,11 @@
     display: grid;
     grid-template-columns: var(--sidebar-width) 1fr;
     grid-template-rows: var(--topbar-height) 1fr;
+    transition: grid-template-columns 0.3s ease;
+  }
+
+  body.sidebar-collapsed {
+    grid-template-columns: var(--sidebar-width-collapsed) 1fr;
   }
 
   .topbar {
@@ -81,6 +87,50 @@
     overflow-y: auto;
     overflow-x: hidden;
     padding: 20px 0;
+    transition: width 0.3s ease;
+    position: relative;
+  }
+
+  body.sidebar-collapsed .sidebar {
+    width: var(--sidebar-width-collapsed);
+  }
+
+  .sidebar-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  .sidebar-toggle:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  body.sidebar-collapsed .sidebar-toggle {
+    right: 10px;
+  }
+
+  body.sidebar-collapsed .nav-category,
+  body.sidebar-collapsed .cat-items,
+  body.sidebar-collapsed .nav-item {
+    display: none;
+  }
+
+  body.sidebar-collapsed .cat-header {
+    display: none;
   }
 
   .nav-category {
@@ -161,6 +211,62 @@
     color: #ffffff;
   }
 
+  /* Sub-category header */
+  .sub-cat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 18px 8px 32px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    transition: color 0.2s ease;
+  }
+
+  .sub-cat-header:hover {
+    color: var(--text);
+  }
+
+  .sub-cat-header.active {
+    color: var(--accent);
+  }
+
+  .sub-cat-icon {
+    font-size: 8px;
+    transition: transform 0.2s ease;
+  }
+
+  .sub-cat-header.active .sub-cat-icon {
+    transform: rotate(90deg);
+  }
+
+  .sub-cat-items {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .sub-cat-items.open {
+    max-height: 2000px;
+  }
+
+  /* Nested nav items (third level) */
+  .nav-item.nested {
+    padding-left: 46px;
+    font-size: 10px;
+  }
+
+  .nav-item.nested:hover {
+    background: rgba(77, 163, 255, 0.06);
+  }
+
   .viewer {
     width: 100%;
     height: calc(100vh - var(--topbar-height));
@@ -170,6 +276,10 @@
 
   @media (max-width: 900px) {
     body {
+      grid-template-columns: 1fr;
+    }
+
+    body.sidebar-collapsed {
       grid-template-columns: 1fr;
     }
 
@@ -190,7 +300,19 @@
       left: 0;
     }
 
+    .sidebar-toggle {
+      display: none;
+    }
+
     .menu-toggle {
+      display: block;
+    }
+
+    body.sidebar-collapsed .nav-category,
+    body.sidebar-collapsed .cat-items,
+    body.sidebar-collapsed .nav-item,
+    body.sidebar-collapsed .cat-header,
+    body.sidebar-collapsed .sub-cat-header {
       display: block;
     }
   }
@@ -236,6 +358,9 @@
   </header>
 
   <nav class="sidebar" id="sidebar" aria-label="Company Navigation">
+    <button type="button" class="sidebar-toggle" id="sidebar-toggle" title="Toggle Sidebar">
+      <span id="toggle-icon">◀</span>
+    </button>
     <!-- Navigation will be generated dynamically -->
   </nav>
 
@@ -314,12 +439,48 @@
   const frame = document.getElementById('page-frame');
   const sidebar = document.getElementById('sidebar');
   const menuToggle = document.getElementById('menu-toggle');
+  const sidebarToggle = document.getElementById('sidebar-toggle');
+  const toggleIcon = document.getElementById('toggle-icon');
   const APP_BASE_PATH = detectAppBasePath(window.location.pathname, PAGES.map((page) => page.path));
 
-  // Build navigation structure from PAGES
+  // Build navigation structure from PAGES with nested categories
   const NAV_STRUCTURE = {
     'Intel': [
-      { label: 'Eventide', path: '/Intel/Eventide' }
+      {
+        label: 'Eventide',
+        path: '/Intel/Eventide',
+        subCategories: {
+          'CPU Architectures': [
+            { label: 'Solar Eclipse', path: '/Intel/Eventide/CPU/SolarEclipse' },
+            { label: 'Sunset Cove', path: '/Intel/Eventide/CPU/SunsetCove' },
+            { label: 'Venusmont', path: '/Intel/Eventide/CPU/Venusmont' },
+            { label: 'UHE', path: '/Intel/Eventide/CPU/UHE' },
+            { label: 'Darkmont', path: '/Intel/Eventide/CPU/Darkmont' }
+          ],
+          'GPU Architectures': [
+            { label: 'Elementalist', path: '/Intel/Eventide/GPU/Elementalist' },
+            { label: 'Druid', path: '/Intel/Eventide/GPU/Druid' },
+            { label: '2D Kanvas', path: '/Intel/Eventide/GPU/2DKanvas' }
+          ],
+          'Tiles': [
+            { label: 'ZAM', path: '/Intel/Eventide/Tile/ZAM' },
+            { label: 'HNPU', path: '/Intel/Eventide/Tile/HNPU' },
+            { label: 'LPNPU', path: '/Intel/Eventide/Tile/LPNPU' },
+            { label: 'GNA', path: '/Intel/Eventide/Tile/GNA' },
+            { label: 'BionzXR', path: '/Intel/Eventide/Tile/BionzXR' },
+            { label: 'MFX', path: '/Intel/Eventide/Tile/MFX' },
+            { label: 'IPU', path: '/Intel/Eventide/Tile/IPU' },
+            { label: 'Klangkerne', path: '/Intel/Eventide/Tile/Klangkerne' },
+            { label: 'Display', path: '/Intel/Eventide/Tile/Display' },
+            { label: 'KillerS1', path: '/Intel/Eventide/Tile/KillerS1' },
+            { label: 'IO', path: '/Intel/Eventide/Tile/IO' },
+            { label: 'PSM', path: '/Intel/Eventide/Tile/PSM' }
+          ],
+          'Technologies': [
+            { label: 'Thread Director', path: '/Intel/Eventide/Technology/ThreadDirector' }
+          ]
+        }
+      }
     ],
     'Sony': [
       { label: 'Alpha 0 (a0)', path: '/Sony/ILCE-0' },
@@ -341,16 +502,36 @@
             <span class="cat-icon">▶</span>
           </button>
           <div class="cat-items">
-            ${items.map(item => `
-              <button class="nav-item" data-path="${item.path}">${item.label}</button>
-            `).join('')}
+            ${items.map(item => {
+              let itemHtml = `<button class="nav-item" data-path="${item.path}">${item.label}</button>`;
+
+              // Add subcategories if they exist
+              if (item.subCategories) {
+                for (const [subCatName, subItems] of Object.entries(item.subCategories)) {
+                  itemHtml += `
+                    <div class="sub-category">
+                      <button class="sub-cat-header" data-subcat="${subCatName}">
+                        <span>${subCatName}</span>
+                        <span class="sub-cat-icon">▶</span>
+                      </button>
+                      <div class="sub-cat-items">
+                        ${subItems.map(subItem => `
+                          <button class="nav-item nested" data-path="${subItem.path}">${subItem.label}</button>
+                        `).join('')}
+                      </div>
+                    </div>
+                  `;
+                }
+              }
+              return itemHtml;
+            }).join('')}
           </div>
         </div>
       `;
     }
-    sidebar.innerHTML = html;
+    sidebar.innerHTML = sidebar.querySelector('.sidebar-toggle').outerHTML + html;
 
-    // Add event listeners
+    // Add event listeners for company headers
     document.querySelectorAll('.cat-header').forEach(header => {
       header.addEventListener('click', () => {
         header.classList.toggle('active');
@@ -359,6 +540,16 @@
       });
     });
 
+    // Add event listeners for sub-category headers
+    document.querySelectorAll('.sub-cat-header').forEach(header => {
+      header.addEventListener('click', () => {
+        header.classList.toggle('active');
+        const items = header.nextElementSibling;
+        items.classList.toggle('open');
+      });
+    });
+
+    // Add event listeners for navigation items
     document.querySelectorAll('.nav-item').forEach(btn => {
       btn.addEventListener('click', () => {
         const page = findPage(btn.dataset.path);
@@ -372,6 +563,13 @@
       });
     });
   }
+
+  // Sidebar collapse toggle
+  sidebarToggle.addEventListener('click', () => {
+    document.body.classList.toggle('sidebar-collapsed');
+    const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+    toggleIcon.textContent = isCollapsed ? '▶' : '◀';
+  });
 
   // Mobile menu toggle
   menuToggle.addEventListener('click', () => {
