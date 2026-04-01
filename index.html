@@ -650,6 +650,11 @@
 
   function detectAppBasePath(pathname, routePaths) {
     const normalizedPath = pathname.replace(/\/+$/, '') || '/';
+    const routeRoots = new Set(
+      routePaths
+        .map((routePath) => routePath.split('/').filter(Boolean)[0])
+        .filter(Boolean)
+    );
     for (const routePath of routePaths) {
       const markerIndex = normalizedPath.indexOf(routePath);
       if (markerIndex > 0) {
@@ -660,7 +665,14 @@
       }
     }
     const segments = normalizedPath.split('/').filter(Boolean);
-    return segments.length >= 2 ? `/${segments[0]}` : '';
+    if (!segments.length) return '';
+    if (routeRoots.has(segments[0])) return '';
+    const host = window.location.hostname.toLowerCase();
+    const isGitHubPagesHost = host.endsWith('.github.io');
+    if (isGitHubPagesHost || segments.length === 1) {
+      return `/${segments[0]}`;
+    }
+    return '';
   }
 
   const frame = document.getElementById('page-frame');
