@@ -29,6 +29,8 @@
 
 **NewGen** is a lightweight local web experience that launches a dynamic HTML loader and lets you switch between curated brochure pages:
 
+- **NewGen Conglomerate Placeholder** - Root (`/`) default placeholder with NewGen logo
+
 - **Intel Eventide** - Full processor architecture showcase with CPU, GPU, Tile, and Technology deep-dives
 - **Sony a0 & XCD-LED** - Professional camera systems
 - **ASUS Ceraluminesium Sapphire** - Advanced material technology
@@ -44,10 +46,13 @@ The app is intentionally simple and fast: a Node.js static server powers a polis
 - 🗂️ **4-level nested navigation** - Company → Product → Category → Individual Pages
 - ✨ **Smooth animations** - Cubic-bezier transitions for professional feel
 - 🧭 **History API routing** with URL-aware navigation and back/forward support
+- 🏠 **Root-first default route** (`/`) loading a NewGen placeholder brochure page
+- 🚫 **Embedded 404 handling** with randomized jokes and correct typed-path interpolation
 - 🖥️ **Single local server** (`Server/server.js`) with static file delivery
 - 📦 **No framework overhead** (vanilla Node.js + HTML/CSS/JS)
 - 📱 **Mobile responsive** with slide-in sidebar (900px breakpoint)
 - 🧰 **Verbose Windows launcher UX** with structured startup diagnostics
+- 🛡️ **Launcher watchdog lifecycle** (`/__launcher/*`) with close-tab countdown signaling
 
 ---
 
@@ -91,6 +96,8 @@ To add new companies or brochures, update the `NAV_STRUCTURE` and `ICONS` object
 ```text
 NewGen/
 ├── index.html                  # Main dynamic loader UI with hover sidebar
+├── newgen.conglomerate.brochure.html  # Root (/) placeholder brochure page
+├── 404.html                    # Embedded 404 experience with rotating jokes
 ├── NAVIGATION.md               # Navigation system documentation
 ├── Server/
 │   └── server.js               # Node.js static server (port 3000)
@@ -186,17 +193,20 @@ The batch launcher:
 ## ⚙️ How It Works
 
 1. `Server/server.js` starts a local HTTP server on port **3000**.
-2. URL paths without file extensions (for example `/Intel/Eventide`) resolve to `index.html`.
+2. URL paths without file extensions (for example `/` or `/Intel/Eventide`) resolve to `index.html`.
 3. `index.html` renders the top navigation and iframe viewer.
-4. Clicking a nav button updates browser history (`pushState`) and swaps the iframe source to the selected brochure file.
-5. Browser back/forward (`popstate`) restores the correct brochure view.
-6. Static assets and brochure files are served directly from disk.
+4. Visiting `/` loads `newgen.conglomerate.brochure.html` as the default placeholder page.
+5. Clicking a nav button updates browser history (`pushState`) and swaps the iframe source to the selected brochure file.
+6. Browser back/forward (`popstate`) restores the correct brochure view.
+7. Unknown extensionless routes render `404.html` inside the shell and preserve the typed path for `{PATH}` jokes.
+8. Static assets and brochure files are served directly from disk.
 
 ---
 
 ## 🧪 Development Notes
 
 - `npm test` runs `scripts/test-debug.js`, a verbose diagnostics test that:
+  - verifies default shell routing behavior (including root-route loading)
   - validates watchdog endpoints (`/__launcher/status`, `/__launcher/heartbeat`, `/__launcher/ping`, `/__launcher/closed`)
   - checks route navigability for declared `index.html` paths
   - verifies declared source pages and deep-dive mapping targets are loadable
