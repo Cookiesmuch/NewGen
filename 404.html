@@ -3,41 +3,464 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Redirecting…</title>
+  <title>404 - Page Not Found</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #ffffff;
+      color: #171717;
+      padding: 24px;
+    }
+
+    .card {
+      width: min(760px, 100%);
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      background: #ffffff;
+      box-shadow: 0 12px 32px rgba(17, 24, 39, 0.08);
+      padding: 24px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(32px, 6vw, 52px);
+      line-height: 1.05;
+    }
+
+    .subtitle {
+      margin: 0 0 8px;
+      color: #374151;
+      font-size: clamp(16px, 2.2vw, 20px);
+    }
+
+    .requested {
+      margin: 0 0 18px;
+      color: #6b7280;
+      font-size: 14px;
+      word-break: break-word;
+    }
+
+    .gif-wrap {
+      margin: 0 auto 18px;
+      width: min(420px, 100%);
+      border-radius: 12px;
+      overflow: hidden;
+      border: none;
+    }
+
+    .gif-wrap img {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #ffffff;
+    }
+
+    .joke {
+      margin: 0 auto 20px;
+      max-width: 640px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid #dbeafe;
+      background: #eff6ff;
+      color: #1e3a8a;
+      font-size: 15px;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+    }
+
+    .joke:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(30, 58, 138, 0.12);
+      background: #e7f0ff;
+    }
+
+    .countdown {
+      margin: 0 auto 20px;
+      max-width: 640px;
+      text-align: left;
+    }
+
+    .countdown-track {
+      position: relative;
+      height: 12px;
+      width: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #e5e7eb 0%, #f3f4f6 100%);
+      overflow: hidden;
+      box-shadow: inset 0 1px 2px rgba(17, 24, 39, 0.14);
+    }
+
+    .countdown-fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 100%;
+      background: linear-gradient(90deg, #1d4ed8 0%, #0ea5e9 50%, #22d3ee 100%);
+      box-shadow: 0 0 14px rgba(37, 99, 235, 0.35);
+      transition: width 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: width;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 16px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #111827;
+      color: #ffffff;
+    }
+
+    .btn:hover { background: #000000; }
+  </style>
 </head>
 <body>
+  <main class="card" role="main" aria-labelledby="title-404">
+    <h1 id="title-404">404</h1>
+    <p class="subtitle">Oops. This page could not be found.</p>
+    <p class="requested" id="requested-path">Requested path: /</p>
+
+    <div class="gif-wrap">
+      <img src="https://media1.tenor.com/m/QKSRCdUL-IcAAAAd/arknights-arknights-endfield.gif" alt="Funny 404 reaction GIF">
+    </div>
+
+    <p class="joke" id="joke">Generating a custom NewGen-level excuse…</p>
+    <div class="countdown" aria-live="polite">
+      <div class="countdown-track" role="presentation">
+        <div class="countdown-fill" id="joke-countdown-fill"></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="go-home" class="btn" type="button">Return to base address</button>
+    </div>
+  </main>
+
   <script>
     (function () {
-      // Keep in sync with top-level route segments declared in index.html (PAGES paths).
-      // If a new top-level company route is added there, add it here as well.
       const knownRouteRoots = new Set(['Intel', 'Sony', 'ASUS']);
-      const pathname = window.location.pathname;
-      const search = window.location.search || '';
-      const hash = window.location.hash || '';
-      const segments = pathname.replace(/^\/+|\/+$/g, '').split('/').filter(Boolean);
 
-      let basePath = '';
-      let routeSegments = segments;
-      if (segments.length > 0 && !knownRouteRoots.has(segments[0])) {
-        basePath = `/${segments[0]}`;
-        routeSegments = segments.slice(1);
+      function stripBasePath(pathname, basePath) {
+        if (!basePath) return pathname;
+        if (pathname === basePath) return '/';
+        if (pathname.startsWith(`${basePath}/`)) {
+          return pathname.slice(basePath.length) || '/';
+        }
+        return pathname;
       }
 
-      const routePath = `/${routeSegments.join('/')}`.replace(/\/+$/, '') || '/';
-      const looksLikeAsset = /\.(?:html?|js|mjs|css|json|map|png|jpe?g|gif|svg|ico|webp|avif|woff2?|ttf|otf|eot|txt|xml|pdf|zip|wasm)$/i.test(routePath);
-      if (routePath === '/' || looksLikeAsset) {
+      function withBasePath(pathname, basePath) {
+        if (!basePath) return pathname;
+        if (pathname === '/') return `${basePath}/`;
+        return `${basePath}${pathname}`;
+      }
+
+      function detectDefaultRoute(basePath) {
+        try {
+          if (window.parent && window.parent !== window && typeof window.parent.findPage === 'function') {
+            const defaultPage = window.parent.findPage('/Intel/Eventide');
+            if (defaultPage && typeof defaultPage.path === 'string') {
+              return defaultPage.path;
+            }
+          }
+        } catch (error) {
+          // fall back to static default route
+        }
+        return '/Intel/Eventide';
+      }
+
+      function detectBasePath(pathname) {
+        const normalized = pathname.replace(/\/+$/, '') || '/';
+        const host = window.location.hostname.toLowerCase();
+        const isGitHubPagesHost = host.endsWith('.github.io');
+        const html404Suffix = '/404.html';
+        if (normalized === html404Suffix) {
+          return '';
+        }
+        if (normalized.endsWith(html404Suffix)) {
+          const candidateBase = normalized.slice(0, -html404Suffix.length);
+          const baseSegments = candidateBase.split('/').filter(Boolean);
+          if (!baseSegments.length) return '';
+          if (baseSegments.length === 1 && !isGitHubPagesHost) return '';
+          return candidateBase;
+        }
+
+        const segments = normalized.split('/').filter(Boolean);
+        if (!segments.length) {
+          return '';
+        }
+        if (knownRouteRoots.has(segments[0])) {
+          return '';
+        }
+        if (isGitHubPagesHost || segments.length === 1) {
+          return `/${segments[0]}`;
+        }
+        return '';
+      }
+
+      const url = new URL(window.location.href);
+      const pathname = url.pathname;
+      const basePath = detectBasePath(pathname);
+      const strippedPath = stripBasePath(pathname, basePath);
+      const looksLikeAsset = /\.(?:html?|js|mjs|css|json|map|png|jpe?g|gif|svg|ico|webp|avif|woff2?|ttf|otf|eot|txt|xml|pdf|zip|wasm)$/i.test(strippedPath);
+      const is404FilePath = /(?:^|\/)404\.html$/i.test(pathname);
+
+      if (!is404FilePath && strippedPath !== '/' && !looksLikeAsset) {
+        const redirectParams = new URLSearchParams();
+        redirectParams.set('ng_route', strippedPath);
+        if (url.search.length > 1) {
+          redirectParams.set('ng_search', url.search.slice(1));
+        }
+        if (url.hash.length > 1) {
+          redirectParams.set('ng_hash', url.hash.slice(1));
+        }
+        window.location.replace(`${withBasePath('/', basePath)}?${redirectParams.toString()}`);
         return;
       }
 
-      const redirectParams = new URLSearchParams();
-      redirectParams.set('ng_route', routePath);
-      if (search.length > 1) {
-        redirectParams.set('ng_search', search.slice(1));
+      const paramPath = url.searchParams.get('ng_404_route');
+      const paramSearch = url.searchParams.get('ng_404_search');
+      const paramHash = url.searchParams.get('ng_404_hash');
+      const fallbackPath = is404FilePath ? '/' : strippedPath;
+      const requestedPath = (paramPath && paramPath.startsWith('/')) ? paramPath : fallbackPath;
+      const requestedSearch = typeof paramSearch === 'string' && paramSearch.length > 0
+        ? `?${paramSearch}`
+        : (paramPath ? '' : (url.search || ''));
+      const requestedHash = typeof paramHash === 'string' && paramHash.length > 0
+        ? `#${paramHash}`
+        : (paramPath ? '' : (url.hash || ''));
+      const requestedFull = `${requestedPath}${requestedSearch}${requestedHash}`;
+      const routeLabel = (requestedPath.replace(/^\/+/, '') || '/');
+
+      const requestedPathEl = document.getElementById('requested-path');
+      const jokeEl = document.getElementById('joke');
+      const jokeCountdownFillEl = document.getElementById('joke-countdown-fill');
+      const goHomeBtn = document.getElementById('go-home');
+      const defaultRoute = detectDefaultRoute(basePath);
+      const JOKE_ROTATION_SECONDS = 10;
+      let jokeCountdownRemaining = JOKE_ROTATION_SECONDS;
+      let jokeCountdownTimer = null;
+      let activeJokeTemplates = [];
+
+      requestedPathEl.textContent = `Requested path: ${requestedFull}`;
+
+      goHomeBtn.addEventListener('click', () => {
+        try {
+          if (window.parent && window.parent !== window && typeof window.parent.navigateToPath === 'function') {
+            window.parent.navigateToPath(defaultRoute, { source: 'return-to-main' });
+            return;
+          }
+        } catch (error) {
+          // fall through to local navigation
+        }
+        window.location.href = withBasePath('/', basePath);
+      });
+
+      const fallbackJokes = [
+        'Ah yes, the most advanced product of NewGen yet: "{PATH}".',
+        'Breaking news: "{PATH}" was promoted to a stealth prototype and then immediately misplaced.',
+        'Our engineers looked for "{PATH}" and found only empty coffee cups and confusion.',
+        'Legend says "{PATH}" exists in a parallel build where deadlines are optional.',
+        'We ran "{PATH}" through QA and QA ran away.'
+      ];
+
+      const randomLimitCache = new Map();
+
+      function randomInt(maxExclusive) {
+        if (!Number.isInteger(maxExclusive) || maxExclusive <= 0) return 0;
+        if (window.crypto && typeof window.crypto.getRandomValues === 'function') {
+          const maxUint32 = 0x100000000;
+          let limit = randomLimitCache.get(maxExclusive);
+          if (!Number.isInteger(limit)) {
+            limit = maxUint32 - (maxUint32 % maxExclusive);
+            randomLimitCache.set(maxExclusive, limit);
+          }
+          const bytes = new Uint32Array(1);
+          do {
+            window.crypto.getRandomValues(bytes);
+          } while (bytes[0] >= limit);
+          return bytes[0] % maxExclusive;
+        }
+        return Math.floor(Math.random() * maxExclusive);
       }
-      if (hash.length > 1) {
-        redirectParams.set('ng_hash', hash.slice(1));
+
+      function makeTemplateSignature(items) {
+        // FNV-1a 32-bit hash to detect template-pool changes between loads.
+        let hash = 2166136261;
+        for (let i = 0; i < items.length; i += 1) {
+          const line = items[i];
+          for (let j = 0; j < line.length; j += 1) {
+            hash ^= line.charCodeAt(j);
+            hash = Math.imul(hash, 16777619);
+          }
+          hash ^= 10;
+          hash = Math.imul(hash, 16777619);
+        }
+        return `${items.length}:${hash >>> 0}`;
       }
-      window.location.replace(`${basePath}/?${redirectParams.toString()}`);
+
+      function buildShuffledOrder(size) {
+        const order = Array.from({ length: size }, (_, i) => i);
+        for (let i = order.length - 1; i > 0; i -= 1) {
+          const j = randomInt(i + 1);
+          const temp = order[i];
+          order[i] = order[j];
+          order[j] = temp;
+        }
+        return order;
+      }
+
+      function pickRandom(items) {
+        if (!Array.isArray(items) || items.length === 0) return '';
+        const storageKey = 'ng_404_template_pool_state';
+        const signature = makeTemplateSignature(items);
+        let state = null;
+        try {
+          state = JSON.parse(sessionStorage.getItem(storageKey) || 'null');
+        } catch (error) {
+          state = null;
+        }
+
+        const orderIsValid = Array.isArray(state?.order)
+          && state.order.length === items.length
+          && state.order.every((value) => Number.isInteger(value) && value >= 0 && value < items.length);
+        let order = orderIsValid && state.signature === signature ? state.order.slice() : buildShuffledOrder(items.length);
+        let cursor = Number.isInteger(state?.cursor) && state.signature === signature ? state.cursor : 0;
+
+        if (cursor >= order.length) {
+          order = buildShuffledOrder(items.length);
+          cursor = 0;
+        }
+
+        const selectedIndex = order[cursor];
+        cursor += 1;
+
+        try {
+          sessionStorage.setItem(storageKey, JSON.stringify({
+            signature,
+            order,
+            cursor
+          }));
+        } catch (error) {
+          // ignore storage errors
+        }
+        return items[selectedIndex];
+      }
+
+      function normalizeTemplates(templates) {
+        const validTemplates = templates
+          .map((line) => line.trim())
+          .filter((line) => line.length > 0);
+        return validTemplates.length > 0 ? validTemplates : fallbackJokes;
+      }
+
+      function renderNextJoke() {
+        const sourceTemplates = activeJokeTemplates.length > 0 ? activeJokeTemplates : fallbackJokes;
+        const template = pickRandom(sourceTemplates);
+        jokeEl.textContent = template.replace(/\{PATH\}/g, routeLabel);
+      }
+
+      function updateCountdownUI() {
+        if (jokeCountdownFillEl) {
+          const widthPercent = (jokeCountdownRemaining / JOKE_ROTATION_SECONDS) * 100;
+          jokeCountdownFillEl.style.width = `${Math.max(0, Math.min(100, widthPercent))}%`;
+        }
+      }
+
+      function stopJokeCountdown() {
+        if (jokeCountdownTimer) {
+          window.clearInterval(jokeCountdownTimer);
+          jokeCountdownTimer = null;
+        }
+      }
+
+      function startJokeCountdown({ reset = true } = {}) {
+        stopJokeCountdown();
+        if (reset) {
+          jokeCountdownRemaining = JOKE_ROTATION_SECONDS;
+        }
+        updateCountdownUI();
+        jokeCountdownTimer = window.setInterval(() => {
+          jokeCountdownRemaining -= 1;
+          if (jokeCountdownRemaining <= 0) {
+            renderNextJoke();
+            jokeCountdownRemaining = JOKE_ROTATION_SECONDS;
+          }
+          updateCountdownUI();
+        }, 1000);
+      }
+
+      function resumeJokeCountdown() {
+        if (jokeCountdownTimer) return;
+        startJokeCountdown({ reset: false });
+      }
+
+      function pauseJokeCountdown() {
+        stopJokeCountdown();
+      }
+
+      function cycleJokeNow() {
+        renderNextJoke();
+        jokeCountdownRemaining = JOKE_ROTATION_SECONDS;
+        updateCountdownUI();
+        startJokeCountdown({ reset: false });
+      }
+
+      jokeEl.setAttribute('role', 'button');
+      jokeEl.setAttribute('tabindex', '0');
+      jokeEl.setAttribute('aria-label', '404 joke. Debug easter egg: activate to cycle to the next joke.');
+      jokeEl.setAttribute('title', 'Debug easter egg: click to cycle joke');
+      jokeEl.addEventListener('click', () => {
+        cycleJokeNow();
+      });
+      jokeEl.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          cycleJokeNow();
+        }
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          pauseJokeCountdown();
+          return;
+        }
+        resumeJokeCountdown();
+      });
+
+      const jokesUrl = withBasePath('/Server/404%20jokes.txt', basePath);
+      fetch(jokesUrl, { cache: 'no-store' })
+        .then((response) => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return response.text();
+        })
+        .then((text) => {
+          activeJokeTemplates = normalizeTemplates(text.split(/\r?\n/));
+          renderNextJoke();
+          startJokeCountdown();
+        })
+        .catch(() => {
+          activeJokeTemplates = fallbackJokes;
+          renderNextJoke();
+          startJokeCountdown();
+        });
     })();
   </script>
 </body>
