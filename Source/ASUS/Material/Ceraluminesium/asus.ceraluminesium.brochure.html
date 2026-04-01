@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASUS Ceraluminesium Sapphire — Material Brochure</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#06070a;--surface:#0c0e12;--surface2:#11141a;--border:#1a1e27;--border2:#242830;--text:#e4e8f2;--muted:#52586a;--muted2:#3a3f4e;--accent:#c8a96e;--accent2:#7eb8d4;--accent3:#a0c878;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.5;}
+.page{max-width:1200px;margin:0 auto;padding:4rem 2rem;position:relative;z-index:1;}
+
+/* HERO */
+.hero{margin-bottom:5rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:end;}
+@media(max-width:720px){.hero{grid-template-columns:1fr;gap:2rem;}}
+.brand{font-size:0.6rem;letter-spacing:0.35em;color:var(--accent);text-transform:uppercase;margin-bottom:1rem;}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,4.5vw,4rem);font-weight:300;line-height:1.05;}
+.hero h1 em{font-style:italic;color:var(--accent);}
+.hero h1 strong{font-weight:600;}
+.tagline{font-size:0.72rem;color:var(--muted);margin-top:1rem;line-height:1.8;max-width:38ch;}
+.hero-right{font-size:0.68rem;color:var(--muted);line-height:2;}
+.stat{display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border);gap:1rem;}
+.stat:last-child{border-bottom:none;}
+.sv{color:var(--text);text-align:right;flex-shrink:0;}
+.sv.g{color:var(--accent);}
+.sv.b{color:var(--accent2);}
+.sv.gr{color:var(--accent3);}
+
+/* SEC LABEL */
+.sl{font-family:'Syne',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:0.32em;text-transform:uppercase;color:var(--muted);margin-bottom:2rem;display:flex;align-items:center;gap:1rem;}
+.sl::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* FIVE SIDE */
+.fiveside{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:5rem;}
+@media(max-width:720px){.fiveside{grid-template-columns:1fr;}}
+.fsdiag{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1.5rem;display:flex;align-items:center;justify-content:center;}
+.fstext h3{font-family:'Syne',sans-serif;font-size:0.9rem;color:var(--text);margin-bottom:1rem;}
+.fstext{font-size:0.68rem;color:var(--muted);line-height:1.9;}
+.pt{margin-bottom:0.6rem;padding-left:1rem;position:relative;}
+.pt::before{content:'—';position:absolute;left:0;color:var(--accent);}
+
+/* FGM BAR */
+.fgmwrap{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:2rem 2rem 1.5rem;margin-bottom:2rem;}
+#fgmbar{height:76px;border-radius:4px;background:linear-gradient(to right,#2a3a50 0%,#3a5060 15%,#506058 28%,#687860 42%,#887868 56%,#a89070 70%,#c8a870 85%,#d4b880 100%);box-shadow:inset 0 2px 20px rgba(0,0,0,0.5);transition:background 0.6s ease;margin-bottom:1rem;}
+.fzones{display:grid;grid-template-columns:repeat(6,1fr);gap:0.5rem;font-size:0.58rem;color:var(--muted);text-align:center;}
+.fzone .zn{font-family:'Syne',sans-serif;font-weight:600;font-size:0.62rem;color:var(--text);margin-bottom:0.15rem;}
+.fzone .zt{color:var(--accent);font-size:0.58rem;margin-bottom:0.1rem;}
+
+/* LAYER TABLE */
+.ltable{margin-bottom:5rem;}
+.lrow{display:grid;grid-template-columns:2rem 1.1fr 1.5fr 0.9fr 0.75fr 0.75fr;gap:0.75rem;align-items:start;padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);}
+.lrow.hdr{font-size:0.55rem;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase;padding:0.65rem 1.4rem;background:var(--surface);border-radius:4px 4px 0 0;}
+.lsw{width:1.5rem;height:1.5rem;border-radius:3px;margin-top:0.1rem;flex-shrink:0;}
+.ln{font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;}
+.ls{font-size:0.58rem;color:var(--muted);margin-top:0.15rem;}
+.lsto{font-size:0.65rem;line-height:1.7;}
+.lsto .f{color:var(--accent);}
+.lsto .r{color:var(--muted);font-size:0.58rem;}
+.lpr{font-size:0.6rem;color:var(--muted);line-height:1.9;}
+.lmh{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--accent2);line-height:1;}
+.lmh span{font-size:0.56rem;color:var(--muted);display:block;font-family:'DM Mono',monospace;margin-top:0.15rem;}
+.lth{font-size:0.65rem;color:var(--accent);line-height:1.7;}
+.lth small{color:var(--muted);font-size:0.56rem;display:block;}
+
+/* DOPANT SECTION */
+.dopsec{margin-bottom:5rem;}
+.cattabs{display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1.75rem;}
+.ct{padding:0.3rem 0.85rem;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.05em;border-radius:2px;cursor:pointer;transition:all 0.2s;}
+.ct:hover{border-color:var(--accent);color:var(--text);}
+.ct.active{border-color:var(--accent);color:var(--accent);background:rgba(200,169,110,0.07);}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.85rem;}
+.dc{background:var(--surface);border:1px solid var(--border);border-radius:5px;overflow:hidden;cursor:pointer;transition:border-color 0.2s,transform 0.18s,box-shadow 0.2s;}
+.dc:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,0.45);}
+.dcs{height:80px;position:relative;overflow:hidden;}
+.dcs::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 38% 30%,rgba(255,255,255,0.17),transparent 58%);}
+.dclumi{position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.6);border:1px solid currentColor;border-radius:2px;padding:0.12rem 0.35rem;font-size:0.5rem;letter-spacing:0.08em;text-transform:uppercase;z-index:2;}
+.dcb{padding:0.75rem 0.9rem;}
+.dcn{font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:700;margin-bottom:0.12rem;}
+.dcg{font-family:'Cormorant Garamond',serif;font-size:0.75rem;font-style:italic;color:var(--accent);}
+.dci{font-size:0.56rem;color:var(--muted);margin-top:0.25rem;}
+
+/* MODAL */
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;display:none;align-items:flex-start;justify-content:center;padding:2.5rem 1.5rem;overflow-y:auto;backdrop-filter:blur(5px);}
+.mbg.open{display:flex;}
+.mbox{background:var(--surface);border:1px solid var(--border2);border-radius:8px;width:100%;max-width:820px;overflow:hidden;position:relative;animation:mIn 0.22s ease;}
+@keyframes mIn{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+.mcl{position:absolute;top:1rem;right:1.4rem;background:none;border:none;color:var(--muted);font-family:'DM Mono',monospace;font-size:0.72rem;cursor:pointer;letter-spacing:0.1em;z-index:10;}
+.mcl:hover{color:var(--text);}
+.mhero{display:grid;grid-template-columns:240px 1fr;}
+@media(max-width:580px){.mhero{grid-template-columns:1fr;}}
+.msw{position:relative;overflow:hidden;min-height:220px;}
+.msw::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 35% 28%,rgba(255,255,255,0.2),transparent 58%);}
+.mswl{position:absolute;bottom:1rem;left:1.2rem;font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-style:italic;color:rgba(255,255,255,0.9);}
+.mswi{position:absolute;bottom:1rem;right:1rem;font-size:0.58rem;color:rgba(255,255,255,0.45);font-family:'DM Mono',monospace;}
+.minfo{padding:1.75rem;}
+.minfo h2{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.25rem;}
+.mgem{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--accent);font-size:0.85rem;margin-bottom:1.2rem;}
+.ms{margin-bottom:0.7rem;}
+.msl{font-size:0.55rem;color:var(--muted);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:0.15rem;}
+.msv{font-size:0.72rem;color:var(--text);line-height:1.65;}
+.msv .f{color:var(--accent);}
+.msv .b{color:var(--accent2);}
+.lb{display:inline-flex;align-items:center;gap:0.35rem;padding:0.2rem 0.6rem;border-radius:2px;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;margin:0.1rem 0.1rem 0 0;}
+.lb.uv{background:rgba(180,100,255,0.12);border:1px solid rgba(180,100,255,0.35);color:#c87aff;}
+.lb.nir{background:rgba(100,180,100,0.1);border:1px solid rgba(100,180,100,0.3);color:#78d878;}
+.lb.sh{background:rgba(200,169,110,0.1);border:1px solid rgba(200,169,110,0.3);color:var(--accent);}
+.lb.ag{background:rgba(100,150,255,0.1);border:1px solid rgba(100,150,255,0.3);color:#88aaff;}
+.relsec{padding:1.2rem 1.75rem 1.75rem;border-top:1px solid var(--border);}
+.rlab{font-size:0.55rem;color:var(--muted);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:0.85rem;}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.6rem;}
+.rc{background:var(--surface2);border:1px solid var(--border);border-radius:4px;overflow:hidden;cursor:pointer;transition:border-color 0.18s,transform 0.15s;}
+.rc:hover{border-color:var(--accent);transform:translateY(-2px);}
+.rcs{height:52px;position:relative;overflow:hidden;}
+.rcs::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 35% 30%,rgba(255,255,255,0.14),transparent 55%);}
+.rcrl{position:absolute;top:4px;right:4px;font-size:0.46rem;background:rgba(0,0,0,0.55);padding:0.08rem 0.28rem;border-radius:2px;}
+.rcb{padding:0.5rem 0.65rem;}
+.rcn{font-family:'Syne',sans-serif;font-size:0.64rem;font-weight:700;}
+.rcg{font-size:0.55rem;color:var(--accent);font-style:italic;font-family:'Cormorant Garamond',serif;}
+
+/* STOICH */
+.stoich{margin-bottom:5rem;}
+.eq{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:1.3rem 1.7rem;margin-bottom:0.85rem;}
+.eqt{font-size:0.55rem;color:var(--muted);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:0.55rem;}
+.eqf{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;line-height:2;}
+.eqf .s{color:var(--accent);}
+.eqf .p{color:var(--accent2);}
+.eqf .ar{color:var(--muted);margin:0 0.35rem;}
+.eqn{font-size:0.61rem;color:var(--muted);margin-top:0.45rem;line-height:1.7;}
+
+sub{font-size:0.65em;}sup{font-size:0.65em;}
+@keyframes fu{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.page>*{animation:fu 0.4s ease both;}
+.page>*:nth-child(1){animation-delay:0.04s;}
+.page>*:nth-child(2){animation-delay:0.09s;}
+.page>*:nth-child(3){animation-delay:0.14s;}
+.page>*:nth-child(4){animation-delay:0.19s;}
+.page>*:nth-child(5){animation-delay:0.24s;}
+.page>*:nth-child(6){animation-delay:0.29s;}
+.page>*:nth-child(7){animation-delay:0.34s;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HERO -->
+<header class="hero">
+  <div>
+    <div class="brand">ASUS · Advanced Materials · Ceraluminesium Series</div>
+    <h1>Ceraluminesium<br><em>Sapphire</em><br><strong>FGM — Spec Sheet</strong></h1>
+    <p class="tagline">A functionally graded MgAl/α-Al₂O₃ chassis material. Corundum-class surface. Intrinsic gemstone coloration. 5-sided ceramic coverage. Lighter than conventional Ceraluminium.</p>
+  </div>
+  <div class="hero-right">
+    <div class="stat"><span>Surface Hardness</span><span class="sv g">Mohs 9 — Corundum</span></div>
+    <div class="stat"><span>Core Alloy</span><span class="sv">AZ91-class MgAl (Mg-dominant)</span></div>
+    <div class="stat"><span>Stack Density (est.)</span><span class="sv gr">~2.43 g/cm³ — 10% lighter than Ceraluminium</span></div>
+    <div class="stat"><span>Coloration</span><span class="sv g">Intrinsic dopant — never fades or chips</span></div>
+    <div class="stat"><span>Scratch Resistance</span><span class="sv">Keys, knives, concrete — no mark</span></div>
+    <div class="stat"><span>Ceramic Coverage</span><span class="sv b">5-sided — full exterior shell</span></div>
+    <div class="stat"><span>Luminescence</span><span class="sv g">UV · NIR · Afterglow options</span></div>
+    <div class="stat"><span>Processing</span><span class="sv">Spark Plasma Sintering + HIP</span></div>
+    <div class="stat"><span>Interior Face</span><span class="sv">L1 MgAl + protective polymer film</span></div>
+  </div>
+</header>
+
+<!-- 5-SIDE -->
+<section style="margin-bottom:5rem;">
+  <div class="sl">Five-Sided Coverage Architecture</div>
+  <div class="fiveside">
+    <div>
+      <div class="fstext">
+        <h3>Omnidirectional Ceramic Shell</h3>
+        <div class="pt">The FGM gradient is pressed radially outward in the sintering mold — not just upward. All five exterior faces receive full L0→L5 coverage simultaneously in a single SPS operation.</div>
+        <div class="pt">The sixth face (interior/bottom) remains at the L1 MgAl alloy layer — not subject to external scratch contact. A TPU or polymer film bonds to this face for corrosion protection and component mounting.</div>
+        <div class="pt">Port cutouts receive individually-pressed ceramic sleeve inserts, maintaining Mohs 9 surface continuity around every opening. Edge radii ≥0.4mm prevent stress concentration at ceramic corners.</div>
+        <div class="pt">The Mg core is fully sealed inside the ceramic shell in normal use. No exposed Mg on any surface the user contacts — critical for corrosion resistance in humid environments.</div>
+        <div class="pt">Result: a chassis that is a sealed gemstone externally, a magnesium skeleton internally.</div>
+      </div>
+    </div>
+    <div class="fsdiag">
+      <svg viewBox="0 0 300 270" width="300" height="270" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="75,55 230,55 258,85 103,85" fill="#1a2030" stroke="#2a3a50" stroke-width="1.2"/>
+        <polygon points="75,55 103,85 103,215 75,185" fill="#141820" stroke="#1e2a3a" stroke-width="1.2"/>
+        <polygon points="103,85 258,85 258,215 103,215" fill="#0e1218" stroke="#1a2030" stroke-width="1.2"/>
+        <polygon points="230,55 258,85 258,215 230,185" fill="#161c28" stroke="#222a3a" stroke-width="1.2"/>
+        <!-- ceramic outlines -->
+        <polygon points="77,57 228,57 254,83 105,83" fill="none" stroke="#c8a870" stroke-width="2.2" opacity="0.75"/>
+        <polygon points="77,58 105,88 105,213 77,183" fill="none" stroke="#c8a870" stroke-width="2.2" opacity="0.75"/>
+        <polygon points="105,88 256,88 256,213 105,213" fill="none" stroke="#c8a870" stroke-width="2.2" opacity="0.75"/>
+        <polygon points="228,57 256,88 256,213 228,183" fill="none" stroke="#c8a870" stroke-width="2.2" opacity="0.75"/>
+        <!-- interior dashed -->
+        <line x1="105" y1="215" x2="256" y2="215" stroke="#3a4a5a" stroke-width="1.3" stroke-dasharray="5,4"/>
+        <line x1="75" y1="185" x2="103" y2="215" stroke="#3a4a5a" stroke-width="1.3" stroke-dasharray="5,4"/>
+        <!-- gradient hint -->
+        <defs><linearGradient id="gs" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#2a3a50"/><stop offset="60%" stop-color="#887868"/><stop offset="100%" stop-color="#c8a870"/></linearGradient></defs>
+        <rect x="142" y="100" width="72" height="16" rx="2" fill="url(#gs)" opacity="0.9"/>
+        <text x="178" y="111" text-anchor="middle" font-size="6" fill="rgba(255,255,255,0.7)" font-family="DM Mono,monospace">MgAl → α-Al₂O₃</text>
+        <!-- labels -->
+        <text x="165" y="74" text-anchor="middle" font-size="7" fill="#c8a870" font-family="DM Mono,monospace">① TOP</text>
+        <text x="88" y="142" text-anchor="middle" font-size="6.5" fill="#c8a870" font-family="DM Mono,monospace" transform="rotate(-30,88,142)">② L</text>
+        <text x="180" y="155" text-anchor="middle" font-size="7" fill="#c8a870" font-family="DM Mono,monospace">③ FRONT</text>
+        <text x="244" y="150" text-anchor="middle" font-size="6.5" fill="#c8a870" font-family="DM Mono,monospace" transform="rotate(30,244,150)">④ R</text>
+        <text x="180" y="235" text-anchor="middle" font-size="6.5" fill="#3a4a5a" font-family="DM Mono,monospace">⑥ interior (MgAl + polymer film)</text>
+        <!-- outward arrows -->
+        <defs><marker id="ar" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#c8a870" opacity="0.55"/></marker></defs>
+        <line x1="165" y1="84" x2="165" y2="65" stroke="#c8a870" stroke-width="1" marker-end="url(#ar)" opacity="0.5"/>
+        <line x1="105" y1="150" x2="90" y2="143" stroke="#c8a870" stroke-width="1" opacity="0.5"/>
+        <line x1="256" y1="150" x2="270" y2="143" stroke="#c8a870" stroke-width="1" opacity="0.5"/>
+        <!-- legend -->
+        <rect x="75" y="248" width="9" height="4" fill="#c8a870" rx="1"/>
+        <text x="88" y="253" font-size="6.5" fill="#c8a870" font-family="DM Mono,monospace">Corundum surface (Mohs 9)</text>
+        <rect x="75" y="258" width="9" height="4" fill="#3a4a5a" rx="1"/>
+        <text x="88" y="263" font-size="6.5" fill="#3a4a5a" font-family="DM Mono,monospace">Interior (MgAl + film)</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- FGM BAR + LAYER TABLE -->
+<section class="ltable">
+  <div class="sl">FGM Layer Stack — Stoichiometry, Thickness &amp; Properties</div>
+  <div class="fgmwrap">
+    <div id="fgmbar"></div>
+    <div class="fzones">
+      <div class="fzone"><div class="zn">L0</div><div class="zt">80–120 µm</div>Al buffer</div>
+      <div class="fzone"><div class="zn">L1</div><div class="zt">900–1100 µm</div>MgAl Core</div>
+      <div class="fzone"><div class="zn">L2</div><div class="zt">150–200 µm</div>Cermet Lo</div>
+      <div class="fzone"><div class="zn">L3</div><div class="zt">150–200 µm</div>Cermet Hi</div>
+      <div class="fzone"><div class="zn">L4</div><div class="zt">100–150 µm</div>Near-Ceramic</div>
+      <div class="fzone"><div class="zn">L5</div><div class="zt">50–100 µm</div>Corundum</div>
+    </div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+    <div class="lrow hdr"><div></div><div>Layer</div><div>Stoichiometry</div><div>Properties</div><div>Thickness</div><div>Hardness</div></div>
+    <div class="lrow"><div class="lsw" style="background:#2a3a50;"></div><div><div class="ln">L0 — Al Buffer</div><div class="ls">Chemical isolation</div></div><div class="lsto"><div class="f">Al (pure)</div><div class="r">~99% Al, trace Mg<br>Prevents Mg+Al₂O₃ reaction<br>Chemical firewall for Mg core</div></div><div class="lpr">Density: 2.70 g/cm³<br>Toughness: ~28 MPa·m½<br>CTE: 23 µm/m·K</div><div class="lth">80–120 µm<small>~0.10 mm</small></div><div><div class="lmh">2–3<span>Mohs</span></div></div></div>
+    <div class="lrow"><div class="lsw" style="background:#1e3050;"></div><div><div class="ln">L1 — Core</div><div class="ls">MgAl (AZ91-class)</div></div><div class="lsto"><div class="f">Mg<sub>0.90</sub>Al<sub>0.09</sub>Zn<sub>0.01</sub></div><div class="r">Mg-dominant alloy<br>Precipitation hardened<br>Bulk structural layer</div></div><div class="lpr">Density: 1.81 g/cm³<br>Toughness: ~25 MPa·m½<br>CTE: 26 µm/m·K</div><div class="lth">900–1100 µm<small>~1.00 mm bulk</small></div><div><div class="lmh">2–3<span>Mohs</span></div></div></div>
+    <div class="lrow"><div class="lsw" style="background:#445848;"></div><div><div class="ln">L2 — Cermet Lo</div><div class="ls">Metal-rich composite</div></div><div class="lsto"><div class="f">Al<sub>0.70</sub>(Al<sub>2</sub>O<sub>3</sub>)<sub>0.30</sub></div><div class="r">70 vol% Al binder<br>30 vol% α-Al₂O₃<br>Particle size: 1–5 µm</div></div><div class="lpr">Density: ~3.1 g/cm³<br>Toughness: ~14 MPa·m½<br>CTE: 19 µm/m·K</div><div class="lth">150–200 µm<small>~0.175 mm</small></div><div><div class="lmh">4–5<span>Mohs</span></div></div></div>
+    <div class="lrow"><div class="lsw" style="background:#6a7858;"></div><div><div class="ln">L3 — Cermet Hi</div><div class="ls">Ceramic-rich composite</div></div><div class="lsto"><div class="f">Al<sub>0.30</sub>(Al<sub>2</sub>O<sub>3</sub>)<sub>0.70</sub></div><div class="r">30 vol% Al binder<br>70 vol% α-Al₂O₃<br>Particle size: 0.5–2 µm</div></div><div class="lpr">Density: ~3.5 g/cm³<br>Toughness: ~6 MPa·m½<br>CTE: 14 µm/m·K</div><div class="lth">150–200 µm<small>~0.175 mm</small></div><div><div class="lmh">6–7<span>Mohs</span></div></div></div>
+    <div class="lrow"><div class="lsw" style="background:#9a8868;"></div><div><div class="ln">L4 — Near-Ceramic</div><div class="ls">Dense α-Al₂O₃ + trace Al</div></div><div class="lsto"><div class="f">(Al<sub>2</sub>O<sub>3</sub>)<sub>0.95</sub>·Al<sub>0.05</sub></div><div class="r">95 vol% α-Al₂O₃<br>5 vol% grain-boundary Al<br>Grain: 200–500 nm</div></div><div class="lpr">Density: ~3.9 g/cm³<br>Toughness: ~3.5 MPa·m½<br>CTE: 8 µm/m·K</div><div class="lth">100–150 µm<small>~0.125 mm</small></div><div><div class="lmh">8–8.5<span>Mohs</span></div></div></div>
+    <div class="lrow" style="border-bottom:none;"><div class="lsw" style="background:linear-gradient(135deg,#c8a870,#d4b880);"></div><div><div class="ln">L5 — Surface</div><div class="ls">Doped α-Al₂O₃</div></div><div class="lsto"><div class="f">α-Al<sub>2</sub>O<sub>3</sub> : M<sup>n+</sup></div><div class="r">&gt;99.5 vol% α-Al₂O₃<br>0.05–2 mol% dopant M<sup>n+</sup><br>Grain: 100–300 nm</div></div><div class="lpr">Density: ~3.99 g/cm³<br>Toughness: ~2.0 MPa·m½<br>CTE: 7.2 µm/m·K</div><div class="lth">50–100 µm<small>~0.075 mm</small></div><div><div class="lmh">9<span>Mohs</span></div></div></div>
+  </div>
+  <div style="font-size:0.61rem;color:var(--muted);margin-top:0.7rem;line-height:1.7;">Total nominal wall: ~1.65 mm · Weighted avg density: ~2.43 g/cm³ · vs Ceraluminium Al 6061: ~2.70 g/cm³ · <span style="color:var(--accent3)">Ceraluminesium Sapphire is ~10% lighter.</span></div>
+</section>
+
+<!-- DOPANT SECTION -->
+<section class="dopsec">
+  <div class="sl">L5 Colorway — Dopant Library</div>
+  <div class="cattabs" id="cattabs">
+    <button class="ct active" onclick="filt('all',this)">All</button>
+    <button class="ct" onclick="filt('single',this)">Single Dopant</button>
+    <button class="ct" onclick="filt('combo',this)">Combinations</button>
+    <button class="ct" onclick="filt('luminescent',this)">UV Luminescent</button>
+    <button class="ct" onclick="filt('nir',this)">NIR-Active</button>
+    <button class="ct" onclick="filt('afterglow',this)">Afterglow</button>
+    <button class="ct" onclick="filt('shift',this)">Color-Shifting</button>
+    <button class="ct" onclick="filt('rare',this)">Rare Earth</button>
+  </div>
+  <div class="dgrid" id="dgrid"></div>
+</section>
+
+<!-- STOICH -->
+<section class="stoich">
+  <div class="sl">Key Dopant Incorporation Reactions</div>
+  <div class="eq"><div class="eqt">Cr³⁺ isovalent — ruby / emerald-hi</div><div class="eqf"><span class="s">Cr₂O₃</span><span class="ar">+</span><span class="s">Al₂O₃</span><span class="ar">→</span><span class="p">2(Al,Cr)₂O₃</span><span class="ar">solid solution</span></div><div class="eqn">Cr³⁺ = Al³⁺ in charge. Isovalent. No vacancy. Freely miscible. Most processing-friendly dopant in the library.</div></div>
+  <div class="eq"><div class="eqt">Ti⁴⁺ + Fe²⁺ charge-paired — sapphire blue</div><div class="eqf"><span class="s">TiO₂</span><span class="ar">+</span><span class="s">FeO</span><span class="ar">+</span><span class="s">Al₂O₃</span><span class="ar">→</span><span class="p">(Al,Ti,Fe)₂O₃</span></div><div class="eqn">Ti⁴⁺(+4) and Fe²⁺(+2) net to +3 average. Ti→Fe intervalence charge transfer at ~580nm generates blue. Reducing atmosphere maintains Fe²⁺ state.</div></div>
+  <div class="eq"><div class="eqt">Ce³⁺ isovalent — UV luminescence</div><div class="eqf"><span class="s">CeO₂ (reduced)</span><span class="ar">→</span><span class="p">Ce³⁺ in Al³⁺ site</span><span class="ar">5d→4f emission ~420–540nm</span></div><div class="eqn">Isovalent charge. Large ionic radius (1.01Å vs Al 0.535Å) — keep ≤0.5 mol% to prevent phase separation. Blue-green broadband luminescence under UV.</div></div>
+  <div class="eq"><div class="eqt">Nd³⁺ isovalent — NIR / smoky violet</div><div class="eqf"><span class="s">Nd₂O₃</span><span class="ar">+</span><span class="s">Al₂O₃</span><span class="ar">→</span><span class="p">(Al,Nd)₂O₃</span><span class="ar">NIR @ ~1064nm</span></div><div class="eqn">Nd³⁺ isovalent. Visible absorption at 530/580/740/808nm darkens base color to smoky violet. Primary emission NIR 1064nm — the chassis is technically a laser gain medium.</div></div>
+  <div class="eq"><div class="eqt">Eu³⁺/Eu²⁺ — red phosphorescence / afterglow</div><div class="eqf"><span class="s">Eu₂O₃</span><span class="ar">→</span><span class="p">Eu³⁺: ⁵D₀→⁷F₂ red @612nm</span><span class="ar">|</span><span class="p">Eu²⁺: broad afterglow</span></div><div class="eqn">Eu³⁺: sharp red emission under UV. Eu²⁺: long-decay blue-green afterglow — glow-in-the-dark behavior. Atmosphere control during SPS selects oxidation state.</div></div>
+  <div class="eq"><div class="eqt">Ni²⁺ aliovalent — yellow, vacancy-compensated</div><div class="eqf"><span class="s">NiO</span><span class="ar">+</span><span class="s">Al₂O₃</span><span class="ar">→</span><span class="p">(Al,Ni)₂O₃</span><span class="ar">+</span><span class="p">V″<sub>O</sub></span></div><div class="eqn">Ni²⁺ replacing Al³⁺ creates charge deficit → oxygen vacancy V″O compensation. Keep ≤0.5 mol%. Co-doping with Ti⁴⁺ eliminates vacancies and restores optical clarity.</div></div>
+  <div class="eq"><div class="eqt">Pr³⁺ isovalent — green luminescence</div><div class="eqf"><span class="s">Pr₂O₃</span><span class="ar">+</span><span class="s">Al₂O₃</span><span class="ar">→</span><span class="p">(Al,Pr)₂O₃</span><span class="ar">⁴f→⁴f emission ~530nm</span></div><div class="eqn">Pr³⁺ isovalent. 4f intraconfigurational transitions produce sharp green emission under UV. Daylight: faint yellow-green tint. Under UV: bright green luminescence. Same large-radius caution as Ce, Nd.</div></div>
+</section>
+
+</div>
+
+<!-- MODAL -->
+<div class="mbg" id="mbg" onclick="closeMbg(event)">
+  <div class="mbox" id="mbox">
+    <button class="mcl" onclick="closeM()">[ close ]</button>
+    <div id="mcont"></div>
+  </div>
+</div>
+
+<script>
+const D={
+  Cr:{name:'Chromium',ions:'Cr³⁺',gem:'Ruby',cats:['single'],lumi:[],nir:false,shift:false,rare:false,afterglow:false,color:'#8b1a1a',colorL:'#d44040',conc:'0.05–2.0 mol%',src:'Cr₂O₃ powder',temp:'1500–1650°C SPS',site:'Octahedral Al³⁺ (isovalent — no vacancy required)',mech:'d-d crystal field transition. Absorbs ~550nm (green/yellow). Transmits red. Pigeon-blood red at ~0.5 mol%. Deep crimson at 2 mol%.',note:'Most processing-friendly dopant. No charge compensation. Concentration-tunable from pale pink (0.05%) to deep blood red (2%). The classic.'},
+  TiFe:{name:'Titanium + Iron',ions:'Ti⁴⁺ + Fe²⁺',gem:'Sapphire',cats:['single'],lumi:[],nir:false,shift:false,rare:false,afterglow:false,color:'#0d3d6e',colorL:'#2a7abf',conc:'0.01–0.1 mol% each (equimolar)',src:'TiO₂ + FeO powders',temp:'1500–1600°C SPS, reducing atmosphere',site:'Both octahedral Al³⁺; Ti⁴⁺/Fe²⁺ paired for charge balance',mech:'Intervalence charge transfer Ti⁴⁺→Fe²⁺ at ~580nm. Absorbs yellow. Transmits blue. Blue depth increases with concentration.',note:'Must be co-doped. Ti alone: colorless. Fe alone: yellow-green. The pair makes blue. Reducing atmosphere essential to maintain Fe as Fe²⁺ — oxidizing conditions shift toward yellow.'},
+  V:{name:'Vanadium',ions:'V³⁺',gem:'Alexandrite',cats:['single','shift'],lumi:[],nir:false,shift:true,rare:false,afterglow:false,color:'#4a2070',colorL:'#9b59b6',conc:'0.1–0.8 mol%',src:'V₂O₃ powder',temp:'1500–1620°C SPS',site:'Octahedral Al³⁺ (isovalent)',mech:'Multiple d-d transitions spanning visible spectrum. Green under daylight/fluorescent, shifts to purple under incandescent. True alexandrite-type behavior.',note:'Most visually dramatic single dopant. Color shift caused by the eye\'s photopic sensitivity crossing V³⁺ absorption bands differently under different illuminants. Every light source reveals a different personality.'},
+  Ni:{name:'Nickel',ions:'Ni²⁺',gem:'Yellow Sapphire',cats:['single'],lumi:[],nir:false,shift:false,rare:false,afterglow:false,color:'#7a6010',colorL:'#e8b820',conc:'0.1–0.5 mol%',src:'NiO powder',temp:'1480–1580°C SPS',site:'Octahedral Al³⁺ (aliovalent — oxygen vacancy compensation)',mech:'d-d transitions absorb blue and violet. Warm yellow-green transmission. Aliovalent — Ni²⁺ replacing Al³⁺ creates oxygen vacancies.',note:'Keep concentration low. Vacancies from aliovalent substitution reduce optical clarity above 0.5 mol%. Co-dope with Ti⁴⁺ to charge-compensate and eliminate vacancies for better clarity.'},
+  CrHi:{name:'Chromium (hi-conc)',ions:'Cr³⁺ 3–8 mol%',gem:'Emerald-like Green',cats:['single'],lumi:[],nir:false,shift:false,rare:false,afterglow:false,color:'#0e4a28',colorL:'#2ecc71',conc:'3–8 mol%',src:'Cr₂O₃ (high loading)',temp:'1600–1750°C SPS',site:'Octahedral Al³⁺',mech:'At high Cr³⁺ loading, Cr–Cr interactions shift the crystal field. Enters eskolaite (Cr₂O₃) solid solution territory — green rather than red. Same ion, different optical regime.',note:'Not true emerald (requires Be₃Al₂Si₆O₁₈ host) but comparable green. Keep below ~10 mol% to prevent secondary Cr₂O₃ phase precipitation. Higher SPS temperature required.'},
+  Ce:{name:'Cerium',ions:'Ce³⁺',gem:'UV Blue-Green Glow',cats:['single','luminescent','rare'],lumi:['UV → broadband blue-green ~420–540nm (5d→4f)'],nir:false,shift:false,rare:true,afterglow:false,color:'#1a3050',colorL:'#5090e0',conc:'0.1–0.5 mol%',src:'CeO₂ (reduced in sinter)',temp:'1480–1580°C, controlled pO₂',site:'Octahedral Al³⁺ (isovalent charge; large radius strain)',mech:'5d→4f broadband emission. Absorbs UV 300–370nm. Emits blue-green 420–540nm. Fast decay — pure photoluminescence, no afterglow.',note:'Under UV the surface floods with blue-green light. Daylight: cool blue-white undertone, near-colorless. Same luminescent ion as YAG:Ce (white LED phosphors). Keep ≤0.5 mol% — Ce³⁺ ionic radius (1.01Å) vs Al³⁺ (0.535Å) causes lattice strain.'},
+  Nd:{name:'Neodymium',ions:'Nd³⁺',gem:'Smoky Violet — NIR',cats:['single','nir','rare'],lumi:[],nir:true,shift:false,rare:true,afterglow:false,color:'#2a1a40',colorL:'#7a5ab0',conc:'0.1–0.5 mol%',src:'Nd₂O₃ powder',temp:'1480–1600°C SPS',site:'Octahedral Al³⁺ (isovalent charge; large radius)',mech:'Visible absorption at 530/580/740/808nm darkens and desaturates base color to smoky gray-violet. Primary emission at 1064nm (NIR, invisible). The laser ion.',note:'The chassis is technically a Nd:Al₂O₃ gain medium when pumped at 808nm. Completely useless practically. Absolutely unhinged as a materials science fact. Daylight: deep, complex, smoky violet. NIR camera: glowing.'},
+  Eu:{name:'Europium',ions:'Eu³⁺ / Eu²⁺',gem:'Red Phosphorescent',cats:['single','luminescent','afterglow','rare'],lumi:['UV → sharp red ~612nm (Eu³⁺ ⁵D₀→⁷F₂)','Eu²⁺: long-decay blue-green afterglow'],nir:false,shift:false,rare:true,afterglow:true,color:'#5a0a1a',colorL:'#cc2244',conc:'0.1–0.5 mol%',src:'Eu₂O₃ powder',temp:'1480–1600°C, controlled atmosphere',site:'Octahedral Al³⁺; Eu²⁺ requires co-doping or O₂ vacancy',mech:'Eu³⁺: ⁵D₀→⁷F₂ sharp narrow red emission at 612nm under UV. Eu²⁺: broad emission with persistent long-decay afterglow. Atmosphere control during SPS determines which oxidation state dominates.',note:'Eu²⁺ variant: the chassis glows after UV exposure — holds luminescent charge and releases it slowly. Duration depends on concentration and grain boundary density. The only colorway with genuine afterglow behavior.'},
+  Pr:{name:'Praseodymium',ions:'Pr³⁺',gem:'Green Luminescent',cats:['single','luminescent','rare'],lumi:['UV → sharp green ~530nm (⁴f→⁴f transitions)'],nir:false,shift:false,rare:true,afterglow:false,color:'#1a4020',colorL:'#40a860',conc:'0.05–0.4 mol%',src:'Pr₂O₃ / Pr₆O₁₁ powder',temp:'1480–1580°C SPS',site:'Octahedral Al³⁺ (isovalent; large radius)',mech:'4f intraconfigurational transitions produce sharp, narrow-band green emission at ~530nm under UV. Daylight: faint warm green-yellow tint. Under UV: vivid emerald-green glow.',note:'The underused rare earth. Pr³⁺ gives sharp line emission unlike the broadband Ce or the NIR-dominant Nd. In UV photography the surface glows a striking emerald green. Same large-radius caution as Ce and Nd.'},
+  Er:{name:'Erbium',ions:'Er³⁺',gem:'Pink — Green NIR',cats:['single','nir','rare'],lumi:['Visible: pink/red ~550nm upconversion possible'],nir:true,shift:false,rare:true,afterglow:false,color:'#5a2030',colorL:'#d06080',conc:'0.1–0.5 mol%',src:'Er₂O₃ powder',temp:'1480–1600°C SPS',site:'Octahedral Al³⁺ (isovalent; large radius)',mech:'Er³⁺ gives pink-rose color in daylight via 4f-4f absorption. NIR emission at ~1530nm (telecom band). Upconversion possible under 980nm NIR pump: absorbs NIR, emits visible green ~550nm.',note:'Er:Al₂O₃ is a real laser gain medium (erbium-doped waveguide amplifiers). The 1530nm emission is the exact wavelength used in fiber optic communications. The chassis resonates at telecom frequencies. Er also produces visible green upconversion under NIR — the chassis glows green when illuminated with an IR remote.'},
+  TiCr:{name:'Titanium + Chromium',ions:'Ti⁴⁺ + Cr³⁺',gem:'Deep Burgundy',cats:['combo','shift'],lumi:[],nir:false,shift:true,rare:false,afterglow:false,color:'#5a1a40',colorL:'#a03060',conc:'Ti: 0.05 mol%, Cr: 0.3–1 mol%',src:'TiO₂ + Cr₂O₃',temp:'1500–1620°C SPS',site:'Both octahedral Al³⁺',mech:'Cr pulls toward red. Ti perturbs crystal field and deepens. Result: dark burgundy-purple with strong directional depth. Star-ruby-like optical depth at certain angles.',note:'Ti provides minor charge compensation for Cr field distortion. The two d-ion crystal fields compete and interact — produces exceptional color depth that is difficult to capture in photography.'},
+  CrV:{name:'Chromium + Vanadium',ions:'Cr³⁺ + V³⁺',gem:'Moody Wine-Red',cats:['combo','shift'],lumi:[],nir:false,shift:true,rare:false,afterglow:false,color:'#4a1830',colorL:'#8a3060',conc:'Cr: 0.3 mol%, V: 0.2 mol%',src:'Cr₂O₃ + V₂O₃',temp:'1500–1630°C SPS',site:'Both octahedral Al³⁺ (both isovalent)',mech:'Cr red absorption + V multi-transition. Daylight: brownish-red. Incandescent: deep wine. Fluorescent: complex purple-red. Three different personalities.',note:'Two competing crystal field dopants create a color that has a different character under every light source. The most moody and photogenic colorway in the chromium family.'},
+  CrCe:{name:'Cr + Ce',ions:'Cr³⁺ + Ce³⁺',gem:'Ruby with UV Fire',cats:['combo','luminescent'],lumi:['UV: Cr R-line red @694nm + Ce blue-green @480nm — simultaneous dual-channel'],nir:false,shift:false,rare:true,afterglow:false,color:'#7a1a1a',colorL:'#cc3030',conc:'Cr: 0.5 mol%, Ce: 0.2 mol%',src:'Cr₂O₃ + CeO₂',temp:'1500–1650°C SPS',site:'Both octahedral Al³⁺',mech:'Ruby red in daylight. Under UV: Cr R-line red fluorescence (694nm) AND Ce broadband blue-green (480nm) fire simultaneously. Two competing luminescent channels overlap to a magenta-white aurora.',note:'The signature luminescent colorway. Under UV blacklight it erupts — red and blue-green competing across the surface. Nothing with this behavior exists in consumer electronics. The chassis speaks in two colors of light.'},
+  CrNd:{name:'Cr + Nd',ions:'Cr³⁺ + Nd³⁺',gem:'Dark Ruby — NIR',cats:['combo','nir'],lumi:[],nir:true,shift:false,rare:true,afterglow:false,color:'#600a0a',colorL:'#a02020',conc:'Cr: 0.5 mol%, Nd: 0.15 mol%',src:'Cr₂O₃ + Nd₂O₃',temp:'1500–1640°C SPS',site:'Both octahedral Al³⁺',mech:'Nd visible absorption darkens and desaturates ruby base. Deep, smoky, complex red in daylight — less saturated than pure Cr but heavier and darker. NIR 1064nm emission active.',note:'The stealth ruby. Looks expensive and slightly sinister. Under NIR camera it glows. The secret spec no one reads in the product sheet.'},
+  CrEu:{name:'Cr + Eu',ions:'Cr³⁺ + Eu³⁺',gem:'Ruby — Red Afterglow',cats:['combo','luminescent','afterglow'],lumi:['UV: Cr R-line 694nm + Eu sharp red 612nm — double red channel','Eu²⁺ variant: red afterglow in dark'],nir:false,shift:false,rare:true,afterglow:true,color:'#7a0a18',colorL:'#d02030',conc:'Cr: 0.5 mol%, Eu: 0.2 mol%',src:'Cr₂O₃ + Eu₂O₃',temp:'1500–1650°C SPS',site:'Both octahedral Al³⁺',mech:'Cr gives ruby + R-line red fluorescence under UV. Eu³⁺ adds sharp 612nm red emission — nearly same wavelength, both fire red under UV. Eu²⁺ variant: afterglow in dark.',note:'All red, all the time. Double-channel red emission under UV. If processed to favor Eu²⁺: the chassis glows deep red in the dark after UV exposure. The only monochrome afterglow colorway.'},
+  CrPr:{name:'Cr + Pr',ions:'Cr³⁺ + Pr³⁺',gem:'Ruby + Green UV',cats:['combo','luminescent'],lumi:['UV: Cr red fluorescence + Pr sharp green @530nm — complementary colors'],nir:false,shift:false,rare:true,afterglow:false,color:'#6a1a10',colorL:'#c03020',conc:'Cr: 0.5 mol%, Pr: 0.15 mol%',src:'Cr₂O₃ + Pr₂O₃',temp:'1500–1640°C SPS',site:'Both octahedral Al³⁺',mech:'Ruby red base. Under UV: Cr R-line red and Pr sharp green emit simultaneously — complementary colors on the same surface. The red+green overlap produces a complex white-orange-gold effect.',note:'Unusual UV behavior: red and green are complementary and their overlap produces near-white with warm tint under UV. In daylight the Pr tint is barely perceptible against the dominant Cr red.'},
+  TiFeCe:{name:'Ti + Fe + Ce',ions:'Ti⁴⁺ + Fe²⁺ + Ce³⁺',gem:'Bioluminescent Sapphire',cats:['combo','luminescent'],lumi:['UV: Ce blue-green luminescence on sapphire base — deep ocean glow'],nir:false,shift:false,rare:true,afterglow:false,color:'#0a2a60',colorL:'#2060c0',conc:'Ti+Fe: 0.05 mol% each, Ce: 0.2 mol%',src:'TiO₂ + FeO + CeO₂',temp:'1480–1580°C SPS, reducing',site:'All octahedral Al³⁺',mech:'Ti/Fe intervalence blue base. Ce adds UV-excited blue-green that amplifies and shifts perceived blue under mixed lighting. Under UV: looks like deep-ocean bioluminescence.',note:'Daylight: exceptional deep sapphire. Under UV: glowing cyan-blue that makes the surface appear internally lit. The most serene colorway in the library.'},
+  TiFeNd:{name:'Ti + Fe + Nd',ions:'Ti⁴⁺ + Fe²⁺ + Nd³⁺',gem:'Void Blue',cats:['combo','nir'],lumi:[],nir:true,shift:false,rare:true,afterglow:false,color:'#060e20',colorL:'#1040a0',conc:'Ti+Fe: 0.05 mol% each, Nd: 0.2 mol%',src:'TiO₂ + FeO + Nd₂O₃',temp:'1480–1590°C SPS, reducing',site:'All octahedral Al³⁺',mech:'Nd absorption at 530/580nm darkens sapphire base dramatically. Low light: near-black. Direct sun: reveals extraordinary ink-blue depth. NIR active at 1064nm.',note:'The stealth sapphire. Looks almost black until strong directional light. Under NIR camera it glows. The most understated colorway with the most hidden complexity.'},
+  TiFeCeNd:{name:'Ti + Fe + Ce + Nd',ions:'Ti⁴⁺ + Fe²⁺ + Ce³⁺ + Nd³⁺',gem:'Void — Full Spectrum',cats:['combo','luminescent','nir'],lumi:['UV: Ce blue-green on Nd-darkened sapphire — blazing on dark field'],nir:true,shift:false,rare:true,afterglow:false,color:'#040810',colorL:'#0830a0',conc:'Ti+Fe: 0.04 mol% each, Ce+Nd: 0.15 mol% each',src:'TiO₂ + FeO + CeO₂ + Nd₂O₃',temp:'1480–1580°C SPS, reducing',site:'All octahedral Al³⁺',mech:'Four dopants: Ti/Fe blue, Nd depth/darkness, Ce UV luminescence. Daylight: near-black with blue flash. UV: blazing blue-green on dark field. NIR: active at 1064nm.',note:'Three completely different optical behaviors under three different illumination conditions. Explain this to a physicist.'},
+  CrCeNd:{name:'Cr + Ce + Nd',ions:'Cr³⁺ + Ce³⁺ + Nd³⁺',gem:'Phantom Ruby',cats:['combo','luminescent','nir'],lumi:['UV: Cr red R-line + Ce blue-green — nebula violet-pink effect'],nir:true,shift:false,rare:true,afterglow:false,color:'#3a0820',colorL:'#c02860',conc:'Cr: 0.4 mol%, Ce+Nd: 0.15 mol% each',src:'Cr₂O₃ + CeO₂ + Nd₂O₃',temp:'1500–1640°C SPS',site:'All octahedral Al³⁺',mech:'Cr red base darkened by Nd → deep complex burgundy-black. UV: Cr red fluorescence + Ce blue-green fight → violet-pink nebula glow. NIR active.',note:'Dark and complex in daylight. Nebula photograph under UV. Invisible glow under NIR. Three completely distinct optical identities in one material.'},
+  CrCeEu:{name:'Cr + Ce + Eu',ions:'Cr³⁺ + Ce³⁺ + Eu³⁺',gem:'Aurora Fire',cats:['combo','luminescent','afterglow'],lumi:['UV: Cr red + Ce blue-green + Eu sharp red 612nm — three-channel','Eu²⁺ option: red afterglow'],nir:false,shift:false,rare:true,afterglow:true,color:'#6a0a18',colorL:'#c02838',conc:'Cr: 0.35 mol%, Ce: 0.15 mol%, Eu: 0.15 mol%',src:'Cr₂O₃ + CeO₂ + Eu₂O₃',temp:'1500–1660°C SPS',site:'All octahedral Al³⁺',mech:'Triple luminescent channel under UV: Cr broadband red, Ce broadband blue-green, Eu sharp red 612nm. With Eu²⁺: afterglow adds time dimension — the chassis fades slowly after UV.',note:'The most luminescently complex colorway. Three simultaneous emission mechanisms. Under UV blacklight it behaves like a miniature aurora. With Eu²⁺ processing: the light lasts after the source is removed.'},
+  VCe:{name:'V + Ce',ions:'V³⁺ + Ce³⁺',gem:'Shifting Aurora',cats:['combo','luminescent','shift'],lumi:['UV: Ce blue-green on alexandrite base — aurora shift'],nir:false,shift:true,rare:true,afterglow:false,color:'#1a1040',colorL:'#6040c0',conc:'V: 0.3 mol%, Ce: 0.2 mol%',src:'V₂O₃ + CeO₂',temp:'1480–1600°C SPS',site:'Both octahedral Al³⁺',mech:'V provides daylight/incandescent color shift (green→purple). Ce adds UV luminescence on top. Shifts in daylight AND glows under UV.',note:'The aurora colorway. Behavioral in daylight, luminescent under UV. Most photogenic under varied lighting conditions.'},
+  NiTi:{name:'Ni + Ti',ions:'Ni²⁺ + Ti⁴⁺',gem:'Golden Clarity',cats:['combo'],lumi:[],nir:false,shift:false,rare:false,afterglow:false,color:'#6a5010',colorL:'#d4a020',conc:'Ni: 0.3 mol%, Ti: 0.15 mol%',src:'NiO + TiO₂',temp:'1480–1580°C SPS',site:'Ni²⁺ in Al³⁺ site; Ti⁴⁺ provides charge compensation',mech:'Ti⁴⁺ (+4) charge-compensates Ni²⁺ (+2) substitution — eliminates oxygen vacancies that normally reduce clarity in Ni-only doping. Warm yellow with improved optical clarity.',note:'The engineering fix for Ni doping. Cleaner yellow than Ni alone because Ti charge-compensation removes the clarity-degrading vacancies. Net average oxidation maintained at +3.'},
+  TiFeEr:{name:'Ti + Fe + Er',ions:'Ti⁴⁺ + Fe²⁺ + Er³⁺',gem:'Rose-Blue — Telecom NIR',cats:['combo','nir'],lumi:['NIR ~1530nm emission (telecom band)','Upconversion: NIR→visible green under 980nm pump'],nir:true,shift:false,rare:true,afterglow:false,color:'#1a2a50',colorL:'#4060c0',conc:'Ti+Fe: 0.05 mol% each, Er: 0.2 mol%',src:'TiO₂ + FeO + Er₂O₃',temp:'1480–1580°C SPS, reducing',site:'All octahedral Al³⁺',mech:'Ti/Fe blue base modified by Er pink tint → steel-blue with rose undertone. Er NIR emission at 1530nm (the exact fiber-optic telecom wavelength). Under 980nm NIR pump: upconversion emits visible green.',note:'Under NIR illumination the chassis performs upconversion — absorbs infrared, emits visible green. Under an IR remote the surface glows green. The 1530nm emission is the backbone of global fiber-optic networks.'},
+  Sovereign:{name:'Cr + Ti + Fe + Ce + Nd + Eu',ions:'Full House',gem:'Sovereign',cats:['combo','luminescent','nir','afterglow','shift'],lumi:['UV: Cr R-line red + Ce blue-green + Eu sharp red 612nm — full spectrum','NIR: Nd 1064nm','Eu²⁺ afterglow option'],nir:true,shift:true,rare:true,afterglow:true,color:'#1a0820',colorL:'#8020a0',conc:'All dopants ~0.08–0.1 mol% each (carefully balanced)',src:'All six precursor oxides: Cr₂O₃ + TiO₂ + FeO + CeO₂ + Nd₂O₃ + Eu₂O₃',temp:'1550–1700°C SPS — maximum challenge',site:'All octahedral Al³⁺ — maximum lattice loading',mech:'Every optical mechanism simultaneously: Ti/Fe intervalence blue, Cr d-d red, Ce UV luminescence, Nd NIR+darkening, Eu phosphorescence. Daylight: deep complex purple-black. UV: full-spectrum luminescent eruption. NIR: glowing. Dark: afterglow.',note:'The final boss. Stoichiometric balance across six dopants is the primary challenge — secondary phase nucleation must be suppressed. If sintered correctly: a material with no optical equivalent in existence. More optical behaviors than any natural gemstone. The laptop as a synthetic gem no mineralogist has catalogued.'}
+};
+
+const REL={
+  Cr:['TiCr','CrV','CrCe','CrNd','CrEu','CrPr','CrCeNd','CrCeEu','Sovereign'],
+  TiFe:['TiFeCe','TiFeNd','TiFeCeNd','TiCr','NiTi','TiFeEr','Sovereign'],
+  V:['CrV','VCe'],Ni:['NiTi'],CrHi:['Cr','TiCr'],
+  Ce:['CrCe','TiFeCe','CrCeNd','TiFeCeNd','CrEu','VCe','CrPr','CrCeEu','Sovereign'],
+  Nd:['CrNd','TiFeNd','CrCeNd','TiFeCeNd','Sovereign'],
+  Eu:['CrEu','CrCeEu','Sovereign'],Pr:['CrPr','CrCe'],Er:['TiFeEr'],
+  TiCr:['Cr','TiFe','CrV'],CrV:['Cr','V','TiCr'],
+  CrCe:['Cr','Ce','CrNd','CrEu','CrCeNd','CrPr'],CrNd:['Cr','Nd','CrCe','CrCeNd'],
+  CrEu:['Cr','Eu','CrCe','CrCeEu'],CrPr:['Cr','Pr','CrCe'],
+  TiFeCe:['TiFe','Ce','TiFeNd','TiFeCeNd'],TiFeNd:['TiFe','Nd','TiFeCe','TiFeCeNd'],
+  TiFeCeNd:['TiFe','Ce','Nd','TiFeCe','TiFeNd','Sovereign'],
+  CrCeNd:['Cr','Ce','Nd','CrCe','CrNd','Sovereign'],
+  CrCeEu:['Cr','Ce','Eu','CrCe','CrEu','Sovereign'],
+  VCe:['V','Ce','CrV','CrCe'],NiTi:['Ni','TiFe'],TiFeEr:['TiFe','Er'],
+  Sovereign:['CrCeNd','TiFeCeNd','CrCeEu','CrEu','VCe']
+};
+
+function badges(d){
+  let h='';
+  if(d.lumi.length) h+=`<span class="lb uv">✦ UV Luminescent</span>`;
+  if(d.nir) h+=`<span class="lb nir">◉ NIR Active</span>`;
+  if(d.shift) h+=`<span class="lb sh">⇄ Color-Shifting</span>`;
+  if(d.afterglow) h+=`<span class="lb ag">◌ Afterglow</span>`;
+  return h;
+}
+
+function renderGrid(f='all'){
+  const g=document.getElementById('dgrid');g.innerHTML='';
+  Object.entries(D).forEach(([k,d])=>{
+    const show=f==='all'||d.cats.includes(f)||(f==='rare'&&d.rare)||(f==='nir'&&d.nir)||(f==='shift'&&d.shift)||(f==='luminescent'&&d.lumi.length)||(f==='afterglow'&&d.afterglow);
+    if(!show)return;
+    const lt=d.lumi.length?`<span class="dclumi" style="color:#c87aff">✦ UV</span>`:d.nir?`<span class="dclumi" style="color:#78d878">◉ NIR</span>`:d.afterglow?`<span class="dclumi" style="color:#88aaff">◌ Glow</span>`:'';
+    g.innerHTML+=`<div class="dc" onclick="openM('${k}')">
+      <div class="dcs" style="background:radial-gradient(ellipse at 40% 35%,${d.colorL}cc,${d.color}ff 75%);">${lt}</div>
+      <div class="dcb"><div class="dcn">${k}</div><div class="dcg">${d.gem}</div><div class="dci">${d.ions}</div></div>
+    </div>`;
+  });
+}
+
+function filt(f,btn){
+  document.querySelectorAll('.ct').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');renderGrid(f);
+}
+
+function openM(k){
+  const d=D[k],rel=(REL[k]||[]).filter(r=>D[r]);
+  const relH=rel.map(r=>{
+    const rd=D[r];
+    const rl=rd.lumi.length?`<span class="rcrl" style="color:#c87aff">✦UV</span>`:rd.nir?`<span class="rcrl" style="color:#78d878">◉NIR</span>`:rd.afterglow?`<span class="rcrl" style="color:#88aaff">◌</span>`:'';
+    return `<div class="rc" onclick="openM('${r}')">
+      <div class="rcs" style="background:radial-gradient(ellipse at 40% 35%,${rd.colorL}cc,${rd.color}ff 75%);">${rl}</div>
+      <div class="rcb"><div class="rcn">${r}</div><div class="rcg">${rd.gem}</div></div>
+    </div>`;
+  }).join('');
+  const lumiRows=d.lumi.length?`<div class="ms"><div class="msl">Luminescence Channels</div><div class="msv" style="color:#c87aff;font-size:0.67rem">${d.lumi.join('<br>')}</div></div>`:'';
+  document.getElementById('mcont').innerHTML=`
+    <div class="mhero">
+      <div class="msw" style="background:radial-gradient(ellipse at 38% 32%,${d.colorL}cc,${d.color}ff 80%);">
+        <div class="mswl">${d.gem}</div><div class="mswi">${d.ions}</div>
+      </div>
+      <div class="minfo">
+        <h2>${d.name} — ${k}</h2>
+        <div class="mgem">${d.gem}</div>
+        <div style="margin-bottom:1rem;">${badges(d)}</div>
+        <div class="ms"><div class="msl">Ions / Site</div><div class="msv"><span class="f">${d.ions}</span> → ${d.site}</div></div>
+        <div class="ms"><div class="msl">Concentration</div><div class="msv"><span class="b">${d.conc}</span></div></div>
+        <div class="ms"><div class="msl">Precursor</div><div class="msv"><span class="f">${d.src}</span></div></div>
+        <div class="ms"><div class="msl">Color Mechanism</div><div class="msv">${d.mech}</div></div>
+        <div class="ms"><div class="msl">Processing Temp</div><div class="msv">${d.temp}</div></div>
+        ${lumiRows}
+        <div class="ms" style="margin-top:0.8rem;padding-top:0.8rem;border-top:1px solid var(--border)"><div class="msl">Notes</div><div class="msv" style="color:var(--muted);font-size:0.67rem;line-height:1.75">${d.note}</div></div>
+      </div>
+    </div>
+    ${rel.length?`<div class="relsec"><div class="rlab">Related Colorways</div><div class="rgrid">${relH}</div></div>`:''}
+  `;
+  // update FGM bar
+  document.getElementById('fgmbar').style.background=`linear-gradient(to right,#2a3a50 0%,#3a5060 15%,#506058 28%,#687860 42%,#887868 56%,#a89070 70%,${d.colorL}cc 85%,${d.color}ff 100%)`;
+  document.getElementById('mbg').classList.add('open');
+  document.getElementById('mbg').scrollTop=0;
+}
+function closeM(){document.getElementById('mbg').classList.remove('open');}
+function closeMbg(e){if(e.target===document.getElementById('mbg'))closeM();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
+renderGrid('all');
+</script>
+</body>
+</html>
