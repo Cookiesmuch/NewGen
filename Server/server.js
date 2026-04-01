@@ -16,8 +16,8 @@ const WATCHDOG_SHUTDOWN_COUNTDOWN_S = 3;
 const WATCHDOG_CLOSE_GRACE_COUNTDOWN_S = 8;
 const BOX_RULE = '+------------------------------------------------------------------+';
 const BOX_INNER_WIDTH = BOX_RULE.length - 2;
-const ROUTE_REGEX = /\{\s*path:\s*'([^']+)'\s*,\s*src:\s*'([^']+)'\s*\}/g;
-const IFRAME_REGEX = /<iframe id="page-frame"([^>]*)><\/iframe>/i;
+const ROUTE_REGEX = /\{\s*path:\s*([`'"])([^`'"]+)\1\s*,\s*src:\s*([`'"])([^`'"]+)\3\s*\}/g;
+const IFRAME_REGEX = /<iframe id="page-frame"([^>]*)(?:\/>|>\s*<\/iframe>)/i;
 
 let browserOpened = false;
 let shuttingDown = false;
@@ -79,8 +79,9 @@ function getRouteMap() {
   const source = loadShellTemplate();
   const map = new Map();
   let match;
+  ROUTE_REGEX.lastIndex = 0;
   while ((match = ROUTE_REGEX.exec(source)) !== null) {
-    map.set(match[1], match[2]);
+    map.set(match[2], match[4]);
   }
   routeMapCache = map;
   return routeMapCache;
@@ -185,13 +186,13 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Strip query string and decode URL-encoded path segments for filesystem lookup.
-  const urlPath = req.url.split('?')[0];
-  let fileSystemPath = urlPath;
+  // Parse path/search first, then decode URL-encoded path segments for filesystem lookup.
+  const parsedUrl = new globalThis.URL(req.url, URL);
+  let fileSystemPath = parsedUrl.pathname;
   try {
-    fileSystemPath = decodeURIComponent(urlPath);
+    fileSystemPath = decodeURIComponent(parsedUrl.pathname);
   } catch (error) {
-    const logPathPreview = urlPath.replace(/[\r\n\t]/g, ' ').slice(0, 120);
+    const logPathPreview = parsedUrl.pathname.replace(/[\r\n\t]/g, ' ').slice(0, 120);
     console.warn(`[WARN] Failed to decode URL path (preview="${logPathPreview}"): ${error.message}`);
     res.writeHead(400, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end('<h1>400 Bad Request</h1>');
@@ -206,7 +207,7 @@ const server = http.createServer((req, res) => {
   // If the request has no file extension it is a page route — serve the SPA shell
   const ext = path.extname(fileSystemPath).toLowerCase();
   if (!ext) {
-    const shellHtml = renderShellWithInitialIframe(fileSystemPath, req.url.slice(urlPath.length));
+    const shellHtml = renderShellWithInitialIframe(fileSystemPath, parsedUrl.search);
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(shellHtml);
     return;

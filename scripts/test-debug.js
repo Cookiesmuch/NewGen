@@ -101,7 +101,7 @@ function responseLooksLikeMissingContent(body) {
 }
 
 function extractIframeSrc(body) {
-  const iframeMatch = body.match(/<iframe[^>]*id="page-frame"[^>]*\ssrc="([^"]+)"/i);
+  const iframeMatch = body.match(/<iframe[^>]*id="page-frame"[^>]*\s+src="([^"]+)"/i);
   return iframeMatch ? iframeMatch[1].replace(/&amp;/g, '&') : null;
 }
 
@@ -285,12 +285,19 @@ async function main() {
     const unknownRoute = '/__newgen_ssr_unknown_route__';
     const { response: unknownRouteResponse, body: unknownRouteBody } = await fetchWithDiagnostics(`${BASE_URL}${unknownRoute}?x=1`);
     const unknownRouteIframeSrc = extractIframeSrc(unknownRouteBody);
-    const expectedUnknownIframePrefix = `/404.html?ng_404_route=${encodeURIComponent(unknownRoute)}&ng_404_search=x%3D1`;
-    if (unknownRouteResponse.ok && unknownRouteIframeSrc && unknownRouteIframeSrc.startsWith(expectedUnknownIframePrefix)) {
+    const unknownIframeParams = unknownRouteIframeSrc
+      ? new URL(unknownRouteIframeSrc, BASE_URL).searchParams
+      : null;
+    const hasExpectedUnknownIframe =
+      Boolean(unknownRouteIframeSrc)
+      && unknownRouteIframeSrc.startsWith('/404.html?')
+      && unknownIframeParams?.get('ng_404_route') === unknownRoute
+      && unknownIframeParams?.get('ng_404_search') === 'x=1';
+    if (unknownRouteResponse.ok && hasExpectedUnknownIframe) {
       ok('SSR unknown route pre-renders 404 iframe', `(iframeSrc=${unknownRouteIframeSrc})`);
     } else {
       failures += 1;
-      fail('SSR unknown route 404 pre-render failed', `(status=${unknownRouteResponse.status}, expectedPrefix=${expectedUnknownIframePrefix}, got=${unknownRouteIframeSrc || 'null'})`);
+      fail('SSR unknown route 404 pre-render failed', `(status=${unknownRouteResponse.status}, got=${unknownRouteIframeSrc || 'null'})`);
     }
 
     info('Checking deep-dive targets used by viewer mapping');
