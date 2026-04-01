@@ -612,6 +612,9 @@
 
   // Page registry — add new routes here to extend the system.
   const PAGES = [
+    // Root placeholder page
+    { path: '/', src: '/newgen.conglomerate.brochure.html' },
+
     // Main brochure pages
     { path: '/Intel/Eventide', src: '/Source/INTEL/Eventide/intel.eventide.brochure.html' },
     { path: '/Sony/ILCE-0',    src: '/Source/SONY/ILCE-0/sony.a0.brochure.html' },
@@ -669,7 +672,7 @@
     if (routeRoots.has(segments[0])) return '';
     const host = window.location.hostname.toLowerCase();
     const isGitHubPagesHost = host.endsWith('.github.io');
-    if (isGitHubPagesHost || segments.length === 1) {
+    if (isGitHubPagesHost) {
       return `/${segments[0]}`;
     }
     return '';
@@ -1533,7 +1536,7 @@
   // Load the page that matches the current URL on first visit
   const currentRoutePath = stripBasePath(window.location.pathname, APP_BASE_PATH);
   if (currentRoutePath === '/') {
-    const defaultPage = findPage('/Intel/Eventide');
+    const defaultPage = findPage('/');
     history.replaceState({ path: defaultPage.path }, '', withBasePath(defaultPage.path, APP_BASE_PATH));
     navigate(defaultPage, false);
   } else if (!isKnownPagePath(currentRoutePath)) {
