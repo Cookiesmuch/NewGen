@@ -1481,7 +1481,13 @@
 
   const redirectParams = new URLSearchParams(window.location.search);
   const redirectRouteParam = redirectParams.get('ng_route');
-  if (redirectRouteParam && redirectRouteParam.startsWith('/')) {
+  if (
+    redirectRouteParam &&
+    redirectRouteParam.startsWith('/') &&
+    !redirectRouteParam.startsWith('//') &&
+    !redirectRouteParam.includes('://') &&
+    !redirectRouteParam.includes('..')
+  ) {
     const redirectSearchParam = redirectParams.get('ng_search');
     const redirectHashParam = redirectParams.get('ng_hash');
     const normalizedSearch = redirectSearchParam ? `?${redirectSearchParam}` : '';
