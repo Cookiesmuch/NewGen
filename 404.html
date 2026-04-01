@@ -237,28 +237,80 @@
         'We ran "{PATH}" through QA and QA ran away.'
       ];
 
+      function randomInt(maxExclusive) {
+        if (!Number.isInteger(maxExclusive) || maxExclusive <= 0) return 0;
+        if (window.crypto && typeof window.crypto.getRandomValues === 'function') {
+          const maxUint32 = 0x100000000;
+          const limit = maxUint32 - (maxUint32 % maxExclusive);
+          const bytes = new Uint32Array(1);
+          do {
+            window.crypto.getRandomValues(bytes);
+          } while (bytes[0] >= limit);
+          return bytes[0] % maxExclusive;
+        }
+        return Math.floor(Math.random() * maxExclusive);
+      }
+
+      function makeTemplateSignature(items) {
+        let hash = 2166136261;
+        for (let i = 0; i < items.length; i += 1) {
+          const line = items[i];
+          for (let j = 0; j < line.length; j += 1) {
+            hash ^= line.charCodeAt(j);
+            hash = Math.imul(hash, 16777619);
+          }
+          hash ^= 10;
+          hash = Math.imul(hash, 16777619);
+        }
+        return `${items.length}:${hash >>> 0}`;
+      }
+
+      function buildShuffledOrder(size) {
+        const order = Array.from({ length: size }, (_, i) => i);
+        for (let i = order.length - 1; i > 0; i -= 1) {
+          const j = randomInt(i + 1);
+          const temp = order[i];
+          order[i] = order[j];
+          order[j] = temp;
+        }
+        return order;
+      }
+
       function pickRandom(items) {
         if (!Array.isArray(items) || items.length === 0) return '';
-        const storageKey = 'ng_404_last_template_index';
-        let nextIndex = Math.floor(Math.random() * items.length);
-        if (items.length > 1) {
-          try {
-            const previousRaw = sessionStorage.getItem(storageKey);
-            const previous = previousRaw === null ? -1 : parseInt(previousRaw, 10);
-            if (Number.isInteger(previous) && previous >= 0 && previous < items.length && previous === nextIndex) {
-              // Choose a non-zero offset so we always land on a different index.
-              nextIndex = (nextIndex + 1 + Math.floor(Math.random() * (items.length - 1))) % items.length;
-            }
-          } catch (error) {
-            // storage unavailable (privacy mode, sandbox), keep non-persistent random result
-          }
-        }
+        const storageKey = 'ng_404_template_pool_state';
+        const signature = makeTemplateSignature(items);
+        let state = null;
         try {
-          sessionStorage.setItem(storageKey, String(nextIndex));
+          state = JSON.parse(sessionStorage.getItem(storageKey) || 'null');
+        } catch (error) {
+          state = null;
+        }
+
+        const orderIsValid = Array.isArray(state?.order)
+          && state.order.length === items.length
+          && state.order.every((value) => Number.isInteger(value) && value >= 0 && value < items.length);
+        let order = orderIsValid && state.signature === signature ? state.order.slice() : buildShuffledOrder(items.length);
+        let cursor = Number.isInteger(state?.cursor) && state.signature === signature ? state.cursor : 0;
+
+        if (cursor >= order.length) {
+          order = buildShuffledOrder(items.length);
+          cursor = 0;
+        }
+
+        const selectedIndex = order[cursor];
+        cursor += 1;
+
+        try {
+          sessionStorage.setItem(storageKey, JSON.stringify({
+            signature,
+            order,
+            cursor
+          }));
         } catch (error) {
           // ignore storage errors
         }
-        return items[nextIndex];
+        return items[selectedIndex];
       }
 
       function renderJokeFromTemplates(templates) {
