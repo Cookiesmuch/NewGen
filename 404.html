@@ -75,6 +75,64 @@
       background: #eff6ff;
       color: #1e3a8a;
       font-size: 15px;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+    }
+
+    .joke:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(30, 58, 138, 0.12);
+      background: #e7f0ff;
+    }
+
+    .countdown {
+      margin: 0 auto 20px;
+      max-width: 640px;
+      text-align: left;
+    }
+
+    .countdown-label {
+      display: block;
+      margin: 0 0 8px;
+      color: #4b5563;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .countdown-track {
+      position: relative;
+      height: 12px;
+      width: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #e5e7eb 0%, #f3f4f6 100%);
+      overflow: hidden;
+      box-shadow: inset 0 1px 2px rgba(17, 24, 39, 0.14);
+    }
+
+    .countdown-track::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.22) 0,
+          rgba(255, 255, 255, 0.22) calc(100% / 15 - 1px),
+          rgba(31, 41, 55, 0.10) calc(100% / 15 - 1px),
+          rgba(31, 41, 55, 0.10) calc(100% / 15)
+        );
+      pointer-events: none;
+    }
+
+    .countdown-fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 100%;
+      background: linear-gradient(90deg, #1d4ed8 0%, #0ea5e9 50%, #22d3ee 100%);
+      box-shadow: 0 0 14px rgba(37, 99, 235, 0.35);
+      transition: width 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: width;
     }
 
     .actions {
@@ -108,6 +166,12 @@
     </div>
 
     <p class="joke" id="joke">Generating a custom NewGen-level excuse…</p>
+    <div class="countdown" aria-live="polite">
+      <span class="countdown-label" id="joke-countdown-label">Preparing next joke...</span>
+      <div class="countdown-track" role="presentation">
+        <div class="countdown-fill" id="joke-countdown-fill"></div>
+      </div>
+    </div>
 
     <div class="actions">
       <button id="go-home" class="btn" type="button">Return to base address</button>
@@ -212,8 +276,14 @@
 
       const requestedPathEl = document.getElementById('requested-path');
       const jokeEl = document.getElementById('joke');
+      const jokeCountdownLabelEl = document.getElementById('joke-countdown-label');
+      const jokeCountdownFillEl = document.getElementById('joke-countdown-fill');
       const goHomeBtn = document.getElementById('go-home');
       const defaultRoute = detectDefaultRoute(basePath);
+      const JOKE_ROTATION_SECONDS = 15;
+      let jokeCountdownRemaining = JOKE_ROTATION_SECONDS;
+      let jokeCountdownTimer = null;
+      let activeJokeTemplates = [];
 
       requestedPathEl.textContent = `Requested path: ${requestedFull}`;
 
@@ -237,11 +307,17 @@
         'We ran "{PATH}" through QA and QA ran away.'
       ];
 
+      const randomLimitCache = new Map();
+
       function randomInt(maxExclusive) {
         if (!Number.isInteger(maxExclusive) || maxExclusive <= 0) return 0;
         if (window.crypto && typeof window.crypto.getRandomValues === 'function') {
           const maxUint32 = 0x100000000;
-          const limit = maxUint32 - (maxUint32 % maxExclusive);
+          let limit = randomLimitCache.get(maxExclusive);
+          if (!Number.isInteger(limit)) {
+            limit = maxUint32 - (maxUint32 % maxExclusive);
+            randomLimitCache.set(maxExclusive, limit);
+          }
           const bytes = new Uint32Array(1);
           do {
             window.crypto.getRandomValues(bytes);
@@ -252,6 +328,7 @@
       }
 
       function makeTemplateSignature(items) {
+        // FNV-1a 32-bit hash to detect template-pool changes between loads.
         let hash = 2166136261;
         for (let i = 0; i < items.length; i += 1) {
           const line = items[i];
@@ -313,14 +390,89 @@
         return items[selectedIndex];
       }
 
-      function renderJokeFromTemplates(templates) {
+      function normalizeTemplates(templates) {
         const validTemplates = templates
           .map((line) => line.trim())
           .filter((line) => line.length > 0);
+        return validTemplates.length > 0 ? validTemplates : fallbackJokes;
+      }
 
-        const template = validTemplates.length > 0 ? pickRandom(validTemplates) : pickRandom(fallbackJokes);
+      function renderNextJoke() {
+        const sourceTemplates = activeJokeTemplates.length > 0 ? activeJokeTemplates : fallbackJokes;
+        const template = pickRandom(sourceTemplates);
         jokeEl.textContent = template.replace(/\{PATH\}/g, routeLabel);
       }
+
+      function updateCountdownUI() {
+        if (jokeCountdownLabelEl) {
+          jokeCountdownLabelEl.textContent = `Next joke in ${jokeCountdownRemaining}s`;
+        }
+        if (jokeCountdownFillEl) {
+          const widthPercent = (jokeCountdownRemaining / JOKE_ROTATION_SECONDS) * 100;
+          jokeCountdownFillEl.style.width = `${Math.max(0, Math.min(100, widthPercent))}%`;
+        }
+      }
+
+      function stopJokeCountdown() {
+        if (jokeCountdownTimer) {
+          window.clearInterval(jokeCountdownTimer);
+          jokeCountdownTimer = null;
+        }
+      }
+
+      function startJokeCountdown({ reset = true } = {}) {
+        stopJokeCountdown();
+        if (reset) {
+          jokeCountdownRemaining = JOKE_ROTATION_SECONDS;
+        }
+        updateCountdownUI();
+        jokeCountdownTimer = window.setInterval(() => {
+          jokeCountdownRemaining -= 1;
+          if (jokeCountdownRemaining <= 0) {
+            renderNextJoke();
+            jokeCountdownRemaining = JOKE_ROTATION_SECONDS;
+          }
+          updateCountdownUI();
+        }, 1000);
+      }
+
+      function resumeJokeCountdown() {
+        if (jokeCountdownTimer) return;
+        startJokeCountdown({ reset: false });
+      }
+
+      function pauseJokeCountdown() {
+        stopJokeCountdown();
+      }
+
+      function cycleJokeNow() {
+        renderNextJoke();
+        jokeCountdownRemaining = JOKE_ROTATION_SECONDS;
+        updateCountdownUI();
+        startJokeCountdown({ reset: false });
+      }
+
+      jokeEl.setAttribute('role', 'button');
+      jokeEl.setAttribute('tabindex', '0');
+      jokeEl.setAttribute('aria-label', '404 joke. Debug easter egg: activate to cycle to the next joke.');
+      jokeEl.setAttribute('title', 'Debug easter egg: click to cycle joke');
+      jokeEl.addEventListener('click', () => {
+        cycleJokeNow();
+      });
+      jokeEl.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          cycleJokeNow();
+        }
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          pauseJokeCountdown();
+          return;
+        }
+        resumeJokeCountdown();
+      });
 
       const jokesUrl = withBasePath('/Server/404%20jokes.txt', basePath);
       fetch(jokesUrl, { cache: 'no-store' })
@@ -328,8 +480,16 @@
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           return response.text();
         })
-        .then((text) => renderJokeFromTemplates(text.split(/\r?\n/)))
-        .catch(() => renderJokeFromTemplates(fallbackJokes));
+        .then((text) => {
+          activeJokeTemplates = normalizeTemplates(text.split(/\r?\n/));
+          renderNextJoke();
+          startJokeCountdown();
+        })
+        .catch(() => {
+          activeJokeTemplates = fallbackJokes;
+          renderNextJoke();
+          startJokeCountdown();
+        });
     })();
   </script>
 </body>
