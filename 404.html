@@ -91,15 +91,6 @@
       text-align: left;
     }
 
-    .countdown-label {
-      display: block;
-      margin: 0 0 8px;
-      color: #4b5563;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-    }
-
     .countdown-track {
       position: relative;
       height: 12px;
@@ -108,21 +99,6 @@
       background: linear-gradient(90deg, #e5e7eb 0%, #f3f4f6 100%);
       overflow: hidden;
       box-shadow: inset 0 1px 2px rgba(17, 24, 39, 0.14);
-    }
-
-    .countdown-track::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        repeating-linear-gradient(
-          90deg,
-          rgba(255, 255, 255, 0.22) 0,
-          rgba(255, 255, 255, 0.22) calc(100% / 15 - 1px),
-          rgba(31, 41, 55, 0.10) calc(100% / 15 - 1px),
-          rgba(31, 41, 55, 0.10) calc(100% / 15)
-        );
-      pointer-events: none;
     }
 
     .countdown-fill {
@@ -167,7 +143,6 @@
 
     <p class="joke" id="joke">Generating a custom NewGen-level excuse…</p>
     <div class="countdown" aria-live="polite">
-      <span class="countdown-label" id="joke-countdown-label">Preparing next joke...</span>
       <div class="countdown-track" role="presentation">
         <div class="countdown-fill" id="joke-countdown-fill"></div>
       </div>
@@ -276,7 +251,6 @@
 
       const requestedPathEl = document.getElementById('requested-path');
       const jokeEl = document.getElementById('joke');
-      const jokeCountdownLabelEl = document.getElementById('joke-countdown-label');
       const jokeCountdownFillEl = document.getElementById('joke-countdown-fill');
       const goHomeBtn = document.getElementById('go-home');
       const defaultRoute = detectDefaultRoute(basePath);
@@ -404,9 +378,6 @@
       }
 
       function updateCountdownUI() {
-        if (jokeCountdownLabelEl) {
-          jokeCountdownLabelEl.textContent = `Next joke in ${jokeCountdownRemaining}s`;
-        }
         if (jokeCountdownFillEl) {
           const widthPercent = (jokeCountdownRemaining / JOKE_ROTATION_SECONDS) * 100;
           jokeCountdownFillEl.style.width = `${Math.max(0, Math.min(100, widthPercent))}%`;
@@ -474,7 +445,7 @@
         resumeJokeCountdown();
       });
 
-      const jokesUrl = withBasePath('/Server/404%20jokes.txt', basePath);
+      const jokesUrl = withBasePath('/Server/404 jokes.txt', basePath);
       fetch(jokesUrl, { cache: 'no-store' })
         .then((response) => {
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
