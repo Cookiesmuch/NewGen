@@ -13,6 +13,7 @@ const SHUTDOWN_TIMEOUT_MS = 2000;
 const WATCHDOG_TIMEOUT_MS = 10000;
 const WATCHDOG_POLL_INTERVAL_MS = 2000;
 const WATCHDOG_SHUTDOWN_COUNTDOWN_S = 3;
+const WATCHDOG_CLOSE_GRACE_COUNTDOWN_S = 8;
 const BOX_RULE = '+------------------------------------------------------------------+';
 const BOX_INNER_WIDTH = BOX_RULE.length - 2;
 
@@ -114,10 +115,10 @@ const server = http.createServer((req, res) => {
     console.log('[WATCHDOG] Browser reported a close event. Starting graceful shutdown countdown.');
     res.writeHead(204);
     res.end();
-    // Use a short grace period before shutting down. If a new heartbeat arrives
-    // within 3 s the beforeunload fired during a page navigation, not a true close.
+    // Use a grace period before shutting down. If a new heartbeat arrives
+    // within this window, the close signal was likely from navigation/reload.
     if (!pendingShutdownTimer) {
-      startWatchdogShutdownCountdown('BROWSER_CLOSED', WATCHDOG_SHUTDOWN_COUNTDOWN_S, true);
+      startWatchdogShutdownCountdown('BROWSER_CLOSED', WATCHDOG_CLOSE_GRACE_COUNTDOWN_S, true);
     }
     return;
   }

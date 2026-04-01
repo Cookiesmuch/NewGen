@@ -238,7 +238,27 @@
       ];
 
       function pickRandom(items) {
-        return items[Math.floor(Math.random() * items.length)];
+        if (!Array.isArray(items) || items.length === 0) return '';
+        const storageKey = 'ng_404_last_template_index';
+        let nextIndex = Math.floor(Math.random() * items.length);
+        if (items.length > 1) {
+          try {
+            const previousRaw = sessionStorage.getItem(storageKey);
+            const previous = previousRaw === null ? -1 : parseInt(previousRaw, 10);
+            if (Number.isInteger(previous) && previous >= 0 && previous < items.length && previous === nextIndex) {
+              // Choose a non-zero offset so we always land on a different index.
+              nextIndex = (nextIndex + 1 + Math.floor(Math.random() * (items.length - 1))) % items.length;
+            }
+          } catch (error) {
+            // storage unavailable (privacy mode, sandbox), keep non-persistent random result
+          }
+        }
+        try {
+          sessionStorage.setItem(storageKey, String(nextIndex));
+        } catch (error) {
+          // ignore storage errors
+        }
+        return items[nextIndex];
       }
 
       function renderJokeFromTemplates(templates) {
