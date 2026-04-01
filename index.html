@@ -742,7 +742,7 @@
     // Add event listeners for sub-category headers
     document.querySelectorAll('.sub-cat-header').forEach(header => {
       header.addEventListener('click', () => {
-        const subKey = `${header.dataset.productPath || ''}::${header.dataset.subcat || ''}`;
+        const subKey = createSubCategoryKey(header.dataset.productPath, header.dataset.subcat);
         autoExpandedState.subCategories.delete(subKey);
         header.classList.toggle('active');
         const items = header.nextElementSibling;
@@ -865,6 +865,22 @@
     return PAGES.find((p) => p.path === pathname) || PAGES[0];
   }
 
+  function isKnownPagePath(pathname) {
+    return PAGES.some((p) => p.path === pathname);
+  }
+
+  function createSubCategoryKey(productPath, subcat) {
+    return `${productPath || ''}::${subcat || ''}`;
+  }
+
+  function getNavItemByPath(pathname) {
+    return [...document.querySelectorAll('.nav-item')].find((btn) => btn.dataset.path === pathname) || null;
+  }
+
+  function getProductToggleByPath(productPath) {
+    return [...document.querySelectorAll('.product-toggle')].find((btn) => btn.dataset.productPath === productPath) || null;
+  }
+
   function openCompanySection(companyItems, shouldTrackAuto) {
     if (!companyItems) return;
     const companyHeader = companyItems.previousElementSibling;
@@ -904,19 +920,20 @@
     subCategoryItems.classList.add('open');
     subCategoryHeader.classList.add('active');
     subCategoryHeader.setAttribute('aria-expanded', 'true');
-    const subKey = `${subCategoryHeader.dataset.productPath || ''}::${subCategoryHeader.dataset.subcat || ''}`;
+    const subKey = createSubCategoryKey(subCategoryHeader.dataset.productPath, subCategoryHeader.dataset.subcat);
     if (!wasOpen && shouldTrackAuto) autoExpandedState.subCategories.add(subKey);
     if (!shouldTrackAuto) autoExpandedState.subCategories.delete(subKey);
   }
 
   function collapseAutoExpandedForProduct(productPath) {
-    const productButton = document.querySelector(`.nav-item.product-main[data-path="${productPath}"]`) || document.querySelector(`.nav-item[data-path="${productPath}"]`);
+    if (!isKnownPagePath(productPath)) return;
+    const productButton = getNavItemByPath(productPath);
     const companyItemsForProduct = productButton?.closest('.cat-items') || null;
     const companyHeaderForProduct = companyItemsForProduct?.previousElementSibling || null;
     const companyKey = companyHeaderForProduct?.dataset?.company || '';
 
     document.querySelectorAll('.sub-cat-header[data-product-path]').forEach((header) => {
-      const subKey = `${header.dataset.productPath || ''}::${header.dataset.subcat || ''}`;
+      const subKey = createSubCategoryKey(header.dataset.productPath, header.dataset.subcat);
       if (header.dataset.productPath === productPath && autoExpandedState.subCategories.has(subKey)) {
         const items = header.nextElementSibling;
         if (items && items.classList.contains('sub-cat-items')) {
@@ -928,7 +945,7 @@
       }
     });
 
-    const productToggle = document.querySelector(`.product-toggle[data-product-path="${productPath}"]`);
+    const productToggle = getProductToggleByPath(productPath);
     if (productToggle && autoExpandedState.products.has(productPath)) {
       const productSubcats = productToggle.closest('.product-group')?.querySelector('.product-subcats');
       if (productSubcats) {
