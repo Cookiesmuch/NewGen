@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redirecting…</title>
+</head>
+<body>
+  <script>
+    (function () {
+      const knownRouteRoots = new Set(['Intel', 'Sony', 'ASUS']);
+      const pathname = window.location.pathname;
+      const search = window.location.search || '';
+      const hash = window.location.hash || '';
+      const segments = pathname.replace(/^\/+|\/+$/g, '').split('/').filter(Boolean);
+
+      let basePath = '';
+      let routeSegments = segments;
+      if (segments.length > 0 && !knownRouteRoots.has(segments[0])) {
+        basePath = `/${segments[0]}`;
+        routeSegments = segments.slice(1);
+      }
+
+      const routePath = `/${routeSegments.join('/')}`.replace(/\/+$/, '') || '/';
+      const looksLikeAsset = /\.[a-z0-9]+$/i.test(routePath);
+      if (routePath === '/' || looksLikeAsset) {
+        return;
+      }
+
+      const encodedRoute = encodeURIComponent(`${routePath}${search}${hash}`);
+      window.location.replace(`${basePath}/?ng_route=${encodedRoute}`);
+    })();
+  </script>
+</body>
+</html>

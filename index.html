@@ -1479,6 +1479,18 @@
     });
   }
 
+  const redirectRouteParam = new URLSearchParams(window.location.search).get('ng_route');
+  if (redirectRouteParam) {
+    try {
+      const decodedRedirectRoute = decodeURIComponent(redirectRouteParam);
+      if (decodedRedirectRoute.startsWith('/')) {
+        history.replaceState({}, '', withBasePath(decodedRedirectRoute, APP_BASE_PATH));
+      }
+    } catch (_error) {
+      // Ignore malformed redirect values and continue with pathname routing.
+    }
+  }
+
   // Load the page that matches the current URL on first visit
   const currentRoutePath = stripBasePath(window.location.pathname, APP_BASE_PATH);
    if (currentRoutePath === '/') {
