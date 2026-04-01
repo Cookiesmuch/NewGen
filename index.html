@@ -1519,8 +1519,16 @@
     return `${withBasePath('/404.html', APP_BASE_PATH)}?${params.toString()}`;
   }
 
-  function routeTo404(pathname, search, hash) {
-    window.location.replace(build404Url(pathname, search, hash));
+  function navigateTo404InShell(pathname, search, hash) {
+    navIsLoading = true;
+    indicatorLoadingTarget = null;
+    updateNavStateIndicator();
+    frame.src = build404Url(pathname, search, hash);
+    document.querySelectorAll('.nav-item').forEach((btn) => {
+      btn.classList.remove('active');
+    });
+    updateActiveProductHighlights('');
+    updateNavStateIndicator();
   }
 
   // Load the page that matches the current URL on first visit
@@ -1530,7 +1538,7 @@
     history.replaceState({ path: defaultPage.path }, '', withBasePath(defaultPage.path, APP_BASE_PATH));
     navigate(defaultPage, false);
   } else if (!isKnownPagePath(currentRoutePath)) {
-    routeTo404(currentRoutePath, window.location.search, window.location.hash);
+    navigateTo404InShell(currentRoutePath, window.location.search, window.location.hash);
   } else {
     navigate(findPage(currentRoutePath), false);
   }
@@ -1540,7 +1548,7 @@
   window.addEventListener('popstate', () => {
     const popPath = stripBasePath(window.location.pathname, APP_BASE_PATH);
     if (!isKnownPagePath(popPath)) {
-      routeTo404(popPath, window.location.search, window.location.hash);
+      navigateTo404InShell(popPath, window.location.search, window.location.hash);
       return;
     }
     navigate(findPage(popPath), false);

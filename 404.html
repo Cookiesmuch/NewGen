@@ -56,7 +56,7 @@
       width: min(420px, 100%);
       border-radius: 12px;
       overflow: hidden;
-      border: 1px solid #e5e7eb;
+      border: none;
     }
 
     .gif-wrap img {
@@ -203,6 +203,14 @@
       requestedPathEl.textContent = `Requested path: ${requestedFull}`;
 
       goHomeBtn.addEventListener('click', () => {
+        try {
+          if (window.parent && window.parent !== window && typeof window.parent.navigateToPath === 'function') {
+            window.parent.navigateToPath('/Intel/Eventide', { source: 'return-to-main' });
+            return;
+          }
+        } catch (error) {
+          // fall through to local navigation
+        }
         window.location.href = withBasePath('/', basePath);
       });
 
