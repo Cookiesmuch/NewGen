@@ -13,6 +13,7 @@ const SHUTDOWN_TIMEOUT_MS = 2000;
 const WATCHDOG_TIMEOUT_MS = 10000;
 const WATCHDOG_POLL_INTERVAL_MS = 2000;
 const WATCHDOG_SHUTDOWN_COUNTDOWN_S = 3;
+const WATCHDOG_CLOSE_GRACE_COUNTDOWN_S = 8;
 const BOX_RULE = '+------------------------------------------------------------------+';
 const BOX_INNER_WIDTH = BOX_RULE.length - 2;
 
@@ -114,10 +115,10 @@ const server = http.createServer((req, res) => {
     console.log('[WATCHDOG] Browser reported a close event. Starting graceful shutdown countdown.');
     res.writeHead(204);
     res.end();
-    // Use a short grace period before shutting down. If a new heartbeat arrives
-    // within 3 s the beforeunload fired during a page navigation, not a true close.
+    // Use a grace period before shutting down. If a new heartbeat arrives
+    // within this window, the close signal was likely from navigation/reload.
     if (!pendingShutdownTimer) {
-      startWatchdogShutdownCountdown('BROWSER_CLOSED', WATCHDOG_SHUTDOWN_COUNTDOWN_S, true);
+      startWatchdogShutdownCountdown('BROWSER_CLOSED', WATCHDOG_CLOSE_GRACE_COUNTDOWN_S, true);
     }
     return;
   }
@@ -131,18 +132,45 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Strip query string
+  // Strip query string and decode URL-encoded path segments for filesystem lookup.
   const urlPath = req.url.split('?')[0];
+  let fileSystemPath = urlPath;
+  try {
+    fileSystemPath = decodeURIComponent(urlPath);
+  } catch (error) {
+    const logPathPreview = urlPath.replace(/[\r\n\t]/g, ' ').slice(0, 120);
+    console.warn(`[WARN] Failed to decode URL path (preview="${logPathPreview}"): ${error.message}`);
+    res.writeHead(400, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end('<h1>400 Bad Request</h1>');
+    return;
+  }
+  if (fileSystemPath.includes('\0')) {
+    res.writeHead(400, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end('<h1>400 Bad Request</h1>');
+    return;
+  }
 
   // If the request has no file extension it is a page route — serve the SPA shell
-  const ext = path.extname(urlPath).toLowerCase();
+  const ext = path.extname(fileSystemPath).toLowerCase();
   if (!ext) {
     serveFile(path.join(ROOT, 'index.html'), res, req.url);
     return;
   }
 
+  // Normalize path separators/dots, then force relative asset lookup under ROOT.
+  const normalizedAssetPath = path.normalize(fileSystemPath);
+  const trimmedAssetPath = normalizedAssetPath.replace(/^[\\/]+/, '');
+  const resolvedAssetPath = path.resolve(path.join(ROOT, trimmedAssetPath));
+  // Reject traversal if resolved path escapes ROOT.
+  const relativeAssetPath = path.relative(ROOT, resolvedAssetPath);
+  if (relativeAssetPath.startsWith('..') || path.isAbsolute(relativeAssetPath)) {
+    res.writeHead(403, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end('<h1>403 Forbidden</h1>');
+    return;
+  }
+
   // Otherwise serve the static asset directly
-  serveFile(path.join(ROOT, urlPath), res, req.url);
+  serveFile(resolvedAssetPath, res, req.url);
 });
 
 function printBanner() {
