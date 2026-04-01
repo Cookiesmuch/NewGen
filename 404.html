@@ -27,8 +27,15 @@
         return;
       }
 
-      const encodedRoute = encodeURIComponent(`${routePath}${search}${hash}`);
-      window.location.replace(`${basePath}/?ng_route=${encodedRoute}`);
+      const redirectParams = new URLSearchParams();
+      redirectParams.set('ng_route', routePath);
+      if (search.length > 1) {
+        redirectParams.set('ng_search', search.slice(1));
+      }
+      if (hash.length > 1) {
+        redirectParams.set('ng_hash', hash.slice(1));
+      }
+      window.location.replace(`${basePath}/?${redirectParams.toString()}`);
     })();
   </script>
 </body>
