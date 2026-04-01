@@ -16,6 +16,8 @@ const WATCHDOG_SHUTDOWN_COUNTDOWN_S = 3;
 const WATCHDOG_CLOSE_GRACE_COUNTDOWN_S = 8;
 const BOX_RULE = '+------------------------------------------------------------------+';
 const BOX_INNER_WIDTH = BOX_RULE.length - 2;
+const ROUTE_REGEX = /\{\s*path:\s*'([^']+)'\s*,\s*src:\s*'([^']+)'\s*\}/g;
+const IFRAME_REGEX = /<iframe id="page-frame"([^>]*)><\/iframe>/i;
 
 let browserOpened = false;
 let shuttingDown = false;
@@ -26,6 +28,8 @@ let pendingShutdownReason = null;
 let pendingShutdownStartedAt = 0;
 let watchdogTimeoutDetected = false;
 let serverRequestsClientClose = false;
+let shellTemplateCache = null;
+let routeMapCache = null;
 
 function boxLine(content) {
   return `|${content.padEnd(BOX_INNER_WIDTH)}|`;
@@ -58,6 +62,55 @@ function escapeHtml(value) {
           : char === '"' ? '&quot;'
             : '&#39;'
   ));
+}
+
+function loadShellTemplate() {
+  if (shellTemplateCache) {
+    return shellTemplateCache;
+  }
+  shellTemplateCache = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  return shellTemplateCache;
+}
+
+function getRouteMap() {
+  if (routeMapCache) {
+    return routeMapCache;
+  }
+  const source = loadShellTemplate();
+  const map = new Map();
+  let match;
+  while ((match = ROUTE_REGEX.exec(source)) !== null) {
+    map.set(match[1], match[2]);
+  }
+  routeMapCache = map;
+  return routeMapCache;
+}
+
+function build404IframeSrc(pathname, search) {
+  const params = new URLSearchParams();
+  params.set('ng_404_route', pathname);
+  if (search && search.length > 1) {
+    params.set('ng_404_search', search.slice(1));
+  }
+  return `/404.html?${params.toString()}`;
+}
+
+function buildInitialIframeSrc(pathname, search) {
+  const routeMap = getRouteMap();
+  const knownRouteSrc = routeMap.get(pathname);
+  if (knownRouteSrc) {
+    return knownRouteSrc;
+  }
+  return build404IframeSrc(pathname, search);
+}
+
+function renderShellWithInitialIframe(pathname, search) {
+  const shellTemplate = loadShellTemplate();
+  const initialIframeSrc = escapeHtml(buildInitialIframeSrc(pathname, search));
+  return shellTemplate.replace(
+    IFRAME_REGEX,
+    `<iframe id="page-frame"$1 src="${initialIframeSrc}"></iframe>`
+  );
 }
 
 function serveFile(filePath, res, fallbackUrl) {
@@ -153,7 +206,9 @@ const server = http.createServer((req, res) => {
   // If the request has no file extension it is a page route — serve the SPA shell
   const ext = path.extname(fileSystemPath).toLowerCase();
   if (!ext) {
-    serveFile(path.join(ROOT, 'index.html'), res, req.url);
+    const shellHtml = renderShellWithInitialIframe(fileSystemPath, req.url.slice(urlPath.length));
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(shellHtml);
     return;
   }
 
