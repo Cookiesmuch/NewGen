@@ -175,7 +175,7 @@
       function detectDefaultRoute(basePath) {
         try {
           if (window.parent && window.parent !== window && typeof window.parent.findPage === 'function') {
-            const defaultPage = window.parent.findPage('/');
+            const defaultPage = window.parent.findPage('/Intel/Eventide');
             if (defaultPage && typeof defaultPage.path === 'string') {
               return defaultPage.path;
             }
@@ -183,7 +183,7 @@
         } catch (error) {
           // fall back to static default route
         }
-        return '/';
+        return '/Intel/Eventide';
       }
 
       function detectBasePath(pathname) {
@@ -209,7 +209,7 @@
         if (knownRouteRoots.has(segments[0])) {
           return '';
         }
-        if (isGitHubPagesHost) {
+        if (isGitHubPagesHost || segments.length === 1) {
           return `/${segments[0]}`;
         }
         return '';
