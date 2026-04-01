@@ -319,7 +319,8 @@
   }
 
   .product-subcats.open {
-    max-height: 2000px;
+    /* High cap to support large product menus while keeping CSS-only transitions. */
+    max-height: 10000px;
   }
 
   /* Collapsed sidebar page indicator */
@@ -685,15 +686,16 @@
                     </div>
                   `;
                 }
+                const productSubcatsId = `product-subcats-${item.path.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
                 itemHtml = `
                   <div class="product-group" data-product-path="${item.path}">
                     <div class="product-row">
                       <button class="nav-item product-main" data-path="${item.path}"><span class="nav-item-icon">${pageIcon}</span> ${item.label}</button>
-                      <button class="product-toggle" data-product-path="${item.path}" aria-expanded="false" aria-label="Toggle ${item.label} subcategories">
+                      <button class="product-toggle" data-product-path="${item.path}" aria-expanded="false" aria-label="Expand ${item.label} subcategories" aria-controls="${productSubcatsId}">
                         <span class="product-toggle-icon">▶</span>
                       </button>
                     </div>
-                    <div class="product-subcats">
+                    <div class="product-subcats" id="${productSubcatsId}">
                       ${subCategoriesHtml}
                     </div>
                   </div>
@@ -735,7 +737,11 @@
         if (!productSubcats) return;
         productSubcats.classList.toggle('open');
         toggle.classList.toggle('active', productSubcats.classList.contains('open'));
-        toggle.setAttribute('aria-expanded', productSubcats.classList.contains('open') ? 'true' : 'false');
+        const expanded = productSubcats.classList.contains('open');
+        toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        const productMain = toggle.closest('.product-group')?.querySelector('.product-main');
+        const productLabel = productMain ? productMain.textContent.trim() : 'product';
+        toggle.setAttribute('aria-label', `${expanded ? 'Collapse' : 'Expand'} ${productLabel} subcategories`);
       });
     });
 
@@ -907,6 +913,7 @@
     productSubcats.classList.add('open');
     productToggle.classList.add('active');
     productToggle.setAttribute('aria-expanded', 'true');
+    productToggle.setAttribute('aria-label', `Collapse ${activeButton.textContent.trim()} subcategories`);
     if (!wasOpen && shouldTrackAuto) autoExpandedState.products.add(productPath);
     if (!shouldTrackAuto) autoExpandedState.products.delete(productPath);
   }
@@ -953,6 +960,9 @@
       }
       productToggle.classList.remove('active');
       productToggle.setAttribute('aria-expanded', 'false');
+      const productMain = productToggle.closest('.product-group')?.querySelector('.product-main');
+      const productLabel = productMain ? productMain.textContent.trim() : 'product';
+      productToggle.setAttribute('aria-label', `Expand ${productLabel} subcategories`);
       autoExpandedState.products.delete(productPath);
     }
 
