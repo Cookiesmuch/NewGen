@@ -133,6 +133,20 @@
         return `${basePath}${pathname}`;
       }
 
+      function detectDefaultRoute(basePath) {
+        try {
+          if (window.parent && window.parent !== window && typeof window.parent.findPage === 'function') {
+            const defaultPage = window.parent.findPage('/Intel/Eventide');
+            if (defaultPage && typeof defaultPage.path === 'string') {
+              return defaultPage.path;
+            }
+          }
+        } catch (error) {
+          // fall back to static default route
+        }
+        return '/Intel/Eventide';
+      }
+
       function detectBasePath(pathname) {
         const normalized = pathname.replace(/\/+$/, '') || '/';
         const host = window.location.hostname.toLowerCase();
@@ -199,13 +213,14 @@
       const requestedPathEl = document.getElementById('requested-path');
       const jokeEl = document.getElementById('joke');
       const goHomeBtn = document.getElementById('go-home');
+      const defaultRoute = detectDefaultRoute(basePath);
 
       requestedPathEl.textContent = `Requested path: ${requestedFull}`;
 
       goHomeBtn.addEventListener('click', () => {
         try {
           if (window.parent && window.parent !== window && typeof window.parent.navigateToPath === 'function') {
-            window.parent.navigateToPath('/Intel/Eventide', { source: 'return-to-main' });
+            window.parent.navigateToPath(defaultRoute, { source: 'return-to-main' });
             return;
           }
         } catch (error) {
