@@ -17,6 +17,7 @@
     --mono: "IBM Plex Mono", "Cascadia Mono", monospace;
     --sans: "Segoe UI", "Inter", sans-serif;
     --topbar-height: 58px;
+    --sidebar-width: 280px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,10 +28,12 @@
     color: var(--text);
     min-height: 100vh;
     display: grid;
-    grid-template-rows: auto 1fr;
+    grid-template-columns: var(--sidebar-width) 1fr;
+    grid-template-rows: var(--topbar-height) 1fr;
   }
 
   .topbar {
+    grid-column: 1 / -1;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -54,13 +57,8 @@
     font-weight: 600;
   }
 
-  .nav {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .nav button {
+  .menu-toggle {
+    display: none;
     border: 1px solid var(--border);
     background: var(--surface);
     color: var(--text);
@@ -70,17 +68,96 @@
     text-transform: uppercase;
     padding: 8px 12px;
     cursor: pointer;
-    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+    transition: border-color 0.2s ease;
   }
 
-  .nav button:hover {
+  .menu-toggle:hover {
     border-color: var(--accent);
+  }
+
+  .sidebar {
+    background: rgba(10, 16, 28, 0.88);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px 0;
+  }
+
+  .nav-category {
+    margin-bottom: 12px;
+  }
+
+  .cat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    transition: color 0.2s ease;
+  }
+
+  .cat-header:hover {
+    color: var(--text);
+  }
+
+  .cat-header.active {
+    color: var(--accent-2);
+  }
+
+  .cat-icon {
+    transition: transform 0.2s ease;
+  }
+
+  .cat-header.active .cat-icon {
+    transform: rotate(90deg);
+  }
+
+  .cat-items {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .cat-items.open {
+    max-height: 1000px;
+  }
+
+  .nav-item {
+    display: block;
+    padding: 9px 18px 9px 32px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    background: none;
+    border: none;
+    border-left: 2px solid transparent;
+    width: 100%;
+    text-align: left;
+  }
+
+  .nav-item:hover {
+    background: rgba(77, 163, 255, 0.08);
+    border-left-color: var(--accent);
     color: #ffffff;
   }
 
-  .nav button.active {
-    border-color: var(--accent);
-    background: var(--surface-2);
+  .nav-item.active {
+    background: rgba(77, 163, 255, 0.15);
+    border-left-color: var(--accent);
     color: #ffffff;
   }
 
@@ -89,6 +166,33 @@
     height: calc(100vh - var(--topbar-height));
     border: none;
     background: #ffffff;
+  }
+
+  @media (max-width: 900px) {
+    body {
+      grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: var(--topbar-height);
+      left: -100%;
+      width: var(--sidebar-width);
+      height: calc(100vh - var(--topbar-height));
+      z-index: 1000;
+      transition: left 0.3s ease;
+      border-right: 1px solid var(--border);
+      background: rgba(10, 16, 28, 0.98);
+      backdrop-filter: blur(8px);
+    }
+
+    .sidebar.open {
+      left: 0;
+    }
+
+    .menu-toggle {
+      display: block;
+    }
   }
 
   .watchdog-banner {
@@ -121,19 +225,19 @@
   @media (max-width: 760px) {
     .topbar { padding: 12px; }
     .brand { font-size: 10px; letter-spacing: 0.1em; }
-    .nav button { font-size: 10px; padding: 7px 10px; }
+    .menu-toggle { font-size: 10px; padding: 7px 10px; }
   }
 </style>
 </head>
 <body>
   <header class="topbar">
     <div class="brand"><strong>NewGen</strong> dynamic page loader</div>
-    <nav class="nav" aria-label="Page Navigation">
-      <button type="button" data-path="/Intel/Eventide">Intel Eventide</button>
-      <button type="button" data-path="/Sony/ILCE-0">Sony a0</button>
-      <button type="button" data-path="/Sony/XCD-LED">Sony XCD-LED</button>
-    </nav>
+    <button type="button" class="menu-toggle" id="menu-toggle">Menu</button>
   </header>
+
+  <nav class="sidebar" id="sidebar" aria-label="Company Navigation">
+    <!-- Navigation will be generated dynamically -->
+  </nav>
 
   <div id="watchdog-banner" class="watchdog-banner" role="status" aria-live="assertive"></div>
   <iframe id="page-frame" class="viewer" title="Dynamic Content Viewer"></iframe>
@@ -160,6 +264,7 @@
     { path: '/Intel/Eventide', src: '/Source/INTEL/Eventide/intel.eventide.brochure.html' },
     { path: '/Sony/ILCE-0',    src: '/Source/SONY/ILCE-0/sony.a0.brochure.html' },
     { path: '/Sony/XCD-LED',   src: '/Source/SONY/XCD-LED/sony,XCDLED.brochure.html' },
+    { path: '/ASUS/Ceralumenesium', src: '/Source/ASUS/Material/Ceraluminesium/asus.ceraluminesium.brochure.html' },
 
     // CPU Architecture Deep Dives
     { path: '/Intel/Eventide/CPU/SolarEclipse', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
@@ -207,8 +312,75 @@
   }
 
   const frame = document.getElementById('page-frame');
-  const buttons = Array.from(document.querySelectorAll('.nav button'));
+  const sidebar = document.getElementById('sidebar');
+  const menuToggle = document.getElementById('menu-toggle');
   const APP_BASE_PATH = detectAppBasePath(window.location.pathname, PAGES.map((page) => page.path));
+
+  // Build navigation structure from PAGES
+  const NAV_STRUCTURE = {
+    'Intel': [
+      { label: 'Eventide', path: '/Intel/Eventide' }
+    ],
+    'Sony': [
+      { label: 'Alpha 0 (a0)', path: '/Sony/ILCE-0' },
+      { label: 'XCD-LED', path: '/Sony/XCD-LED' }
+    ],
+    'ASUS': [
+      { label: 'Ceralumenesium Sapphire', path: '/ASUS/Ceralumenesium' }
+    ]
+  };
+
+  // Build sidebar navigation
+  function buildNavigation() {
+    let html = '';
+    for (const [company, items] of Object.entries(NAV_STRUCTURE)) {
+      html += `
+        <div class="nav-category">
+          <button class="cat-header" data-company="${company}">
+            <span>${company}</span>
+            <span class="cat-icon">▶</span>
+          </button>
+          <div class="cat-items">
+            ${items.map(item => `
+              <button class="nav-item" data-path="${item.path}">${item.label}</button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+    sidebar.innerHTML = html;
+
+    // Add event listeners
+    document.querySelectorAll('.cat-header').forEach(header => {
+      header.addEventListener('click', () => {
+        header.classList.toggle('active');
+        const items = header.nextElementSibling;
+        items.classList.toggle('open');
+      });
+    });
+
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const page = findPage(btn.dataset.path);
+        if (page.path !== stripBasePath(window.location.pathname, APP_BASE_PATH)) {
+          navigate(page, true);
+        }
+        // Close mobile menu
+        if (window.innerWidth <= 900) {
+          sidebar.classList.remove('open');
+        }
+      });
+    });
+  }
+
+  // Mobile menu toggle
+  menuToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+  });
+
+  // Initialize navigation
+  buildNavigation();
+
   const HEARTBEAT_INTERVAL_MS = 2000;
   const HEARTBEAT_FAILURE_THRESHOLD_COUNT = 2;
   const PING_INTERVAL_MS = 3000;
@@ -247,7 +419,11 @@
       history.pushState({ path: page.path }, '', withBasePath(page.path, APP_BASE_PATH));
     }
     frame.src = withBasePath(page.src, APP_BASE_PATH);
-    buttons.forEach((btn) => btn.classList.toggle('active', btn.dataset.path === page.path));
+
+    // Update active state
+    document.querySelectorAll('.nav-item').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.path === page.path);
+    });
   }
 
   // Restore scroll position after the iframe finishes loading.
@@ -428,16 +604,6 @@
   // Handle browser back / forward
   window.addEventListener('popstate', () => {
     navigate(findPage(stripBasePath(window.location.pathname, APP_BASE_PATH)), false);
-  });
-
-  // Handle nav button clicks
-  buttons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const page = findPage(btn.dataset.path);
-      if (page.path !== window.location.pathname) {
-        navigate(page, true);
-      }
-    });
   });
 </script>
 </body>
