@@ -98,6 +98,29 @@ const NAV_STRUCTURE = {
 };
 ```
 
+### Step 2.5: Define Sidebar Page Highlight Colors
+
+In `index.html`, set each page's sidebar highlight color in `PRODUCT_HIGHLIGHT_COLORS` so subcategories visually read as belonging to that parent page.
+
+```javascript
+const PRODUCT_HIGHLIGHT_COLORS = {
+  // Choose based on the page's vibe.
+  '/Intel/Eventide': {
+    soft: 'rgba(200, 146, 42, 0.08)',
+    row: 'rgba(200, 146, 42, 0.10)',
+    border: 'rgba(200, 146, 42, 0.38)',
+    hover: 'rgba(77, 163, 255, 0.08)',
+    active: 'rgba(77, 163, 255, 0.15)'
+  }
+};
+```
+
+- `soft`: background for the expanded subcategory container
+- `row`: default background for each category/subpage row
+- `border`: left accent border tying the group to the parent page
+- `hover`: hover-state background for category/subpage rows
+- `active`: active selected subpage background
+
 ### Simple Product Without Subcategories
 
 If a product doesn't have subcategories yet, use the simple format:

@@ -316,11 +316,30 @@
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--product-highlight-soft, transparent);
+    border-left: 2px solid var(--product-highlight-border, transparent);
   }
 
   .product-subcats.open {
     /* High cap to support large product menus while keeping CSS-only transitions. */
     max-height: 10000px;
+  }
+
+  .product-group .sub-cat-header {
+    background: var(--product-highlight-row, transparent);
+  }
+
+  .product-group .nav-item.nested {
+    background: var(--product-highlight-row, transparent);
+  }
+
+  .product-group .sub-cat-header:hover,
+  .product-group .nav-item.nested:hover {
+    background: var(--product-highlight-hover, rgba(77, 163, 255, 0.08));
+  }
+
+  .product-group .nav-item.nested.active {
+    background: var(--product-highlight-active, rgba(77, 163, 255, 0.15));
   }
 
   /* Collapsed sidebar page indicator */
@@ -602,6 +621,17 @@
     }
   };
 
+  const PRODUCT_HIGHLIGHT_COLORS = {
+    // Choose based on the page's vibe.
+    '/Intel/Eventide': {
+      soft: 'rgba(200, 146, 42, 0.08)',
+      row: 'rgba(200, 146, 42, 0.10)',
+      border: 'rgba(200, 146, 42, 0.38)',
+      hover: 'rgba(77, 163, 255, 0.08)',
+      active: 'rgba(77, 163, 255, 0.15)'
+    }
+  };
+
   // Build navigation structure from PAGES with nested categories
   const NAV_STRUCTURE = {
     'Intel': [
@@ -726,6 +756,18 @@
         items.classList.toggle('open');
         header.setAttribute('aria-expanded', items.classList.contains('open') ? 'true' : 'false');
       });
+    });
+
+    // Apply per-product highlight colors to make sub-sections visually belong to their page
+    document.querySelectorAll('.product-group').forEach((group) => {
+      const productPath = group.dataset.productPath;
+      const highlight = PRODUCT_HIGHLIGHT_COLORS[productPath];
+      if (!highlight) return;
+      group.style.setProperty('--product-highlight-soft', highlight.soft);
+      group.style.setProperty('--product-highlight-row', highlight.row);
+      group.style.setProperty('--product-highlight-border', highlight.border);
+      group.style.setProperty('--product-highlight-hover', highlight.hover || 'rgba(77, 163, 255, 0.08)');
+      group.style.setProperty('--product-highlight-active', highlight.active || 'rgba(77, 163, 255, 0.15)');
     });
 
     // Add event listeners for product toggles
