@@ -17,6 +17,8 @@
     --muted: #8da0bd;
     --accent: #4da3ff;
     --accent-2: #f0b848;
+    --nav-hover-bg: rgba(77, 163, 255, 0.08);
+    --nav-active-bg: rgba(77, 163, 255, 0.15);
     --border: #20314f;
     --mono: "IBM Plex Mono", "Cascadia Mono", monospace;
     --sans: "Segoe UI", "Inter", sans-serif;
@@ -170,7 +172,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 9px 18px 9px 32px;
+    padding: 9px 30px 9px 32px;
     font-family: var(--mono);
     font-size: 11px;
     letter-spacing: 0.06em;
@@ -179,23 +181,22 @@
     border-left: 2px solid transparent;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
-    background: none;
+    background: var(--product-highlight-row, transparent);
     border: none;
     border-left: 2px solid transparent;
     width: 100%;
     text-align: left;
+    position: relative;
   }
 
   .nav-item:hover {
-    background: rgba(77, 163, 255, 0.08);
-    border-left-color: var(--accent);
+    border-left-color: var(--product-highlight-border, var(--accent));
     color: #ffffff;
     transform: translateX(2px);
   }
 
   .nav-item.active {
-    background: rgba(77, 163, 255, 0.15);
-    border-left-color: var(--accent);
+    border-left-color: var(--product-highlight-border, var(--accent));
     color: #ffffff;
   }
 
@@ -279,6 +280,17 @@
 
   .nav-item.product-main {
     flex: 1;
+    background: var(--product-highlight-row, transparent);
+    border-left-color: var(--product-highlight-border, transparent);
+  }
+
+  .nav-item.product-main:hover {
+    background: var(--product-highlight-row, transparent);
+  }
+
+  .nav-item.product-main.active {
+    background: var(--product-highlight-row, transparent);
+    border-left-color: var(--product-highlight-border, var(--accent));
   }
 
   .product-toggle {
@@ -295,7 +307,7 @@
 
   .product-toggle:hover {
     color: var(--text);
-    background: rgba(77, 163, 255, 0.08);
+    background: var(--nav-hover-bg);
   }
 
   .product-toggle.active {
@@ -335,11 +347,62 @@
 
   .product-group .sub-cat-header:hover,
   .product-group .nav-item.nested:hover {
-    background: var(--product-highlight-hover, rgba(77, 163, 255, 0.08));
+    background: var(--product-highlight-row, transparent);
   }
 
   .product-group .nav-item.nested.active {
-    background: var(--product-highlight-active, rgba(77, 163, 255, 0.15));
+    background: var(--product-highlight-row, transparent);
+  }
+
+  .nav-state-indicator {
+    position: absolute;
+    right: 8px;
+    top: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #4da3ff;
+    box-shadow: 0 0 12px rgba(77, 163, 255, 0.8);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 3;
+    transition:
+      top 0.22s cubic-bezier(0.25, 0.8, 0.3, 1),
+      height 0.22s cubic-bezier(0.25, 0.8, 0.3, 1),
+      width 0.22s cubic-bezier(0.25, 0.8, 0.3, 1),
+      border-radius 0.22s cubic-bezier(0.25, 0.8, 0.3, 1),
+      opacity 0.18s ease;
+  }
+
+  .nav-state-indicator.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow:
+      0 0 0 0 rgba(77, 163, 255, 0.45),
+      0 0 14px rgba(77, 163, 255, 0.7);
+    animation: navDotPulse 1.15s ease-in-out infinite;
+    filter: blur(0.15px);
+  }
+
+  .nav-state-indicator.line {
+    width: 3px;
+    border-radius: 999px;
+    box-shadow: 0 0 12px rgba(77, 163, 255, 0.9);
+    animation: none;
+    filter: none;
+  }
+
+  @keyframes navDotPulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(77, 163, 255, 0.5);
+    }
+    70% {
+      box-shadow: 0 0 0 8px rgba(77, 163, 255, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(77, 163, 255, 0);
+    }
   }
 
   /* Collapsed sidebar page indicator */
@@ -574,6 +637,11 @@
     products: new Set(),
     subCategories: new Set(),
   };
+  let navStateIndicator = null;
+  let indicatorHoverTarget = null;
+  const NAV_INDICATOR_DOT_SIZE_PX = 10;
+  const NAV_INDICATOR_LINE_TOP_OFFSET_PX = 2;
+  const NAV_INDICATOR_LINE_VERTICAL_PADDING_PX = 4;
 
   // Icon mapping for companies, categories, and subcategories
   const ICONS = {
@@ -624,11 +692,30 @@
   const PRODUCT_HIGHLIGHT_COLORS = {
     // Choose based on the page's vibe.
     '/Intel/Eventide': {
-      soft: 'rgba(200, 146, 42, 0.08)',
-      row: 'rgba(200, 146, 42, 0.10)',
-      border: 'rgba(200, 146, 42, 0.38)',
-      hover: 'rgba(77, 163, 255, 0.08)',
-      active: 'rgba(77, 163, 255, 0.15)'
+      soft: 'rgba(140, 112, 255, 0.10)',
+      row: 'rgba(140, 112, 255, 0.12)',
+      border: 'rgba(140, 112, 255, 0.45)'
+    },
+    '/Sony/ILCE-0': {
+      soft: 'rgba(90, 190, 255, 0.09)',
+      row: 'rgba(90, 190, 255, 0.11)',
+      border: 'rgba(90, 190, 255, 0.42)'
+    },
+    '/Sony/XCD-LED': {
+      soft: 'rgba(89, 225, 206, 0.09)',
+      row: 'rgba(89, 225, 206, 0.11)',
+      border: 'rgba(89, 225, 206, 0.42)'
+    },
+    '/ASUS/Ceralumenesium': {
+      soft: 'rgba(182, 246, 255, 0.10)',
+      row: 'rgba(182, 246, 255, 0.12)',
+      border: 'rgba(182, 246, 255, 0.46)'
+    },
+    // Include canonical source spelling variant to avoid mismatch regressions.
+    '/ASUS/Ceraluminesium': {
+      soft: 'rgba(182, 246, 255, 0.10)',
+      row: 'rgba(182, 246, 255, 0.12)',
+      border: 'rgba(182, 246, 255, 0.46)'
     }
   };
 
@@ -766,8 +853,6 @@
       group.style.setProperty('--product-highlight-soft', highlight.soft);
       group.style.setProperty('--product-highlight-row', highlight.row);
       group.style.setProperty('--product-highlight-border', highlight.border);
-      group.style.setProperty('--product-highlight-hover', highlight.hover || 'rgba(77, 163, 255, 0.08)');
-      group.style.setProperty('--product-highlight-active', highlight.active || 'rgba(77, 163, 255, 0.15)');
     });
 
     // Add event listeners for product toggles
@@ -801,6 +886,16 @@
 
     // Add event listeners for navigation items
     document.querySelectorAll('.nav-item').forEach(btn => {
+      btn.addEventListener('mouseenter', () => {
+        indicatorHoverTarget = btn;
+        updateNavStateIndicator();
+      });
+      btn.addEventListener('mouseleave', () => {
+        if (indicatorHoverTarget === btn) {
+          indicatorHoverTarget = null;
+        }
+        updateNavStateIndicator();
+      });
       btn.addEventListener('click', () => {
         const page = findPage(btn.dataset.path);
         if (page.path !== stripBasePath(window.location.pathname, APP_BASE_PATH)) {
@@ -813,15 +908,20 @@
         }
       });
     });
+
+    updateNavStateIndicator();
   }
 
   // Sidebar hover-based expand/collapse
   sidebar.addEventListener('mouseenter', () => {
     document.body.classList.add('sidebar-expanded');
+    updateNavStateIndicator();
   });
 
   sidebar.addEventListener('mouseleave', () => {
     document.body.classList.remove('sidebar-expanded');
+    indicatorHoverTarget = null;
+    updateNavStateIndicator();
   });
 
   sidebar.addEventListener('focusin', () => {
@@ -831,6 +931,7 @@
     }
     if (window.innerWidth > 900) {
       document.body.classList.add('sidebar-expanded');
+      updateNavStateIndicator();
     }
   });
 
@@ -843,6 +944,8 @@
       }
       sidebarFocusCollapseTimer = window.setTimeout(() => {
         document.body.classList.remove('sidebar-expanded');
+        indicatorHoverTarget = null;
+        updateNavStateIndicator();
         sidebarFocusCollapseTimer = null;
       }, SIDEBAR_COLLAPSE_DELAY_MS);
     }
@@ -927,6 +1030,52 @@
 
   function getProductToggleByPath(productPath) {
     return [...document.querySelectorAll('.product-toggle')].find((btn) => btn.dataset.productPath === productPath) || null;
+  }
+
+  function ensureNavStateIndicator() {
+    if (navStateIndicator) return navStateIndicator;
+    navStateIndicator = document.createElement('div');
+    navStateIndicator.className = 'nav-state-indicator';
+    navStateIndicator.setAttribute('aria-hidden', 'true');
+    sidebar.appendChild(navStateIndicator);
+    return navStateIndicator;
+  }
+
+  function moveNavIndicatorToButton(button, mode) {
+    const indicator = ensureNavStateIndicator();
+    if (!button || !document.body.classList.contains('sidebar-expanded')) {
+      indicator.style.opacity = '0';
+      indicator.classList.remove('dot', 'line');
+      return;
+    }
+    const sidebarRect = sidebar.getBoundingClientRect();
+    const buttonRect = button.getBoundingClientRect();
+    const top = buttonRect.top - sidebarRect.top + (
+      mode === 'line'
+        ? NAV_INDICATOR_LINE_TOP_OFFSET_PX
+        : (buttonRect.height - NAV_INDICATOR_DOT_SIZE_PX) / 2
+    );
+    indicator.style.top = `${Math.max(0, top)}px`;
+    indicator.style.height = mode === 'line'
+      ? `${Math.max(14, buttonRect.height - NAV_INDICATOR_LINE_VERTICAL_PADDING_PX)}px`
+      : `${NAV_INDICATOR_DOT_SIZE_PX}px`;
+    indicator.style.opacity = '1';
+    indicator.classList.toggle('dot', mode === 'dot');
+    indicator.classList.toggle('line', mode === 'line');
+  }
+
+  function updateNavStateIndicator() {
+    const hoveredButton = indicatorHoverTarget && indicatorHoverTarget.matches('.nav-item') ? indicatorHoverTarget : null;
+    if (hoveredButton) {
+      moveNavIndicatorToButton(hoveredButton, 'dot');
+      return;
+    }
+    const activeButton = document.querySelector('.nav-item.active');
+    if (activeButton) {
+      moveNavIndicatorToButton(activeButton, 'line');
+      return;
+    }
+    moveNavIndicatorToButton(null, 'dot');
   }
 
   function openCompanySection(companyItems, shouldTrackAuto) {
@@ -1050,6 +1199,7 @@
       openSubCategorySection(activeButton, shouldTrackAuto);
     }
     updateCollapsedIndicator(page);
+    updateNavStateIndicator();
   }
 
   // Restore scroll position after the iframe finishes loading.

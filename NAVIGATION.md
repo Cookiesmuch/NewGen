@@ -106,20 +106,36 @@ In `index.html`, set each page's sidebar highlight color in `PRODUCT_HIGHLIGHT_C
 const PRODUCT_HIGHLIGHT_COLORS = {
   // Choose based on the page's vibe.
   '/Intel/Eventide': {
-    soft: 'rgba(200, 146, 42, 0.08)',
-    row: 'rgba(200, 146, 42, 0.10)',
-    border: 'rgba(200, 146, 42, 0.38)',
-    hover: 'rgba(77, 163, 255, 0.08)',
-    active: 'rgba(77, 163, 255, 0.15)'
+    soft: 'rgba(140, 112, 255, 0.10)',
+    row: 'rgba(140, 112, 255, 0.12)',
+    border: 'rgba(140, 112, 255, 0.45)'
+  },
+  '/Sony/ILCE-0': {
+    soft: 'rgba(90, 190, 255, 0.09)',
+    row: 'rgba(90, 190, 255, 0.11)',
+    border: 'rgba(90, 190, 255, 0.42)'
+  },
+  '/Sony/XCD-LED': {
+    soft: 'rgba(89, 225, 206, 0.09)',
+    row: 'rgba(89, 225, 206, 0.11)',
+    border: 'rgba(89, 225, 206, 0.42)'
+  },
+  '/ASUS/Ceralumenesium': {
+    soft: 'rgba(182, 246, 255, 0.10)',
+    row: 'rgba(182, 246, 255, 0.12)',
+    border: 'rgba(182, 246, 255, 0.46)'
   }
 };
 ```
 
 - `soft`: background for the expanded subcategory container
-- `row`: default background for each category/subpage row
+- `row`: default background for each product/category/subpage row in that page section
 - `border`: left accent border tying the group to the parent page
-- `hover`: hover-state background for category/subpage rows
-- `active`: active selected subpage background
+
+Hover and selected states now keep the page-section background and use a right-side blue motion indicator:
+- on hover: a blurry animated blue dot moves to the hovered row
+- on selected-only state: it becomes a blue vertical line aligned to the selected row
+- when hovering from selected state: it animates back into the moving dot
 
 ### Simple Product Without Subcategories
 
