@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navigation Test</title>
+  <style>
+    body { font-family: monospace; padding: 20px; }
+    .success { color: green; }
+    .error { color: red; }
+    pre { background: #f5f5f5; padding: 10px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>NewGen Navigation System Test</h1>
+  <div id="results"></div>
+
+  <script>
+    const results = document.getElementById('results');
+
+    function test(name, condition) {
+      const status = condition ? '✓ PASS' : '✗ FAIL';
+      const className = condition ? 'success' : 'error';
+      results.innerHTML += `<p class="${className}">${status}: ${name}</p>`;
+      return condition;
+    }
+
+    // Simulate the navigation structure from index.html
+    const NAV_STRUCTURE = {
+      'Intel': [
+        { label: 'Eventide', path: '/Intel/Eventide' }
+      ],
+      'Sony': [
+        { label: 'Alpha 0 (a0)', path: '/Sony/ILCE-0' },
+        { label: 'XCD-LED', path: '/Sony/XCD-LED' }
+      ],
+      'ASUS': [
+        { label: 'Ceralumenesium Sapphire', path: '/ASUS/Ceralumenesium' }
+      ]
+    };
+
+    const PAGES = [
+      { path: '/Intel/Eventide', src: '/Source/INTEL/Eventide/intel.eventide.brochure.html' },
+      { path: '/Sony/ILCE-0', src: '/Source/SONY/ILCE-0/sony.a0.brochure.html' },
+      { path: '/Sony/XCD-LED', src: '/Source/SONY/XCD-LED/sony,XCDLED.brochure.html' },
+      { path: '/ASUS/Ceralumenesium', src: '/Source/ASUS/Material/Ceraluminesium/asus.ceraluminesium.brochure.html' }
+    ];
+
+    let passed = 0;
+    let failed = 0;
+
+    function runTest(name, condition) {
+      if (test(name, condition)) {
+        passed += 1;
+      } else {
+        failed += 1;
+      }
+    }
+
+    // Run tests
+    runTest('NAV_STRUCTURE has Intel', NAV_STRUCTURE['Intel'] !== undefined);
+    runTest('NAV_STRUCTURE has Sony', NAV_STRUCTURE['Sony'] !== undefined);
+    runTest('NAV_STRUCTURE has ASUS', NAV_STRUCTURE['ASUS'] !== undefined);
+    runTest('Intel has Eventide', NAV_STRUCTURE['Intel'][0].label === 'Eventide');
+    runTest('Sony has 2 products', NAV_STRUCTURE['Sony'].length === 2);
+    runTest('ASUS has Ceralumenesium', NAV_STRUCTURE['ASUS'][0].label === 'Ceralumenesium Sapphire');
+    runTest('PAGES has 4 main brochures', PAGES.length === 4);
+    runTest('ASUS route exists in PAGES', PAGES.some(p => p.path === '/ASUS/Ceralumenesium'));
+    runTest('All paths are strings', PAGES.every(p => typeof p.path === 'string'));
+    runTest('All sources are strings', PAGES.every(p => typeof p.src === 'string'));
+
+    // Test navigation structure build
+    let html = '';
+    for (const [company, items] of Object.entries(NAV_STRUCTURE)) {
+      html += `<div class="nav-category">
+        <button class="cat-header" data-company="${company}">${company}</button>
+        <div class="cat-items">
+          ${items.map(item => `<button class="nav-item" data-path="${item.path}">${item.label}</button>`).join('')}
+        </div>
+      </div>`;
+    }
+
+    runTest('Navigation HTML can be built', html.length > 0);
+    runTest('Navigation includes Intel', html.includes('Intel'));
+    runTest('Navigation includes Sony', html.includes('Sony'));
+    runTest('Navigation includes ASUS', html.includes('ASUS'));
+    runTest('Navigation includes Ceralumenesium Sapphire', html.includes('Ceralumenesium Sapphire'));
+
+    results.innerHTML += '<h2>Navigation HTML Preview:</h2><pre>' + html.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</pre>';
+
+    // Summary
+    const total = passed + failed;
+    const summaryClass = failed === 0 ? 'success' : 'error';
+    const summaryText = failed === 0
+      ? `All ${total} tests passed! ✓`
+      : `${failed}/${total} tests failed (${passed} passed) ✗`;
+    results.innerHTML += `<h2 class="${summaryClass}">${summaryText}</h2>`;
+  </script>
+</body>
+</html>

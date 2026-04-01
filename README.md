@@ -1,6 +1,6 @@
 # ✨ NewGen
 
-> A dynamic showcase loader for premium Intel Eventide and Sony brochure experiences.
+> A dynamic showcase loader for premium Intel Eventide, Sony, and ASUS brochure experiences with smart collapsible navigation.
 
 ![Platform](https://img.shields.io/badge/platform-Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
 ![Frontend](https://img.shields.io/badge/frontend-HTML%20%7C%20CSS%20%7C%20JS-1f2937?style=for-the-badge)
@@ -13,6 +13,7 @@
 
 - [Overview](#-overview)
 - [Features](#-features)
+- [Navigation System](#-navigation-system)
 - [Project Structure](#-project-structure)
 - [Quick Start](#-quick-start)
 - [Run Options](#-run-options)
@@ -28,9 +29,9 @@
 
 **NewGen** is a lightweight local web experience that launches a dynamic HTML loader and lets you switch between curated brochure pages:
 
-- **Intel Eventide**
-- **Sony a0**
-- **Sony XCD-LED**
+- **Intel Eventide** - Full processor architecture showcase with CPU, GPU, Tile, and Technology deep-dives
+- **Sony a0 & XCD-LED** - Professional camera systems
+- **ASUS Ceraluminesium Sapphire** - Advanced material technology
 
 The app is intentionally simple and fast: a Node.js static server powers a polished browser shell (`index.html`) that loads brochure pages in an iframe with one-click navigation, while History API routes keep the browser URL in sync for direct linking and refresh.
 
@@ -38,13 +39,50 @@ The app is intentionally simple and fast: a Node.js static server powers a polis
 
 ## 🚀 Features
 
-- 🎛️ **Dynamic page switching** from a top navigation bar
+- 🎯 **Hover-to-expand sidebar** - Automatically expands on hover (52px → 280px), collapses when you move away
+- 🎨 **Icon-based navigation** - Every company, product, category, and page has a unique emoji icon
+- 🗂️ **4-level nested navigation** - Company → Product → Category → Individual Pages
+- ✨ **Smooth animations** - Cubic-bezier transitions for professional feel
 - 🧭 **History API routing** with URL-aware navigation and back/forward support
 - 🖥️ **Single local server** (`Server/server.js`) with static file delivery
 - 📦 **No framework overhead** (vanilla Node.js + HTML/CSS/JS)
-- 🧭 **Cross-platform startup scripts** for Windows CMD and PowerShell
+- 📱 **Mobile responsive** with slide-in sidebar (900px breakpoint)
 - 🧰 **Verbose Windows launcher UX** with structured startup diagnostics
-- 🎨 **Modern visual shell** with dark UI, gradients, and responsive behavior
+
+---
+
+## 🎯 Navigation System
+
+### Hover-Based Collapsible Sidebar
+
+The sidebar starts collapsed (52px width) and automatically expands to 280px when you hover over it. This saves screen space while keeping navigation easily accessible.
+
+**Features:**
+- **Auto-expand on hover** - No clicking required
+- **Smooth animations** - 350ms cubic-bezier transitions
+- **Icon indicators** - Visual feedback for every navigation item
+- **Nested categories** - Support for unlimited hierarchy depth
+
+### Navigation Hierarchy
+
+```
+Company (e.g., Intel 🔷)
+  └── Product (e.g., Eventide 📘)
+      └── Subcategories
+          ├── CPU Architectures 🖥️
+          │   ├── Solar Eclipse ☀️
+          │   ├── Sunset Cove 🌅
+          │   └── ...
+          ├── GPU Architectures 🎨
+          ├── Tiles 🧩
+          └── Technologies ⚡
+```
+
+### Adding New Navigation Items
+
+To add new companies or brochures, update the `NAV_STRUCTURE` and `ICONS` objects in `index.html`. See [NAVIGATION.md](NAVIGATION.md) for detailed instructions.
+
+> Note: the current route is a legacy compatibility path: `/ASUS/Ceralumenesium`; on-disk brochure assets use `Ceraluminesium`.
 
 ---
 
@@ -52,7 +90,8 @@ The app is intentionally simple and fast: a Node.js static server powers a polis
 
 ```text
 NewGen/
-├── index.html                  # Main dynamic loader UI
+├── index.html                  # Main dynamic loader UI with hover sidebar
+├── NAVIGATION.md               # Navigation system documentation
 ├── Server/
 │   └── server.js               # Node.js static server (port 3000)
 ├── start-newgen.bat            # Windows batch launcher
@@ -66,11 +105,15 @@ NewGen/
     │       ├── Technologies/
     │       ├── Tiles/
     │       └── Media/
-    └── SONY/
-        ├── ILCE-0/
-        │   └── sony.a0.brochure.html
-        └── XCD-LED/
-            └── sony,XCDLED.brochure.html
+    ├── SONY/
+    │   ├── ILCE-0/
+    │   │   └── sony.a0.brochure.html
+    │   └── XCD-LED/
+    │       └── sony,XCDLED.brochure.html
+    └── ASUS/
+        └── Material/
+            └── Ceraluminesium/
+                └── asus.ceraluminesium.brochure.html
 ```
 
 ---
