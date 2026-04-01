@@ -46,17 +46,28 @@
       { path: '/ASUS/Ceralumenesium', src: '/Source/ASUS/Material/Ceraluminesium/asus.ceraluminesium.brochure.html' }
     ];
 
+    let passed = 0;
+    let failed = 0;
+
+    function runTest(name, condition) {
+      if (test(name, condition)) {
+        passed += 1;
+      } else {
+        failed += 1;
+      }
+    }
+
     // Run tests
-    test('NAV_STRUCTURE has Intel', NAV_STRUCTURE['Intel'] !== undefined);
-    test('NAV_STRUCTURE has Sony', NAV_STRUCTURE['Sony'] !== undefined);
-    test('NAV_STRUCTURE has ASUS', NAV_STRUCTURE['ASUS'] !== undefined);
-    test('Intel has Eventide', NAV_STRUCTURE['Intel'][0].label === 'Eventide');
-    test('Sony has 2 products', NAV_STRUCTURE['Sony'].length === 2);
-    test('ASUS has Ceralumenesium', NAV_STRUCTURE['ASUS'][0].label === 'Ceralumenesium Sapphire');
-    test('PAGES has 4 main brochures', PAGES.length === 4);
-    test('ASUS route exists in PAGES', PAGES.some(p => p.path === '/ASUS/Ceralumenesium'));
-    test('All paths are strings', PAGES.every(p => typeof p.path === 'string'));
-    test('All sources are strings', PAGES.every(p => typeof p.src === 'string'));
+    runTest('NAV_STRUCTURE has Intel', NAV_STRUCTURE['Intel'] !== undefined);
+    runTest('NAV_STRUCTURE has Sony', NAV_STRUCTURE['Sony'] !== undefined);
+    runTest('NAV_STRUCTURE has ASUS', NAV_STRUCTURE['ASUS'] !== undefined);
+    runTest('Intel has Eventide', NAV_STRUCTURE['Intel'][0].label === 'Eventide');
+    runTest('Sony has 2 products', NAV_STRUCTURE['Sony'].length === 2);
+    runTest('ASUS has Ceralumenesium', NAV_STRUCTURE['ASUS'][0].label === 'Ceralumenesium Sapphire');
+    runTest('PAGES has 4 main brochures', PAGES.length === 4);
+    runTest('ASUS route exists in PAGES', PAGES.some(p => p.path === '/ASUS/Ceralumenesium'));
+    runTest('All paths are strings', PAGES.every(p => typeof p.path === 'string'));
+    runTest('All sources are strings', PAGES.every(p => typeof p.src === 'string'));
 
     // Test navigation structure build
     let html = '';
@@ -69,17 +80,21 @@
       </div>`;
     }
 
-    test('Navigation HTML can be built', html.length > 0);
-    test('Navigation includes Intel', html.includes('Intel'));
-    test('Navigation includes Sony', html.includes('Sony'));
-    test('Navigation includes ASUS', html.includes('ASUS'));
-    test('Navigation includes Ceralumenesium Sapphire', html.includes('Ceralumenesium Sapphire'));
+    runTest('Navigation HTML can be built', html.length > 0);
+    runTest('Navigation includes Intel', html.includes('Intel'));
+    runTest('Navigation includes Sony', html.includes('Sony'));
+    runTest('Navigation includes ASUS', html.includes('ASUS'));
+    runTest('Navigation includes Ceralumenesium Sapphire', html.includes('Ceralumenesium Sapphire'));
 
     results.innerHTML += '<h2>Navigation HTML Preview:</h2><pre>' + html.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</pre>';
 
     // Summary
-    const total = 15;
-    results.innerHTML += `<h2 class="success">All ${total} tests passed! ✓</h2>`;
+    const total = passed + failed;
+    const summaryClass = failed === 0 ? 'success' : 'error';
+    const summaryText = failed === 0
+      ? `All ${total} tests passed! ✓`
+      : `${failed}/${total} tests failed (${passed} passed) ✗`;
+    results.innerHTML += `<h2 class="${summaryClass}">${summaryText}</h2>`;
   </script>
 </body>
 </html>

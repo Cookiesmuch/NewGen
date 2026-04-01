@@ -2,14 +2,14 @@
 
 ## Overview
 
-The NewGen dynamic loader uses a **collapsible sidebar navigation** with support for **nested subcategories**. The sidebar can be collapsed on desktop to save space, and supports up to 3 levels of navigation hierarchy (Company → Product → Category → Page).
+The NewGen dynamic loader uses a **collapsible sidebar navigation** with support for **nested subcategories**. On desktop, the sidebar collapses to a compact rail and expands on hover/focus to save space, and it supports a 4-level hierarchy (Company → Product → Category → Page).
 
 ## Architecture
 
 ### Key Components
 
-1. **Collapsible Sidebar**: Toggle between expanded (280px) and collapsed (52px) views
-2. **Nested Navigation**: Support for company → product → subcategories → pages
+1. **Collapsible Sidebar**: Desktop rail (52px) that expands to 280px on hover/focus
+2. **Nested Navigation**: Support for company → product → category → page
 3. **Responsive Design**: Mobile-friendly with hamburger menu toggle
 4. **Modular Structure**: Easy to extend with new companies/products/subcategories
 
@@ -126,7 +126,7 @@ Create your brochure HTML files following the existing patterns:
 ## Navigation Features
 
 ### Desktop View
-- **Collapsible Sidebar**: Click the `◀` button to collapse to 52px width
+- **Collapsible Sidebar**: Defaults to a 52px rail and expands to 280px on hover/focus
 - **Nested Categories**: Click category headers to expand/collapse subcategories
 - Active state highlighting at all levels
 - Smooth transitions
@@ -138,8 +138,9 @@ Create your brochure HTML files following the existing patterns:
 - Full-height overlay
 
 ### Keyboard Accessibility
-- All navigation items are buttons with proper ARIA labels
-- Full keyboard navigation support
+- Navigation expands on `focusin` and collapses on `focusout` (desktop)
+- Collapsible category/subcategory controls expose `aria-expanded`
+- Mobile menu button exposes `aria-controls` and `aria-expanded`
 
 ## Path Structure Convention
 
@@ -178,7 +179,6 @@ Customize appearance by modifying these CSS variables in `index.html`:
 .sub-cat-header      /* Subcategory header (CPU, GPU, Tiles) */
 .sub-cat-items       /* Container for subcategory items */
 .nav-item.nested     /* Nested page links (3rd level) */
-.sidebar-toggle      /* Desktop sidebar collapse button */
 ```
 
 ## Current Structure

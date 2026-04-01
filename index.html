@@ -100,27 +100,19 @@
     width: var(--sidebar-width);
   }
 
-  /* Hide navigation text/icons when collapsed */
-  .sidebar .nav-category,
-  .sidebar .cat-items,
-  .sidebar .nav-item {
+  /* Hide navigation content when collapsed */
+  .sidebar #nav-content {
     opacity: 0;
-    transition: opacity 0.25s ease;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
   }
 
-  body.sidebar-expanded .sidebar .nav-category,
-  body.sidebar-expanded .sidebar .cat-items,
-  body.sidebar-expanded .sidebar .nav-item {
+  body.sidebar-expanded .sidebar #nav-content {
     opacity: 1;
-    transition: opacity 0.35s ease 0.1s;
-  }
-
-  .sidebar .cat-header {
-    opacity: 0;
-  }
-
-  body.sidebar-expanded .sidebar .cat-header {
-    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 0.35s ease 0.1s, visibility 0s linear;
   }
 
   .nav-category {
@@ -370,12 +362,10 @@
     }
 
     /* On mobile, always show navigation content when sidebar is visible */
-    .sidebar .nav-category,
-    .sidebar .cat-items,
-    .sidebar .nav-item,
-    .sidebar .cat-header,
-    .sidebar .sub-cat-header {
+    .sidebar #nav-content {
       opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
     }
   }
 
@@ -416,7 +406,7 @@
 <body>
   <header class="topbar">
     <div class="brand"><strong>NewGen</strong> dynamic page loader</div>
-    <button type="button" class="menu-toggle" id="menu-toggle">Menu</button>
+    <button type="button" class="menu-toggle" id="menu-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button>
   </header>
 
   <nav class="sidebar" id="sidebar" aria-label="Company Navigation">
@@ -502,6 +492,8 @@
   const frame = document.getElementById('page-frame');
   const sidebar = document.getElementById('sidebar');
   const menuToggle = document.getElementById('menu-toggle');
+  const SIDEBAR_COLLAPSE_DELAY_MS = 120;
+  let sidebarFocusCollapseTimer = null;
   const APP_BASE_PATH = detectAppBasePath(window.location.pathname, PAGES.map((page) => page.path));
 
   // Icon mapping for companies, categories, and subcategories
@@ -605,7 +597,7 @@
       const companyIcon = ICONS.companies[company] || '📁';
       html += `
         <div class="nav-category">
-          <button class="cat-header" data-company="${company}">
+          <button class="cat-header" data-company="${company}" aria-expanded="false">
             <span><span class="nav-item-icon">${companyIcon}</span> ${company}</span>
             <span class="cat-icon">▶</span>
           </button>
@@ -620,7 +612,7 @@
                   const categoryIcon = ICONS.categories[subCatName] || '📂';
                   itemHtml += `
                     <div class="sub-category">
-                      <button class="sub-cat-header" data-subcat="${subCatName}">
+                      <button class="sub-cat-header" data-subcat="${subCatName}" aria-expanded="false">
                         <span><span class="nav-item-icon">${categoryIcon}</span> ${subCatName}</span>
                         <span class="sub-cat-icon">▶</span>
                       </button>
@@ -656,6 +648,7 @@
         header.classList.toggle('active');
         const items = header.nextElementSibling;
         items.classList.toggle('open');
+        header.setAttribute('aria-expanded', items.classList.contains('open') ? 'true' : 'false');
       });
     });
 
@@ -665,6 +658,7 @@
         header.classList.toggle('active');
         const items = header.nextElementSibling;
         items.classList.toggle('open');
+        header.setAttribute('aria-expanded', items.classList.contains('open') ? 'true' : 'false');
       });
     });
 
@@ -678,6 +672,7 @@
         // Close mobile menu
         if (window.innerWidth <= 900) {
           sidebar.classList.remove('open');
+          menuToggle.setAttribute('aria-expanded', 'false');
         }
       });
     });
@@ -692,9 +687,34 @@
     document.body.classList.remove('sidebar-expanded');
   });
 
+  sidebar.addEventListener('focusin', () => {
+    if (sidebarFocusCollapseTimer) {
+      window.clearTimeout(sidebarFocusCollapseTimer);
+      sidebarFocusCollapseTimer = null;
+    }
+    if (window.innerWidth > 900) {
+      document.body.classList.add('sidebar-expanded');
+    }
+  });
+
+  sidebar.addEventListener('focusout', (event) => {
+    if (window.innerWidth <= 900) return;
+    const nextFocused = event.relatedTarget;
+    if (!nextFocused || !sidebar.contains(nextFocused)) {
+      if (sidebarFocusCollapseTimer) {
+        window.clearTimeout(sidebarFocusCollapseTimer);
+      }
+      sidebarFocusCollapseTimer = window.setTimeout(() => {
+        document.body.classList.remove('sidebar-expanded');
+        sidebarFocusCollapseTimer = null;
+      }, SIDEBAR_COLLAPSE_DELAY_MS);
+    }
+  });
+
   // Mobile menu toggle
   menuToggle.addEventListener('click', () => {
     sidebar.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', sidebar.classList.contains('open') ? 'true' : 'false');
   });
 
   // Initialize navigation
@@ -774,6 +794,28 @@
     document.querySelectorAll('.nav-item').forEach((btn) => {
       btn.classList.toggle('active', btn.dataset.path === page.path);
     });
+    const activeButton = [...document.querySelectorAll('.nav-item')].find((btn) => btn.dataset.path === page.path);
+    if (activeButton) {
+      const companyItems = activeButton.closest('.cat-items');
+      if (companyItems) {
+        companyItems.classList.add('open');
+        const companyHeader = companyItems.previousElementSibling;
+        if (companyHeader && companyHeader.classList.contains('cat-header')) {
+          companyHeader.classList.add('active');
+          companyHeader.setAttribute('aria-expanded', 'true');
+        }
+      }
+
+      const subCategoryItems = activeButton.closest('.sub-cat-items');
+      if (subCategoryItems) {
+        subCategoryItems.classList.add('open');
+        const subCategoryHeader = subCategoryItems.previousElementSibling;
+        if (subCategoryHeader && subCategoryHeader.classList.contains('sub-cat-header')) {
+          subCategoryHeader.classList.add('active');
+          subCategoryHeader.setAttribute('aria-expanded', 'true');
+        }
+      }
+    }
     updateCollapsedIndicator(page);
   }
 

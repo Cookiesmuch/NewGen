@@ -31,7 +31,7 @@
 
 - **Intel Eventide** - Full processor architecture showcase with CPU, GPU, Tile, and Technology deep-dives
 - **Sony a0 & XCD-LED** - Professional camera systems
-- **ASUS Ceralumenesium Sapphire** - Advanced material technology
+- **ASUS Ceraluminesium Sapphire** - Advanced material technology
 
 The app is intentionally simple and fast: a Node.js static server powers a polished browser shell (`index.html`) that loads brochure pages in an iframe with one-click navigation, while History API routes keep the browser URL in sync for direct linking and refresh.
 
@@ -41,7 +41,7 @@ The app is intentionally simple and fast: a Node.js static server powers a polis
 
 - 🎯 **Hover-to-expand sidebar** - Automatically expands on hover (52px → 280px), collapses when you move away
 - 🎨 **Icon-based navigation** - Every company, product, category, and page has a unique emoji icon
-- 🗂️ **3-level nested navigation** - Company → Product → Subcategories → Individual Pages
+- 🗂️ **4-level nested navigation** - Company → Product → Category → Individual Pages
 - ✨ **Smooth animations** - Cubic-bezier transitions for professional feel
 - 🧭 **History API routing** with URL-aware navigation and back/forward support
 - 🖥️ **Single local server** (`Server/server.js`) with static file delivery
@@ -81,6 +81,8 @@ Company (e.g., Intel 🔷)
 ### Adding New Navigation Items
 
 To add new companies or brochures, update the `NAV_STRUCTURE` and `ICONS` objects in `index.html`. See [NAVIGATION.md](NAVIGATION.md) for detailed instructions.
+
+> Note: the current route is a legacy compatibility path: `/ASUS/Ceralumenesium`; on-disk brochure assets use `Ceraluminesium`.
 
 ---
 
