@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&display=swap"></noscript>
 <title>NewGen Dynamic Loader</title>
 <style>
   :root {
@@ -272,6 +276,62 @@
     transform: translateX(2px);
   }
 
+  /* Collapsed sidebar page indicator */
+  .collapsed-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 24px;
+    gap: 16px;
+    opacity: 1;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    overflow: hidden;
+  }
+
+  body.sidebar-expanded .collapsed-indicator {
+    opacity: 0;
+  }
+
+  .collapsed-page-icon {
+    font-size: 26px;
+    line-height: 1;
+    filter: drop-shadow(0 0 6px rgba(77, 163, 255, 0.4));
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .collapsed-indicator:hover .collapsed-page-icon {
+    transform: scale(1.15);
+  }
+
+  .collapsed-page-name {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-2);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    white-space: nowrap;
+    max-height: calc(100vh - var(--topbar-height) - 120px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0.9;
+  }
+
+  @media (max-width: 900px) {
+    .collapsed-indicator {
+      display: none;
+    }
+  }
+
   .viewer {
     width: 100%;
     height: calc(100vh - var(--topbar-height));
@@ -360,6 +420,10 @@
   </header>
 
   <nav class="sidebar" id="sidebar" aria-label="Company Navigation">
+    <div class="collapsed-indicator" id="collapsed-indicator" aria-hidden="true">
+      <span class="collapsed-page-icon" id="collapsed-page-icon">🔷</span>
+      <span class="collapsed-page-name" id="collapsed-page-name">NewGen</span>
+    </div>
     <!-- Navigation will be generated dynamically -->
   </nav>
 
@@ -394,7 +458,7 @@
     { path: '/Intel/Eventide/CPU/SolarEclipse', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
     { path: '/Intel/Eventide/CPU/SunsetCove', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
     { path: '/Intel/Eventide/CPU/Venusmont', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
-    { path: '/Intel/Eventide/CPU/UHE', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/CPU/LunarEclipse', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
     { path: '/Intel/Eventide/CPU/Darkmont', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
 
     // GPU Architecture Deep Dives
@@ -462,7 +526,7 @@
       'Solar Eclipse': '☀️',
       'Sunset Cove': '🌅',
       'Venusmont': '🌋',
-      'UHE': '⚙️',
+      'Lunar Eclipse': '🌑',
       'Darkmont': '🌙',
       // GPU Architecture icons
       'Elementalist': '✨',
@@ -497,7 +561,7 @@
             { label: 'Solar Eclipse', path: '/Intel/Eventide/CPU/SolarEclipse' },
             { label: 'Sunset Cove', path: '/Intel/Eventide/CPU/SunsetCove' },
             { label: 'Venusmont', path: '/Intel/Eventide/CPU/Venusmont' },
-            { label: 'UHE', path: '/Intel/Eventide/CPU/UHE' },
+            { label: 'Lunar Eclipse', path: '/Intel/Eventide/CPU/LunarEclipse' },
             { label: 'Darkmont', path: '/Intel/Eventide/CPU/Darkmont' }
           ],
           'GPU Architectures': [
@@ -576,7 +640,15 @@
         </div>
       `;
     }
-    sidebar.innerHTML = html;
+
+    // Inject into #nav-content to preserve the .collapsed-indicator element
+    let navContent = sidebar.querySelector('#nav-content');
+    if (!navContent) {
+      navContent = document.createElement('div');
+      navContent.id = 'nav-content';
+      sidebar.appendChild(navContent);
+    }
+    navContent.innerHTML = html;
 
     // Add event listeners for company headers
     document.querySelectorAll('.cat-header').forEach(header => {
@@ -648,6 +720,37 @@
   let clientCloseCountdownRemaining = 0;
   const scrollPositions = {};
   const watchdogBanner = document.getElementById('watchdog-banner');
+  const collapsedPageIcon = document.getElementById('collapsed-page-icon');
+  const collapsedPageName = document.getElementById('collapsed-page-name');
+
+  // Build a flat lookup of path → { label, icon } from NAV_STRUCTURE for the collapsed indicator
+  function buildPageLookup() {
+    const lookup = {};
+    for (const [company, items] of Object.entries(NAV_STRUCTURE)) {
+      const companyIcon = ICONS.companies[company] || '📁';
+      for (const item of items) {
+        lookup[item.path] = { label: item.label, icon: ICONS.pages[item.label] || companyIcon };
+        if (item.subCategories) {
+          for (const subItems of Object.values(item.subCategories)) {
+            for (const subItem of subItems) {
+              lookup[subItem.path] = { label: subItem.label, icon: ICONS.pages[subItem.label] || '📄' };
+            }
+          }
+        }
+      }
+    }
+    return lookup;
+  }
+  const PAGE_LOOKUP = buildPageLookup();
+
+  function updateCollapsedIndicator(page) {
+    if (!collapsedPageIcon || !collapsedPageName) return;
+    const info = PAGE_LOOKUP[page.path];
+    if (info) {
+      collapsedPageIcon.textContent = info.icon;
+      collapsedPageName.textContent = info.label;
+    }
+  }
 
   function findPage(pathname) {
     return PAGES.find((p) => p.path === pathname) || PAGES[0];
@@ -667,10 +770,11 @@
     }
     frame.src = withBasePath(page.src, APP_BASE_PATH);
 
-    // Update active state
+    // Update active state and collapsed indicator
     document.querySelectorAll('.nav-item').forEach((btn) => {
       btn.classList.toggle('active', btn.dataset.path === page.path);
     });
+    updateCollapsedIndicator(page);
   }
 
   // Restore scroll position after the iframe finishes loading.

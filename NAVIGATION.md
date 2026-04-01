@@ -185,7 +185,7 @@ Customize appearance by modifying these CSS variables in `index.html`:
 
 ### Intel - Eventide
 - **Main Page**: Eventide Platform Overview
-- **CPU Architectures**: Solar Eclipse, Sunset Cove, Venusmont, UHE, Darkmont
+- **CPU Architectures**: Solar Eclipse, Sunset Cove, Venusmont, Lunar Eclipse, Darkmont
 - **GPU Architectures**: Elementalist, Druid, 2D Kanvas
 - **Tiles**: ZAM, HNPU, LPNPU, GNA, BionzXR, MFX, IPU, Klangkerne, Display, KillerS1, IO, PSM
 - **Technologies**: Thread Director
