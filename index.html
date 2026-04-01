@@ -667,7 +667,10 @@
   const sidebar = document.getElementById('sidebar');
   const menuToggle = document.getElementById('menu-toggle');
   const SIDEBAR_COLLAPSE_DELAY_MS = 120;
+  const SIDEBAR_EXPAND_TRANSITION_MS = 360;
   let sidebarFocusCollapseTimer = null;
+  let sidebarExpandIndicatorTimer = null;
+  let suppressIndicatorUpdate = false;
   const APP_BASE_PATH = detectAppBasePath(window.location.pathname, PAGES.map((page) => page.path));
   const autoExpandedState = {
     companies: new Set(),
@@ -737,14 +740,14 @@
       border: 'rgba(140, 112, 255, 0.45)'
     },
     '/Sony/ILCE-0': {
-      soft: 'rgba(90, 190, 255, 0.09)',
-      row: 'rgba(90, 190, 255, 0.11)',
-      border: 'rgba(90, 190, 255, 0.42)'
+      soft: 'rgba(184, 148, 42, 0.10)',
+      row: 'rgba(184, 148, 42, 0.12)',
+      border: 'rgba(184, 148, 42, 0.46)'
     },
     '/Sony/XCD-LED': {
-      soft: 'rgba(89, 225, 206, 0.09)',
-      row: 'rgba(89, 225, 206, 0.11)',
-      border: 'rgba(89, 225, 206, 0.42)'
+      soft: 'rgba(0, 180, 255, 0.10)',
+      row: 'rgba(0, 180, 255, 0.12)',
+      border: 'rgba(255, 45, 32, 0.52)'
     },
     '/ASUS/Ceralumenesium': {
       soft: 'rgba(182, 246, 255, 0.10)',
@@ -965,11 +968,14 @@
   // Sidebar hover-based expand/collapse
   sidebar.addEventListener('mouseenter', () => {
     document.body.classList.add('sidebar-expanded');
-    updateNavStateIndicator();
+    indicatorHoverTarget = null;
+    suppressIndicatorUntilSidebarExpandSettles();
   });
 
   sidebar.addEventListener('mouseleave', () => {
     document.body.classList.remove('sidebar-expanded');
+    clearSidebarExpandIndicatorTimer();
+    suppressIndicatorUpdate = false;
     indicatorHoverTarget = null;
     updateNavStateIndicator();
   });
@@ -981,7 +987,8 @@
     }
     if (window.innerWidth > 900) {
       document.body.classList.add('sidebar-expanded');
-      updateNavStateIndicator();
+      indicatorHoverTarget = null;
+      suppressIndicatorUntilSidebarExpandSettles();
     }
   });
 
@@ -1117,6 +1124,10 @@
   }
 
   function updateNavStateIndicator() {
+    if (suppressIndicatorUpdate) {
+      moveNavIndicatorToButton(null, 'dot');
+      return;
+    }
     if (navIsLoading && indicatorLoadingTarget) {
       moveNavIndicatorToButton(indicatorLoadingTarget, 'loading');
       return;
@@ -1132,6 +1143,22 @@
       return;
     }
     moveNavIndicatorToButton(null, 'dot');
+  }
+
+  function clearSidebarExpandIndicatorTimer() {
+    window.clearTimeout(sidebarExpandIndicatorTimer);
+    sidebarExpandIndicatorTimer = null;
+  }
+
+  function suppressIndicatorUntilSidebarExpandSettles() {
+    suppressIndicatorUpdate = true;
+    updateNavStateIndicator();
+    clearSidebarExpandIndicatorTimer();
+    sidebarExpandIndicatorTimer = window.setTimeout(() => {
+      suppressIndicatorUpdate = false;
+      updateNavStateIndicator();
+      sidebarExpandIndicatorTimer = null;
+    }, SIDEBAR_EXPAND_TRANSITION_MS);
   }
 
   function extractProductPath(pathname) {

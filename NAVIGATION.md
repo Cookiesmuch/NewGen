@@ -98,9 +98,15 @@ const NAV_STRUCTURE = {
 };
 ```
 
-### Step 2.5: Define Sidebar Page Highlight Colors
+### Step 2.5: Define Sidebar Page Highlight Colors (Single Source of Truth)
 
-In `index.html`, set each page's sidebar highlight color in `PRODUCT_HIGHLIGHT_COLORS` so subcategories visually read as belonging to that parent page.
+Use `index.html` as the **only** source of truth for sidebar highlight colors via `PRODUCT_HIGHLIGHT_COLORS`.
+Do **not** define or duplicate sidebar highlight colors in `NAVIGATION.md` or anywhere else.
+
+When adding/changing a page:
+- Update `PRODUCT_HIGHLIGHT_COLORS` in `index.html`.
+- Keep this doc example in sync with those values.
+- Choose colors based on the page's vibe.
 
 ```javascript
 const PRODUCT_HIGHLIGHT_COLORS = {
@@ -111,14 +117,14 @@ const PRODUCT_HIGHLIGHT_COLORS = {
     border: 'rgba(140, 112, 255, 0.45)'
   },
   '/Sony/ILCE-0': {
-    soft: 'rgba(90, 190, 255, 0.09)',
-    row: 'rgba(90, 190, 255, 0.11)',
-    border: 'rgba(90, 190, 255, 0.42)'
+    soft: 'rgba(184, 148, 42, 0.10)',
+    row: 'rgba(184, 148, 42, 0.12)',
+    border: 'rgba(184, 148, 42, 0.46)'
   },
   '/Sony/XCD-LED': {
-    soft: 'rgba(89, 225, 206, 0.09)',
-    row: 'rgba(89, 225, 206, 0.11)',
-    border: 'rgba(89, 225, 206, 0.42)'
+    soft: 'rgba(0, 180, 255, 0.10)',
+    row: 'rgba(0, 180, 255, 0.12)',
+    border: 'rgba(255, 45, 32, 0.52)'
   },
   '/ASUS/Ceralumenesium': {
     soft: 'rgba(182, 246, 255, 0.10)',
