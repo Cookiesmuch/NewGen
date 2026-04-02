@@ -4344,9 +4344,9 @@ function setupSkuSelector() {
   const PRICE_FILTER_UI_MIN = 0;
   const PRICE_FILTER_UI_MAX = Number(minSlider.max || 1000);
   const MSRP_MIN = Math.min(...EVENTIDE_SKU_DATA.map((sku) => sku.msrp));
-  const MSRP_DENSE_CEILING = 2000;
+  const MSRP_DENSE_CEILING = 1000;
   const MSRP_MAX = Math.max(...EVENTIDE_SKU_DATA.map((sku) => sku.msrp));
-  const PRICE_DENSE_RATIO = 0.82;
+  const PRICE_DENSE_RATIO = 0.75;
 
   function roundPriceForDisplay(value) {
     if (value <= MSRP_DENSE_CEILING) return Math.round(value / 5) * 5;
