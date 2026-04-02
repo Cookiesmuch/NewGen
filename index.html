@@ -108,6 +108,36 @@
     transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     width: var(--sidebar-width-collapsed);
+    height: calc(100vh - var(--topbar-height));
+  }
+
+  .sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(117, 157, 214, 0.75) transparent;
+  }
+
+  .sidebar::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .sidebar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .sidebar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(108, 168, 255, 0.92), rgba(72, 132, 222, 0.92));
+    border-radius: 999px;
+    border: 2px solid transparent;
+  }
+
+  .sidebar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(134, 186, 255, 0.95), rgba(89, 149, 236, 0.95));
+  }
+
+  .sidebar::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
   }
 
   body.sidebar-expanded .sidebar {
@@ -187,7 +217,7 @@
   }
 
   .cat-items.open {
-    max-height: 1000px;
+    max-height: none;
   }
 
   .nav-item {
@@ -393,6 +423,54 @@
   .product-group.active-product .nav-item.nested:hover,
   .nav-item.active-page-highlight:hover {
     background: var(--product-highlight-row, transparent);
+  }
+
+
+  .mini-sub-category {
+    margin: 1px 0;
+  }
+
+  .mini-sub-cat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 7px 18px 7px 46px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .mini-sub-cat-header:hover { color: var(--text); }
+  .mini-sub-cat-header.active { color: var(--accent); }
+
+  .mini-sub-cat-icon {
+    font-size: 7px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .mini-sub-cat-header.active .mini-sub-cat-icon {
+    transform: rotate(90deg);
+  }
+
+  .mini-sub-cat-items {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .mini-sub-cat-items.open { max-height: 6000px; }
+
+  .nav-item.deep-nested {
+    padding-left: 60px;
+    font-size: 10px;
   }
 
   .nav-state-indicator {
@@ -649,6 +727,65 @@
     { path: '/Intel/Eventide/CPU/Venusmont', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
     { path: '/Intel/Eventide/CPU/LunarEclipse', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
     { path: '/Intel/Eventide/CPU/Darkmont', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    // CPU SKU Sheets
+    { path: '/Intel/Eventide/SKU/C3-533U', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/C3-534H', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/C3-535V', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/C5-553U', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/C5-554H', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/C5-555V', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/C7-573U', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/C7-574H', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/C7-575V', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/C9-593U', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/C9-594H', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/C9-595V', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I3-533H', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I3-534HX', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I3-535HK', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I3-536F', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I3-537T', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I5-553H', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I5-554HX', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I5-555HK', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I5-556F', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I5-557T', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I7-573H', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I7-574HX', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I7-575HK', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I7-576F', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I7-577T', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I9-593H', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I9-594HX', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I9-595HK', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I9-596F', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/I9-597T', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U3-533U', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U3-534H', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U3-535HX', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U3-536HK', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U3-537V', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U5-553U', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U5-554H', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U5-555HX', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U5-556HK', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U5-557V', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U7-573U', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U7-574H', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U7-575HX', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U7-576HK', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U7-577V', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U9-593U', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U9-594H', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U9-595HX', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U9-596HK', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/U9-597V', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/X7-577HX', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/X7-578HK', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/X7-579HKX', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/X9-597HX', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/X9-598HK', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
+    { path: '/Intel/Eventide/SKU/X9-599HKX', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
 
     // GPU Architecture Deep Dives
     { path: '/Intel/Eventide/GPU/Elementalist', src: '/Source/INTEL/Eventide/eventide.deepdive.viewer.html' },
@@ -714,6 +851,7 @@
     companies: new Set(),
     products: new Set(),
     subCategories: new Set(),
+    miniCategories: new Set(),
   };
   let navStateIndicator = null;
   let indicatorHoverTarget = null;
@@ -733,6 +871,12 @@
     },
     categories: {
       'CPU Architectures': '🖥️',
+      'CPU SKUs': '🧾',
+      'Products': '🧭',
+      'Core 500': '📦',
+      'Core i500': '🧩',
+      'Core u500': '🚀',
+      'Core x500': '🏁',
       'GPU Architectures': '🎨',
       'Tiles': '🧩',
       'Technologies': '⚡'
@@ -814,6 +958,87 @@
             { label: 'Lunar Eclipse', path: '/Intel/Eventide/CPU/LunarEclipse' },
             { label: 'Darkmont', path: '/Intel/Eventide/CPU/Darkmont' }
           ],
+          'Products': [
+            {
+              label: 'Core 500',
+              items: [
+                { label: 'Core™ 3 533U', path: '/Intel/Eventide/SKU/C3-533U' },
+                { label: 'Core™ 3 534H', path: '/Intel/Eventide/SKU/C3-534H' },
+                { label: 'Core™ 3 535V', path: '/Intel/Eventide/SKU/C3-535V' },
+                { label: 'Core™ 5 553U', path: '/Intel/Eventide/SKU/C5-553U' },
+                { label: 'Core™ 5 554H', path: '/Intel/Eventide/SKU/C5-554H' },
+                { label: 'Core™ 5 555V', path: '/Intel/Eventide/SKU/C5-555V' },
+                { label: 'Core™ 7 573U', path: '/Intel/Eventide/SKU/C7-573U' },
+                { label: 'Core™ 7 574H', path: '/Intel/Eventide/SKU/C7-574H' },
+                { label: 'Core™ 7 575V', path: '/Intel/Eventide/SKU/C7-575V' },
+                { label: 'Core™ 9 593U', path: '/Intel/Eventide/SKU/C9-593U' },
+                { label: 'Core™ 9 594H', path: '/Intel/Eventide/SKU/C9-594H' },
+                { label: 'Core™ 9 595V', path: '/Intel/Eventide/SKU/C9-595V' },
+              ]
+            },
+            {
+              label: 'Core i500',
+              items: [
+                { label: 'Core™ i3 533H', path: '/Intel/Eventide/SKU/I3-533H' },
+                { label: 'Core™ i3 534HX', path: '/Intel/Eventide/SKU/I3-534HX' },
+                { label: 'Core™ i3 535HK', path: '/Intel/Eventide/SKU/I3-535HK' },
+                { label: 'Core™ i3 536F', path: '/Intel/Eventide/SKU/I3-536F' },
+                { label: 'Core™ i3 537T', path: '/Intel/Eventide/SKU/I3-537T' },
+                { label: 'Core™ i5 553H', path: '/Intel/Eventide/SKU/I5-553H' },
+                { label: 'Core™ i5 554HX', path: '/Intel/Eventide/SKU/I5-554HX' },
+                { label: 'Core™ i5 555HK', path: '/Intel/Eventide/SKU/I5-555HK' },
+                { label: 'Core™ i5 556F', path: '/Intel/Eventide/SKU/I5-556F' },
+                { label: 'Core™ i5 557T', path: '/Intel/Eventide/SKU/I5-557T' },
+                { label: 'Core™ i7 573H', path: '/Intel/Eventide/SKU/I7-573H' },
+                { label: 'Core™ i7 574HX', path: '/Intel/Eventide/SKU/I7-574HX' },
+                { label: 'Core™ i7 575HK', path: '/Intel/Eventide/SKU/I7-575HK' },
+                { label: 'Core™ i7 576F', path: '/Intel/Eventide/SKU/I7-576F' },
+                { label: 'Core™ i7 577T', path: '/Intel/Eventide/SKU/I7-577T' },
+                { label: 'Core™ i9 593H', path: '/Intel/Eventide/SKU/I9-593H' },
+                { label: 'Core™ i9 594HX', path: '/Intel/Eventide/SKU/I9-594HX' },
+                { label: 'Core™ i9 595HK', path: '/Intel/Eventide/SKU/I9-595HK' },
+                { label: 'Core™ i9 596F', path: '/Intel/Eventide/SKU/I9-596F' },
+                { label: 'Core™ i9 597T', path: '/Intel/Eventide/SKU/I9-597T' },
+              ]
+            },
+            {
+              label: 'Core u500',
+              items: [
+                { label: 'Core™ Ultra 3 533U', path: '/Intel/Eventide/SKU/U3-533U' },
+                { label: 'Core™ Ultra 3 534H', path: '/Intel/Eventide/SKU/U3-534H' },
+                { label: 'Core™ Ultra 3 535HX', path: '/Intel/Eventide/SKU/U3-535HX' },
+                { label: 'Core™ Ultra 3 536HK', path: '/Intel/Eventide/SKU/U3-536HK' },
+                { label: 'Core™ Ultra 3 537V', path: '/Intel/Eventide/SKU/U3-537V' },
+                { label: 'Core™ Ultra 5 553U', path: '/Intel/Eventide/SKU/U5-553U' },
+                { label: 'Core™ Ultra 5 554H', path: '/Intel/Eventide/SKU/U5-554H' },
+                { label: 'Core™ Ultra 5 555HX', path: '/Intel/Eventide/SKU/U5-555HX' },
+                { label: 'Core™ Ultra 5 556HK', path: '/Intel/Eventide/SKU/U5-556HK' },
+                { label: 'Core™ Ultra 5 557V', path: '/Intel/Eventide/SKU/U5-557V' },
+                { label: 'Core™ Ultra 7 573U', path: '/Intel/Eventide/SKU/U7-573U' },
+                { label: 'Core™ Ultra 7 574H', path: '/Intel/Eventide/SKU/U7-574H' },
+                { label: 'Core™ Ultra 7 575HX', path: '/Intel/Eventide/SKU/U7-575HX' },
+                { label: 'Core™ Ultra 7 576HK', path: '/Intel/Eventide/SKU/U7-576HK' },
+                { label: 'Core™ Ultra 7 577V', path: '/Intel/Eventide/SKU/U7-577V' },
+                { label: 'Core™ Ultra 9 593U', path: '/Intel/Eventide/SKU/U9-593U' },
+                { label: 'Core™ Ultra 9 594H', path: '/Intel/Eventide/SKU/U9-594H' },
+                { label: 'Core™ Ultra 9 595HX', path: '/Intel/Eventide/SKU/U9-595HX' },
+                { label: 'Core™ Ultra 9 596HK', path: '/Intel/Eventide/SKU/U9-596HK' },
+                { label: 'Core™ Ultra 9 597V', path: '/Intel/Eventide/SKU/U9-597V' },
+              ]
+            },
+            {
+              label: 'Core x500',
+              items: [
+                { label: 'Core™ Xeon® 7 577HX', path: '/Intel/Eventide/SKU/X7-577HX' },
+                { label: 'Core™ Xeon® 7 578HK', path: '/Intel/Eventide/SKU/X7-578HK' },
+                { label: 'Core™ Xeon® 7 579HKX', path: '/Intel/Eventide/SKU/X7-579HKX' },
+                { label: 'Core™ Xeon® 9 597HX', path: '/Intel/Eventide/SKU/X9-597HX' },
+                { label: 'Core™ Xeon® 9 598HK', path: '/Intel/Eventide/SKU/X9-598HK' },
+                { label: 'Core™ Xeon® 9 599HKX', path: '/Intel/Eventide/SKU/X9-599HKX' },
+              ]
+            }
+          ],
+
           'GPU Architectures': [
             { label: 'Elementalist', path: '/Intel/Eventide/GPU/Elementalist' },
             { label: 'Druid', path: '/Intel/Eventide/GPU/Druid' },
@@ -881,6 +1106,23 @@
                       </button>
                       <div class="sub-cat-items">
                         ${subItems.map(subItem => {
+                          if (Array.isArray(subItem.items)) {
+                            const miniName = subItem.label;
+                            return `
+                              <div class="mini-sub-category">
+                                <button class="mini-sub-cat-header" data-product-path="${item.path}" data-subcat="${subCatName}" data-minicat="${miniName}" aria-expanded="false">
+                                  <span><span class="nav-item-icon">${ICONS.categories[miniName] || '•'}</span> ${miniName}</span>
+                                  <span class="mini-sub-cat-icon">▶</span>
+                                </button>
+                                <div class="mini-sub-cat-items">
+                                  ${subItem.items.map((leafItem) => {
+                                    const subIcon = ICONS.pages[leafItem.label] || '•';
+                                    return `<button class="nav-item nested deep-nested" data-path="${leafItem.path}"><span class="nav-item-icon">${subIcon}</span> ${leafItem.label}</button>`;
+                                  }).join('')}
+                                </div>
+                              </div>
+                            `;
+                          }
                           const subIcon = ICONS.pages[subItem.label] || '•';
                           return `<button class="nav-item nested" data-path="${subItem.path}"><span class="nav-item-icon">${subIcon}</span> ${subItem.label}</button>`;
                         }).join('')}
@@ -974,6 +1216,18 @@
         autoExpandedState.subCategories.delete(subKey);
         header.classList.toggle('active');
         const items = header.nextElementSibling;
+        items.classList.toggle('open');
+        header.setAttribute('aria-expanded', items.classList.contains('open') ? 'true' : 'false');
+      });
+    });
+
+    document.querySelectorAll('.mini-sub-cat-header').forEach((header) => {
+      header.addEventListener('click', () => {
+        const miniKey = createMiniCategoryKey(header.dataset.productPath, header.dataset.subcat, header.dataset.minicat);
+        autoExpandedState.miniCategories.delete(miniKey);
+        header.classList.toggle('active');
+        const items = header.nextElementSibling;
+        if (!items) return;
         items.classList.toggle('open');
         header.setAttribute('aria-expanded', items.classList.contains('open') ? 'true' : 'false');
       });
@@ -1127,6 +1381,10 @@
     return `${productPath || ''}::${subcat || ''}`;
   }
 
+  function createMiniCategoryKey(productPath, subcat, miniCat) {
+    return `${productPath || ''}::${subcat || ''}::${miniCat || ''}`;
+  }
+
   function getNavItemByPath(pathname) {
     return [...document.querySelectorAll('.nav-item')].find((btn) => btn.dataset.path === pathname) || null;
   }
@@ -1272,6 +1530,21 @@
     if (!shouldTrackAuto) autoExpandedState.subCategories.delete(subKey);
   }
 
+
+  function openMiniCategorySection(activeButton, shouldTrackAuto) {
+    const miniItems = activeButton.closest('.mini-sub-cat-items');
+    if (!miniItems) return;
+    const miniHeader = miniItems.previousElementSibling;
+    if (!miniHeader || !miniHeader.classList.contains('mini-sub-cat-header')) return;
+    const wasOpen = miniItems.classList.contains('open');
+    miniItems.classList.add('open');
+    miniHeader.classList.add('active');
+    miniHeader.setAttribute('aria-expanded', 'true');
+    const miniKey = createMiniCategoryKey(miniHeader.dataset.productPath, miniHeader.dataset.subcat, miniHeader.dataset.minicat);
+    if (!wasOpen && shouldTrackAuto) autoExpandedState.miniCategories.add(miniKey);
+    if (!shouldTrackAuto) autoExpandedState.miniCategories.delete(miniKey);
+  }
+
   function collapseAutoExpandedForProduct(productPath) {
     if (!isKnownPagePath(productPath)) return;
     const productButton = getNavItemByPath(productPath);
@@ -1289,6 +1562,20 @@
         header.classList.remove('active');
         header.setAttribute('aria-expanded', 'false');
         autoExpandedState.subCategories.delete(subKey);
+      }
+    });
+
+
+    document.querySelectorAll('.mini-sub-cat-header[data-product-path]').forEach((header) => {
+      const miniKey = createMiniCategoryKey(header.dataset.productPath, header.dataset.subcat, header.dataset.minicat);
+      if (header.dataset.productPath === productPath && autoExpandedState.miniCategories.has(miniKey)) {
+        const items = header.nextElementSibling;
+        if (items && items.classList.contains('mini-sub-cat-items')) {
+          items.classList.remove('open');
+        }
+        header.classList.remove('active');
+        header.setAttribute('aria-expanded', 'false');
+        autoExpandedState.miniCategories.delete(miniKey);
       }
     });
 
@@ -1351,6 +1638,7 @@
       openCompanySection(companyItems, shouldTrackAuto);
       openProductSection(activeButton, shouldTrackAuto);
       openSubCategorySection(activeButton, shouldTrackAuto);
+      openMiniCategorySection(activeButton, shouldTrackAuto);
     }
     updateCollapsedIndicator(page);
     updateNavStateIndicator();
