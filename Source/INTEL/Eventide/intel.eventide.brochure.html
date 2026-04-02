@@ -4034,8 +4034,8 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="sku-filter-row">
       <div class="sku-filter-box"><div class="sku-filter-label">Series</div><select class="sku-filter-select" id="sku-filter-series"><option value="all">All Series</option><option value="3">Series 3</option><option value="5">Series 5</option><option value="7">Series 7</option><option value="9">Series 9</option></select></div>
       <div class="sku-filter-box"><div class="sku-filter-label">Suffix</div><select class="sku-filter-select" id="sku-filter-suffix"><option value="all">All Suffixes</option><option value="U">U</option><option value="H">H</option><option value="HX">HX</option><option value="HK">HK</option><option value="HKX">HKX</option><option value="F">F</option><option value="V">V</option><option value="X">X</option><option value="T">T</option></select></div>
-      <div class="sku-filter-box"><div class="sku-filter-label">Min Price (USD)</div><input type="range" min="250" max="30000" step="50" value="250" class="sku-price-range" id="sku-filter-price-min"><div class="sku-price-values"><span id="sku-price-min-val">$250</span><span>min</span></div></div>
-      <div class="sku-filter-box"><div class="sku-filter-label">Max Price (USD)</div><input type="range" min="250" max="30000" step="50" value="30000" class="sku-price-range" id="sku-filter-price-max"><div class="sku-price-values"><span id="sku-price-max-val">$30,000</span><span>max</span></div></div>
+      <div class="sku-filter-box"><div class="sku-filter-label">Min Price (USD)</div><input type="range" min="0" max="30000" step="50" value="0" class="sku-price-range" id="sku-filter-price-min"><div class="sku-price-values"><span id="sku-price-min-val">$0</span><span>min</span></div></div>
+      <div class="sku-filter-box"><div class="sku-filter-label">Max Price (USD)</div><input type="range" min="0" max="30000" step="50" value="30000" class="sku-price-range" id="sku-filter-price-max"><div class="sku-price-values"><span id="sku-price-max-val">$30,000</span><span>max</span></div></div>
     </div>
 
     <div class="sku-filter-pills" id="sku-family-pill-row">
@@ -4303,7 +4303,7 @@ function setupSkuSelector() {
     activeFamily = 'all';
     seriesSel.value = 'all';
     suffixSel.value = 'all';
-    minSlider.value = '250';
+    minSlider.value = '0';
     maxSlider.value = '30000';
     pillRow.querySelectorAll('[data-family-filter]').forEach((n) => n.classList.toggle('active', n.getAttribute('data-family-filter') === 'all'));
     selectedSkuId = EVENTIDE_SKU_DATA[0]?.id || null;
