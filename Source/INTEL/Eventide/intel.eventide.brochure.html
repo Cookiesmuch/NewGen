@@ -4338,6 +4338,8 @@ function setupSkuSelector() {
   if (!grid || !count || !seriesSel || !suffixSel || !minSlider || !maxSlider || !minVal || !maxVal || !rangeFill || !pillRow || !clearBtn) return;
 
   const skuById = new Map(EVENTIDE_SKU_DATA.map((sku) => [sku.id, sku]));
+  const FILTER_STATE_KEY = 'eventideSkuFilters.v1';
+  const validFamilies = new Set(Array.from(pillRow.querySelectorAll('[data-family-filter]')).map((n) => n.getAttribute('data-family-filter') || 'all'));
   let activeFamily = 'all';
   let selectedSkuId = EVENTIDE_SKU_DATA[0]?.id || null;
 
@@ -4388,6 +4390,44 @@ function setupSkuSelector() {
     maxVal.textContent = formatUsd(roundPriceForDisplay(sliderToPrice(normalizedMax)));
   }
 
+  function setActiveFamily(nextFamily) {
+    activeFamily = validFamilies.has(nextFamily) ? nextFamily : 'all';
+    pillRow.querySelectorAll('[data-family-filter]').forEach((n) => n.classList.toggle('active', (n.getAttribute('data-family-filter') || 'all') === activeFamily));
+  }
+
+  function saveFilterState() {
+    try {
+      sessionStorage.setItem(FILTER_STATE_KEY, JSON.stringify({
+        family: activeFamily,
+        series: seriesSel.value,
+        suffix: suffixSel.value,
+        min: Number(minSlider.value),
+        max: Number(maxSlider.value),
+        selectedSkuId
+      }));
+    } catch (_) {
+      // no-op: persistence is best-effort only
+    }
+  }
+
+  function restoreFilterState() {
+    try {
+      const raw = sessionStorage.getItem(FILTER_STATE_KEY);
+      if (!raw) return;
+      const state = JSON.parse(raw);
+      setActiveFamily(String(state.family || 'all'));
+      if (seriesSel.querySelector(`option[value="${state.series}"]`)) seriesSel.value = String(state.series);
+      if (suffixSel.querySelector(`option[value="${state.suffix}"]`)) suffixSel.value = String(state.suffix);
+      const min = Number(state.min);
+      const max = Number(state.max);
+      if (Number.isFinite(min)) minSlider.value = String(Math.max(PRICE_FILTER_UI_MIN, Math.min(PRICE_FILTER_UI_MAX, min)));
+      if (Number.isFinite(max)) maxSlider.value = String(Math.max(PRICE_FILTER_UI_MIN, Math.min(PRICE_FILTER_UI_MAX, max)));
+      if (state.selectedSkuId && skuById.has(state.selectedSkuId)) selectedSkuId = state.selectedSkuId;
+    } catch (_) {
+      // no-op: persistence is best-effort only
+    }
+  }
+
   function filteredData() {
     const minPrice = sliderToPrice(Number(minSlider.value));
     const maxPrice = sliderToPrice(Number(maxSlider.value));
@@ -4426,13 +4466,13 @@ function setupSkuSelector() {
   function applyFilters() {
     enforcePriceRangeBounds();
     renderGrid(filteredData());
+    saveFilterState();
   }
 
   pillRow.addEventListener('click', (event) => {
     const btn = event.target.closest('[data-family-filter]');
     if (!btn) return;
-    activeFamily = btn.getAttribute('data-family-filter') || 'all';
-    pillRow.querySelectorAll('[data-family-filter]').forEach((n) => n.classList.toggle('active', n === btn));
+    setActiveFamily(btn.getAttribute('data-family-filter') || 'all');
     applyFilters();
   });
 
@@ -4453,16 +4493,16 @@ function setupSkuSelector() {
   [seriesSel, suffixSel, minSlider, maxSlider].forEach((el) => el.addEventListener('input', applyFilters));
 
   clearBtn.addEventListener('click', () => {
-    activeFamily = 'all';
+    setActiveFamily('all');
     seriesSel.value = 'all';
     suffixSel.value = 'all';
     minSlider.value = '0';
     maxSlider.value = String(PRICE_FILTER_UI_MAX);
-    pillRow.querySelectorAll('[data-family-filter]').forEach((n) => n.classList.toggle('active', n.getAttribute('data-family-filter') === 'all'));
     selectedSkuId = EVENTIDE_SKU_DATA[0]?.id || null;
     applyFilters();
   });
 
+  restoreFilterState();
   applyFilters();
 }
 
