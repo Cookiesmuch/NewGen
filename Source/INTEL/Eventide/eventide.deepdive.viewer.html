@@ -106,6 +106,19 @@ function withBasePath(pathname, basePath) {
   return `${basePath}${pathname}`;
 }
 
+function toggleSection(id) {
+  const body = document.getElementById(`body-${id}`);
+  const icon = document.getElementById(`icon-${id}`);
+  if (!body || !icon) {
+    return;
+  }
+
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  icon.classList.toggle('open', !isOpen);
+  icon.textContent = isOpen ? '▼' : '▲';
+}
+
 // Mapping of URL paths to deepdive source files
 const DEEPDIVE_MAPPINGS = {
   // CPU Architectures
@@ -114,6 +127,66 @@ const DEEPDIVE_MAPPINGS = {
   '/Intel/Eventide/CPU/Venusmont': './CPU.Architectures/eventide.CPU.venusmont.html',
   '/Intel/Eventide/CPU/LunarEclipse': './CPU.Architectures/eventide.CPU.lunar_eclipse.html',
   '/Intel/Eventide/CPU/Darkmont': './CPU.Architectures/eventide.CPU.darkmont.html',
+
+  // CPU SKU Sheets
+  '/Intel/Eventide/SKU/C3-533U': './CPU.SKU/eventide.sku.c3.533u.html',
+  '/Intel/Eventide/SKU/C3-534H': './CPU.SKU/eventide.sku.c3.534h.html',
+  '/Intel/Eventide/SKU/C3-535V': './CPU.SKU/eventide.sku.c3.535v.html',
+  '/Intel/Eventide/SKU/C5-553U': './CPU.SKU/eventide.sku.c5.553u.html',
+  '/Intel/Eventide/SKU/C5-554H': './CPU.SKU/eventide.sku.c5.554h.html',
+  '/Intel/Eventide/SKU/C5-555V': './CPU.SKU/eventide.sku.c5.555v.html',
+  '/Intel/Eventide/SKU/C7-573U': './CPU.SKU/eventide.sku.c7.573u.html',
+  '/Intel/Eventide/SKU/C7-574H': './CPU.SKU/eventide.sku.c7.574h.html',
+  '/Intel/Eventide/SKU/C7-575V': './CPU.SKU/eventide.sku.c7.575v.html',
+  '/Intel/Eventide/SKU/C9-593U': './CPU.SKU/eventide.sku.c9.593u.html',
+  '/Intel/Eventide/SKU/C9-594H': './CPU.SKU/eventide.sku.c9.594h.html',
+  '/Intel/Eventide/SKU/C9-595V': './CPU.SKU/eventide.sku.c9.595v.html',
+  '/Intel/Eventide/SKU/I3-533H': './CPU.SKU/eventide.sku.i3.533h.html',
+  '/Intel/Eventide/SKU/I3-534HX': './CPU.SKU/eventide.sku.i3.534hx.html',
+  '/Intel/Eventide/SKU/I3-535HK': './CPU.SKU/eventide.sku.i3.535hk.html',
+  '/Intel/Eventide/SKU/I3-536F': './CPU.SKU/eventide.sku.i3.536f.html',
+  '/Intel/Eventide/SKU/I3-537T': './CPU.SKU/eventide.sku.i3.537t.html',
+  '/Intel/Eventide/SKU/I5-553H': './CPU.SKU/eventide.sku.i5.553h.html',
+  '/Intel/Eventide/SKU/I5-554HX': './CPU.SKU/eventide.sku.i5.554hx.html',
+  '/Intel/Eventide/SKU/I5-555HK': './CPU.SKU/eventide.sku.i5.555hk.html',
+  '/Intel/Eventide/SKU/I5-556F': './CPU.SKU/eventide.sku.i5.556f.html',
+  '/Intel/Eventide/SKU/I5-557T': './CPU.SKU/eventide.sku.i5.557t.html',
+  '/Intel/Eventide/SKU/I7-573H': './CPU.SKU/eventide.sku.i7.573h.html',
+  '/Intel/Eventide/SKU/I7-574HX': './CPU.SKU/eventide.sku.i7.574hx.html',
+  '/Intel/Eventide/SKU/I7-575HK': './CPU.SKU/eventide.sku.i7.575hk.html',
+  '/Intel/Eventide/SKU/I7-576F': './CPU.SKU/eventide.sku.i7.576f.html',
+  '/Intel/Eventide/SKU/I7-577T': './CPU.SKU/eventide.sku.i7.577t.html',
+  '/Intel/Eventide/SKU/I9-593H': './CPU.SKU/eventide.sku.i9.593h.html',
+  '/Intel/Eventide/SKU/I9-594HX': './CPU.SKU/eventide.sku.i9.594hx.html',
+  '/Intel/Eventide/SKU/I9-595HK': './CPU.SKU/eventide.sku.i9.595hk.html',
+  '/Intel/Eventide/SKU/I9-596F': './CPU.SKU/eventide.sku.i9.596f.html',
+  '/Intel/Eventide/SKU/I9-597T': './CPU.SKU/eventide.sku.i9.597t.html',
+  '/Intel/Eventide/SKU/U3-533U': './CPU.SKU/eventide.sku.u3.533u.html',
+  '/Intel/Eventide/SKU/U3-534H': './CPU.SKU/eventide.sku.u3.534h.html',
+  '/Intel/Eventide/SKU/U3-535HX': './CPU.SKU/eventide.sku.u3.535hx.html',
+  '/Intel/Eventide/SKU/U3-536HK': './CPU.SKU/eventide.sku.u3.536hk.html',
+  '/Intel/Eventide/SKU/U3-537V': './CPU.SKU/eventide.sku.u3.537v.html',
+  '/Intel/Eventide/SKU/U5-553U': './CPU.SKU/eventide.sku.u5.553u.html',
+  '/Intel/Eventide/SKU/U5-554H': './CPU.SKU/eventide.sku.u5.554h.html',
+  '/Intel/Eventide/SKU/U5-555HX': './CPU.SKU/eventide.sku.u5.555hx.html',
+  '/Intel/Eventide/SKU/U5-556HK': './CPU.SKU/eventide.sku.u5.556hk.html',
+  '/Intel/Eventide/SKU/U5-557V': './CPU.SKU/eventide.sku.u5.557v.html',
+  '/Intel/Eventide/SKU/U7-573U': './CPU.SKU/eventide.sku.u7.573u.html',
+  '/Intel/Eventide/SKU/U7-574H': './CPU.SKU/eventide.sku.u7.574h.html',
+  '/Intel/Eventide/SKU/U7-575HX': './CPU.SKU/eventide.sku.u7.575hx.html',
+  '/Intel/Eventide/SKU/U7-576HK': './CPU.SKU/eventide.sku.u7.576hk.html',
+  '/Intel/Eventide/SKU/U7-577V': './CPU.SKU/eventide.sku.u7.577v.html',
+  '/Intel/Eventide/SKU/U9-593U': './CPU.SKU/eventide.sku.u9.593u.html',
+  '/Intel/Eventide/SKU/U9-594H': './CPU.SKU/eventide.sku.u9.594h.html',
+  '/Intel/Eventide/SKU/U9-595HX': './CPU.SKU/eventide.sku.u9.595hx.html',
+  '/Intel/Eventide/SKU/U9-596HK': './CPU.SKU/eventide.sku.u9.596hk.html',
+  '/Intel/Eventide/SKU/U9-597V': './CPU.SKU/eventide.sku.u9.597v.html',
+  '/Intel/Eventide/SKU/X7-577HX': './CPU.SKU/eventide.sku.x7.577hx.html',
+  '/Intel/Eventide/SKU/X7-578HK': './CPU.SKU/eventide.sku.x7.578hk.html',
+  '/Intel/Eventide/SKU/X7-579HKX': './CPU.SKU/eventide.sku.x7.579hkx.html',
+  '/Intel/Eventide/SKU/X9-597HX': './CPU.SKU/eventide.sku.x9.597hx.html',
+  '/Intel/Eventide/SKU/X9-598HK': './CPU.SKU/eventide.sku.x9.598hk.html',
+  '/Intel/Eventide/SKU/X9-599HKX': './CPU.SKU/eventide.sku.x9.599hx.html',
 
   // GPU Architectures
   '/Intel/Eventide/GPU/Elementalist': './GPU.architectures/eventide.GPU.elementalist.html',

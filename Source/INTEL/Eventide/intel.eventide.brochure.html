@@ -453,6 +453,304 @@
   .suffix-code { font-family: var(--font-mono); font-size: 15px; font-weight: 500; color: var(--intel-blue); }
   .suffix-desc { font-size: 11px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
 
+
+  /* ── SKU SELECTOR ── */
+  .sku-selector-shell {
+    position: relative;
+    border: 1px solid rgba(96,180,255,0.18);
+    background:
+      radial-gradient(120% 180% at 0% 0%, rgba(107,33,168,0.24) 0%, rgba(10,14,26,0.55) 42%, rgba(10,14,26,0.92) 100%),
+      linear-gradient(160deg, rgba(11,15,28,0.96) 0%, rgba(7,10,20,0.96) 100%);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 22px 54px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+
+  .sku-selector-shell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: 14px;
+    background:
+      repeating-linear-gradient(0deg, rgba(96,180,255,0.05) 0 1px, transparent 1px 28px),
+      repeating-linear-gradient(90deg, rgba(96,180,255,0.04) 0 1px, transparent 1px 28px);
+    opacity: 0.24;
+  }
+
+  .sku-selector-shell > * { position: relative; z-index: 1; }
+
+  .sku-library-wrap {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 140% at 12% 10%, rgba(107,33,168,0.2) 0%, rgba(10,14,26,0.92) 58%, rgba(7,10,20,1) 100%),
+      linear-gradient(180deg, #080D1A 0%, #070A14 100%);
+  }
+
+  .sku-library-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      repeating-linear-gradient(0deg, rgba(96,180,255,0.06) 0 1px, transparent 1px 34px),
+      repeating-linear-gradient(90deg, rgba(96,180,255,0.05) 0 1px, transparent 1px 34px);
+    opacity: 0.3;
+  }
+
+  .sku-library-wrap .section { position: relative; z-index: 1; }
+  .sku-library-wrap .section-label { color: rgba(96,180,255,0.9); }
+  .sku-library-wrap .section-heading {
+    font-family: var(--font-display);
+    color: #F6E2B1;
+    text-shadow: 0 3px 20px rgba(240,184,72,0.22);
+    letter-spacing: 0.01em;
+  }
+  .sku-library-wrap .section-intro { color: rgba(255,255,255,0.78); }
+
+  .sku-filter-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .sku-filter-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 8px;
+    padding: 8px 10px;
+  }
+
+  .sku-filter-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.58);
+    margin-bottom: 6px;
+  }
+
+  .sku-filter-select {
+    width: 100%;
+    background: rgba(0,0,0,0.28);
+    border: 1px solid rgba(255,255,255,0.16);
+    color: rgba(255,255,255,0.92);
+    border-radius: 6px;
+    font-size: 12px;
+    padding: 7px 8px;
+    font-family: var(--font-body);
+  }
+
+  .sku-price-filter-box { min-width: 0; }
+  .sku-dual-range {
+    position: relative;
+    height: 24px;
+    display: flex;
+    align-items: center;
+  }
+  .sku-dual-range-track,
+  .sku-dual-range-fill {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 6px;
+    border-radius: 999px;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  .sku-dual-range-track {
+    background: linear-gradient(90deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.07) 100%);
+  }
+  .sku-dual-range-fill {
+    left: 0;
+    right: auto;
+    width: 100%;
+    background: linear-gradient(90deg, rgba(240,184,72,0.94) 0%, rgba(255,107,53,0.9) 100%);
+    box-shadow: 0 0 12px rgba(240,184,72,0.35);
+  }
+  .sku-price-range {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    background: none;
+    border: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    pointer-events: none;
+  }
+  .sku-price-range::-webkit-slider-runnable-track {
+    height: 6px;
+    background: transparent;
+    border: 0;
+  }
+  .sku-price-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    pointer-events: auto;
+    width: 16px;
+    height: 16px;
+    margin-top: -5px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.86);
+    background: radial-gradient(circle at 35% 35%, #fff 0%, #F0B848 45%, #A3621E 100%);
+    box-shadow: 0 0 0 2px rgba(10,14,26,0.9), 0 0 12px rgba(240,184,72,0.4);
+    cursor: pointer;
+  }
+  .sku-price-range::-moz-range-track {
+    height: 6px;
+    background: transparent;
+    border: 0;
+  }
+  .sku-price-range::-moz-range-thumb {
+    pointer-events: auto;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.86);
+    background: #F0B848;
+    box-shadow: 0 0 0 2px rgba(10,14,26,0.9), 0 0 10px rgba(240,184,72,0.4);
+    cursor: pointer;
+  }
+
+  .sku-price-values {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: rgba(255,255,255,0.72);
+  }
+
+  .sku-filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0 14px;
+  }
+
+  .sku-filter-pill {
+    border: 1px solid rgba(255,255,255,0.22);
+    background: rgba(255,255,255,0.03);
+    color: rgba(255,255,255,0.84);
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all .16s ease;
+  }
+
+  .sku-filter-pill.active {
+    border-color: rgba(240,184,72,0.56);
+    background: rgba(240,184,72,0.12);
+    color: var(--eventide-gold-light);
+    box-shadow: 0 0 0 1px rgba(240,184,72,0.2) inset;
+  }
+
+  .sku-result-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .sku-result-count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .sku-clear-filters {
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.86);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .sku-selector-layout {
+    display: grid;
+    grid-template-columns: minmax(400px, 0.95fr) 1.35fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .sku-overview-panel {
+    position: sticky;
+    top: 20px;
+    border: 1px solid rgba(96,180,255,0.22);
+    border-radius: 12px;
+    background:
+      radial-gradient(140% 220% at 0% 0%, rgba(107,33,168,0.25) 0%, rgba(10,14,26,0.72) 45%, rgba(10,14,26,0.97) 100%),
+      linear-gradient(180deg, rgba(10,14,26,0.97) 0%, rgba(12,17,30,0.98) 100%);
+    color: white;
+    overflow: hidden;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.42);
+  }
+
+  .sku-overview-head {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+
+  .sku-overview-art {
+    width: 58px;
+    height: 58px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.22);
+    background: rgba(255,255,255,0.06);
+    object-fit: contain;
+    padding: 7px;
+    flex-shrink: 0;
+  }
+
+  .sku-overview-tier { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 2px; }
+  .sku-overview-name { font-family: var(--font-display); font-size: 36px; line-height: 0.9; color: #fff; }
+  .sku-overview-badges { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 18px 14px; border-bottom: 1px solid rgba(255,255,255,0.09); }
+  .sku-overview-badge { font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: .08em; border:1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 4px 8px; color: rgba(255,255,255,.82); }
+
+  .sku-overview-table { width: 100%; border-collapse: collapse; }
+  .sku-overview-table thead th { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.66); text-align: left; padding: 8px 11px; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.11); }
+  .sku-overview-table td { font-size: 12px; color: rgba(255,255,255,0.88); padding: 8px 11px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .sku-overview-table tr:last-child td { border-bottom: none; }
+
+  .sku-overview-meta { padding: 14px 18px 18px; border-top: 1px solid rgba(255,255,255,0.12); display: grid; gap: 8px; }
+  .sku-overview-meta-row { display: grid; grid-template-columns: 116px 1fr; gap: 10px; font-size: 12px; }
+  .sku-overview-meta-k { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+  .sku-overview-meta-v { color: rgba(255,255,255,0.9); }
+  .sku-overview-price { font-family: var(--font-display); font-size: 38px; color: var(--eventide-gold-light); line-height: 1; margin-top: 4px; }
+
+  .sku-overview-cta { margin-top: 8px; border: 1px solid rgba(240,184,72,0.4); background: linear-gradient(135deg, rgba(200,146,42,0.95) 0%, rgba(168,120,36,0.95) 100%); color: #fff; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 10px 12px; border-radius: 7px; cursor: pointer; text-align: center; }
+  .sku-overview-cta:hover { filter: brightness(1.08); }
+
+  .sku-selector-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .sku-select-card { border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 10px 11px; background: linear-gradient(165deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 100%); display: flex; align-items: center; gap: 9px; cursor: pointer; transition: border-color 0.18s ease, background 0.18s ease, transform 0.16s ease, box-shadow 0.16s ease; color: #fff; }
+  .sku-select-card:hover { border-color: rgba(96,180,255,0.42); background: linear-gradient(165deg, rgba(96,180,255,0.13) 0%, rgba(96,180,255,0.03) 100%); transform: translateY(-1px); box-shadow: 0 8px 18px rgba(0,0,0,0.24); }
+  .sku-select-card.active { border-color: rgba(240,184,72,0.66); background: linear-gradient(165deg, rgba(240,184,72,0.16) 0%, rgba(240,184,72,0.05) 100%); box-shadow: 0 0 0 1px rgba(240,184,72,0.24) inset, 0 8px 18px rgba(0,0,0,0.3); }
+  .sku-select-art { width: 42px; height: 42px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.06); object-fit: contain; padding: 5px; flex-shrink: 0; }
+  .sku-select-name { font-size: 13px; line-height: 1.2; color: #fff; font-weight: 600; }
+  .sku-select-family { font-family: var(--font-mono); font-size: 9px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+  .sku-select-price { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; color: rgba(240,184,72,0.95); margin-top: 4px; }
+
+  .sku-empty-state { grid-column: 1 / -1; border: 1px dashed rgba(255,255,255,0.25); border-radius: 10px; padding: 24px; text-align: center; color: rgba(255,255,255,0.68); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
   /* ── SPEC SHEET ── */
   .spec-sheet {
     background: var(--surface);
@@ -811,6 +1109,10 @@
     .spec-info-grid { grid-template-columns: repeat(2, 1fr); }
     .spec-row { grid-template-columns: 180px 1fr; }
     .sku-suffix-grid { grid-template-columns: repeat(2, 1fr); }
+    .sku-filter-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .sku-selector-layout { grid-template-columns: 1fr; }
+    .sku-overview-panel { position: static; }
+    .sku-selector-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 </style>
 
@@ -3832,239 +4134,53 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 </div>
 
+
 <!-- ══════════════════════════════════════════════════════
-     SPEC SHEET
+     SKU SELECTOR
 ══════════════════════════════════════════════════════ -->
-<div class="full-width-dark">
+<div class="full-width-dark sku-library-wrap">
 <div class="section">
-  <div class="section-label">Official Product Specification</div>
-  <div class="section-heading">Core Xeon® 599HKX</div>
-  <p class="section-intro" style="margin-bottom: 32px;">
-    The unconstrained ceiling of the Eventide generation. Four compute tiles. Four Arc E1080 iGPU tiles.
-    Eight BionzXR transcoding cores. A fully populated Low Power Island. The world's most capable mobile APU.
+  <div class="section-label">SKU Selector</div>
+  <div class="section-heading">Eventide SKU Library</div>
+  <p class="section-intro" style="margin-bottom: 20px;">
+    Filter Eventide SKUs by product family, series, suffix, and target price range. Select any SKU card to inspect
+    a detailed summary, then open its full deep-dive specification sheet.
   </p>
+
+  <div class="sku-selector-shell">
+    <div class="sku-filter-row">
+      <div class="sku-filter-box"><div class="sku-filter-label">Series</div><select class="sku-filter-select" id="sku-filter-series"><option value="all">All Series</option><option value="3">Series 3</option><option value="5">Series 5</option><option value="7">Series 7</option><option value="9">Series 9</option></select></div>
+      <div class="sku-filter-box"><div class="sku-filter-label">Suffix</div><select class="sku-filter-select" id="sku-filter-suffix"><option value="all">All Suffixes</option><option value="U">U</option><option value="H">H</option><option value="HX">HX</option><option value="HK">HK</option><option value="HKX">HKX</option><option value="F">F</option><option value="V">V</option><option value="X">X</option><option value="T">T</option></select></div>
+      <div class="sku-filter-box sku-price-filter-box"><div class="sku-filter-label">Price Range (USD)</div><div class="sku-dual-range" id="sku-dual-range"><div class="sku-dual-range-track"></div><div class="sku-dual-range-fill" id="sku-price-range-fill"></div><input type="range" min="0" max="1000" step="1" value="0" class="sku-price-range sku-price-range-min" id="sku-filter-price-min"><input type="range" min="0" max="1000" step="1" value="1000" class="sku-price-range sku-price-range-max" id="sku-filter-price-max"></div><div class="sku-price-values"><span id="sku-price-min-val">$85</span><span>to</span><span id="sku-price-max-val">$10,999</span></div></div>
+    </div>
+
+    <div class="sku-filter-pills" id="sku-family-pill-row">
+      <button type="button" class="sku-filter-pill active" data-family-filter="all">All Families</button>
+      <button type="button" class="sku-filter-pill" data-family-filter="core">Core 500</button>
+      <button type="button" class="sku-filter-pill" data-family-filter="i">Core i500</button>
+      <button type="button" class="sku-filter-pill" data-family-filter="u">Core Ultra 500</button>
+      <button type="button" class="sku-filter-pill" data-family-filter="x">Core Xeon 500</button>
+    </div>
+
+    <div class="sku-result-meta">
+      <div class="sku-result-count" id="sku-result-count">Showing 0 SKUs</div>
+      <button type="button" class="sku-clear-filters" id="sku-clear-filters">Reset Filters</button>
+    </div>
+
+    <div class="sku-selector-layout">
+      <div class="sku-overview-panel" id="eventide-sku-overview"></div>
+      <div class="sku-selector-grid" id="eventide-sku-grid"></div>
+    </div>
+  </div>
 </div>
-</div>
-
-<div style="max-width: 1200px; margin: 0 auto; padding: 0 48px 64px;">
-
-<div class="spec-sheet">
-  <div class="spec-sheet-header">
-    <div style="flex: 1;">
-      <div class="spec-sheet-logo">Intel Corporation · Eventide Architecture · 2028</div>
-      <div class="spec-sku">Intel® Core™ Xeon® 599HKX</div>
-      <div class="spec-fullname">
-        Intel® Core™ Xeon® 599HKX Processor<br>
-        Core Xeon 500 Series · Eventide Generation · 72M Cache, up to 6.00 GHz (10.0 GHz HyperBOOST)
-      </div>
-      <div class="spec-badges-header">
-        <span class="badge badge-gold">Core Xeon X500</span>
-        <span class="badge badge-orange">HKX · Unlocked Mobile · Higher End GPU</span>
-        <span class="badge badge-blue">FOveros 2.0 Photonic</span>
-        <span class="badge badge-purple">344 TOPS AI</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="spec-info-grid">
-    <div class="spec-info-box"><div class="spec-info-num">6.00</div><div class="spec-info-label">GHz Max Turbo</div></div>
-    <div class="spec-info-box"><div class="spec-info-num">10.0</div><div class="spec-info-label">GHz HyperBOOST</div></div>
-    <div class="spec-info-box"><div class="spec-info-num">344</div><div class="spec-info-label">Total AI TOPS</div></div>
-    <div class="spec-info-box"><div class="spec-info-num">72MB</div><div class="spec-info-label">Total Cache</div></div>
-  </div>
-
-  <!-- ESSENTIALS -->
-  <div class="spec-table-section">
-    <div class="spec-table-head" onclick="toggleSection('essentials')">
-      <span class="spec-table-head-label">Essentials</span>
-      <span class="spec-table-head-icon open" id="icon-essentials">▲</span>
-    </div>
-    <div class="spec-table-body open" id="body-essentials">
-      <div class="spec-row"><div class="spec-row-key">Product Collection</div><div class="spec-row-val">Intel® Core™ Xeon® 500 Series Processors (Eventide)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Code Name</div><div class="spec-row-val">Eventide <span class="note">· One-off generation (spiritual successor to Lunar Lake + Panther Lake)</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Vertical Segment</div><div class="spec-row-val">Mobile (HKX — Overclocked, Unlocked, Xtreme)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Processor Number</div><div class="spec-row-val">Core Xeon® 599HKX</div></div>
-      <div class="spec-row"><div class="spec-row-key">Launch Date</div><div class="spec-row-val">Q3 2028</div></div>
-      <div class="spec-row"><div class="spec-row-key">Lithography (Primary)</div><div class="spec-row-val">Intel 04A (0.4nm-class GaNSi GAA) · Compute + iGPU + HNPU + Kache Kore™</div></div>
-      <div class="spec-row"><div class="spec-row-key">Lithography (Efficiency)</div><div class="spec-row-val">Intel 06E (0.6nm-class FinFlex GAA) · LP Island + Arc Druid + BionzXR + LPNPU</div></div>
-      <div class="spec-row"><div class="spec-row-key">Lithography (Ancillary)</div><div class="spec-row-val">Intel 14A-E · MFX QuickSync, IPU 8.2, 2DKR, Network, Audio, Security, Display</div></div>
-      <div class="spec-row"><div class="spec-row-key">Tile Interconnect</div><div class="spec-row-val">Intel FOveros 2.0 (FiberOptic-VEROS) — Photonic; co-developed with Lightmatter USA</div></div>
-      <div class="spec-row"><div class="spec-row-key">Recommended Customer Price</div><div class="spec-row-val">Contact OEM <span class="note">(Xeon 500 series is OEM/SI channel)</span></div></div>
-    </div>
-  </div>
-
-  <!-- CPU SPECS -->
-  <div class="spec-table-section">
-    <div class="spec-table-head" onclick="toggleSection('cpu')">
-      <span class="spec-table-head-label">CPU Specifications</span>
-      <span class="spec-table-head-icon open" id="icon-cpu">▲</span>
-    </div>
-    <div class="spec-table-body open" id="body-cpu">
-      <div class="spec-row"><div class="spec-row-key">Compute Tiles</div><div class="spec-row-val">4× (scalable permutable dies · Intel 04A)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Total UHP Cores (Solar Eclipse)</div><div class="spec-row-val">32 <span class="note">· 8 per compute tile; octet V8 HyperBOOST across 2 tiles</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total DP Cores (Sunset Cove)</div><div class="spec-row-val">24 <span class="note">· 6 per compute tile; SMT: 2T/core = 32 logical DP threads</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total SPE Cores (Venusmont)</div><div class="spec-row-val">288 <span class="note">· 72 per compute tile; 9× density of UHP</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total UHE Cores (Lunar Eclipse)</div><div class="spec-row-val">16 <span class="note">· Low Power Island · Intel 06E</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total LPE Cores (Darkmont)</div><div class="spec-row-val">16 <span class="note">· Low Power Island · Intel 06E · rebinned PTL E-core</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total Physical CPU Cores</div><div class="spec-row-val">372 <span class="note">· 32 UHP + 24 DP + 288 SPE + 16 UHE + 16 LPE</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total Logical Threads</div><div class="spec-row-val">400 <span class="note">· DP SMT adds 48 threads; all others 1T/core</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">UHP Base Frequency</div><div class="spec-row-val">2.40 GHz</div></div>
-      <div class="spec-row"><div class="spec-row-key">UHP Max Turbo (TBM 5.0)</div><div class="spec-row-val">6.00 GHz</div></div>
-      <div class="spec-row"><div class="spec-row-key">UHP V8 HyperBOOST (peak)</div><div class="spec-row-val">10.00 GHz <span class="note">· 8–40ms burst window; thermally gated; hardware-scheduled</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">DP Base Frequency</div><div class="spec-row-val">2.10 GHz</div></div>
-      <div class="spec-row"><div class="spec-row-key">DP Max Turbo</div><div class="spec-row-val">5.20 GHz</div></div>
-      <div class="spec-row"><div class="spec-row-key">SPE Base / Max Turbo</div><div class="spec-row-val">1.80 GHz / 3.60 GHz</div></div>
-      <div class="spec-row"><div class="spec-row-key">UHE Base / Max Turbo</div><div class="spec-row-val">1.60 GHz / 4.80 GHz</div></div>
-      <div class="spec-row"><div class="spec-row-key">LPE Base / Max Turbo</div><div class="spec-row-val">0.80 GHz / 3.00 GHz</div></div>
-      <div class="spec-row"><div class="spec-row-key">Overclocking</div><div class="spec-row-val">Yes — UHP, DP, SPE; per-tile granular multiplier unlock (HKX)</div></div>
-    </div>
-  </div>
-
-  <!-- CACHE -->
-  <div class="spec-table-section">
-    <div class="spec-table-head" onclick="toggleSection('cache')">
-      <span class="spec-table-head-label">Cache</span>
-      <span class="spec-table-head-icon" id="icon-cache">▼</span>
-    </div>
-    <div class="spec-table-body" id="body-cache">
-      <div class="spec-row"><div class="spec-row-key">L0 (UHP, per core)</div><div class="spec-row-val">96 KB instruction + 64 KB data <span class="note">· extra-low latency; on Intel 04A</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">L0 (DP, per core)</div><div class="spec-row-val">128 KB instruction + 80 KB data</div></div>
-      <div class="spec-row"><div class="spec-row-key">L0 (UHE, per core)</div><div class="spec-row-val">48 KB <span class="note">· efficiency-optimized instruction buffer; Intel 06E</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">L1 (UHP/DP, per core)</div><div class="spec-row-val">256 KB</div></div>
-      <div class="spec-row"><div class="spec-row-key">L1 (SPE, per 9-cluster)</div><div class="spec-row-val">128 KB shared</div></div>
-      <div class="spec-row"><div class="spec-row-key">L1 (UHE, per core)</div><div class="spec-row-val">128 KB</div></div>
-      <div class="spec-row"><div class="spec-row-key">L1 (LPE, per 4-cluster)</div><div class="spec-row-val">128 KB shared</div></div>
-      <div class="spec-row"><div class="spec-row-key">L2 (UHP, per core)</div><div class="spec-row-val">4 MB</div></div>
-      <div class="spec-row"><div class="spec-row-key">L2 (DP, per core)</div><div class="spec-row-val">6 MB</div></div>
-      <div class="spec-row"><div class="spec-row-key">L2 (SPE, per 9-cluster)</div><div class="spec-row-val">2 MB shared</div></div>
-      <div class="spec-row"><div class="spec-row-key">L2 (UHE, per core)</div><div class="spec-row-val">3 MB</div></div>
-      <div class="spec-row"><div class="spec-row-key">L2 (LPE, per 4-cluster)</div><div class="spec-row-val">1 MB shared</div></div>
-      <div class="spec-row"><div class="spec-row-key">L3 (Compute tile, shared)</div><div class="spec-row-val">12 MB per tile · 48 MB total (4 tiles)</div></div>
-      <div class="spec-row"><div class="spec-row-key">L3 (LP Island, shared)</div><div class="spec-row-val">8 MB (Kache Kore™ shared)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Kache Kore™ L4 / bLLC</div><div class="spec-row-val">4 GB <span class="note">· eDRAM-class latency; Intel 04A; system-wide shared; cache-latency DRAM for APU workloads</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total SRAM cache (approx.)</div><div class="spec-row-val">~72 MB SRAM + 4 GB L4 bLLC</div></div>
-    </div>
-  </div>
-
-  <!-- MEMORY -->
-  <div class="spec-table-section">
-    <div class="spec-table-head" onclick="toggleSection('memory')">
-      <span class="spec-table-head-label">Memory</span>
-      <span class="spec-table-head-icon" id="icon-memory">▼</span>
-    </div>
-    <div class="spec-table-body" id="body-memory">
-      <div class="spec-row"><div class="spec-row-key">Primary Memory Type</div><div class="spec-row-val">Intel® Z-Angle Memory (ZAM) <span class="note">· In-house Intel; FOveros-mounted; bandwidth + density optimized</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">ZAM Architecture</div><div class="spec-row-val">Vertical-stack AI-optimized chips; mounted directly on FOveros 2.0 substrate</div></div>
-      <div class="spec-row"><div class="spec-row-key">ZAM Controllers (base)</div><div class="spec-row-val">2× dual-channel ZAM controllers</div></div>
-      <div class="spec-row"><div class="spec-row-key">ZAM Controllers (higher SKU)</div><div class="spec-row-val">3× controllers (2× ZAM + 1× DDR6/LPDDR6X dual-channel)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Max ZAM Capacity</div><div class="spec-row-val">Up to 1 TB <span class="note">· depends on SKU and ZAM chip density</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">ZAM Bandwidth</div><div class="spec-row-val">2–3 TB/s per controller · 5–6 TB/s effective (2× dual-channel controllers)</div></div>
-      <div class="spec-row"><div class="spec-row-key">ZAM Latency</div><div class="spec-row-val">Higher than DDR; mitigated by Kache Kore™ 4 GB bLLC + photonic substrate proximity</div></div>
-      <div class="spec-row"><div class="spec-row-key">Secondary Memory (Higher SKUs)</div><div class="spec-row-val">DDR6 / LPDDR6X <span class="note">· 3rd dual-channel controller; Core Ultra 500 and Xeon 500</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Max DDR6 Capacity</div><div class="spec-row-val">Up to 1 TB DDR6</div></div>
-      <div class="spec-row"><div class="spec-row-key">DDR6 Speed</div><div class="spec-row-val">DDR6-9600+ / LPDDR6X-10400</div></div>
-      <div class="spec-row"><div class="spec-row-key">Max Total Memory</div><div class="spec-row-val">Up to 2 TB unified (1 TB ZAM + 1 TB DDR6)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Memory Architecture</div><div class="spec-row-val">APU Unified Memory — CPU, GPU, NPU, all tiles share ZAM + DDR6</div></div>
-      <div class="spec-row"><div class="spec-row-key">Intel DirectStorage 2.0</div><div class="spec-row-val">DDR6 staging → ZAM active runtime → bLLC hot data <span class="note">· in-house vertical integration</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">ECC Memory</div><div class="spec-row-val">Yes <span class="note">· Xeon 500 class; inline ECC correction on ZAM + DDR6</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Kache Kore™ bLLC</div><div class="spec-row-val">4 GB L4 cache <span class="note">· cache-latency effective DRAM for hot APU working sets</span></div></div>
-    </div>
-  </div>
-
-  <!-- GPU -->
-  <div class="spec-table-section">
-    <div class="spec-table-head" onclick="toggleSection('gpu')">
-      <span class="spec-table-head-label">Graphics</span>
-      <span class="spec-table-head-icon" id="icon-gpu">▼</span>
-    </div>
-    <div class="spec-table-body" id="body-gpu">
-      <div class="spec-row"><div class="spec-row-key">Primary iGPU</div><div class="spec-row-val">Intel® Arc® E1080 × 4 tiles (Arc Elementalist / Xe5)</div></div>
-      <div class="spec-row"><div class="spec-row-key">iGPU Process</div><div class="spec-row-val">Intel 04A</div></div>
-      <div class="spec-row"><div class="spec-row-key">Total Xe5-cores (4× E1080)</div><div class="spec-row-val">880 Xe5-cores (450,560 shaders)</div></div>
-      <div class="spec-row"><div class="spec-row-key">GPU Boost Clock</div><div class="spec-row-val">2.5 GHz</div></div>
-      <div class="spec-row"><div class="spec-row-key">XMX5 AI units (total)</div><div class="spec-row-val">7,040 <span class="note">· ~67,830 AI TOPS combined (GPU)</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">RTU5 Ray Trace Units (total)</div><div class="spec-row-val">3,520</div></div>
-      <div class="spec-row"><div class="spec-row-key">Multi-tile presentation</div><div class="spec-row-val">4× E1080 appear as single render device via FOveros 2.0 + Thread Director</div></div>
-      <div class="spec-row"><div class="spec-row-key">VR Support</div><div class="spec-row-val">Yes — first Intel Arc gen. with native VR; VRV1 / VRV2 codec hardware</div></div>
-      <div class="spec-row"><div class="spec-row-key">LP iGPU</div><div class="spec-row-val">Intel® Arc® Druid (Xe4E) — Intel 06E; always-on low-power 3D</div></div>
-      <div class="spec-row"><div class="spec-row-key">Arc Druid Xe-cores</div><div class="spec-row-val">14 Xe4E-cores (3,584 shaders); RTX 5060M-class raster</div></div>
-      <div class="spec-row"><div class="spec-row-key">2DKR Node</div><div class="spec-row-val">Intel 14A-E; dedicated 2D/GUI accelerator; no 3D ALUs; modernised Blitter Engine</div></div>
-      <div class="spec-row"><div class="spec-row-key">Max Displays</div><div class="spec-row-val">6 (native)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Display Outputs</div><div class="spec-row-val">eDP 1.5, Intel×Sony eDP 2.0 (over PCIe 7.0 ×16×3), DisplayPort 2.1 UHBR20, HDMI 2.1 FRL</div></div>
-      <div class="spec-row"><div class="spec-row-key">Max Resolution (eDP 2.0)</div><div class="spec-row-val">15360 × 9600 @ 1200 Hz</div></div>
-    </div>
-  </div>
-
-  <!-- AI & MEDIA -->
-  <div class="spec-table-section">
-    <div class="spec-table-head" onclick="toggleSection('ai')">
-      <span class="spec-table-head-label">AI & Media</span>
-      <span class="spec-table-head-icon" id="icon-ai">▼</span>
-    </div>
-    <div class="spec-table-body" id="body-ai">
-      <div class="spec-row"><div class="spec-row-key">HNPU (Intel 04A)</div><div class="spec-row-val">256 TOPS <span class="note">· INT2/4/8, FP8, BF16, FP16, FP32; 32 MB scratchpad SRAM</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">LPNPU (Intel 06E)</div><div class="spec-row-val">88 TOPS <span class="note">· &lt;1.4W at peak; always-on; INT4/8, FP8, BF16</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total System AI TOPS</div><div class="spec-row-val">344 TOPS (NPU) + 67,830 TOPS (GPU XMX5) <span class="note">· coordinated via Thread Director</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">QuickSync BionzXR Cores</div><div class="spec-row-val">8 cores (Intel 06E) — co-developed with Sony Semiconductor</div></div>
-      <div class="spec-row"><div class="spec-row-key">Encode Codecs (BionzXR)</div><div class="spec-row-val">AV2 (world-first), AV1, H.266/VVC, H.265, H.264, VRV1, VRV2, ProRes</div></div>
-      <div class="spec-row"><div class="spec-row-key">Decode Codecs (BionzXR)</div><div class="spec-row-val">All encode codecs + VP9, VP8, MPEG-4, VC-1</div></div>
-      <div class="spec-row"><div class="spec-row-key">Max Encode Resolution</div><div class="spec-row-val">8K120 ProRes; 8K240 AV1; 4K480 AV2</div></div>
-      <div class="spec-row"><div class="spec-row-key">MFX QuickSync (14A-E)</div><div class="spec-row-val">Low-power decode: AV2, AV1, H.266, H.265, H.264, VP9 <span class="note">· −35% power vs PTL QuickSync</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">IPU Version</div><div class="spec-row-val">Intel IPU 8.2 (Intel 14A-E) — up to 201 MP; Sony USB-C/TB native</div></div>
-      <div class="spec-row"><div class="spec-row-key">Intel® Gaussian &amp; Neural Accelerator</div><div class="spec-row-val">Yes (GNA 5.0)</div></div>
-    </div>
-  </div>
-
-  <!-- CONNECTIVITY -->
-  <div class="spec-table-section">
-    <div class="spec-table-head" onclick="toggleSection('io')">
-      <span class="spec-table-head-label">I/O & Connectivity</span>
-      <span class="spec-table-head-icon" id="icon-io">▼</span>
-    </div>
-    <div class="spec-table-body" id="body-io">
-      <div class="spec-row"><div class="spec-row-key">PCIe Revision</div><div class="spec-row-val">PCIe 7.0 (primary GPU tile interconnect); PCIe 6.0 (storage / peripherals)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Thunderbolt Version</div><div class="spec-row-val">Thunderbolt 5 <span class="note">· 120 Gbps; supports Intel×Sony eDP 2.0 tunnel</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">USB Specification</div><div class="spec-row-val">USB4 Gen 4×2 (80 Gbps), USB 3.2 Gen 2×2</div></div>
-      <div class="spec-row"><div class="spec-row-key">WiFi Specification</div><div class="spec-row-val">Intel® Killer™ Wi-Fi 7 (802.11be) — via Killer SignalBoost S1</div></div>
-      <div class="spec-row"><div class="spec-row-key">WiFi Chips</div><div class="spec-row-val">Up to 2× X1 chips; quad-band each = 8 total bands</div></div>
-      <div class="spec-row"><div class="spec-row-key">Bluetooth</div><div class="spec-row-val">Bluetooth Core 6.2</div></div>
-      <div class="spec-row"><div class="spec-row-key">Cellular</div><div class="spec-row-val">5G Sub-6 / mmWave, 4G LTE, VoLTE</div></div>
-      <div class="spec-row"><div class="spec-row-key">Antenna Support</div><div class="spec-row-val">Up to 2× 360° Intel LinkBoost antennae; SONAR user presence via WiFi signal</div></div>
-      <div class="spec-row"><div class="spec-row-key">Intel® Wake on Voice</div><div class="spec-row-val">Yes (LPNPU-powered; always-on)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Intel® Wake on Wi-Fi (SONAR)</div><div class="spec-row-val">Yes</div></div>
-    </div>
-  </div>
-
-  <!-- SECURITY & PLATFORM -->
-  <div class="spec-table-section">
-    <div class="spec-table-head" onclick="toggleSection('security')">
-      <span class="spec-table-head-label">Security & Platform</span>
-      <span class="spec-table-head-icon" id="icon-security">▼</span>
-    </div>
-    <div class="spec-table-body" id="body-security">
-      <div class="spec-row"><div class="spec-row-key">Intel® vPro®</div><div class="spec-row-val">Yes (Xeon 500 class; hardware-rooted vPro)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Microsoft Pluton</div><div class="spec-row-val">Yes — hardware TPM 2.1 + Pluton security processor (14A-E)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Intel® Thread Director</div><div class="spec-row-val">Yes — dedicated Thread Director tile; hardware-native 5-class scheduling</div></div>
-      <div class="spec-row"><div class="spec-row-key">Thread Director Tile capabilities</div><div class="spec-row-val">Core class arbitration, tile sleep/wake, GPU/NPU escalation, thermal budget management, V8 HyperBOOST sequencing <span class="note">· LPNPU co-pilot: predictive AI-assisted task dispatch</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Intel® Smart Sound Technology</div><div class="spec-row-val">Yes (14A-E)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Intel® High Definition Audio</div><div class="spec-row-val">Yes</div></div>
-      <div class="spec-row"><div class="spec-row-key">Affinity Power System</div><div class="spec-row-val">Dynamic — Performance / Balanced / Efficiency / Unleashed; hardware-enforced via Thread Director + LPNPU AI co-pilot <span class="note">· Unleashed requires external PSU + cooler</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">TDP (Base / Max Turbo)</div><div class="spec-row-val">55W base cTDP / Up to 175W sustained (HKX OC mode)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Min LP Island TDP</div><div class="spec-row-val">1W (LPE-only; efficiency affinity; Compute Tile off)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Processor Graphics TDP</div><div class="spec-row-val">Configurable per-tile; min 3W (Druid standby); max 4×75W (4× E1080 full)</div></div>
-    </div>
-  </div>
-
-</div>
-
 </div>
 
 <div class="spec-footer">
-  Intel, the Intel logo, Core, Xeon, Arc, Thunderbolt, Killer, vPro, QuickSync, Thread Director, PowerVia, Foveros, and Turbo Boost are trademarks of Intel Corporation or its subsidiaries.<br>
+  Intel, the Intel logo, Core, Core Ultra, Xeon, Arc, Thunderbolt, Killer, vPro, QuickSync, Thread Director, PowerVia, Foveros, and Turbo Boost are trademarks of Intel Corporation or its subsidiaries.<br>
   Sony, BionzXR are trademarks of Sony Group Corporation. Lightmatter FiberOptic integration is proprietary to the Intel-Lightmatter joint photonic development program.<br>
   Killer SignalBoost S1 developed in collaboration with OPPO Semiconductor Division and Intel Wireless Products Group.<br>
   Specifications subject to change. Performance numbers represent theoretical maximums under ideal conditions.<br>
-  Core Xeon® 599HKX · Eventide Generation · Intel Corporation 2028 · All rights reserved.
+  Eventide SKU Library · Intel Corporation 2028 · All rights reserved.
 </div>
 
 <script>
@@ -4163,6 +4279,233 @@ function toggleSection(id) {
   icon.textContent = isOpen ? '▼' : '▲';
 }
 
+
+const EVENTIDE_SKU_DATA = [{"id": "C3-533U", "name": "Core™ 3 533U", "family": "Core 500", "familyKey": "core", "series": "3", "suffix": "U", "image": "c3", "deepdivePath": "/Intel/Eventide/SKU/C3-533U", "gpu": "Intel® Arc® Druid D310 (Xe4E efficiency iGPU)", "ram": "Up to 16 GB integrated FOveros ZAM (no DDR6 support)", "msrp": 85, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "4", "base": "1.15 GHz", "boost": "3.70 GHz"}, {"type": "LPE (Darkmont)", "count": "4", "base": "0.65 GHz", "boost": "2.60 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "C3-534H", "name": "Core™ 3 534H", "family": "Core 500", "familyKey": "core", "series": "3", "suffix": "H", "image": "c3", "deepdivePath": "/Intel/Eventide/SKU/C3-534H", "gpu": "Intel® Arc® Druid D310 (Xe4E efficiency iGPU)", "ram": "Up to 16 GB integrated FOveros ZAM (no DDR6 support)", "msrp": 105, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "4", "base": "1.35 GHz", "boost": "3.85 GHz"}, {"type": "LPE (Darkmont)", "count": "4", "base": "0.65 GHz", "boost": "2.75 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "C3-535V", "name": "Core™ 3 535V", "family": "Core 500", "familyKey": "core", "series": "3", "suffix": "V", "image": "c3", "deepdivePath": "/Intel/Eventide/SKU/C3-535V", "gpu": "Intel® Arc® Druid D380 (Xe4E efficiency iGPU)", "ram": "Up to 16 GB integrated FOveros ZAM (no DDR6 support)", "msrp": 115, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "4", "base": "1.25 GHz", "boost": "3.65 GHz"}, {"type": "LPE (Darkmont)", "count": "4", "base": "0.65 GHz", "boost": "2.55 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "C5-553U", "name": "Core™ 5 553U", "family": "Core 500", "familyKey": "core", "series": "5", "suffix": "U", "image": "c5", "deepdivePath": "/Intel/Eventide/SKU/C5-553U", "gpu": "Intel® Arc® Druid D310 (Xe4E efficiency iGPU)", "ram": "Up to 32 GB integrated FOveros ZAM (no DDR6 support)", "msrp": 139, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "6", "base": "1.51 GHz", "boost": "4.30 GHz"}, {"type": "LPE (Darkmont)", "count": "6", "base": "0.76 GHz", "boost": "3.20 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "C5-554H", "name": "Core™ 5 554H", "family": "Core 500", "familyKey": "core", "series": "5", "suffix": "H", "image": "c5", "deepdivePath": "/Intel/Eventide/SKU/C5-554H", "gpu": "Intel® Arc® Druid D380 (Xe4E efficiency iGPU)", "ram": "Up to 32 GB integrated FOveros ZAM (no DDR6 support)", "msrp": 159, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "6", "base": "1.71 GHz", "boost": "4.45 GHz"}, {"type": "LPE (Darkmont)", "count": "6", "base": "0.96 GHz", "boost": "3.35 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "C5-555V", "name": "Core™ 5 555V", "family": "Core 500", "familyKey": "core", "series": "5", "suffix": "V", "image": "c5", "deepdivePath": "/Intel/Eventide/SKU/C5-555V", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "Up to 32 GB integrated FOveros ZAM (no DDR6 support)", "msrp": 169, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "6", "base": "1.61 GHz", "boost": "4.25 GHz"}, {"type": "LPE (Darkmont)", "count": "6", "base": "0.86 GHz", "boost": "3.15 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "C7-573U", "name": "Core™ 7 573U", "family": "Core 500", "familyKey": "core", "series": "7", "suffix": "U", "image": "c7", "deepdivePath": "/Intel/Eventide/SKU/C7-573U", "gpu": "Intel® Arc® Druid D380 (Xe4E efficiency iGPU)", "ram": "Up to 64 GB integrated FOveros ZAM (no DDR6 support)", "msrp": 219, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "8", "base": "1.87 GHz", "boost": "4.90 GHz"}, {"type": "LPE (Darkmont)", "count": "8", "base": "1.12 GHz", "boost": "3.80 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "C7-574H", "name": "Core™ 7 574H", "family": "Core 500", "familyKey": "core", "series": "7", "suffix": "H", "image": "c7", "deepdivePath": "/Intel/Eventide/SKU/C7-574H", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "Up to 64 GB integrated FOveros ZAM (no DDR6 support)", "msrp": 239, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "8", "base": "2.07 GHz", "boost": "5.05 GHz"}, {"type": "LPE (Darkmont)", "count": "8", "base": "1.32 GHz", "boost": "3.95 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "C7-575V", "name": "Core™ 7 575V", "family": "Core 500", "familyKey": "core", "series": "7", "suffix": "V", "image": "c7", "deepdivePath": "/Intel/Eventide/SKU/C7-575V", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "Up to 64 GB integrated FOveros ZAM (no DDR6 support)", "msrp": 249, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "8", "base": "1.97 GHz", "boost": "4.85 GHz"}, {"type": "LPE (Darkmont)", "count": "8", "base": "1.22 GHz", "boost": "3.75 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "C9-593U", "name": "Core™ 9 593U", "family": "Core 500", "familyKey": "core", "series": "9", "suffix": "U", "image": "c9", "deepdivePath": "/Intel/Eventide/SKU/C9-593U", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "Up to 128 GB integrated FOveros ZAM (no DDR6 support)", "msrp": 309, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "10", "base": "2.23 GHz", "boost": "5.50 GHz"}, {"type": "LPE (Darkmont)", "count": "10", "base": "1.48 GHz", "boost": "4.40 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "C9-594H", "name": "Core™ 9 594H", "family": "Core 500", "familyKey": "core", "series": "9", "suffix": "H", "image": "c9", "deepdivePath": "/Intel/Eventide/SKU/C9-594H", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "Up to 128 GB integrated FOveros ZAM (no DDR6 support)", "msrp": 329, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "10", "base": "2.43 GHz", "boost": "5.65 GHz"}, {"type": "LPE (Darkmont)", "count": "10", "base": "1.68 GHz", "boost": "4.55 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "C9-595V", "name": "Core™ 9 595V", "family": "Core 500", "familyKey": "core", "series": "9", "suffix": "V", "image": "c9", "deepdivePath": "/Intel/Eventide/SKU/C9-595V", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "Up to 128 GB integrated FOveros ZAM (no DDR6 support)", "msrp": 339, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "10", "base": "2.33 GHz", "boost": "5.45 GHz"}, {"type": "LPE (Darkmont)", "count": "10", "base": "1.58 GHz", "boost": "4.35 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I3-533H", "name": "Core™ i3 533H", "family": "Core i500", "familyKey": "i", "series": "3", "suffix": "H", "image": "i3", "deepdivePath": "/Intel/Eventide/SKU/I3-533H", "gpu": "Intel® Arc® Druid D310 (Xe4E efficiency iGPU)", "ram": "Up to 256 GB DDR6", "msrp": 115, "rows": [{"type": "UHP (Solar Eclipse)", "count": "4", "base": "2.25 GHz", "boost": "4.55 GHz"}, {"type": "DP (Sunset Cove)", "count": "4", "base": "1.95 GHz", "boost": "4.10 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I3-534HX", "name": "Core™ i3 534HX", "family": "Core i500", "familyKey": "i", "series": "3", "suffix": "HX", "image": "i3", "deepdivePath": "/Intel/Eventide/SKU/I3-534HX", "gpu": "Intel® Arc® Druid D380 (Xe4E efficiency iGPU)", "ram": "Up to 256 GB DDR6", "msrp": 150, "rows": [{"type": "UHP (Solar Eclipse)", "count": "4", "base": "2.43 GHz", "boost": "4.70 GHz"}, {"type": "DP (Sunset Cove)", "count": "4", "base": "2.13 GHz", "boost": "4.25 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I3-535HK", "name": "Core™ i3 535HK", "family": "Core i500", "familyKey": "i", "series": "3", "suffix": "HK", "image": "i3", "deepdivePath": "/Intel/Eventide/SKU/I3-535HK", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "Up to 256 GB DDR6", "msrp": 170, "rows": [{"type": "UHP (Solar Eclipse)", "count": "4", "base": "2.47 GHz", "boost": "4.77 GHz"}, {"type": "DP (Sunset Cove)", "count": "4", "base": "2.17 GHz", "boost": "4.32 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I3-536F", "name": "Core™ i3 536F", "family": "Core i500", "familyKey": "i", "series": "3", "suffix": "F", "image": "i3", "deepdivePath": "/Intel/Eventide/SKU/I3-536F", "gpu": "No iGPU (F suffix)", "ram": "Up to 256 GB DDR6", "msrp": 100, "rows": [{"type": "UHP (Solar Eclipse)", "count": "4", "base": "2.25 GHz", "boost": "4.55 GHz"}, {"type": "DP (Sunset Cove)", "count": "4", "base": "1.95 GHz", "boost": "4.10 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I3-537T", "name": "Core™ i3 537T", "family": "Core i500", "familyKey": "i", "series": "3", "suffix": "T", "image": "i3", "deepdivePath": "/Intel/Eventide/SKU/I3-537T", "gpu": "Intel® Arc® Druid D310 (Xe4E efficiency iGPU)", "ram": "Up to 256 GB DDR6", "msrp": 90, "rows": [{"type": "UHP (Solar Eclipse)", "count": "4", "base": "1.95 GHz", "boost": "4.30 GHz"}, {"type": "DP (Sunset Cove)", "count": "4", "base": "1.70 GHz", "boost": "3.85 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I5-553H", "name": "Core™ i5 553H", "family": "Core i500", "familyKey": "i", "series": "5", "suffix": "H", "image": "i5", "deepdivePath": "/Intel/Eventide/SKU/I5-553H", "gpu": "Intel® Arc® Druid D380 (Xe4E efficiency iGPU)", "ram": "Up to 256 GB DDR6", "msrp": 179, "rows": [{"type": "UHP (Solar Eclipse)", "count": "6", "base": "2.65 GHz", "boost": "5.35 GHz"}, {"type": "DP (Sunset Cove)", "count": "6", "base": "2.35 GHz", "boost": "4.90 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I5-554HX", "name": "Core™ i5 554HX", "family": "Core i500", "familyKey": "i", "series": "5", "suffix": "HX", "image": "i5", "deepdivePath": "/Intel/Eventide/SKU/I5-554HX", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "Up to 256 GB DDR6", "msrp": 214, "rows": [{"type": "UHP (Solar Eclipse)", "count": "6", "base": "2.83 GHz", "boost": "5.50 GHz"}, {"type": "DP (Sunset Cove)", "count": "6", "base": "2.53 GHz", "boost": "5.05 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I5-555HK", "name": "Core™ i5 555HK", "family": "Core i500", "familyKey": "i", "series": "5", "suffix": "HK", "image": "i5", "deepdivePath": "/Intel/Eventide/SKU/I5-555HK", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "Up to 256 GB DDR6", "msrp": 234, "rows": [{"type": "UHP (Solar Eclipse)", "count": "6", "base": "2.87 GHz", "boost": "5.57 GHz"}, {"type": "DP (Sunset Cove)", "count": "6", "base": "2.57 GHz", "boost": "5.12 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I5-556F", "name": "Core™ i5 556F", "family": "Core i500", "familyKey": "i", "series": "5", "suffix": "F", "image": "i5", "deepdivePath": "/Intel/Eventide/SKU/I5-556F", "gpu": "No iGPU (F suffix)", "ram": "Up to 256 GB DDR6", "msrp": 164, "rows": [{"type": "UHP (Solar Eclipse)", "count": "6", "base": "2.65 GHz", "boost": "5.35 GHz"}, {"type": "DP (Sunset Cove)", "count": "6", "base": "2.35 GHz", "boost": "4.90 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I5-557T", "name": "Core™ i5 557T", "family": "Core i500", "familyKey": "i", "series": "5", "suffix": "T", "image": "i5", "deepdivePath": "/Intel/Eventide/SKU/I5-557T", "gpu": "Intel® Arc® Druid D380 (Xe4E efficiency iGPU)", "ram": "Up to 256 GB DDR6", "msrp": 154, "rows": [{"type": "UHP (Solar Eclipse)", "count": "6", "base": "2.35 GHz", "boost": "5.10 GHz"}, {"type": "DP (Sunset Cove)", "count": "6", "base": "2.05 GHz", "boost": "4.65 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I7-573H", "name": "Core™ i7 573H", "family": "Core i500", "familyKey": "i", "series": "7", "suffix": "H", "image": "i7", "deepdivePath": "/Intel/Eventide/SKU/I7-573H", "gpu": "Intel® Arc® Druid D380 (Xe4E efficiency iGPU)", "ram": "Up to 256 GB DDR6", "msrp": 259, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "3.05 GHz", "boost": "6.15 GHz"}, {"type": "DP (Sunset Cove)", "count": "8", "base": "2.75 GHz", "boost": "5.70 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I7-574HX", "name": "Core™ i7 574HX", "family": "Core i500", "familyKey": "i", "series": "7", "suffix": "HX", "image": "i7", "deepdivePath": "/Intel/Eventide/SKU/I7-574HX", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "Up to 256 GB DDR6", "msrp": 294, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "3.23 GHz", "boost": "6.30 GHz"}, {"type": "DP (Sunset Cove)", "count": "8", "base": "2.93 GHz", "boost": "5.85 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I7-575HK", "name": "Core™ i7 575HK", "family": "Core i500", "familyKey": "i", "series": "7", "suffix": "HK", "image": "i7", "deepdivePath": "/Intel/Eventide/SKU/I7-575HK", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "Up to 256 GB DDR6", "msrp": 314, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "3.27 GHz", "boost": "6.37 GHz"}, {"type": "DP (Sunset Cove)", "count": "8", "base": "2.97 GHz", "boost": "5.92 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I7-576F", "name": "Core™ i7 576F", "family": "Core i500", "familyKey": "i", "series": "7", "suffix": "F", "image": "i7", "deepdivePath": "/Intel/Eventide/SKU/I7-576F", "gpu": "No iGPU (F suffix)", "ram": "Up to 256 GB DDR6", "msrp": 244, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "3.05 GHz", "boost": "6.15 GHz"}, {"type": "DP (Sunset Cove)", "count": "8", "base": "2.75 GHz", "boost": "5.70 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I7-577T", "name": "Core™ i7 577T", "family": "Core i500", "familyKey": "i", "series": "7", "suffix": "T", "image": "i7", "deepdivePath": "/Intel/Eventide/SKU/I7-577T", "gpu": "Intel® Arc® Druid D380 (Xe4E efficiency iGPU)", "ram": "Up to 256 GB DDR6", "msrp": 234, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "2.75 GHz", "boost": "5.90 GHz"}, {"type": "DP (Sunset Cove)", "count": "8", "base": "2.45 GHz", "boost": "5.45 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I9-593H", "name": "Core™ i9 593H", "family": "Core i500", "familyKey": "i", "series": "9", "suffix": "H", "image": "i9", "deepdivePath": "/Intel/Eventide/SKU/I9-593H", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "Up to 256 GB DDR6", "msrp": 349, "rows": [{"type": "UHP (Solar Eclipse)", "count": "10", "base": "3.45 GHz", "boost": "6.95 GHz"}, {"type": "DP (Sunset Cove)", "count": "10", "base": "3.15 GHz", "boost": "6.50 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I9-594HX", "name": "Core™ i9 594HX", "family": "Core i500", "familyKey": "i", "series": "9", "suffix": "HX", "image": "i9", "deepdivePath": "/Intel/Eventide/SKU/I9-594HX", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "Up to 256 GB DDR6", "msrp": 384, "rows": [{"type": "UHP (Solar Eclipse)", "count": "10", "base": "3.63 GHz", "boost": "7.10 GHz"}, {"type": "DP (Sunset Cove)", "count": "10", "base": "3.33 GHz", "boost": "6.65 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I9-595HK", "name": "Core™ i9 595HK", "family": "Core i500", "familyKey": "i", "series": "9", "suffix": "HK", "image": "i9", "deepdivePath": "/Intel/Eventide/SKU/I9-595HK", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "Up to 256 GB DDR6", "msrp": 404, "rows": [{"type": "UHP (Solar Eclipse)", "count": "10", "base": "3.67 GHz", "boost": "7.17 GHz"}, {"type": "DP (Sunset Cove)", "count": "10", "base": "3.37 GHz", "boost": "6.72 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I9-596F", "name": "Core™ i9 596F", "family": "Core i500", "familyKey": "i", "series": "9", "suffix": "F", "image": "i9", "deepdivePath": "/Intel/Eventide/SKU/I9-596F", "gpu": "No iGPU (F suffix)", "ram": "Up to 256 GB DDR6", "msrp": 334, "rows": [{"type": "UHP (Solar Eclipse)", "count": "10", "base": "3.45 GHz", "boost": "6.95 GHz"}, {"type": "DP (Sunset Cove)", "count": "10", "base": "3.15 GHz", "boost": "6.50 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "I9-597T", "name": "Core™ i9 597T", "family": "Core i500", "familyKey": "i", "series": "9", "suffix": "T", "image": "i9", "deepdivePath": "/Intel/Eventide/SKU/I9-597T", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "Up to 256 GB DDR6", "msrp": 324, "rows": [{"type": "UHP (Solar Eclipse)", "count": "10", "base": "3.15 GHz", "boost": "6.70 GHz"}, {"type": "DP (Sunset Cove)", "count": "10", "base": "2.85 GHz", "boost": "6.25 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "U3-533U", "name": "Core™ Ultra 3 533U", "family": "Core Ultra 500", "familyKey": "u", "series": "3", "suffix": "U", "image": "u3", "deepdivePath": "/Intel/Eventide/SKU/U3-533U", "gpu": "Intel® Arc® Druid D310 (Xe4E efficiency iGPU)", "ram": "Up to 16 GB integrated FOveros ZAM (no DDR6 support)", "msrp": 119, "rows": [{"type": "UHP (Solar Eclipse)", "count": "4", "base": "1.70 GHz", "boost": "4.45 GHz"}, {"type": "DP (Sunset Cove)", "count": "4", "base": "1.60 GHz", "boost": "4.00 GHz"}, {"type": "SPE (Venusmont)", "count": "24", "base": "1.00 GHz", "boost": "3.05 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "6 / 4", "base": "0.95 GHz / 0.60 GHz", "boost": "3.50 GHz / 2.75 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "U3-534H", "name": "Core™ Ultra 3 534H", "family": "Core Ultra 500", "familyKey": "u", "series": "3", "suffix": "H", "image": "u3", "deepdivePath": "/Intel/Eventide/SKU/U3-534H", "gpu": "Intel® Arc® E310 ×1 + Arc® Druid D310", "ram": "Up to 16 GB integrated FOveros ZAM (no DDR6 support)", "msrp": 179, "rows": [{"type": "UHP (Solar Eclipse)", "count": "4", "base": "2.05 GHz", "boost": "4.65 GHz"}, {"type": "DP (Sunset Cove)", "count": "4", "base": "1.75 GHz", "boost": "4.20 GHz"}, {"type": "SPE (Venusmont)", "count": "24", "base": "1.10 GHz", "boost": "3.25 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "6 / 4", "base": "1.30 GHz / 0.80 GHz", "boost": "3.70 GHz / 2.95 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "U3-535HX", "name": "Core™ Ultra 3 535HX", "family": "Core Ultra 500", "familyKey": "u", "series": "3", "suffix": "HX", "image": "u3", "deepdivePath": "/Intel/Eventide/SKU/U3-535HX", "gpu": "Intel® Arc® E380 ×1 + Arc® Druid D380", "ram": "Up to 16 GB integrated FOveros ZAM (no DDR6 support)", "msrp": 259, "rows": [{"type": "UHP (Solar Eclipse)", "count": "4", "base": "2.23 GHz", "boost": "4.80 GHz"}, {"type": "DP (Sunset Cove)", "count": "4", "base": "1.93 GHz", "boost": "4.35 GHz"}, {"type": "SPE (Venusmont)", "count": "24", "base": "1.28 GHz", "boost": "3.40 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "6 / 4", "base": "1.48 GHz / 0.98 GHz", "boost": "3.85 GHz / 3.10 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "U3-536HK", "name": "Core™ Ultra 3 536HK", "family": "Core Ultra 500", "familyKey": "u", "series": "3", "suffix": "HK", "image": "u3", "deepdivePath": "/Intel/Eventide/SKU/U3-536HK", "gpu": "Intel® Arc® E390 ×1 + Arc® Druid D380", "ram": "Up to 16 GB integrated FOveros ZAM (no DDR6 support)", "msrp": 309, "rows": [{"type": "UHP (Solar Eclipse)", "count": "4", "base": "2.27 GHz", "boost": "4.87 GHz"}, {"type": "DP (Sunset Cove)", "count": "4", "base": "1.97 GHz", "boost": "4.42 GHz"}, {"type": "SPE (Venusmont)", "count": "24", "base": "1.32 GHz", "boost": "3.47 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "6 / 4", "base": "1.52 GHz / 1.02 GHz", "boost": "3.92 GHz / 3.17 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "U3-537V", "name": "Core™ Ultra 3 537V", "family": "Core Ultra 500", "familyKey": "u", "series": "3", "suffix": "V", "image": "u3", "deepdivePath": "/Intel/Eventide/SKU/U3-537V", "gpu": "Intel® Arc® Druid D380 (Xe4E efficiency iGPU)", "ram": "Up to 16 GB integrated FOveros ZAM (no DDR6 support)", "msrp": 149, "rows": [{"type": "UHP (Solar Eclipse)", "count": "4", "base": "1.85 GHz", "boost": "4.50 GHz"}, {"type": "DP (Sunset Cove)", "count": "4", "base": "1.60 GHz", "boost": "4.05 GHz"}, {"type": "SPE (Venusmont)", "count": "24", "base": "1.00 GHz", "boost": "3.10 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "6 / 4", "base": "1.10 GHz / 0.60 GHz", "boost": "3.55 GHz / 2.80 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "U5-553U", "name": "Core™ Ultra 5 553U", "family": "Core Ultra 500", "familyKey": "u", "series": "5", "suffix": "U", "image": "u5", "deepdivePath": "/Intel/Eventide/SKU/U5-553U", "gpu": "Intel® Arc® E380 ×1 + Arc® Druid D380", "ram": "32 GB integrated FOveros ZAM + up to 512 GB DDR6", "msrp": 329, "rows": [{"type": "UHP (Solar Eclipse)", "count": "6", "base": "2.10 GHz", "boost": "5.21 GHz"}, {"type": "DP (Sunset Cove)", "count": "6", "base": "1.80 GHz", "boost": "4.76 GHz"}, {"type": "SPE (Venusmont)", "count": "48", "base": "1.15 GHz", "boost": "3.81 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "8 / 6", "base": "1.35 GHz / 0.85 GHz", "boost": "4.26 GHz / 3.51 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "U5-554H", "name": "Core™ Ultra 5 554H", "family": "Core Ultra 500", "familyKey": "u", "series": "5", "suffix": "H", "image": "u5", "deepdivePath": "/Intel/Eventide/SKU/U5-554H", "gpu": "Intel® Arc® E390 ×1 + Arc® Druid D380", "ram": "32 GB integrated FOveros ZAM + up to 512 GB DDR6", "msrp": 389, "rows": [{"type": "UHP (Solar Eclipse)", "count": "6", "base": "2.45 GHz", "boost": "5.41 GHz"}, {"type": "DP (Sunset Cove)", "count": "6", "base": "2.15 GHz", "boost": "4.96 GHz"}, {"type": "SPE (Venusmont)", "count": "48", "base": "1.50 GHz", "boost": "4.01 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "8 / 6", "base": "1.70 GHz / 1.20 GHz", "boost": "4.46 GHz / 3.71 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "U5-555HX", "name": "Core™ Ultra 5 555HX", "family": "Core Ultra 500", "familyKey": "u", "series": "5", "suffix": "HX", "image": "u5", "deepdivePath": "/Intel/Eventide/SKU/U5-555HX", "gpu": "Intel® Arc® E560 ×1 + Arc® Druid D390", "ram": "32 GB integrated FOveros ZAM + up to 512 GB DDR6", "msrp": 579, "rows": [{"type": "UHP (Solar Eclipse)", "count": "6", "base": "2.63 GHz", "boost": "5.56 GHz"}, {"type": "DP (Sunset Cove)", "count": "6", "base": "2.33 GHz", "boost": "5.11 GHz"}, {"type": "SPE (Venusmont)", "count": "48", "base": "1.68 GHz", "boost": "4.16 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "8 / 6", "base": "1.88 GHz / 1.38 GHz", "boost": "4.61 GHz / 3.86 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "U5-556HK", "name": "Core™ Ultra 5 556HK", "family": "Core Ultra 500", "familyKey": "u", "series": "5", "suffix": "HK", "image": "u5", "deepdivePath": "/Intel/Eventide/SKU/U5-556HK", "gpu": "Intel® Arc® E580 ×1 + Arc® Druid D390", "ram": "32 GB integrated FOveros ZAM + up to 512 GB DDR6", "msrp": 649, "rows": [{"type": "UHP (Solar Eclipse)", "count": "6", "base": "2.67 GHz", "boost": "5.63 GHz"}, {"type": "DP (Sunset Cove)", "count": "6", "base": "2.37 GHz", "boost": "5.18 GHz"}, {"type": "SPE (Venusmont)", "count": "48", "base": "1.72 GHz", "boost": "4.23 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "8 / 6", "base": "1.92 GHz / 1.42 GHz", "boost": "4.68 GHz / 3.93 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "U5-557V", "name": "Core™ Ultra 5 557V", "family": "Core Ultra 500", "familyKey": "u", "series": "5", "suffix": "V", "image": "u5", "deepdivePath": "/Intel/Eventide/SKU/U5-557V", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "32 GB integrated FOveros ZAM + up to 512 GB DDR6", "msrp": 279, "rows": [{"type": "UHP (Solar Eclipse)", "count": "6", "base": "2.25 GHz", "boost": "5.26 GHz"}, {"type": "DP (Sunset Cove)", "count": "6", "base": "1.95 GHz", "boost": "4.81 GHz"}, {"type": "SPE (Venusmont)", "count": "48", "base": "1.30 GHz", "boost": "3.86 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "8 / 6", "base": "1.50 GHz / 1.00 GHz", "boost": "4.31 GHz / 3.56 GHz"}], "hasV8": false, "v8Boost": null}, {"id": "U7-573U", "name": "Core™ Ultra 7 573U", "family": "Core Ultra 500", "familyKey": "u", "series": "7", "suffix": "U", "image": "u7", "deepdivePath": "/Intel/Eventide/SKU/U7-573U", "gpu": "Intel® Arc® E560 ×1 + Arc® Druid D390", "ram": "64 GB integrated FOveros ZAM + up to 512 GB DDR6", "msrp": 699, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "2.50 GHz", "boost": "5.97 GHz"}, {"type": "DP (Sunset Cove)", "count": "8", "base": "2.20 GHz", "boost": "5.52 GHz"}, {"type": "SPE (Venusmont)", "count": "72", "base": "1.55 GHz", "boost": "4.57 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "10 / 8", "base": "1.75 GHz / 1.25 GHz", "boost": "5.02 GHz / 4.27 GHz"}], "hasV8": true, "v8Boost": "10.00 GHz"}, {"id": "U7-574H", "name": "Core™ Ultra 7 574H", "family": "Core Ultra 500", "familyKey": "u", "series": "7", "suffix": "H", "image": "u7", "deepdivePath": "/Intel/Eventide/SKU/U7-574H", "gpu": "Intel® Arc® E580 ×1 + Arc® Druid D390", "ram": "64 GB integrated FOveros ZAM + up to 512 GB DDR6", "msrp": 779, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "2.85 GHz", "boost": "6.17 GHz"}, {"type": "DP (Sunset Cove)", "count": "8", "base": "2.55 GHz", "boost": "5.72 GHz"}, {"type": "SPE (Venusmont)", "count": "72", "base": "1.90 GHz", "boost": "4.77 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "10 / 8", "base": "2.10 GHz / 1.60 GHz", "boost": "5.22 GHz / 4.47 GHz"}], "hasV8": true, "v8Boost": "10.00 GHz"}, {"id": "U7-575HX", "name": "Core™ Ultra 7 575HX", "family": "Core Ultra 500", "familyKey": "u", "series": "7", "suffix": "HX", "image": "u7", "deepdivePath": "/Intel/Eventide/SKU/U7-575HX", "gpu": "Intel® Arc® E750 ×1 + Arc® Druid D390", "ram": "64 GB integrated FOveros ZAM + up to 512 GB DDR6", "msrp": 1099, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "3.03 GHz", "boost": "6.32 GHz"}, {"type": "DP (Sunset Cove)", "count": "8", "base": "2.73 GHz", "boost": "5.87 GHz"}, {"type": "SPE (Venusmont)", "count": "72", "base": "2.08 GHz", "boost": "4.92 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "10 / 8", "base": "2.28 GHz / 1.78 GHz", "boost": "5.37 GHz / 4.62 GHz"}], "hasV8": true, "v8Boost": "10.00 GHz"}, {"id": "U7-576HK", "name": "Core™ Ultra 7 576HK", "family": "Core Ultra 500", "familyKey": "u", "series": "7", "suffix": "HK", "image": "u7", "deepdivePath": "/Intel/Eventide/SKU/U7-576HK", "gpu": "Intel® Arc® E770 ×1 + Arc® Druid D390", "ram": "64 GB integrated FOveros ZAM + up to 512 GB DDR6", "msrp": 1199, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "3.07 GHz", "boost": "6.39 GHz"}, {"type": "DP (Sunset Cove)", "count": "8", "base": "2.77 GHz", "boost": "5.94 GHz"}, {"type": "SPE (Venusmont)", "count": "72", "base": "2.12 GHz", "boost": "4.99 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "10 / 8", "base": "2.32 GHz / 1.82 GHz", "boost": "5.44 GHz / 4.69 GHz"}], "hasV8": true, "v8Boost": "10.00 GHz"}, {"id": "U7-577V", "name": "Core™ Ultra 7 577V", "family": "Core Ultra 500", "familyKey": "u", "series": "7", "suffix": "V", "image": "u7", "deepdivePath": "/Intel/Eventide/SKU/U7-577V", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "64 GB integrated FOveros ZAM + up to 512 GB DDR6", "msrp": 549, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "2.65 GHz", "boost": "6.02 GHz"}, {"type": "DP (Sunset Cove)", "count": "8", "base": "2.35 GHz", "boost": "5.57 GHz"}, {"type": "SPE (Venusmont)", "count": "72", "base": "1.70 GHz", "boost": "4.62 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "10 / 8", "base": "1.90 GHz / 1.40 GHz", "boost": "5.07 GHz / 4.32 GHz"}], "hasV8": true, "v8Boost": "10.00 GHz"}, {"id": "U9-593U", "name": "Core™ Ultra 9 593U", "family": "Core Ultra 500", "familyKey": "u", "series": "9", "suffix": "U", "image": "u9", "deepdivePath": "/Intel/Eventide/SKU/U9-593U", "gpu": "Intel® Arc® E750 ×1 + Arc® Druid D390", "ram": "128 GB integrated FOveros ZAM + up to 512 GB DDR6", "msrp": 1299, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "2.90 GHz", "boost": "6.73 GHz"}, {"type": "DP (Sunset Cove)", "count": "10", "base": "2.60 GHz", "boost": "6.28 GHz"}, {"type": "SPE (Venusmont)", "count": "96", "base": "1.95 GHz", "boost": "5.33 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "12 / 10", "base": "2.15 GHz / 1.65 GHz", "boost": "5.78 GHz / 5.03 GHz"}], "hasV8": true, "v8Boost": "10.00 GHz"}, {"id": "U9-594H", "name": "Core™ Ultra 9 594H", "family": "Core Ultra 500", "familyKey": "u", "series": "9", "suffix": "H", "image": "u9", "deepdivePath": "/Intel/Eventide/SKU/U9-594H", "gpu": "Intel® Arc® E770 ×1 + Arc® Druid D390", "ram": "128 GB integrated FOveros ZAM + up to 512 GB DDR6", "msrp": 1399, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "3.25 GHz", "boost": "6.93 GHz"}, {"type": "DP (Sunset Cove)", "count": "10", "base": "2.95 GHz", "boost": "6.48 GHz"}, {"type": "SPE (Venusmont)", "count": "96", "base": "2.30 GHz", "boost": "5.53 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "12 / 10", "base": "2.50 GHz / 2.00 GHz", "boost": "5.98 GHz / 5.23 GHz"}], "hasV8": true, "v8Boost": "10.00 GHz"}, {"id": "U9-595HX", "name": "Core™ Ultra 9 595HX", "family": "Core Ultra 500", "familyKey": "u", "series": "9", "suffix": "HX", "image": "u9", "deepdivePath": "/Intel/Eventide/SKU/U9-595HX", "gpu": "Intel® Arc® E1080 ×1 + Arc® Druid D390", "ram": "128 GB integrated FOveros ZAM + up to 512 GB DDR6", "msrp": 1899, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "3.43 GHz", "boost": "7.08 GHz"}, {"type": "DP (Sunset Cove)", "count": "10", "base": "3.13 GHz", "boost": "6.63 GHz"}, {"type": "SPE (Venusmont)", "count": "96", "base": "2.48 GHz", "boost": "5.68 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "12 / 10", "base": "2.68 GHz / 2.18 GHz", "boost": "6.13 GHz / 5.38 GHz"}], "hasV8": true, "v8Boost": "10.00 GHz"}, {"id": "U9-596HK", "name": "Core™ Ultra 9 596HK", "family": "Core Ultra 500", "familyKey": "u", "series": "9", "suffix": "HK", "image": "u9", "deepdivePath": "/Intel/Eventide/SKU/U9-596HK", "gpu": "Intel® Arc® E1080 ×1 + Arc® Druid D390", "ram": "128 GB integrated FOveros ZAM + up to 512 GB DDR6", "msrp": 1999, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "3.47 GHz", "boost": "7.15 GHz"}, {"type": "DP (Sunset Cove)", "count": "10", "base": "3.17 GHz", "boost": "6.70 GHz"}, {"type": "SPE (Venusmont)", "count": "96", "base": "2.52 GHz", "boost": "5.75 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "12 / 10", "base": "2.72 GHz / 2.22 GHz", "boost": "6.20 GHz / 5.45 GHz"}], "hasV8": true, "v8Boost": "10.00 GHz"}, {"id": "U9-597V", "name": "Core™ Ultra 9 597V", "family": "Core Ultra 500", "familyKey": "u", "series": "9", "suffix": "V", "image": "u9", "deepdivePath": "/Intel/Eventide/SKU/U9-597V", "gpu": "Intel® Arc® Druid D390 (Xe4E efficiency iGPU)", "ram": "128 GB integrated FOveros ZAM + up to 512 GB DDR6", "msrp": 699, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "3.05 GHz", "boost": "6.78 GHz"}, {"type": "DP (Sunset Cove)", "count": "10", "base": "2.75 GHz", "boost": "6.33 GHz"}, {"type": "SPE (Venusmont)", "count": "96", "base": "2.10 GHz", "boost": "5.38 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "12 / 10", "base": "2.30 GHz / 1.80 GHz", "boost": "5.83 GHz / 5.08 GHz"}], "hasV8": true, "v8Boost": "10.00 GHz"}, {"id": "X7-577HX", "name": "Core™ Xeon® 7 577HX", "family": "Core Xeon 500", "familyKey": "x", "series": "7", "suffix": "HX", "image": "x7", "deepdivePath": "/Intel/Eventide/SKU/X7-577HX", "gpu": "Intel® Arc® E1080 ×4 + Arc® Druid LP D390", "ram": "1 TB integrated FOveros ZAM + up to 2 TB DDR6", "msrp": 5599, "rows": [{"type": "UHP (Solar Eclipse)", "count": "16", "base": "2.47 GHz", "boost": "5.45 GHz"}, {"type": "DP (Sunset Cove)", "count": "12", "base": "2.17 GHz", "boost": "4.95 GHz"}, {"type": "SPE (Venusmont)", "count": "144", "base": "1.52 GHz", "boost": "4.10 GHz"}, {"type": "UHE (Lunar Eclipse)", "count": "12", "base": "1.72 GHz", "boost": "4.50 GHz"}, {"type": "LPE (Darkmont)", "count": "12", "base": "1.27 GHz", "boost": "3.80 GHz"}], "hasV8": true, "v8Boost": "10.00 GHz"}, {"id": "X7-578HK", "name": "Core™ Xeon® 7 578HK", "family": "Core Xeon 500", "familyKey": "x", "series": "7", "suffix": "HK", "image": "x7", "deepdivePath": "/Intel/Eventide/SKU/X7-578HK", "gpu": "Intel® Arc® E1080 ×2 + Arc® Druid LP D390", "ram": "1 TB integrated FOveros ZAM + up to 2 TB DDR6", "msrp": 3799, "rows": [{"type": "UHP (Solar Eclipse)", "count": "16", "base": "2.57 GHz", "boost": "5.55 GHz"}, {"type": "DP (Sunset Cove)", "count": "12", "base": "2.27 GHz", "boost": "5.05 GHz"}, {"type": "SPE (Venusmont)", "count": "144", "base": "1.62 GHz", "boost": "4.20 GHz"}, {"type": "UHE (Lunar Eclipse)", "count": "12", "base": "1.82 GHz", "boost": "4.60 GHz"}, {"type": "LPE (Darkmont)", "count": "12", "base": "1.37 GHz", "boost": "3.90 GHz"}], "hasV8": true, "v8Boost": "10.00 GHz"}, {"id": "X7-579HKX", "name": "Core™ Xeon® 7 579HKX", "family": "Core Xeon 500", "familyKey": "x", "series": "7", "suffix": "HKX", "image": "x7", "deepdivePath": "/Intel/Eventide/SKU/X7-579HKX", "gpu": "Intel® Arc® E1080 ×4 + Arc® Druid LP D390", "ram": "1 TB integrated FOveros ZAM + up to 2 TB DDR6", "msrp": 5999, "rows": [{"type": "UHP (Solar Eclipse)", "count": "16", "base": "2.57 GHz", "boost": "5.55 GHz"}, {"type": "DP (Sunset Cove)", "count": "12", "base": "2.27 GHz", "boost": "5.05 GHz"}, {"type": "SPE (Venusmont)", "count": "144", "base": "1.62 GHz", "boost": "4.20 GHz"}, {"type": "UHE (Lunar Eclipse)", "count": "12", "base": "1.82 GHz", "boost": "4.60 GHz"}, {"type": "LPE (Darkmont)", "count": "12", "base": "1.37 GHz", "boost": "3.90 GHz"}], "hasV8": true, "v8Boost": "10.00 GHz"}, {"id": "X9-597HX", "name": "Core™ Xeon® 9 597HX", "family": "Core Xeon 500", "familyKey": "x", "series": "9", "suffix": "HX", "image": "x9", "deepdivePath": "/Intel/Eventide/SKU/X9-597HX", "gpu": "Intel® Arc® E1080 ×4 + Arc® Druid LP D390", "ram": "2 TB integrated FOveros ZAM + up to 2 TB DDR6", "msrp": 8999, "rows": [{"type": "UHP (Solar Eclipse)", "count": "32", "base": "2.52 GHz", "boost": "5.90 GHz"}, {"type": "DP (Sunset Cove)", "count": "24", "base": "2.22 GHz", "boost": "5.40 GHz"}, {"type": "SPE (Venusmont)", "count": "288", "base": "1.57 GHz", "boost": "4.55 GHz"}, {"type": "UHE (Lunar Eclipse)", "count": "16", "base": "1.77 GHz", "boost": "4.95 GHz"}, {"type": "LPE (Darkmont)", "count": "16", "base": "1.32 GHz", "boost": "4.25 GHz"}], "hasV8": true, "v8Boost": "10.00 GHz"}, {"id": "X9-598HK", "name": "Core™ Xeon® 9 598HK", "family": "Core Xeon 500", "familyKey": "x", "series": "9", "suffix": "HK", "image": "x9", "deepdivePath": "/Intel/Eventide/SKU/X9-598HK", "gpu": "Intel® Arc® E1080 ×2 + Arc® Druid LP D390", "ram": "2 TB integrated FOveros ZAM + up to 2 TB DDR6", "msrp": 6999, "rows": [{"type": "UHP (Solar Eclipse)", "count": "32", "base": "2.62 GHz", "boost": "6.00 GHz"}, {"type": "DP (Sunset Cove)", "count": "24", "base": "2.32 GHz", "boost": "5.50 GHz"}, {"type": "SPE (Venusmont)", "count": "288", "base": "1.67 GHz", "boost": "4.65 GHz"}, {"type": "UHE (Lunar Eclipse)", "count": "16", "base": "1.87 GHz", "boost": "5.05 GHz"}, {"type": "LPE (Darkmont)", "count": "16", "base": "1.42 GHz", "boost": "4.35 GHz"}], "hasV8": true, "v8Boost": "10.00 GHz"}, {"id": "X9-599HKX", "name": "Core™ Xeon® 9 599HKX", "family": "Core Xeon 500", "familyKey": "x", "series": "9", "suffix": "HKX", "image": "x9", "deepdivePath": "/Intel/Eventide/SKU/X9-599HKX", "gpu": "Intel® Arc® E1080 ×4 + Arc® Druid LP D390", "ram": "2 TB integrated FOveros ZAM + up to 2 TB DDR6", "msrp": 10999, "rows": [{"type": "UHP (Solar Eclipse)", "count": "32", "base": "2.62 GHz", "boost": "6.00 GHz"}, {"type": "DP (Sunset Cove)", "count": "24", "base": "2.32 GHz", "boost": "5.50 GHz"}, {"type": "SPE (Venusmont)", "count": "288", "base": "1.67 GHz", "boost": "4.65 GHz"}, {"type": "UHE (Lunar Eclipse)", "count": "16", "base": "1.87 GHz", "boost": "5.05 GHz"}, {"type": "LPE (Darkmont)", "count": "16", "base": "1.42 GHz", "boost": "4.35 GHz"}], "hasV8": true, "v8Boost": "10.00 GHz"}];
+
+function formatUsd(value) { return '$' + Number(value).toLocaleString('en-US'); }
+
+function renderSkuOverview(sku) {
+  const overview = document.getElementById('eventide-sku-overview');
+  if (!overview || !sku) return;
+
+  const v8Enabled = Boolean(sku.hasV8 && sku.v8Boost);
+  const rowsHtml = sku.rows.map((row) => {
+    const isUhpRow = row.type.startsWith('UHP');
+    const v8Cell = v8Enabled ? `<td>${isUhpRow ? sku.v8Boost : '—'}</td>` : '';
+    return `<tr><td>${row.type}</td><td>${row.count}</td><td>${row.base}</td><td>${row.boost}</td>${v8Cell}</tr>`;
+  }).join('');
+
+  overview.innerHTML = `
+    <div class="sku-overview-head">
+      <img class="sku-overview-art" src="Media/SKU.${sku.image}.stick.svg" alt="${sku.name} family art" onerror="this.style.visibility='hidden'">
+      <div>
+        <div class="sku-overview-tier">${sku.family}</div>
+        <div class="sku-overview-name">${sku.name}</div>
+      </div>
+    </div>
+    <div class="sku-overview-badges">
+      <span class="sku-overview-badge">Series ${sku.series}</span>
+      <span class="sku-overview-badge">Suffix ${sku.suffix}</span>
+      <span class="sku-overview-badge">SKU ${sku.id}</span>
+    </div>
+    <table class="sku-overview-table">
+      <thead><tr><th>Core Type</th><th>Core Count</th><th>Base Clock</th><th>Boost Clock</th>${v8Enabled ? '<th>V8 HyperBOOST</th>' : ''}</tr></thead>
+      <tbody>${rowsHtml}</tbody>
+    </table>
+    <div class="sku-overview-meta">
+      <div class="sku-overview-meta-row"><div class="sku-overview-meta-k">GPU</div><div class="sku-overview-meta-v">${sku.gpu}</div></div>
+      <div class="sku-overview-meta-row"><div class="sku-overview-meta-k">FOveros RAM</div><div class="sku-overview-meta-v">${sku.ram}</div></div>
+      <div class="sku-overview-meta-row"><div class="sku-overview-meta-k">MSRP</div><div class="sku-overview-price">${formatUsd(sku.msrp)}</div></div>
+      <div class="sku-overview-v8-tag${v8Enabled ? ' enabled' : ''}">${v8Enabled ? `⚡ V8 HyperBOOST · ${sku.v8Boost}` : 'V8 HyperBOOST not available'}</div>
+      <button type="button" class="sku-overview-cta" data-sku-open="${sku.id}">Open SKU Deep Dive</button>
+    </div>
+  `;
+}
+
+function setupSkuSelector() {
+  const grid = document.getElementById('eventide-sku-grid');
+  const count = document.getElementById('sku-result-count');
+  const seriesSel = document.getElementById('sku-filter-series');
+  const suffixSel = document.getElementById('sku-filter-suffix');
+  const minSlider = document.getElementById('sku-filter-price-min');
+  const maxSlider = document.getElementById('sku-filter-price-max');
+  const minVal = document.getElementById('sku-price-min-val');
+  const maxVal = document.getElementById('sku-price-max-val');
+  const rangeFill = document.getElementById('sku-price-range-fill');
+  const pillRow = document.getElementById('sku-family-pill-row');
+  const clearBtn = document.getElementById('sku-clear-filters');
+
+  if (!grid || !count || !seriesSel || !suffixSel || !minSlider || !maxSlider || !minVal || !maxVal || !rangeFill || !pillRow || !clearBtn) return;
+
+  const skuById = new Map(EVENTIDE_SKU_DATA.map((sku) => [sku.id, sku]));
+  const FILTER_STATE_KEY = 'eventideSkuFilters.v1';
+  const validFamilies = new Set(Array.from(pillRow.querySelectorAll('[data-family-filter]')).map((n) => n.getAttribute('data-family-filter') || 'all'));
+  let activeFamily = 'all';
+  let selectedSkuId = EVENTIDE_SKU_DATA[0]?.id || null;
+
+  const PRICE_FILTER_UI_MIN = 0;
+  const PRICE_FILTER_UI_MAX = Number(minSlider.max || 1000);
+  const MSRP_MIN = Math.min(...EVENTIDE_SKU_DATA.map((sku) => sku.msrp));
+  const MSRP_DENSE_CEILING = 1000;
+  const MSRP_MAX = Math.max(...EVENTIDE_SKU_DATA.map((sku) => sku.msrp));
+  const PRICE_DENSE_RATIO = 0.75;
+
+  function roundPriceForDisplay(value) {
+    if (value <= MSRP_DENSE_CEILING) return Math.round(value / 5) * 5;
+    return Math.round(value / 25) * 25;
+  }
+
+  function sliderToPrice(rawValue) {
+    const normalized = Math.max(0, Math.min(1, (rawValue - PRICE_FILTER_UI_MIN) / Math.max(1, PRICE_FILTER_UI_MAX - PRICE_FILTER_UI_MIN)));
+    if (normalized <= PRICE_DENSE_RATIO) {
+      const local = normalized / PRICE_DENSE_RATIO;
+      return MSRP_MIN + (MSRP_DENSE_CEILING - MSRP_MIN) * local;
+    }
+
+    const tail = (normalized - PRICE_DENSE_RATIO) / Math.max(0.0001, 1 - PRICE_DENSE_RATIO);
+    const growth = Math.log(Math.max(1, MSRP_MAX / MSRP_DENSE_CEILING));
+    return MSRP_DENSE_CEILING * Math.exp(growth * tail);
+  }
+
+  function enforcePriceRangeBounds() {
+    const min = Number(minSlider.value);
+    const max = Number(maxSlider.value);
+    if (min > max) {
+      if (document.activeElement === minSlider) maxSlider.value = String(min);
+      else minSlider.value = String(max);
+    }
+
+    const normalizedMin = Number(minSlider.value);
+    const normalizedMax = Number(maxSlider.value);
+    const absoluteMin = Number(minSlider.min || 0);
+    const absoluteMax = Number(minSlider.max || 1000);
+    const span = Math.max(1, absoluteMax - absoluteMin);
+    const startPct = ((normalizedMin - absoluteMin) / span) * 100;
+    const endPct = ((normalizedMax - absoluteMin) / span) * 100;
+
+    rangeFill.style.left = `${startPct}%`;
+    rangeFill.style.width = `${Math.max(0, endPct - startPct)}%`;
+
+    minVal.textContent = formatUsd(roundPriceForDisplay(sliderToPrice(normalizedMin)));
+    maxVal.textContent = formatUsd(roundPriceForDisplay(sliderToPrice(normalizedMax)));
+  }
+
+  function setActiveFamily(nextFamily) {
+    activeFamily = validFamilies.has(nextFamily) ? nextFamily : 'all';
+    pillRow.querySelectorAll('[data-family-filter]').forEach((n) => n.classList.toggle('active', (n.getAttribute('data-family-filter') || 'all') === activeFamily));
+  }
+
+  function saveFilterState() {
+    try {
+      sessionStorage.setItem(FILTER_STATE_KEY, JSON.stringify({
+        family: activeFamily,
+        series: seriesSel.value,
+        suffix: suffixSel.value,
+        min: Number(minSlider.value),
+        max: Number(maxSlider.value),
+        selectedSkuId
+      }));
+    } catch (_) {
+      // no-op: persistence is best-effort only
+    }
+  }
+
+  function restoreFilterState() {
+    try {
+      const raw = sessionStorage.getItem(FILTER_STATE_KEY);
+      if (!raw) return;
+      const state = JSON.parse(raw);
+      setActiveFamily(String(state.family || 'all'));
+      if (seriesSel.querySelector(`option[value="${state.series}"]`)) seriesSel.value = String(state.series);
+      if (suffixSel.querySelector(`option[value="${state.suffix}"]`)) suffixSel.value = String(state.suffix);
+      const min = Number(state.min);
+      const max = Number(state.max);
+      if (Number.isFinite(min)) minSlider.value = String(Math.max(PRICE_FILTER_UI_MIN, Math.min(PRICE_FILTER_UI_MAX, min)));
+      if (Number.isFinite(max)) maxSlider.value = String(Math.max(PRICE_FILTER_UI_MIN, Math.min(PRICE_FILTER_UI_MAX, max)));
+      if (state.selectedSkuId && skuById.has(state.selectedSkuId)) selectedSkuId = state.selectedSkuId;
+    } catch (_) {
+      // no-op: persistence is best-effort only
+    }
+  }
+
+  function filteredData() {
+    const minPrice = sliderToPrice(Number(minSlider.value));
+    const maxPrice = sliderToPrice(Number(maxSlider.value));
+    return EVENTIDE_SKU_DATA.filter((sku) => {
+      if (activeFamily !== 'all' && sku.familyKey !== activeFamily) return false;
+      if (seriesSel.value !== 'all' && sku.series !== seriesSel.value) return false;
+      if (suffixSel.value !== 'all' && sku.suffix !== suffixSel.value) return false;
+      if (sku.msrp < minPrice || sku.msrp > maxPrice) return false;
+      return true;
+    });
+  }
+
+  function renderGrid(data) {
+    count.textContent = `Showing ${data.length} SKU${data.length === 1 ? '' : 's'}`;
+    if (!data.length) {
+      grid.innerHTML = '<div class="sku-empty-state">No SKUs match the active filters</div>';
+      document.getElementById('eventide-sku-overview').innerHTML = '<div class="sku-empty-state" style="border:none;margin:12px;">Select broader filters to view SKU details</div>';
+      selectedSkuId = null;
+      return;
+    }
+
+    if (!selectedSkuId || !data.some((sku) => sku.id === selectedSkuId)) {
+      selectedSkuId = data[0].id;
+    }
+
+    grid.innerHTML = data.map((sku) => `
+      <button type="button" class="sku-select-card${sku.id === selectedSkuId ? ' active' : ''}" data-sku-id="${sku.id}" aria-pressed="${sku.id === selectedSkuId ? 'true' : 'false'}">
+        <img class="sku-select-art" src="Media/SKU.${sku.image}.stick.svg" alt="${sku.family} ${sku.id} art" onerror="this.style.visibility='hidden'">
+        <div><div class="sku-select-name">${sku.name}</div><div class="sku-select-family">${sku.family} · ${sku.suffix}</div><div class="sku-select-price">${formatUsd(sku.msrp)} MSRP</div></div>
+      </button>
+    `).join('');
+
+    renderSkuOverview(skuById.get(selectedSkuId));
+  }
+
+  function applyFilters() {
+    enforcePriceRangeBounds();
+    renderGrid(filteredData());
+    saveFilterState();
+  }
+
+  pillRow.addEventListener('click', (event) => {
+    const btn = event.target.closest('[data-family-filter]');
+    if (!btn) return;
+    setActiveFamily(btn.getAttribute('data-family-filter') || 'all');
+    applyFilters();
+  });
+
+  grid.addEventListener('click', (event) => {
+    const card = event.target.closest('[data-sku-id]');
+    if (!card) return;
+    selectedSkuId = card.getAttribute('data-sku-id');
+    applyFilters();
+  });
+
+  document.addEventListener('click', (event) => {
+    const openBtn = event.target.closest('[data-sku-open]');
+    if (!openBtn) return;
+    const sku = skuById.get(openBtn.getAttribute('data-sku-open'));
+    if (sku && sku.deepdivePath) navigateToDeepdive(sku.deepdivePath);
+  });
+
+  [seriesSel, suffixSel, minSlider, maxSlider].forEach((el) => el.addEventListener('input', applyFilters));
+
+  clearBtn.addEventListener('click', () => {
+    setActiveFamily('all');
+    seriesSel.value = 'all';
+    suffixSel.value = 'all';
+    minSlider.value = '0';
+    maxSlider.value = String(PRICE_FILTER_UI_MAX);
+    selectedSkuId = EVENTIDE_SKU_DATA[0]?.id || null;
+    applyFilters();
+  });
+
+  restoreFilterState();
+  applyFilters();
+}
+
 // Navigate to deepdive section when overview card is clicked
 function navigateToDeepdive(path) {
   if (window.parent && window.parent !== window && window.parent.navigateToPath) {
@@ -4193,6 +4536,7 @@ function setupDeepdiveNavigation() {
 document.addEventListener('DOMContentLoaded', () => {
   loadDynamicSegments();
   setupDeepdiveNavigation();
+  setupSkuSelector();
 });
 </script>
 
