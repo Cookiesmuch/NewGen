@@ -138,20 +138,17 @@
       <span class="spec-table-head-icon" id="icon-memory">▼</span>
     </div>
     <div class="spec-table-body" id="body-memory">
-      <div class="spec-row"><div class="spec-row-key">Primary Memory Type</div><div class="spec-row-val">Intel® Z-Angle Memory (ZAM) <span class="note">· In-house Intel; FOveros-mounted; bandwidth + density optimized</span></div></div>
+      <div class="spec-row"><div class="spec-row-key">Primary Memory Type</div><div class="spec-row-val">Intel® Z-Angle Memory (ZAM) <span class="note">· FOveros-mounted on-package memory</span></div></div>
       <div class="spec-row"><div class="spec-row-key">ZAM Architecture</div><div class="spec-row-val">Vertical-stack AI-optimized chips; mounted directly on FOveros 2.0 substrate</div></div>
-      <div class="spec-row"><div class="spec-row-key">ZAM Controllers (base)</div><div class="spec-row-val">2× dual-channel ZAM controllers</div></div>
-      <div class="spec-row"><div class="spec-row-key">ZAM Controllers (higher SKU)</div><div class="spec-row-val">3× controllers (2× ZAM + 1× DDR6/LPDDR6X dual-channel)</div></div>
+      <div class="spec-row"><div class="spec-row-key">ZAM Controllers</div><div class="spec-row-val">2× dual-channel ZAM controllers</div></div>
       <div class="spec-row"><div class="spec-row-key">Max ZAM Capacity</div><div class="spec-row-val">16 GB FOveros ZAM + ECC</div></div>
       <div class="spec-row"><div class="spec-row-key">ZAM Bandwidth</div><div class="spec-row-val">2–3 TB/s per controller · 5–6 TB/s effective (2× dual-channel controllers)</div></div>
       <div class="spec-row"><div class="spec-row-key">ZAM Latency</div><div class="spec-row-val">Higher than DDR; mitigated by Kache Kore™ 4 GB bLLC + photonic substrate proximity</div></div>
-      <div class="spec-row"><div class="spec-row-key">Secondary Memory (Higher SKUs)</div><div class="spec-row-val">DDR6 / LPDDR6X <span class="note">· 3rd dual-channel controller; Core Ultra 500 and Xeon 500</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Max DDR6 Capacity</div><div class="spec-row-val">Up to 16 GB DDR6</div></div>
-      <div class="spec-row"><div class="spec-row-key">DDR6 Speed</div><div class="spec-row-val">DDR6-9600+ / LPDDR6X-10400</div></div>
-      <div class="spec-row"><div class="spec-row-key">Max Total Memory</div><div class="spec-row-val">Up to 32 GB unified (16 GB ZAM + 16 GB DDR6)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Memory Architecture</div><div class="spec-row-val">APU Unified Memory — CPU, GPU, NPU, all tiles share ZAM + DDR6</div></div>
-      <div class="spec-row"><div class="spec-row-key">Intel DirectStorage 2.0</div><div class="spec-row-val">DDR6 staging → ZAM active runtime → bLLC hot data <span class="note">· in-house vertical integration</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">ECC Memory</div><div class="spec-row-val">Yes <span class="note">· Xeon 500 class; inline ECC correction on ZAM + DDR6</span></div></div>
+      <div class="spec-row"><div class="spec-row-key">DDR6 Support</div><div class="spec-row-val">None <span class="note">· this SKU class does not expose external DDR6 channels</span></div></div>
+      <div class="spec-row"><div class="spec-row-key">Max Total Memory</div><div class="spec-row-val">16 GB FOveros ZAM + ECC</div></div>
+      <div class="spec-row"><div class="spec-row-key">Memory Architecture</div><div class="spec-row-val">On-package ZAM memory domain for CPU, GPU, and NPU workloads</div></div>
+      <div class="spec-row"><div class="spec-row-key">Intel DirectStorage 2.0</div><div class="spec-row-val">NVMe staging → ZAM active runtime → bLLC hot data</div></div>
+      <div class="spec-row"><div class="spec-row-key">ECC Memory</div><div class="spec-row-val">Yes <span class="note">· inline ECC correction on ZAM</span></div></div>
       <div class="spec-row"><div class="spec-row-key">Kache Kore™ bLLC</div><div class="spec-row-val">4 GB L4 cache <span class="note">· cache-latency effective DRAM for hot APU working sets</span></div></div>
     </div>
   </div>
