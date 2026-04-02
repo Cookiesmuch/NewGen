@@ -748,6 +748,7 @@
   .sku-select-art { width: 42px; height: 42px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.06); object-fit: contain; padding: 5px; flex-shrink: 0; }
   .sku-select-name { font-size: 13px; line-height: 1.2; color: #fff; font-weight: 600; }
   .sku-select-family { font-family: var(--font-mono); font-size: 9px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+  .sku-select-price { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; color: rgba(240,184,72,0.95); margin-top: 4px; }
 
   .sku-empty-state { grid-column: 1 / -1; border: 1px dashed rgba(255,255,255,0.25); border-radius: 10px; padding: 24px; text-align: center; color: rgba(255,255,255,0.68); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
   /* ── SPEC SHEET ── */
@@ -4391,7 +4392,7 @@ function setupSkuSelector() {
     grid.innerHTML = data.map((sku) => `
       <button type="button" class="sku-select-card${sku.id === selectedSkuId ? ' active' : ''}" data-sku-id="${sku.id}" aria-pressed="${sku.id === selectedSkuId ? 'true' : 'false'}">
         <img class="sku-select-art" src="Media/SKU.${sku.image}.stick.svg" alt="${sku.family} ${sku.id} art" onerror="this.style.visibility='hidden'">
-        <div><div class="sku-select-name">${sku.name}</div><div class="sku-select-family">${sku.family} · ${sku.suffix}</div></div>
+        <div><div class="sku-select-name">${sku.name}</div><div class="sku-select-family">${sku.family} · ${sku.suffix}</div><div class="sku-select-price">${formatUsd(sku.msrp)} MSRP</div></div>
       </button>
     `).join('');
 
