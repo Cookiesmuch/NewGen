@@ -111,6 +111,35 @@
     height: calc(100vh - var(--topbar-height));
   }
 
+  .sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(117, 157, 214, 0.75) rgba(8, 14, 25, 0.92);
+  }
+
+  .sidebar::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .sidebar::-webkit-scrollbar-track {
+    background: rgba(8, 14, 25, 0.92);
+  }
+
+  .sidebar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(108, 168, 255, 0.92), rgba(72, 132, 222, 0.92));
+    border-radius: 999px;
+    border: 2px solid rgba(8, 14, 25, 0.92);
+  }
+
+  .sidebar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(134, 186, 255, 0.95), rgba(89, 149, 236, 0.95));
+  }
+
+  .sidebar::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
   body.sidebar-expanded .sidebar {
     width: var(--sidebar-width);
   }

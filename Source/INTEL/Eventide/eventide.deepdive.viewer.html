@@ -106,6 +106,19 @@ function withBasePath(pathname, basePath) {
   return `${basePath}${pathname}`;
 }
 
+function toggleSection(id) {
+  const body = document.getElementById(`body-${id}`);
+  const icon = document.getElementById(`icon-${id}`);
+  if (!body || !icon) {
+    return;
+  }
+
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  icon.classList.toggle('open', !isOpen);
+  icon.textContent = isOpen ? '▼' : '▲';
+}
+
 // Mapping of URL paths to deepdive source files
 const DEEPDIVE_MAPPINGS = {
   // CPU Architectures
