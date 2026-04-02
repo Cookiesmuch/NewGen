@@ -126,8 +126,8 @@
       <div class="spec-row"><div class="spec-row-key">L2 (LPE, per 4-cluster)</div><div class="spec-row-val">1 MB shared</div></div>
       <div class="spec-row"><div class="spec-row-key">L3 (Compute tile, shared)</div><div class="spec-row-val">12 MB per tile · 48 MB total (4 tiles)</div></div>
       <div class="spec-row"><div class="spec-row-key">L3 (LP Island, shared)</div><div class="spec-row-val">8 MB (Kache Kore™ shared)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Kache Kore™ L4 / bLLC</div><div class="spec-row-val">4 GB <span class="note">· eDRAM-class latency; Intel 04A; system-wide shared; cache-latency DRAM for APU workloads</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total SRAM cache (approx.)</div><div class="spec-row-val">~72 MB SRAM + 4 GB L4 bLLC</div></div>
+      <div class="spec-row"><div class="spec-row-key">Kache Kore™ L4 / bLLC</div><div class="spec-row-val">3 GB <span class="note">· entry-tier cache budget tuned for cost-focused client designs</span></div></div>
+      <div class="spec-row"><div class="spec-row-key">Total SRAM cache (approx.)</div><div class="spec-row-val">~64 MB SRAM + 3 GB L4 bLLC</div></div>
     </div>
   </div>
 
@@ -162,11 +162,11 @@
     <div class="spec-table-body" id="body-gpu">
       <div class="spec-row"><div class="spec-row-key">Primary iGPU</div><div class="spec-row-val">Intel® Arc® Druid LP (18 Xe4E cores)</div></div>
       <div class="spec-row"><div class="spec-row-key">iGPU Process</div><div class="spec-row-val">Intel 04A</div></div>
-      <div class="spec-row"><div class="spec-row-key">Total Xe5-cores (4× E1080)</div><div class="spec-row-val">880 Xe5-cores (450,560 shaders)</div></div>
+      <div class="spec-row"><div class="spec-row-key">Dedicated Xe5 Tile Cluster</div><div class="spec-row-val">Not present on this SKU class <span class="note">· relies on integrated Arc Druid graphics</span></div></div>
       <div class="spec-row"><div class="spec-row-key">GPU Boost Clock</div><div class="spec-row-val">2.5 GHz</div></div>
-      <div class="spec-row"><div class="spec-row-key">XMX5 AI units (total)</div><div class="spec-row-val">7,040 <span class="note">· ~67,830 AI TOPS combined (GPU)</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">RTU5 Ray Trace Units (total)</div><div class="spec-row-val">3,520</div></div>
-      <div class="spec-row"><div class="spec-row-key">Multi-tile presentation</div><div class="spec-row-val">4× E1080 appear as single render device via FOveros 2.0 + Thread Director</div></div>
+      <div class="spec-row"><div class="spec-row-key">XMX5 AI units (total)</div><div class="spec-row-val">Not present <span class="note">· no dedicated Xe5 XMX array on this tier</span></div></div>
+      <div class="spec-row"><div class="spec-row-key">RTU5 Ray Trace Units (total)</div><div class="spec-row-val">Not present</div></div>
+      <div class="spec-row"><div class="spec-row-key">Multi-tile presentation</div><div class="spec-row-val">Not applicable</div></div>
       <div class="spec-row"><div class="spec-row-key">VR Support</div><div class="spec-row-val">Yes — first Intel Arc gen. with native VR; VRV1 / VRV2 codec hardware</div></div>
       <div class="spec-row"><div class="spec-row-key">LP iGPU</div><div class="spec-row-val">Intel® Arc® Druid (Xe4E) — Intel 06E; always-on low-power 3D</div></div>
       <div class="spec-row"><div class="spec-row-key">Arc Druid Xe-cores</div><div class="spec-row-val">14 Xe4E-cores (3,584 shaders); RTX 5060M-class raster</div></div>
@@ -184,9 +184,9 @@
       <span class="spec-table-head-icon" id="icon-ai">▼</span>
     </div>
     <div class="spec-table-body" id="body-ai">
-      <div class="spec-row"><div class="spec-row-key">HNPU (Intel 04A)</div><div class="spec-row-val">256 TOPS <span class="note">· INT2/4/8, FP8, BF16, FP16, FP32; 32 MB scratchpad SRAM</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">LPNPU (Intel 06E)</div><div class="spec-row-val">88 TOPS <span class="note">· &lt;1.4W at peak; always-on; INT4/8, FP8, BF16</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total System AI TOPS</div><div class="spec-row-val">344 TOPS (NPU) + 67,830 TOPS (GPU XMX5) <span class="note">· coordinated via Thread Director</span></div></div>
+      <div class="spec-row"><div class="spec-row-key">HNPU (Intel 04A)</div><div class="spec-row-val">112 TOPS <span class="note">· INT2/4/8, FP8, BF16, FP16, FP32; family-tier scaled matrix throughput</span></div></div>
+      <div class="spec-row"><div class="spec-row-key">LPNPU (Intel 06E)</div><div class="spec-row-val">44 TOPS <span class="note">· always-on low-power assistant domain; tuned by SKU tier</span></div></div>
+      <div class="spec-row"><div class="spec-row-key">Total System AI TOPS</div><div class="spec-row-val">156 TOPS (NPU-only) <span class="note">· optimized for sustained on-device assistant + media inference</span></div></div>
       <div class="spec-row"><div class="spec-row-key">QuickSync BionzXR Cores</div><div class="spec-row-val">8 cores (Intel 06E) — co-developed with Sony Semiconductor</div></div>
       <div class="spec-row"><div class="spec-row-key">Encode Codecs (BionzXR)</div><div class="spec-row-val">AV2 (world-first), AV1, H.266/VVC, H.265, H.264, VRV1, VRV2, ProRes</div></div>
       <div class="spec-row"><div class="spec-row-key">Decode Codecs (BionzXR)</div><div class="spec-row-val">All encode codecs + VP9, VP8, MPEG-4, VC-1</div></div>

@@ -24,14 +24,11 @@ Company (e.g., Intel)
         │   ├── Solar Eclipse
         │   ├── Sunset Cove
         │   └── ...
-        ├── CPU SKUs · Core 500
-        │   └── ...
-        ├── CPU SKUs · Core i500
-        │   └── ...
-        ├── CPU SKUs · Core Ultra 500
-        │   └── ...
-        ├── CPU SKUs · Core Xeon 500
-        │   └── ...
+        ├── Products
+        │   ├── Core 500
+        │   ├── Core i500
+        │   ├── Core u500
+        │   └── Core x500
         ├── GPU Architectures
         │   └── ...
         └── Tiles
