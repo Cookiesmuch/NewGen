@@ -34,7 +34,6 @@
     background: radial-gradient(circle at 10% 10%, #16223a 0%, #0b0f17 45%, #070b12 100%);
     color: var(--text);
     min-height: 100vh;
-    height: 100vh;
     display: grid;
     grid-template-columns: var(--sidebar-width-collapsed) 1fr;
     grid-template-rows: var(--topbar-height) 1fr;
@@ -109,6 +108,7 @@
     transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     width: var(--sidebar-width-collapsed);
+    height: calc(100vh - var(--topbar-height));
   }
 
   body.sidebar-expanded .sidebar {
@@ -188,7 +188,7 @@
   }
 
   .cat-items.open {
-    max-height: 10000px;
+    max-height: none;
   }
 
   .nav-item {
