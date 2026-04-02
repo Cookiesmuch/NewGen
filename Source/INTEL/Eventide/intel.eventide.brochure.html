@@ -453,6 +453,194 @@
   .suffix-code { font-family: var(--font-mono); font-size: 15px; font-weight: 500; color: var(--intel-blue); }
   .suffix-desc { font-size: 11px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
 
+
+  /* ── SKU SELECTOR ── */
+  .sku-selector-layout {
+    display: grid;
+    grid-template-columns: minmax(360px, 0.95fr) 1.45fr;
+    gap: 18px;
+    align-items: start;
+    margin-top: 24px;
+  }
+
+  .sku-overview-panel {
+    position: sticky;
+    top: 24px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(10,14,26,0.95) 0%, rgba(16,21,39,0.96) 100%);
+    color: white;
+    overflow: hidden;
+    box-shadow: 0 16px 36px rgba(26,10,46,0.28);
+  }
+
+  .sku-overview-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+
+  .sku-overview-art {
+    width: 52px;
+    height: 52px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.04);
+    object-fit: contain;
+    padding: 6px;
+    flex-shrink: 0;
+  }
+
+  .sku-overview-tier {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 2px;
+  }
+
+  .sku-overview-name {
+    font-family: var(--font-display);
+    font-size: 34px;
+    line-height: 0.95;
+    color: #fff;
+  }
+
+  .sku-overview-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .sku-overview-table thead th {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+    text-align: left;
+    padding: 9px 12px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+
+  .sku-overview-table td {
+    font-size: 12px;
+    color: rgba(255,255,255,0.86);
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .sku-overview-table tr:last-child td { border-bottom: none; }
+
+  .sku-overview-meta {
+    padding: 14px 18px 18px;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    display: grid;
+    gap: 8px;
+  }
+
+  .sku-overview-meta-row {
+    display: grid;
+    grid-template-columns: 108px 1fr;
+    gap: 10px;
+    font-size: 12px;
+  }
+
+  .sku-overview-meta-k {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .sku-overview-meta-v { color: rgba(255,255,255,0.9); }
+
+  .sku-overview-price {
+    font-family: var(--font-display);
+    font-size: 36px;
+    color: var(--eventide-gold-light);
+    line-height: 1;
+    margin-top: 4px;
+  }
+
+  .sku-overview-cta {
+    margin-top: 8px;
+    border: 1px solid rgba(240,184,72,0.38);
+    background: linear-gradient(135deg, rgba(200,146,42,0.85) 0%, rgba(168,120,36,0.95) 100%);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 10px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .sku-overview-cta:hover { filter: brightness(1.06); }
+
+  .sku-selector-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .sku-select-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 11px;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    cursor: pointer;
+    transition: border-color 0.18s ease, background 0.18s ease, transform 0.16s ease;
+  }
+
+  .sku-select-card:hover {
+    border-color: rgba(107,33,168,0.45);
+    background: rgba(147,51,234,0.04);
+    transform: translateY(-1px);
+  }
+
+  .sku-select-card.active {
+    border-color: rgba(200,146,42,0.6);
+    background: rgba(200,146,42,0.08);
+    box-shadow: 0 0 0 1px rgba(200,146,42,0.2) inset;
+  }
+
+  .sku-select-art {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface-alt);
+    object-fit: contain;
+    padding: 4px;
+    flex-shrink: 0;
+  }
+
+  .sku-select-name {
+    font-size: 14px;
+    line-height: 1.2;
+    color: var(--eventide-dusk);
+    font-weight: 600;
+  }
+
+  .sku-select-family {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 2px;
+  }
+
   /* ── SPEC SHEET ── */
   .spec-sheet {
     background: var(--surface);
@@ -811,6 +999,9 @@
     .spec-info-grid { grid-template-columns: repeat(2, 1fr); }
     .spec-row { grid-template-columns: 180px 1fr; }
     .sku-suffix-grid { grid-template-columns: repeat(2, 1fr); }
+    .sku-selector-layout { grid-template-columns: 1fr; }
+    .sku-overview-panel { position: static; }
+    .sku-selector-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 </style>
 
@@ -3832,239 +4023,32 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 </div>
 
+
 <!-- ══════════════════════════════════════════════════════
-     SPEC SHEET
+     SKU SELECTOR
 ══════════════════════════════════════════════════════ -->
 <div class="full-width-dark">
 <div class="section">
-  <div class="section-label">Official Product Specification</div>
-  <div class="section-heading">Core Xeon® 599HKX</div>
-  <p class="section-intro" style="margin-bottom: 32px;">
-    The unconstrained ceiling of the Eventide generation. Four compute tiles. Four Arc E1080 iGPU tiles.
-    Eight BionzXR transcoding cores. A fully populated Low Power Island. The world's most capable mobile APU.
+  <div class="section-label">SKU Selector</div>
+  <div class="section-heading">Eventide SKU Library</div>
+  <p class="section-intro" style="margin-bottom: 24px;">
+    Explore Eventide SKUs by family, series, and suffix. Select a SKU card to inspect core topology,
+    graphics and FOveros memory configuration, then jump to its dedicated deep-dive spec sheet.
   </p>
+
+  <div class="sku-selector-layout">
+    <div class="sku-overview-panel" id="eventide-sku-overview"></div>
+    <div class="sku-selector-grid" id="eventide-sku-grid"></div>
+  </div>
 </div>
-</div>
-
-<div style="max-width: 1200px; margin: 0 auto; padding: 0 48px 64px;">
-
-<div class="spec-sheet">
-  <div class="spec-sheet-header">
-    <div style="flex: 1;">
-      <div class="spec-sheet-logo">Intel Corporation · Eventide Architecture · 2028</div>
-      <div class="spec-sku">Intel® Core™ Xeon® 599HKX</div>
-      <div class="spec-fullname">
-        Intel® Core™ Xeon® 599HKX Processor<br>
-        Core Xeon 500 Series · Eventide Generation · 72M Cache, up to 6.00 GHz (10.0 GHz HyperBOOST)
-      </div>
-      <div class="spec-badges-header">
-        <span class="badge badge-gold">Core Xeon X500</span>
-        <span class="badge badge-orange">HKX · Unlocked Mobile · Higher End GPU</span>
-        <span class="badge badge-blue">FOveros 2.0 Photonic</span>
-        <span class="badge badge-purple">344 TOPS AI</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="spec-info-grid">
-    <div class="spec-info-box"><div class="spec-info-num">6.00</div><div class="spec-info-label">GHz Max Turbo</div></div>
-    <div class="spec-info-box"><div class="spec-info-num">10.0</div><div class="spec-info-label">GHz HyperBOOST</div></div>
-    <div class="spec-info-box"><div class="spec-info-num">344</div><div class="spec-info-label">Total AI TOPS</div></div>
-    <div class="spec-info-box"><div class="spec-info-num">72MB</div><div class="spec-info-label">Total Cache</div></div>
-  </div>
-
-  <!-- ESSENTIALS -->
-  <div class="spec-table-section">
-    <div class="spec-table-head" onclick="toggleSection('essentials')">
-      <span class="spec-table-head-label">Essentials</span>
-      <span class="spec-table-head-icon open" id="icon-essentials">▲</span>
-    </div>
-    <div class="spec-table-body open" id="body-essentials">
-      <div class="spec-row"><div class="spec-row-key">Product Collection</div><div class="spec-row-val">Intel® Core™ Xeon® 500 Series Processors (Eventide)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Code Name</div><div class="spec-row-val">Eventide <span class="note">· One-off generation (spiritual successor to Lunar Lake + Panther Lake)</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Vertical Segment</div><div class="spec-row-val">Mobile (HKX — Overclocked, Unlocked, Xtreme)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Processor Number</div><div class="spec-row-val">Core Xeon® 599HKX</div></div>
-      <div class="spec-row"><div class="spec-row-key">Launch Date</div><div class="spec-row-val">Q3 2028</div></div>
-      <div class="spec-row"><div class="spec-row-key">Lithography (Primary)</div><div class="spec-row-val">Intel 04A (0.4nm-class GaNSi GAA) · Compute + iGPU + HNPU + Kache Kore™</div></div>
-      <div class="spec-row"><div class="spec-row-key">Lithography (Efficiency)</div><div class="spec-row-val">Intel 06E (0.6nm-class FinFlex GAA) · LP Island + Arc Druid + BionzXR + LPNPU</div></div>
-      <div class="spec-row"><div class="spec-row-key">Lithography (Ancillary)</div><div class="spec-row-val">Intel 14A-E · MFX QuickSync, IPU 8.2, 2DKR, Network, Audio, Security, Display</div></div>
-      <div class="spec-row"><div class="spec-row-key">Tile Interconnect</div><div class="spec-row-val">Intel FOveros 2.0 (FiberOptic-VEROS) — Photonic; co-developed with Lightmatter USA</div></div>
-      <div class="spec-row"><div class="spec-row-key">Recommended Customer Price</div><div class="spec-row-val">Contact OEM <span class="note">(Xeon 500 series is OEM/SI channel)</span></div></div>
-    </div>
-  </div>
-
-  <!-- CPU SPECS -->
-  <div class="spec-table-section">
-    <div class="spec-table-head" onclick="toggleSection('cpu')">
-      <span class="spec-table-head-label">CPU Specifications</span>
-      <span class="spec-table-head-icon open" id="icon-cpu">▲</span>
-    </div>
-    <div class="spec-table-body open" id="body-cpu">
-      <div class="spec-row"><div class="spec-row-key">Compute Tiles</div><div class="spec-row-val">4× (scalable permutable dies · Intel 04A)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Total UHP Cores (Solar Eclipse)</div><div class="spec-row-val">32 <span class="note">· 8 per compute tile; octet V8 HyperBOOST across 2 tiles</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total DP Cores (Sunset Cove)</div><div class="spec-row-val">24 <span class="note">· 6 per compute tile; SMT: 2T/core = 32 logical DP threads</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total SPE Cores (Venusmont)</div><div class="spec-row-val">288 <span class="note">· 72 per compute tile; 9× density of UHP</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total UHE Cores (Lunar Eclipse)</div><div class="spec-row-val">16 <span class="note">· Low Power Island · Intel 06E</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total LPE Cores (Darkmont)</div><div class="spec-row-val">16 <span class="note">· Low Power Island · Intel 06E · rebinned PTL E-core</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total Physical CPU Cores</div><div class="spec-row-val">372 <span class="note">· 32 UHP + 24 DP + 288 SPE + 16 UHE + 16 LPE</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total Logical Threads</div><div class="spec-row-val">400 <span class="note">· DP SMT adds 48 threads; all others 1T/core</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">UHP Base Frequency</div><div class="spec-row-val">2.40 GHz</div></div>
-      <div class="spec-row"><div class="spec-row-key">UHP Max Turbo (TBM 5.0)</div><div class="spec-row-val">6.00 GHz</div></div>
-      <div class="spec-row"><div class="spec-row-key">UHP V8 HyperBOOST (peak)</div><div class="spec-row-val">10.00 GHz <span class="note">· 8–40ms burst window; thermally gated; hardware-scheduled</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">DP Base Frequency</div><div class="spec-row-val">2.10 GHz</div></div>
-      <div class="spec-row"><div class="spec-row-key">DP Max Turbo</div><div class="spec-row-val">5.20 GHz</div></div>
-      <div class="spec-row"><div class="spec-row-key">SPE Base / Max Turbo</div><div class="spec-row-val">1.80 GHz / 3.60 GHz</div></div>
-      <div class="spec-row"><div class="spec-row-key">UHE Base / Max Turbo</div><div class="spec-row-val">1.60 GHz / 4.80 GHz</div></div>
-      <div class="spec-row"><div class="spec-row-key">LPE Base / Max Turbo</div><div class="spec-row-val">0.80 GHz / 3.00 GHz</div></div>
-      <div class="spec-row"><div class="spec-row-key">Overclocking</div><div class="spec-row-val">Yes — UHP, DP, SPE; per-tile granular multiplier unlock (HKX)</div></div>
-    </div>
-  </div>
-
-  <!-- CACHE -->
-  <div class="spec-table-section">
-    <div class="spec-table-head" onclick="toggleSection('cache')">
-      <span class="spec-table-head-label">Cache</span>
-      <span class="spec-table-head-icon" id="icon-cache">▼</span>
-    </div>
-    <div class="spec-table-body" id="body-cache">
-      <div class="spec-row"><div class="spec-row-key">L0 (UHP, per core)</div><div class="spec-row-val">96 KB instruction + 64 KB data <span class="note">· extra-low latency; on Intel 04A</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">L0 (DP, per core)</div><div class="spec-row-val">128 KB instruction + 80 KB data</div></div>
-      <div class="spec-row"><div class="spec-row-key">L0 (UHE, per core)</div><div class="spec-row-val">48 KB <span class="note">· efficiency-optimized instruction buffer; Intel 06E</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">L1 (UHP/DP, per core)</div><div class="spec-row-val">256 KB</div></div>
-      <div class="spec-row"><div class="spec-row-key">L1 (SPE, per 9-cluster)</div><div class="spec-row-val">128 KB shared</div></div>
-      <div class="spec-row"><div class="spec-row-key">L1 (UHE, per core)</div><div class="spec-row-val">128 KB</div></div>
-      <div class="spec-row"><div class="spec-row-key">L1 (LPE, per 4-cluster)</div><div class="spec-row-val">128 KB shared</div></div>
-      <div class="spec-row"><div class="spec-row-key">L2 (UHP, per core)</div><div class="spec-row-val">4 MB</div></div>
-      <div class="spec-row"><div class="spec-row-key">L2 (DP, per core)</div><div class="spec-row-val">6 MB</div></div>
-      <div class="spec-row"><div class="spec-row-key">L2 (SPE, per 9-cluster)</div><div class="spec-row-val">2 MB shared</div></div>
-      <div class="spec-row"><div class="spec-row-key">L2 (UHE, per core)</div><div class="spec-row-val">3 MB</div></div>
-      <div class="spec-row"><div class="spec-row-key">L2 (LPE, per 4-cluster)</div><div class="spec-row-val">1 MB shared</div></div>
-      <div class="spec-row"><div class="spec-row-key">L3 (Compute tile, shared)</div><div class="spec-row-val">12 MB per tile · 48 MB total (4 tiles)</div></div>
-      <div class="spec-row"><div class="spec-row-key">L3 (LP Island, shared)</div><div class="spec-row-val">8 MB (Kache Kore™ shared)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Kache Kore™ L4 / bLLC</div><div class="spec-row-val">4 GB <span class="note">· eDRAM-class latency; Intel 04A; system-wide shared; cache-latency DRAM for APU workloads</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total SRAM cache (approx.)</div><div class="spec-row-val">~72 MB SRAM + 4 GB L4 bLLC</div></div>
-    </div>
-  </div>
-
-  <!-- MEMORY -->
-  <div class="spec-table-section">
-    <div class="spec-table-head" onclick="toggleSection('memory')">
-      <span class="spec-table-head-label">Memory</span>
-      <span class="spec-table-head-icon" id="icon-memory">▼</span>
-    </div>
-    <div class="spec-table-body" id="body-memory">
-      <div class="spec-row"><div class="spec-row-key">Primary Memory Type</div><div class="spec-row-val">Intel® Z-Angle Memory (ZAM) <span class="note">· In-house Intel; FOveros-mounted; bandwidth + density optimized</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">ZAM Architecture</div><div class="spec-row-val">Vertical-stack AI-optimized chips; mounted directly on FOveros 2.0 substrate</div></div>
-      <div class="spec-row"><div class="spec-row-key">ZAM Controllers (base)</div><div class="spec-row-val">2× dual-channel ZAM controllers</div></div>
-      <div class="spec-row"><div class="spec-row-key">ZAM Controllers (higher SKU)</div><div class="spec-row-val">3× controllers (2× ZAM + 1× DDR6/LPDDR6X dual-channel)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Max ZAM Capacity</div><div class="spec-row-val">Up to 1 TB <span class="note">· depends on SKU and ZAM chip density</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">ZAM Bandwidth</div><div class="spec-row-val">2–3 TB/s per controller · 5–6 TB/s effective (2× dual-channel controllers)</div></div>
-      <div class="spec-row"><div class="spec-row-key">ZAM Latency</div><div class="spec-row-val">Higher than DDR; mitigated by Kache Kore™ 4 GB bLLC + photonic substrate proximity</div></div>
-      <div class="spec-row"><div class="spec-row-key">Secondary Memory (Higher SKUs)</div><div class="spec-row-val">DDR6 / LPDDR6X <span class="note">· 3rd dual-channel controller; Core Ultra 500 and Xeon 500</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Max DDR6 Capacity</div><div class="spec-row-val">Up to 1 TB DDR6</div></div>
-      <div class="spec-row"><div class="spec-row-key">DDR6 Speed</div><div class="spec-row-val">DDR6-9600+ / LPDDR6X-10400</div></div>
-      <div class="spec-row"><div class="spec-row-key">Max Total Memory</div><div class="spec-row-val">Up to 2 TB unified (1 TB ZAM + 1 TB DDR6)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Memory Architecture</div><div class="spec-row-val">APU Unified Memory — CPU, GPU, NPU, all tiles share ZAM + DDR6</div></div>
-      <div class="spec-row"><div class="spec-row-key">Intel DirectStorage 2.0</div><div class="spec-row-val">DDR6 staging → ZAM active runtime → bLLC hot data <span class="note">· in-house vertical integration</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">ECC Memory</div><div class="spec-row-val">Yes <span class="note">· Xeon 500 class; inline ECC correction on ZAM + DDR6</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Kache Kore™ bLLC</div><div class="spec-row-val">4 GB L4 cache <span class="note">· cache-latency effective DRAM for hot APU working sets</span></div></div>
-    </div>
-  </div>
-
-  <!-- GPU -->
-  <div class="spec-table-section">
-    <div class="spec-table-head" onclick="toggleSection('gpu')">
-      <span class="spec-table-head-label">Graphics</span>
-      <span class="spec-table-head-icon" id="icon-gpu">▼</span>
-    </div>
-    <div class="spec-table-body" id="body-gpu">
-      <div class="spec-row"><div class="spec-row-key">Primary iGPU</div><div class="spec-row-val">Intel® Arc® E1080 × 4 tiles (Arc Elementalist / Xe5)</div></div>
-      <div class="spec-row"><div class="spec-row-key">iGPU Process</div><div class="spec-row-val">Intel 04A</div></div>
-      <div class="spec-row"><div class="spec-row-key">Total Xe5-cores (4× E1080)</div><div class="spec-row-val">880 Xe5-cores (450,560 shaders)</div></div>
-      <div class="spec-row"><div class="spec-row-key">GPU Boost Clock</div><div class="spec-row-val">2.5 GHz</div></div>
-      <div class="spec-row"><div class="spec-row-key">XMX5 AI units (total)</div><div class="spec-row-val">7,040 <span class="note">· ~67,830 AI TOPS combined (GPU)</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">RTU5 Ray Trace Units (total)</div><div class="spec-row-val">3,520</div></div>
-      <div class="spec-row"><div class="spec-row-key">Multi-tile presentation</div><div class="spec-row-val">4× E1080 appear as single render device via FOveros 2.0 + Thread Director</div></div>
-      <div class="spec-row"><div class="spec-row-key">VR Support</div><div class="spec-row-val">Yes — first Intel Arc gen. with native VR; VRV1 / VRV2 codec hardware</div></div>
-      <div class="spec-row"><div class="spec-row-key">LP iGPU</div><div class="spec-row-val">Intel® Arc® Druid (Xe4E) — Intel 06E; always-on low-power 3D</div></div>
-      <div class="spec-row"><div class="spec-row-key">Arc Druid Xe-cores</div><div class="spec-row-val">14 Xe4E-cores (3,584 shaders); RTX 5060M-class raster</div></div>
-      <div class="spec-row"><div class="spec-row-key">2DKR Node</div><div class="spec-row-val">Intel 14A-E; dedicated 2D/GUI accelerator; no 3D ALUs; modernised Blitter Engine</div></div>
-      <div class="spec-row"><div class="spec-row-key">Max Displays</div><div class="spec-row-val">6 (native)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Display Outputs</div><div class="spec-row-val">eDP 1.5, Intel×Sony eDP 2.0 (over PCIe 7.0 ×16×3), DisplayPort 2.1 UHBR20, HDMI 2.1 FRL</div></div>
-      <div class="spec-row"><div class="spec-row-key">Max Resolution (eDP 2.0)</div><div class="spec-row-val">15360 × 9600 @ 1200 Hz</div></div>
-    </div>
-  </div>
-
-  <!-- AI & MEDIA -->
-  <div class="spec-table-section">
-    <div class="spec-table-head" onclick="toggleSection('ai')">
-      <span class="spec-table-head-label">AI & Media</span>
-      <span class="spec-table-head-icon" id="icon-ai">▼</span>
-    </div>
-    <div class="spec-table-body" id="body-ai">
-      <div class="spec-row"><div class="spec-row-key">HNPU (Intel 04A)</div><div class="spec-row-val">256 TOPS <span class="note">· INT2/4/8, FP8, BF16, FP16, FP32; 32 MB scratchpad SRAM</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">LPNPU (Intel 06E)</div><div class="spec-row-val">88 TOPS <span class="note">· &lt;1.4W at peak; always-on; INT4/8, FP8, BF16</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Total System AI TOPS</div><div class="spec-row-val">344 TOPS (NPU) + 67,830 TOPS (GPU XMX5) <span class="note">· coordinated via Thread Director</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">QuickSync BionzXR Cores</div><div class="spec-row-val">8 cores (Intel 06E) — co-developed with Sony Semiconductor</div></div>
-      <div class="spec-row"><div class="spec-row-key">Encode Codecs (BionzXR)</div><div class="spec-row-val">AV2 (world-first), AV1, H.266/VVC, H.265, H.264, VRV1, VRV2, ProRes</div></div>
-      <div class="spec-row"><div class="spec-row-key">Decode Codecs (BionzXR)</div><div class="spec-row-val">All encode codecs + VP9, VP8, MPEG-4, VC-1</div></div>
-      <div class="spec-row"><div class="spec-row-key">Max Encode Resolution</div><div class="spec-row-val">8K120 ProRes; 8K240 AV1; 4K480 AV2</div></div>
-      <div class="spec-row"><div class="spec-row-key">MFX QuickSync (14A-E)</div><div class="spec-row-val">Low-power decode: AV2, AV1, H.266, H.265, H.264, VP9 <span class="note">· −35% power vs PTL QuickSync</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">IPU Version</div><div class="spec-row-val">Intel IPU 8.2 (Intel 14A-E) — up to 201 MP; Sony USB-C/TB native</div></div>
-      <div class="spec-row"><div class="spec-row-key">Intel® Gaussian &amp; Neural Accelerator</div><div class="spec-row-val">Yes (GNA 5.0)</div></div>
-    </div>
-  </div>
-
-  <!-- CONNECTIVITY -->
-  <div class="spec-table-section">
-    <div class="spec-table-head" onclick="toggleSection('io')">
-      <span class="spec-table-head-label">I/O & Connectivity</span>
-      <span class="spec-table-head-icon" id="icon-io">▼</span>
-    </div>
-    <div class="spec-table-body" id="body-io">
-      <div class="spec-row"><div class="spec-row-key">PCIe Revision</div><div class="spec-row-val">PCIe 7.0 (primary GPU tile interconnect); PCIe 6.0 (storage / peripherals)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Thunderbolt Version</div><div class="spec-row-val">Thunderbolt 5 <span class="note">· 120 Gbps; supports Intel×Sony eDP 2.0 tunnel</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">USB Specification</div><div class="spec-row-val">USB4 Gen 4×2 (80 Gbps), USB 3.2 Gen 2×2</div></div>
-      <div class="spec-row"><div class="spec-row-key">WiFi Specification</div><div class="spec-row-val">Intel® Killer™ Wi-Fi 7 (802.11be) — via Killer SignalBoost S1</div></div>
-      <div class="spec-row"><div class="spec-row-key">WiFi Chips</div><div class="spec-row-val">Up to 2× X1 chips; quad-band each = 8 total bands</div></div>
-      <div class="spec-row"><div class="spec-row-key">Bluetooth</div><div class="spec-row-val">Bluetooth Core 6.2</div></div>
-      <div class="spec-row"><div class="spec-row-key">Cellular</div><div class="spec-row-val">5G Sub-6 / mmWave, 4G LTE, VoLTE</div></div>
-      <div class="spec-row"><div class="spec-row-key">Antenna Support</div><div class="spec-row-val">Up to 2× 360° Intel LinkBoost antennae; SONAR user presence via WiFi signal</div></div>
-      <div class="spec-row"><div class="spec-row-key">Intel® Wake on Voice</div><div class="spec-row-val">Yes (LPNPU-powered; always-on)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Intel® Wake on Wi-Fi (SONAR)</div><div class="spec-row-val">Yes</div></div>
-    </div>
-  </div>
-
-  <!-- SECURITY & PLATFORM -->
-  <div class="spec-table-section">
-    <div class="spec-table-head" onclick="toggleSection('security')">
-      <span class="spec-table-head-label">Security & Platform</span>
-      <span class="spec-table-head-icon" id="icon-security">▼</span>
-    </div>
-    <div class="spec-table-body" id="body-security">
-      <div class="spec-row"><div class="spec-row-key">Intel® vPro®</div><div class="spec-row-val">Yes (Xeon 500 class; hardware-rooted vPro)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Microsoft Pluton</div><div class="spec-row-val">Yes — hardware TPM 2.1 + Pluton security processor (14A-E)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Intel® Thread Director</div><div class="spec-row-val">Yes — dedicated Thread Director tile; hardware-native 5-class scheduling</div></div>
-      <div class="spec-row"><div class="spec-row-key">Thread Director Tile capabilities</div><div class="spec-row-val">Core class arbitration, tile sleep/wake, GPU/NPU escalation, thermal budget management, V8 HyperBOOST sequencing <span class="note">· LPNPU co-pilot: predictive AI-assisted task dispatch</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Intel® Smart Sound Technology</div><div class="spec-row-val">Yes (14A-E)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Intel® High Definition Audio</div><div class="spec-row-val">Yes</div></div>
-      <div class="spec-row"><div class="spec-row-key">Affinity Power System</div><div class="spec-row-val">Dynamic — Performance / Balanced / Efficiency / Unleashed; hardware-enforced via Thread Director + LPNPU AI co-pilot <span class="note">· Unleashed requires external PSU + cooler</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">TDP (Base / Max Turbo)</div><div class="spec-row-val">55W base cTDP / Up to 175W sustained (HKX OC mode)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Min LP Island TDP</div><div class="spec-row-val">1W (LPE-only; efficiency affinity; Compute Tile off)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Processor Graphics TDP</div><div class="spec-row-val">Configurable per-tile; min 3W (Druid standby); max 4×75W (4× E1080 full)</div></div>
-    </div>
-  </div>
-
-</div>
-
 </div>
 
 <div class="spec-footer">
-  Intel, the Intel logo, Core, Xeon, Arc, Thunderbolt, Killer, vPro, QuickSync, Thread Director, PowerVia, Foveros, and Turbo Boost are trademarks of Intel Corporation or its subsidiaries.<br>
+  Intel, the Intel logo, Core, Core Ultra, Xeon, Arc, Thunderbolt, Killer, vPro, QuickSync, Thread Director, PowerVia, Foveros, and Turbo Boost are trademarks of Intel Corporation or its subsidiaries.<br>
   Sony, BionzXR are trademarks of Sony Group Corporation. Lightmatter FiberOptic integration is proprietary to the Intel-Lightmatter joint photonic development program.<br>
   Killer SignalBoost S1 developed in collaboration with OPPO Semiconductor Division and Intel Wireless Products Group.<br>
   Specifications subject to change. Performance numbers represent theoretical maximums under ideal conditions.<br>
-  Core Xeon® 599HKX · Eventide Generation · Intel Corporation 2028 · All rights reserved.
+  Eventide SKU Library · Intel Corporation 2028 · All rights reserved.
 </div>
 
 <script>
@@ -4163,6 +4147,96 @@ function toggleSection(id) {
   icon.textContent = isOpen ? '▼' : '▲';
 }
 
+
+const EVENTIDE_SKU_DATA = [{"id": "C3-533U", "name": "Core™ 3 533U", "family": "Core 500", "image": "c3", "deepdivePath": "/Intel/Eventide/SKU/C3-533U", "gpu": "Intel® Arc® Druid LP (6 Xe4E cores)", "ram": "16 GB FOveros ZAM", "msrp": 329, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "4", "base": "1.40 GHz", "boost": "3.80 GHz"}, {"type": "LPE (Darkmont)", "count": "4", "base": "0.80 GHz", "boost": "2.80 GHz"}]}, {"id": "C3-535T", "name": "Core™ 3 535T", "family": "Core 500", "image": "c3", "deepdivePath": "/Intel/Eventide/SKU/C3-535T", "gpu": "Intel® Arc® Druid LP (6 Xe4E cores)", "ram": "16 GB FOveros ZAM", "msrp": 299, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "4", "base": "1.20 GHz", "boost": "3.40 GHz"}, {"type": "LPE (Darkmont)", "count": "4", "base": "0.70 GHz", "boost": "2.60 GHz"}]}, {"id": "C5-553H", "name": "Core™ 5 553H", "family": "Core 500", "image": "c5", "deepdivePath": "/Intel/Eventide/SKU/C5-553H", "gpu": "Intel® Arc® Druid LP (8 Xe4E cores)", "ram": "24 GB FOveros ZAM", "msrp": 449, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "6", "base": "1.70 GHz", "boost": "4.30 GHz"}, {"type": "LPE (Darkmont)", "count": "6", "base": "0.90 GHz", "boost": "3.00 GHz"}]}, {"id": "C5-555U", "name": "Core™ 5 555U", "family": "Core 500", "image": "c5", "deepdivePath": "/Intel/Eventide/SKU/C5-555U", "gpu": "Intel® Arc® Druid LP (8 Xe4E cores)", "ram": "24 GB FOveros ZAM", "msrp": 409, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "6", "base": "1.50 GHz", "boost": "4.00 GHz"}, {"type": "LPE (Darkmont)", "count": "6", "base": "0.80 GHz", "boost": "2.90 GHz"}]}, {"id": "C7-573H", "name": "Core™ 7 573H", "family": "Core 500", "image": "c7", "deepdivePath": "/Intel/Eventide/SKU/C7-573H", "gpu": "Intel® Arc® Druid LP (10 Xe4E cores)", "ram": "32 GB FOveros ZAM", "msrp": 599, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "8", "base": "1.90 GHz", "boost": "4.60 GHz"}, {"type": "LPE (Darkmont)", "count": "8", "base": "1.00 GHz", "boost": "3.10 GHz"}]}, {"id": "C7-575V", "name": "Core™ 7 575V", "family": "Core 500", "image": "c7", "deepdivePath": "/Intel/Eventide/SKU/C7-575V", "gpu": "Intel® Arc® Druid LP (10 Xe4E cores)", "ram": "32 GB FOveros ZAM", "msrp": 569, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "8", "base": "1.60 GHz", "boost": "4.20 GHz"}, {"type": "LPE (Darkmont)", "count": "8", "base": "0.85 GHz", "boost": "3.00 GHz"}]}, {"id": "C9-593H", "name": "Core™ 9 593H", "family": "Core 500", "image": "c9", "deepdivePath": "/Intel/Eventide/SKU/C9-593H", "gpu": "Intel® Arc® Druid LP (12 Xe4E cores)", "ram": "48 GB FOveros ZAM", "msrp": 729, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "10", "base": "2.10 GHz", "boost": "4.90 GHz"}, {"type": "LPE (Darkmont)", "count": "10", "base": "1.10 GHz", "boost": "3.20 GHz"}]}, {"id": "C9-595T", "name": "Core™ 9 595T", "family": "Core 500", "image": "c9", "deepdivePath": "/Intel/Eventide/SKU/C9-595T", "gpu": "Intel® Arc® Druid LP (12 Xe4E cores)", "ram": "48 GB FOveros ZAM", "msrp": 679, "rows": [{"type": "UHE (Lunar Eclipse)", "count": "10", "base": "1.80 GHz", "boost": "4.50 GHz"}, {"type": "LPE (Darkmont)", "count": "10", "base": "0.95 GHz", "boost": "3.00 GHz"}]}, {"id": "I3-533H", "name": "Core™ i3 533H", "family": "Core i500", "image": "i3", "deepdivePath": "/Intel/Eventide/SKU/I3-533H", "gpu": "Intel® Arc® Druid iGPU (4 Xe4E cores)", "ram": "No FOveros-mounted RAM (PCIe budget for dGPU)", "msrp": 289, "rows": [{"type": "UHP (Solar Eclipse)", "count": "4", "base": "2.20 GHz", "boost": "4.50 GHz"}, {"type": "DP (Sunset Cove)", "count": "4", "base": "2.00 GHz", "boost": "4.10 GHz"}]}, {"id": "I3-535F", "name": "Core™ i3 535F", "family": "Core i500", "image": "i3", "deepdivePath": "/Intel/Eventide/SKU/I3-535F", "gpu": "No iGPU (F suffix)", "ram": "No FOveros-mounted RAM (PCIe budget for dGPU)", "msrp": 259, "rows": [{"type": "UHP (Solar Eclipse)", "count": "4", "base": "2.30 GHz", "boost": "4.60 GHz"}, {"type": "DP (Sunset Cove)", "count": "4", "base": "2.10 GHz", "boost": "4.20 GHz"}]}, {"id": "I5-553H", "name": "Core™ i5 553H", "family": "Core i500", "image": "i5", "deepdivePath": "/Intel/Eventide/SKU/I5-553H", "gpu": "Intel® Arc® Druid iGPU (6 Xe4E cores)", "ram": "No FOveros-mounted RAM (PCIe budget for dGPU)", "msrp": 379, "rows": [{"type": "UHP (Solar Eclipse)", "count": "6", "base": "2.40 GHz", "boost": "4.90 GHz"}, {"type": "DP (Sunset Cove)", "count": "6", "base": "2.20 GHz", "boost": "4.50 GHz"}]}, {"id": "I5-555HX", "name": "Core™ i5 555HX", "family": "Core i500", "image": "i5", "deepdivePath": "/Intel/Eventide/SKU/I5-555HX", "gpu": "Intel® Arc® Druid iGPU (6 Xe4E cores)", "ram": "No FOveros-mounted RAM (PCIe budget for dGPU)", "msrp": 429, "rows": [{"type": "UHP (Solar Eclipse)", "count": "6", "base": "2.60 GHz", "boost": "5.10 GHz"}, {"type": "DP (Sunset Cove)", "count": "6", "base": "2.30 GHz", "boost": "4.70 GHz"}]}, {"id": "I7-573H", "name": "Core™ i7 573H", "family": "Core i500", "image": "i7", "deepdivePath": "/Intel/Eventide/SKU/I7-573H", "gpu": "Intel® Arc® Druid iGPU (8 Xe4E cores)", "ram": "No FOveros-mounted RAM (PCIe budget for dGPU)", "msrp": 529, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "2.70 GHz", "boost": "5.30 GHz"}, {"type": "DP (Sunset Cove)", "count": "8", "base": "2.40 GHz", "boost": "4.90 GHz"}]}, {"id": "I7-575HK", "name": "Core™ i7 575HK", "family": "Core i500", "image": "i7", "deepdivePath": "/Intel/Eventide/SKU/I7-575HK", "gpu": "Intel® Arc® Druid iGPU (8 Xe4E cores)", "ram": "No FOveros-mounted RAM (PCIe budget for dGPU)", "msrp": 599, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "2.90 GHz", "boost": "5.50 GHz"}, {"type": "DP (Sunset Cove)", "count": "8", "base": "2.50 GHz", "boost": "5.00 GHz"}]}, {"id": "I9-593HX", "name": "Core™ i9 593HX", "family": "Core i500", "image": "i9", "deepdivePath": "/Intel/Eventide/SKU/I9-593HX", "gpu": "Intel® Arc® Druid iGPU (10 Xe4E cores)", "ram": "No FOveros-mounted RAM (PCIe budget for dGPU)", "msrp": 799, "rows": [{"type": "UHP (Solar Eclipse)", "count": "10", "base": "3.00 GHz", "boost": "5.70 GHz"}, {"type": "DP (Sunset Cove)", "count": "10", "base": "2.70 GHz", "boost": "5.20 GHz"}]}, {"id": "I9-595F", "name": "Core™ i9 595F", "family": "Core i500", "image": "i9", "deepdivePath": "/Intel/Eventide/SKU/I9-595F", "gpu": "No iGPU (F suffix)", "ram": "No FOveros-mounted RAM (PCIe budget for dGPU)", "msrp": 749, "rows": [{"type": "UHP (Solar Eclipse)", "count": "10", "base": "3.10 GHz", "boost": "5.80 GHz"}, {"type": "DP (Sunset Cove)", "count": "10", "base": "2.80 GHz", "boost": "5.30 GHz"}]}, {"id": "U3-533U", "name": "Core™ Ultra 3 533U", "family": "Core Ultra 500", "image": "u3", "deepdivePath": "/Intel/Eventide/SKU/U3-533U", "gpu": "Intel® Arc® E1080 ×1 + Arc® Druid LP", "ram": "32 GB FOveros ZAM", "msrp": 459, "rows": [{"type": "UHP (Solar Eclipse)", "count": "4", "base": "2.10 GHz", "boost": "4.70 GHz"}, {"type": "DP (Sunset Cove)", "count": "4", "base": "2.00 GHz", "boost": "4.40 GHz"}, {"type": "SPE (Venusmont)", "count": "24", "base": "1.70 GHz", "boost": "3.40 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "6 / 4", "base": "1.30 / 0.80 GHz", "boost": "4.10 / 2.90 GHz"}]}, {"id": "U5-553H", "name": "Core™ Ultra 5 553H", "family": "Core Ultra 500", "image": "u5", "deepdivePath": "/Intel/Eventide/SKU/U5-553H", "gpu": "Intel® Arc® E1080 ×1 + Arc® Druid LP", "ram": "48 GB FOveros ZAM", "msrp": 699, "rows": [{"type": "UHP (Solar Eclipse)", "count": "6", "base": "2.40 GHz", "boost": "5.10 GHz"}, {"type": "DP (Sunset Cove)", "count": "6", "base": "2.20 GHz", "boost": "4.80 GHz"}, {"type": "SPE (Venusmont)", "count": "48", "base": "1.80 GHz", "boost": "3.50 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "8 / 6", "base": "1.50 / 0.85 GHz", "boost": "4.40 / 3.00 GHz"}]}, {"id": "U5-555HX", "name": "Core™ Ultra 5 555HX", "family": "Core Ultra 500", "image": "u5", "deepdivePath": "/Intel/Eventide/SKU/U5-555HX", "gpu": "Intel® Arc® E1080 ×1 + Arc® Druid LP", "ram": "48 GB FOveros ZAM", "msrp": 779, "rows": [{"type": "UHP (Solar Eclipse)", "count": "6", "base": "2.60 GHz", "boost": "5.20 GHz"}, {"type": "DP (Sunset Cove)", "count": "6", "base": "2.40 GHz", "boost": "4.90 GHz"}, {"type": "SPE (Venusmont)", "count": "48", "base": "1.90 GHz", "boost": "3.60 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "8 / 6", "base": "1.60 / 0.90 GHz", "boost": "4.50 / 3.10 GHz"}]}, {"id": "U7-573H", "name": "Core™ Ultra 7 573H", "family": "Core Ultra 500", "image": "u7", "deepdivePath": "/Intel/Eventide/SKU/U7-573H", "gpu": "Intel® Arc® E1080 ×1 + Arc® Druid LP", "ram": "64 GB FOveros ZAM", "msrp": 949, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "2.80 GHz", "boost": "5.40 GHz"}, {"type": "DP (Sunset Cove)", "count": "8", "base": "2.50 GHz", "boost": "5.00 GHz"}, {"type": "SPE (Venusmont)", "count": "72", "base": "1.90 GHz", "boost": "3.60 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "10 / 8", "base": "1.70 / 0.95 GHz", "boost": "4.70 / 3.10 GHz"}]}, {"id": "U7-575HK", "name": "Core™ Ultra 7 575HK", "family": "Core Ultra 500", "image": "u7", "deepdivePath": "/Intel/Eventide/SKU/U7-575HK", "gpu": "Intel® Arc® E1080 ×1 + Arc® Druid LP", "ram": "64 GB FOveros ZAM", "msrp": 1029, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "2.90 GHz", "boost": "5.50 GHz"}, {"type": "DP (Sunset Cove)", "count": "8", "base": "2.60 GHz", "boost": "5.10 GHz"}, {"type": "SPE (Venusmont)", "count": "72", "base": "2.00 GHz", "boost": "3.70 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "10 / 8", "base": "1.80 / 1.00 GHz", "boost": "4.80 / 3.20 GHz"}]}, {"id": "U7-577V", "name": "Core™ Ultra 7 577V", "family": "Core Ultra 500", "image": "u7", "deepdivePath": "/Intel/Eventide/SKU/U7-577V", "gpu": "Intel® Arc® E1080 ×1 + Arc® Druid LP", "ram": "64 GB FOveros ZAM", "msrp": 979, "rows": [{"type": "UHP (Solar Eclipse)", "count": "8", "base": "2.50 GHz", "boost": "5.00 GHz"}, {"type": "DP (Sunset Cove)", "count": "8", "base": "2.30 GHz", "boost": "4.70 GHz"}, {"type": "SPE (Venusmont)", "count": "72", "base": "1.70 GHz", "boost": "3.30 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "10 / 8", "base": "1.50 / 0.90 GHz", "boost": "4.40 / 3.00 GHz"}]}, {"id": "U9-593HX", "name": "Core™ Ultra 9 593HX", "family": "Core Ultra 500", "image": "u9", "deepdivePath": "/Intel/Eventide/SKU/U9-593HX", "gpu": "Intel® Arc® E1080 ×2 + Arc® Druid LP", "ram": "96 GB FOveros ZAM", "msrp": 1329, "rows": [{"type": "UHP (Solar Eclipse)", "count": "10", "base": "3.00 GHz", "boost": "5.80 GHz"}, {"type": "DP (Sunset Cove)", "count": "10", "base": "2.70 GHz", "boost": "5.30 GHz"}, {"type": "SPE (Venusmont)", "count": "96", "base": "2.00 GHz", "boost": "3.80 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "12 / 10", "base": "1.90 / 1.05 GHz", "boost": "5.00 / 3.30 GHz"}]}, {"id": "U9-595HK", "name": "Core™ Ultra 9 595HK", "family": "Core Ultra 500", "image": "u9", "deepdivePath": "/Intel/Eventide/SKU/U9-595HK", "gpu": "Intel® Arc® E1080 ×2 + Arc® Druid LP", "ram": "128 GB FOveros ZAM", "msrp": 1499, "rows": [{"type": "UHP (Solar Eclipse)", "count": "10", "base": "3.10 GHz", "boost": "5.90 GHz"}, {"type": "DP (Sunset Cove)", "count": "10", "base": "2.80 GHz", "boost": "5.40 GHz"}, {"type": "SPE (Venusmont)", "count": "96", "base": "2.10 GHz", "boost": "3.90 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "12 / 10", "base": "2.00 / 1.10 GHz", "boost": "5.10 / 3.40 GHz"}]}, {"id": "U9-599HKX", "name": "Core™ Ultra 9 599HKX", "family": "Core Ultra 500", "image": "u9", "deepdivePath": "/Intel/Eventide/SKU/U9-599HKX", "gpu": "Intel® Arc® E1080 ×2 + Arc® Druid LP", "ram": "128 GB FOveros ZAM", "msrp": 1699, "rows": [{"type": "UHP (Solar Eclipse)", "count": "10", "base": "3.20 GHz", "boost": "6.00 GHz"}, {"type": "DP (Sunset Cove)", "count": "10", "base": "2.90 GHz", "boost": "5.50 GHz"}, {"type": "SPE (Venusmont)", "count": "96", "base": "2.20 GHz", "boost": "4.00 GHz"}, {"type": "UHE/LPE (LP Island)", "count": "12 / 10", "base": "2.10 / 1.15 GHz", "boost": "5.20 / 3.40 GHz"}]}, {"id": "X7-577HX", "name": "Core™ Xeon® 7 577HX", "family": "Core Xeon 500", "image": "x7", "deepdivePath": "/Intel/Eventide/SKU/X7-577HX", "gpu": "Intel® Arc® E1080 ×2 + Arc® Druid LP", "ram": "128 GB FOveros ZAM + ECC", "msrp": 7999, "rows": [{"type": "UHP / DP", "count": "16 / 12", "base": "2.40 / 2.10 GHz", "boost": "5.30 / 5.00 GHz"}, {"type": "SPE (Venusmont)", "count": "144", "base": "1.90 GHz", "boost": "3.70 GHz"}, {"type": "UHE / LPE", "count": "12 / 12", "base": "1.70 / 0.90 GHz", "boost": "4.70 / 3.10 GHz"}]}, {"id": "X7-579HK", "name": "Core™ Xeon® 7 579HK", "family": "Core Xeon 500", "image": "x7", "deepdivePath": "/Intel/Eventide/SKU/X7-579HK", "gpu": "Intel® Arc® E1080 ×2 + Arc® Druid LP", "ram": "160 GB FOveros ZAM + ECC", "msrp": 9899, "rows": [{"type": "UHP / DP", "count": "16 / 12", "base": "2.60 / 2.30 GHz", "boost": "5.50 / 5.10 GHz"}, {"type": "SPE (Venusmont)", "count": "144", "base": "2.00 GHz", "boost": "3.80 GHz"}, {"type": "UHE / LPE", "count": "12 / 12", "base": "1.80 / 1.00 GHz", "boost": "4.80 / 3.20 GHz"}]}, {"id": "X9-597HX", "name": "Core™ Xeon® 9 597HX", "family": "Core Xeon 500", "image": "x9", "deepdivePath": "/Intel/Eventide/SKU/X9-597HX", "gpu": "Intel® Arc® E1080 ×4 + Arc® Druid LP", "ram": "192 GB FOveros ZAM + ECC", "msrp": 15999, "rows": [{"type": "UHP / DP", "count": "32 / 24", "base": "2.30 / 2.10 GHz", "boost": "5.80 / 5.20 GHz"}, {"type": "SPE (Venusmont)", "count": "288", "base": "1.80 GHz", "boost": "3.60 GHz"}, {"type": "UHE / LPE", "count": "16 / 16", "base": "1.60 / 0.80 GHz", "boost": "4.80 / 3.00 GHz"}]}, {"id": "X9-599HK", "name": "Core™ Xeon® 9 599HK", "family": "Core Xeon 500", "image": "x9", "deepdivePath": "/Intel/Eventide/SKU/X9-599HK", "gpu": "Intel® Arc® E1080 ×4 + Arc® Druid LP", "ram": "224 GB FOveros ZAM + ECC", "msrp": 22399, "rows": [{"type": "UHP / DP", "count": "32 / 24", "base": "2.40 / 2.20 GHz", "boost": "6.00 / 5.30 GHz"}, {"type": "SPE (Venusmont)", "count": "288", "base": "1.90 GHz", "boost": "3.70 GHz"}, {"type": "UHE / LPE", "count": "16 / 16", "base": "1.70 / 0.85 GHz", "boost": "4.90 / 3.10 GHz"}]}, {"id": "X9-599HKX", "name": "Core™ Xeon® 9 599HKX", "family": "Core Xeon 500", "image": "x9", "deepdivePath": "/Intel/Eventide/SKU/X9-599HKX", "gpu": "Intel® Arc® E1080 ×4 + Arc® Druid LP", "ram": "256 GB FOveros ZAM + ECC", "msrp": 27899, "rows": [{"type": "UHP / DP", "count": "32 / 24", "base": "2.40 / 2.10 GHz", "boost": "6.00 / 5.20 GHz"}, {"type": "SPE (Venusmont)", "count": "288", "base": "1.80 GHz", "boost": "3.60 GHz"}, {"type": "UHE / LPE", "count": "16 / 16", "base": "1.60 / 0.80 GHz", "boost": "4.80 / 3.00 GHz"}]}];
+
+function formatUsd(value) {
+  return '$' + Number(value).toLocaleString('en-US');
+}
+
+function renderSkuOverview(sku) {
+  const overview = document.getElementById('eventide-sku-overview');
+  if (!overview || !sku) return;
+
+  const rowsHtml = sku.rows.map((row) => `
+    <tr>
+      <td>${row.type}</td>
+      <td>${row.count}</td>
+      <td>${row.base}</td>
+      <td>${row.boost}</td>
+    </tr>
+  `).join('');
+
+  overview.innerHTML = `
+    <div class="sku-overview-head">
+      <img class="sku-overview-art" src="Media/SKU.${sku.image}.stick.svg" alt="${sku.name} family art" onerror="this.style.visibility='hidden'"> 
+      <div>
+        <div class="sku-overview-tier">${sku.family}</div>
+        <div class="sku-overview-name">${sku.name}</div>
+      </div>
+    </div>
+    <table class="sku-overview-table">
+      <thead>
+        <tr>
+          <th>Core Type</th>
+          <th>Core Count</th>
+          <th>Base Clock</th>
+          <th>Boost Clock</th>
+        </tr>
+      </thead>
+      <tbody>${rowsHtml}</tbody>
+    </table>
+    <div class="sku-overview-meta">
+      <div class="sku-overview-meta-row"><div class="sku-overview-meta-k">GPU</div><div class="sku-overview-meta-v">${sku.gpu}</div></div>
+      <div class="sku-overview-meta-row"><div class="sku-overview-meta-k">FOveros RAM</div><div class="sku-overview-meta-v">${sku.ram}</div></div>
+      <div class="sku-overview-meta-row"><div class="sku-overview-meta-k">MSRP</div><div class="sku-overview-price">${formatUsd(sku.msrp)}</div></div>
+      <button type="button" class="sku-overview-cta" data-sku-open="${sku.id}">Open SKU Deep Dive</button>
+    </div>
+  `;
+}
+
+function setupSkuSelector() {
+  const grid = document.getElementById('eventide-sku-grid');
+  if (!grid || !Array.isArray(EVENTIDE_SKU_DATA) || !EVENTIDE_SKU_DATA.length) return;
+
+  grid.innerHTML = EVENTIDE_SKU_DATA.map((sku, idx) => `
+    <button type="button" class="sku-select-card${idx === 0 ? ' active' : ''}" data-sku-id="${sku.id}" aria-pressed="${idx === 0 ? 'true' : 'false'}">
+      <img class="sku-select-art" src="Media/SKU.${sku.image}.stick.svg" alt="${sku.family} ${sku.id} art" onerror="this.style.visibility='hidden'"> 
+      <div>
+        <div class="sku-select-name">${sku.name}</div>
+        <div class="sku-select-family">${sku.family}</div>
+      </div>
+    </button>
+  `).join('');
+
+  const skuById = new Map(EVENTIDE_SKU_DATA.map((sku) => [sku.id, sku]));
+  let selectedSku = EVENTIDE_SKU_DATA[0];
+  renderSkuOverview(selectedSku);
+
+  grid.addEventListener('click', (event) => {
+    const card = event.target.closest('[data-sku-id]');
+    if (!card) return;
+    const sku = skuById.get(card.getAttribute('data-sku-id'));
+    if (!sku) return;
+    selectedSku = sku;
+    grid.querySelectorAll('[data-sku-id]').forEach((node) => {
+      const isActive = node === card;
+      node.classList.toggle('active', isActive);
+      node.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+    renderSkuOverview(selectedSku);
+  });
+
+  document.addEventListener('click', (event) => {
+    const openBtn = event.target.closest('[data-sku-open]');
+    if (!openBtn) return;
+    const sku = skuById.get(openBtn.getAttribute('data-sku-open'));
+    if (sku && sku.deepdivePath) {
+      navigateToDeepdive(sku.deepdivePath);
+    }
+  });
+}
+
 // Navigate to deepdive section when overview card is clicked
 function navigateToDeepdive(path) {
   if (window.parent && window.parent !== window && window.parent.navigateToPath) {
@@ -4193,6 +4267,7 @@ function setupDeepdiveNavigation() {
 document.addEventListener('DOMContentLoaded', () => {
   loadDynamicSegments();
   setupDeepdiveNavigation();
+  setupSkuSelector();
 });
 </script>
 
