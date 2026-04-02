@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Core™ i5 557T · Eventide SKU</title>
+<title>Core™ <span class="core-i-lower">i5</span> 557T · Eventide SKU</title>
 <style>@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
 :root { --intel-blue:#0068B5; --eventide-gold:#C8922A; --eventide-gold-light:#F0B848; --eventide-dusk:#1A0A2E; --eventide-purple:#6B21A8; --surface:#fff; --surface-alt:#F5F7FA; --border:#E0E4EC; --text-primary:#0F0F0F; --text-secondary:#4A4A4A; --text-muted:#7A7A7A; --font-display:'Bebas Neue',sans-serif; --font-body:'Space Grotesk',sans-serif; --font-mono:'IBM Plex Mono',monospace; }
 *{box-sizing:border-box;margin:0;padding:0;} body{font-family:var(--font-body);background:#F5F7FA;color:var(--text-primary);line-height:1.55;}
@@ -13,6 +13,7 @@
 .spec-sheet-logo{font-family:var(--font-mono);font-size:9px;letter-spacing:.25em;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:8px;}
 .spec-sku{font-family:var(--font-display);font-size:52px;color:white;line-height:.95;margin-bottom:4px;}
 .spec-fullname{font-size:13px;color:rgba(255,255,255,.62);line-height:1.5;}
+.core-i-lower{font-family:var(--font-body);font-weight:600;text-transform:none;letter-spacing:0;}
 .spec-badges-header{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;}
 .badge{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:2px;border:1px solid transparent;}
 .badge-gold{background:rgba(240,184,72,.12);color:var(--eventide-gold);border-color:rgba(240,184,72,.32);}
@@ -39,11 +40,11 @@
   <div class="spec-sheet-header">
     <div style="flex: 1;">
       <div class="spec-sheet-logo">Intel Corporation · Eventide Architecture · 2028</div>
-      <div class="spec-sku">Intel® Core™ i5 557T Processor<br>
-        Core i500 Series · Eventide Generation · 72M Cache, up to 5.10 GHz
+      <div class="spec-sku">Intel® Core™ <span class="core-i-lower">i5</span> 557T Processor<br>
+        Core <span class="core-i-lower">i5</span>00 Series · Eventide Generation · 72M Cache, up to 5.10 GHz
       </div>
       <div class="spec-badges-header">
-        <span class="badge badge-gold">Core i500</span>
+        <span class="badge badge-gold">Core <span class="core-i-lower">i5</span>00</span>
         <span class="badge badge-orange">T · Mobile SKU</span>
         <span class="badge badge-blue">FOveros 2.0 Photonic</span>
         <span class="badge badge-purple">0 TOPS AI</span>
@@ -65,10 +66,10 @@
       <span class="spec-table-head-icon open" id="icon-essentials">▲</span>
     </div>
     <div class="spec-table-body open" id="body-essentials">
-      <div class="spec-row"><div class="spec-row-key">Product Collection</div><div class="spec-row-val">Intel® Core i500 Series Processors (Eventide)</div></div>
+      <div class="spec-row"><div class="spec-row-key">Product Collection</div><div class="spec-row-val">Intel® Core <span class="core-i-lower">i5</span>00 Series Processors (Eventide)</div></div>
       <div class="spec-row"><div class="spec-row-key">Code Name</div><div class="spec-row-val">Eventide <span class="note">· One-off generation (spiritual successor to Lunar Lake + Panther Lake)</span></div></div>
       <div class="spec-row"><div class="spec-row-key">Vertical Segment</div><div class="spec-row-val">Mobile (T)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Processor Number</div><div class="spec-row-val">Core i5 557T</div></div>
+      <div class="spec-row"><div class="spec-row-key">Processor Number</div><div class="spec-row-val">Core <span class="core-i-lower">i5</span> 557T</div></div>
       <div class="spec-row"><div class="spec-row-key">Launch Date</div><div class="spec-row-val">Q3 2028</div></div>
       <div class="spec-row"><div class="spec-row-key">Lithography (Primary)</div><div class="spec-row-val">Intel 04A (0.4nm-class GaNSi GAA) · Compute + iGPU + HNPU + Kache Kore™</div></div>
       <div class="spec-row"><div class="spec-row-key">Lithography (Efficiency)</div><div class="spec-row-val">Intel 06E (0.6nm-class FinFlex GAA) · LP Island + Arc Druid + BionzXR + LPNPU</div></div>
@@ -134,25 +135,19 @@
   <!-- MEMORY -->
   <div class="spec-table-section">
     <div class="spec-table-head" onclick="toggleSection('memory')">
-      <span class="spec-table-head-label">Memory</span>
+      <span class="spec-table-head-label">Memory & IO</span>
       <span class="spec-table-head-icon" id="icon-memory">▼</span>
     </div>
     <div class="spec-table-body" id="body-memory">
-      <div class="spec-row"><div class="spec-row-key">Primary Memory Type</div><div class="spec-row-val">Intel® Z-Angle Memory (ZAM) <span class="note">· In-house Intel; FOveros-mounted; bandwidth + density optimized</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">ZAM Architecture</div><div class="spec-row-val">Vertical-stack AI-optimized chips; mounted directly on FOveros 2.0 substrate</div></div>
-      <div class="spec-row"><div class="spec-row-key">ZAM Controllers (base)</div><div class="spec-row-val">2× dual-channel ZAM controllers</div></div>
-      <div class="spec-row"><div class="spec-row-key">ZAM Controllers (higher SKU)</div><div class="spec-row-val">3× controllers (2× ZAM + 1× DDR6/LPDDR6X dual-channel)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Max ZAM Capacity</div><div class="spec-row-val">32 GB FOveros ZAM + ECC</div></div>
-      <div class="spec-row"><div class="spec-row-key">ZAM Bandwidth</div><div class="spec-row-val">2–3 TB/s per controller · 5–6 TB/s effective (2× dual-channel controllers)</div></div>
-      <div class="spec-row"><div class="spec-row-key">ZAM Latency</div><div class="spec-row-val">Higher than DDR; mitigated by Kache Kore™ 4 GB bLLC + photonic substrate proximity</div></div>
-      <div class="spec-row"><div class="spec-row-key">Secondary Memory (Higher SKUs)</div><div class="spec-row-val">DDR6 / LPDDR6X <span class="note">· 3rd dual-channel controller; Core Ultra 500 and Xeon 500</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Max DDR6 Capacity</div><div class="spec-row-val">Up to 32 GB DDR6</div></div>
+      <div class="spec-row"><div class="spec-row-key">Primary Memory Type</div><div class="spec-row-val">DDR6 / LPDDR6X <span class="note">· Core i family uses DDR6-only memory path (no ZAM)</span></div></div>
+      <div class="spec-row"><div class="spec-row-key">Integrated ZAM</div><div class="spec-row-val">None <span class="note">· no FOveros-mounted ZAM devices on Core i SKUs</span></div></div>
+      <div class="spec-row"><div class="spec-row-key">ZAM Controllers</div><div class="spec-row-val">None</div></div>
+      <div class="spec-row"><div class="spec-row-key">Max DDR6 Capacity</div><div class="spec-row-val">256 GB DDR6</div></div>
       <div class="spec-row"><div class="spec-row-key">DDR6 Speed</div><div class="spec-row-val">DDR6-9600+ / LPDDR6X-10400</div></div>
-      <div class="spec-row"><div class="spec-row-key">Max Total Memory</div><div class="spec-row-val">Up to 64 GB unified (32 GB ZAM + 32 GB DDR6)</div></div>
-      <div class="spec-row"><div class="spec-row-key">Memory Architecture</div><div class="spec-row-val">APU Unified Memory — CPU, GPU, NPU, all tiles share ZAM + DDR6</div></div>
-      <div class="spec-row"><div class="spec-row-key">Intel DirectStorage 2.0</div><div class="spec-row-val">DDR6 staging → ZAM active runtime → bLLC hot data <span class="note">· in-house vertical integration</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">ECC Memory</div><div class="spec-row-val">Yes <span class="note">· Xeon 500 class; inline ECC correction on ZAM + DDR6</span></div></div>
-      <div class="spec-row"><div class="spec-row-key">Kache Kore™ bLLC</div><div class="spec-row-val">4 GB L4 cache <span class="note">· cache-latency effective DRAM for hot APU working sets</span></div></div>
+      <div class="spec-row"><div class="spec-row-key">Max Total Memory</div><div class="spec-row-val">Up to 256 GB DDR6</div></div>
+      <div class="spec-row"><div class="spec-row-key">Memory Architecture</div><div class="spec-row-val">DDR6-only system memory fabric for CPU, GPU, and NPU workloads</div></div>
+      <div class="spec-row"><div class="spec-row-key">Intel DirectStorage 2.0</div><div class="spec-row-val">NVMe staging → DDR6 runtime buffers → cache residency optimization</div></div>
+      <div class="spec-row"><div class="spec-row-key">ECC Memory</div><div class="spec-row-val">Platform dependent <span class="note">· DDR6 ECC only; no ZAM ECC domain</span></div></div>
     </div>
   </div>
 
@@ -243,7 +238,7 @@
 </div>
 
 </div></div>
-<div class="spec-footer">Intel, the Intel logo, Core, Core Ultra, Xeon, Arc, Thunderbolt, Killer, vPro, QuickSync, Thread Director, PowerVia, Foveros, and Turbo Boost are trademarks of Intel Corporation or its subsidiaries.<br>Specifications subject to change. Performance numbers represent theoretical maximums under ideal conditions.<br>Core™ i5 557T · Eventide Generation · Intel Corporation 2028 · All rights reserved.</div>
+<div class="spec-footer">Intel, the Intel logo, Core, Core Ultra, Xeon, Arc, Thunderbolt, Killer, vPro, QuickSync, Thread Director, PowerVia, Foveros, and Turbo Boost are trademarks of Intel Corporation or its subsidiaries.<br>Specifications subject to change. Performance numbers represent theoretical maximums under ideal conditions.<br>Core™ <span class="core-i-lower">i5</span> 557T · Eventide Generation · Intel Corporation 2028 · All rights reserved.</div>
 <script>function toggleSection(id){const b=document.getElementById('body-'+id);const i=document.getElementById('icon-'+id);if(!b||!i)return;const o=b.classList.contains('open');b.classList.toggle('open',!o);i.classList.toggle('open',!o);i.textContent=o?'▼':'▲';}</script>
 </body>
 </html>
