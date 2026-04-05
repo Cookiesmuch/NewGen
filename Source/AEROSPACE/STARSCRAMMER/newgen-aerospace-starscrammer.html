@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NewGen Aerospace — STARSCRAMMER™</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --ink:        #0a0b0e;
+    --ink2:       #1c1e26;
+    --ink3:       #2e3040;
+    --fog:        #7a7f94;
+    --rule:       rgba(255,255,255,0.07);
+    --rule2:      rgba(255,255,255,0.12);
+    --accent:     #e8583c;
+    --accent2:    #f2a623;
+    --cold:       #4190d9;
+    --cold2:      #8eb9f0;
+    --plasma:     #9d6fdb;
+    --bg:         #0a0b0e;
+    --card:       #12141a;
+    --card2:      #181b24;
+    --serif: 'Syne', sans-serif;
+    --mono: 'Space Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--serif);
+    background: var(--bg);
+    color: #e8e9ef;
+    overflow-x: hidden;
+    line-height: 1.65;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    position: relative;
+    overflow: hidden;
+    padding: 0 6vw;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 40%, rgba(232,88,60,0.13) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 70% at 20% 80%, rgba(65,144,217,0.10) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 40% at 85% 15%, rgba(157,111,219,0.07) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+  .hero-grid::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, var(--bg) 100%);
+  }
+  .nav {
+    position: relative; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 2.2rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav-logo {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--fog);
+  }
+  .nav-logo span { color: #e8e9ef; }
+  .nav-tag {
+    font-family: var(--mono); font-size: 0.65rem;
+    color: var(--fog); letter-spacing: 0.12em;
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    align-self: center;
+    padding: 4rem 0 6rem;
+    max-width: 780px;
+  }
+  .hero-eyebrow {
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.3em;
+    color: var(--accent); text-transform: uppercase;
+    display: flex; align-items: center; gap: 12px; margin-bottom: 2rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block; width: 32px; height: 1px;
+    background: var(--accent); opacity: 0.7;
+  }
+  h1 {
+    font-size: clamp(3.6rem, 8vw, 7.2rem);
+    font-weight: 800; line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: #e8e9ef;
+  }
+  h1 .sub { display: block; color: var(--fog); font-weight: 400; font-size: 0.45em; letter-spacing: 0.02em; margin-top: 0.3em; }
+  .hero-desc {
+    margin-top: 2.4rem;
+    font-size: 1.05rem; color: #a0a3b2;
+    max-width: 560px; line-height: 1.75;
+  }
+  .hero-stats {
+    display: flex; gap: 3rem; margin-top: 3.5rem;
+    padding-top: 2rem; border-top: 1px solid var(--rule);
+    flex-wrap: wrap;
+  }
+  .stat-item { display: flex; flex-direction: column; gap: 0.2rem; }
+  .stat-num {
+    font-size: 2rem; font-weight: 700; line-height: 1;
+    color: #e8e9ef;
+  }
+  .stat-num .unit { font-size: 1rem; color: var(--accent2); margin-left: 2px; }
+  .stat-label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em; color: var(--fog); text-transform: uppercase; }
+  .hero-scroll {
+    position: relative; z-index: 2;
+    padding: 2rem 0; border-top: 1px solid var(--rule);
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--mono); font-size: 0.6rem;
+    letter-spacing: 0.2em; color: var(--fog); text-transform: uppercase;
+  }
+  .hero-scroll::after {
+    content: '';
+    display: block; flex: 1; height: 1px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.1), transparent);
+  }
+  .scroll-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); animation: pulse-dot 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+
+  /* ── SECTIONS ── */
+  section { padding: 8rem 6vw; }
+  .section-label {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.28em;
+    color: var(--fog); text-transform: uppercase;
+    display: flex; align-items: center; gap: 10px; margin-bottom: 3rem;
+  }
+  .section-label::before {
+    content: ''; display: block; width: 24px; height: 1px; background: var(--fog); opacity: 0.5;
+  }
+  h2 {
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    font-weight: 700; line-height: 1.1;
+    letter-spacing: -0.02em; color: #e8e9ef;
+    margin-bottom: 1.5rem;
+  }
+  h2 em { font-style: normal; color: var(--accent); }
+  h3 { font-size: 1.1rem; font-weight: 700; color: #e8e9ef; margin-bottom: 0.6rem; }
+  p { color: #9093ac; line-height: 1.8; }
+
+  /* ── ENGINE SCHEMATIC INLINE ── */
+  .schematic-section {
+    background: var(--card);
+    border-top: 1px solid var(--rule2); border-bottom: 1px solid var(--rule2);
+  }
+  .schematic-wrap {
+    position: relative;
+    background: var(--card2);
+    border: 1px solid var(--rule2);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 3rem;
+  }
+  .schematic-label-bar {
+    display: flex; gap: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .zone-label {
+    flex: 1; padding: 0.7rem 1.2rem;
+    font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+    border-right: 1px solid var(--rule);
+  }
+  .zone-label:last-child { border-right: none; }
+  .zone-label .zone-title { color: #e8e9ef; display: block; margin-bottom: 2px; }
+  .zone-label .zone-sub { color: var(--fog); }
+  .zone-tf .zone-title { color: var(--cold2); }
+  .zone-th .zone-title { color: var(--accent2); }
+  .zone-sc .zone-title { color: var(--accent); }
+  .engine-canal {
+    position: relative;
+    height: 160px;
+    margin: 2rem 1.5rem;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .canal-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg,
+      rgba(65,144,217,0.06) 0%,
+      rgba(65,144,217,0.03) 30%,
+      rgba(242,166,35,0.04) 45%,
+      rgba(232,88,60,0.09) 65%,
+      rgba(232,88,60,0.2) 100%);
+  }
+  .section-divider-v {
+    position: absolute; top: 0; bottom: 0; width: 1px;
+    background: rgba(255,255,255,0.06);
+  }
+  /* Folded blade indicators */
+  .blade { position: absolute; background: rgba(65,144,217,0.5); border-radius: 2px; }
+  .blade.folded { background: rgba(159,225,203,0.5); }
+  /* VC tube */
+  .vc-tube {
+    position: absolute; height: 6px; border-radius: 3px;
+    background: linear-gradient(90deg, rgba(242,166,35,0.8), rgba(232,88,60,0.6));
+    left: 30%; right: 5%;
+  }
+  .vc-tube.top { top: 4px; }
+  .vc-tube.bot { bottom: 4px; }
+  /* MHD arcs */
+  .mhd-arc {
+    position: absolute; width: 24px;
+    border: 1px solid rgba(157,111,219,0.4);
+    border-radius: 0 0 50% 50%;
+    border-top: none;
+    transform-origin: top center;
+  }
+  /* Flow arrow */
+  .flow-main {
+    position: absolute; top: 50%; left: 62%;
+    transform: translateY(-50%);
+    width: 32%; height: 2px;
+    background: linear-gradient(90deg, rgba(232,88,60,0.0), rgba(232,88,60,0.8));
+  }
+  .flow-main::after {
+    content: '';
+    position: absolute; right: -6px; top: -4px;
+    border: 5px solid transparent;
+    border-left: 8px solid var(--accent);
+  }
+  /* Plasma zone glow */
+  .plasma-glow {
+    position: absolute; border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,88,60,0.35) 0%, transparent 70%);
+  }
+  .schematic-footer {
+    padding: 0.8rem 1.5rem;
+    border-top: 1px solid var(--rule);
+    display: flex; gap: 2rem; flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 6px;
+    font-family: var(--mono); font-size: 0.58rem; color: var(--fog); letter-spacing: 0.08em;
+  }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+  /* ── ZONE DETAIL CARDS ── */
+  .zone-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5px;
+    background: var(--rule);
+    border: 1px solid var(--rule2);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 3rem;
+  }
+  .zone-card {
+    background: var(--card);
+    padding: 2.5rem 2rem;
+    display: flex; flex-direction: column; gap: 1rem;
+    transition: background 0.2s;
+  }
+  .zone-card:hover { background: var(--card2); }
+  .zone-num {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em; color: var(--fog);
+  }
+  .zone-card-title {
+    font-size: 1.25rem; font-weight: 700; color: #e8e9ef; line-height: 1.2;
+  }
+  .zone-card p { font-size: 0.88rem; color: #7a7f94; line-height: 1.75; }
+  .zone-card-tag {
+    display: inline-block; margin-top: auto;
+    font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.18em;
+    text-transform: uppercase; padding: 4px 10px;
+    border-radius: 2px;
+  }
+  .tag-cold { background: rgba(65,144,217,0.12); color: var(--cold2); }
+  .tag-warm { background: rgba(242,166,35,0.1); color: var(--accent2); }
+  .tag-hot  { background: rgba(232,88,60,0.12); color: var(--accent); }
+  .tag-plasma { background: rgba(157,111,219,0.12); color: var(--plasma); }
+
+  /* ── THERMODYNAMIC LOOP ── */
+  .thermo-section { background: var(--card); border-top: 1px solid var(--rule); }
+  .thermo-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: start;
+    margin-top: 3rem;
+  }
+  @media (max-width: 780px) { .thermo-grid { grid-template-columns: 1fr; } }
+  .thermo-loop {
+    display: flex; flex-direction: column; gap: 0;
+    position: relative;
+  }
+  .loop-step {
+    display: flex; gap: 1.5rem; align-items: flex-start;
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+  .loop-step:last-child { border-bottom: none; }
+  .loop-icon {
+    width: 36px; height: 36px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 0.65rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .loop-icon.hot  { background: rgba(232,88,60,0.15); color: var(--accent); }
+  .loop-icon.warm { background: rgba(242,166,35,0.12); color: var(--accent2); }
+  .loop-icon.cold { background: rgba(65,144,217,0.12); color: var(--cold2); }
+  .loop-icon.fuel { background: rgba(157,111,219,0.1); color: var(--plasma); }
+  .loop-text h4 { font-size: 0.88rem; font-weight: 700; color: #e8e9ef; margin-bottom: 4px; }
+  .loop-text p { font-size: 0.8rem; color: #7a7f94; line-height: 1.65; }
+  .thermo-callout {
+    background: var(--card2);
+    border: 1px solid var(--rule2);
+    border-radius: 8px;
+    padding: 2rem;
+  }
+  .callout-title {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--accent2);
+    margin-bottom: 1.2rem;
+  }
+  .callout-body { font-size: 0.88rem; line-height: 1.8; color: #7a8099; }
+  .callout-body strong { color: #e8e9ef; font-weight: 700; }
+  .note-block {
+    margin-top: 1.5rem; padding: 1rem 1.2rem;
+    border-left: 2px solid var(--accent);
+    background: rgba(232,88,60,0.04);
+    border-radius: 0 4px 4px 0;
+    font-size: 0.8rem; color: #7a8099; font-style: italic;
+  }
+
+  /* ── MHD SECTION ── */
+  .mhd-section { border-top: 1px solid var(--rule); }
+  .mhd-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5px; background: var(--rule);
+    border: 1px solid var(--rule2); border-radius: 12px;
+    overflow: hidden; margin-top: 3rem;
+  }
+  @media (max-width: 860px) { .mhd-grid { grid-template-columns: 1fr; } }
+  .mhd-card {
+    background: var(--card);
+    padding: 2rem;
+    transition: background 0.2s;
+  }
+  .mhd-card:hover { background: var(--card2); }
+  .mhd-icon {
+    font-family: var(--mono); font-size: 1.4rem; font-weight: 700;
+    color: var(--plasma); margin-bottom: 1rem; line-height: 1;
+  }
+  .mhd-card h3 { font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .mhd-card p { font-size: 0.8rem; color: #7a7f94; line-height: 1.7; }
+
+  /* ── THREE-MODULE ASSEMBLY ── */
+  .assembly-section { background: var(--card); border-top: 1px solid var(--rule); }
+  .assembly-diagram {
+    margin-top: 3rem;
+    background: var(--card2);
+    border: 1px solid var(--rule2);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .module-row {
+    display: flex;
+  }
+  .module-block {
+    flex: 1;
+    padding: 2.5rem 2rem;
+    border-right: 1px solid var(--rule);
+    text-align: center;
+    position: relative;
+  }
+  .module-block:last-child { border-right: none; }
+  .module-number {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em;
+    color: var(--fog); margin-bottom: 0.8rem;
+  }
+  .module-name {
+    font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em;
+    margin-bottom: 0.8rem;
+  }
+  .module-name.body-c { color: #e8e9ef; }
+  .module-name.eng-c  { color: var(--accent); }
+  .module-name.wing-c { color: var(--cold2); }
+  .module-block p { font-size: 0.8rem; color: #7a7f94; line-height: 1.7; }
+  .connector-arrow {
+    position: absolute; right: -1px; top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    background: var(--card2);
+    padding: 6px;
+  }
+  .conn-symbol {
+    font-family: var(--mono); font-size: 0.7rem;
+    color: var(--accent2);
+  }
+  .assembly-note {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono); font-size: 0.62rem;
+    color: var(--fog); letter-spacing: 0.08em;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .assembly-note::before {
+    content: 'MRO';
+    background: rgba(242,166,35,0.12); color: var(--accent2);
+    padding: 3px 8px; border-radius: 2px; font-weight: 700;
+    letter-spacing: 0.15em; font-size: 0.58rem;
+  }
+  @media (max-width: 660px) {
+    .module-row { flex-direction: column; }
+    .module-block { border-right: none; border-bottom: 1px solid var(--rule); }
+  }
+
+  /* ── SPECS TABLE ── */
+  .specs-section { border-top: 1px solid var(--rule); }
+  .specs-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 3rem; margin-top: 3rem;
+  }
+  @media (max-width: 720px) { .specs-grid { grid-template-columns: 1fr; } }
+  .spec-group h3 { font-size: 0.7rem; font-family: var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--fog); margin-bottom: 1rem; }
+  .spec-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 0.85rem;
+  }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-key { color: #7a7f94; }
+  .spec-val { color: #e8e9ef; font-family: var(--mono); font-size: 0.78rem; }
+  .spec-val.accent { color: var(--accent); }
+  .spec-val.cold { color: var(--cold2); }
+
+  /* ── COMPANIES STRIP ── */
+  .company-strip {
+    border-top: 1px solid var(--rule2);
+    padding: 2.5rem 6vw;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  }
+  .company-strip-label {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--fog);
+  }
+  .company-logos {
+    display: flex; gap: 2rem; flex-wrap: wrap; align-items: center;
+  }
+  .company-name-tag {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.3); text-transform: uppercase;
+    transition: color 0.2s; cursor: default;
+  }
+  .company-name-tag:hover { color: rgba(255,255,255,0.7); }
+  .company-name-tag.highlight { color: var(--accent2); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 3rem 6vw;
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 2rem; align-items: center;
+  }
+
+  .footer-brand { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; color: var(--fog); margin-bottom: 0.4rem; }
+  .footer-brand span { color: var(--accent); }
+  .footer-copy { font-family: var(--mono); font-size: 0.6rem; color: rgba(255,255,255,0.2); letter-spacing: 0.1em; }
+  .footer-right { font-family: var(--mono); font-size: 0.6rem; color: rgba(255,255,255,0.2); text-align: right; letter-spacing: 0.1em; line-height: 1.8; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeup {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-content > * {
+    animation: fadeup 0.8s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .hero-eyebrow  { animation-delay: 0.05s; }
+  h1             { animation-delay: 0.15s; }
+  .hero-desc     { animation-delay: 0.25s; }
+  .hero-stats    { animation-delay: 0.35s; }
+</style>
+</head>
+<body>
+
+<!-- ───── HERO ───── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <nav class="nav">
+    <div class="nav-logo">NEW<span>GEN</span> AEROSPACE</div>
+    <div class="nav-tag">PROPULSION SYSTEMS · CLASSIFIED PREVIEW</div>
+  </nav>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Next-generation propulsion architecture</div>
+    <h1>
+      STAR<br>SCRAMMER™
+      <span class="sub">Dual-Mode Ring-Turbofan / Plasma-MHD Ram–Scramjet Propulsion Module</span>
+    </h1>
+    <p class="hero-desc">
+      The world's first integrated supersonic commercial propulsion module. A single engine unit spanning the full side fuselage — transitioning seamlessly from subsonic turbofan operation to plasma-assisted Mach 4+ scramjet acceleration, with a closed thermodynamic loop that converts exhaust waste heat into preheated cryogenic fuel.
+    </p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num">4<span class="unit">+</span></span>
+        <span class="stat-label">Mach Ceiling</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">0</span>
+        <span class="stat-label">Moving parts, scramjet zone</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">LH₂</span>
+        <span class="stat-label">Fuel / thermal sink</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">3</span>
+        <span class="stat-label">Modular assemblies</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-dot"></div>
+    Engine architecture · Scroll to explore
+  </div>
+</section>
+
+<!-- ───── SCHEMATIC ───── -->
+<section class="schematic-section">
+  <div class="section-label">Engine module — longitudinal cross-section</div>
+  <h2>Three zones. <em>One module.</em></h2>
+  <p>Each Starscrammer unit is a self-contained nacelle long enough to span the aircraft's full side fuselage. The body–engine–wing sandwich assembly allows each module to be manufactured, installed, and replaced independently — without disturbing airframe structure.</p>
+
+  <div class="schematic-wrap">
+    <div class="schematic-label-bar">
+      <div class="zone-label zone-tf">
+        <span class="zone-title">Zone 1</span>
+        <span class="zone-sub">Ring-mount turbofan</span>
+      </div>
+      <div class="zone-label zone-th">
+        <span class="zone-title">Zone 2</span>
+        <span class="zone-sub">Phase-change thermal corridor</span>
+      </div>
+      <div class="zone-label zone-sc">
+        <span class="zone-title">Zone 3</span>
+        <span class="zone-sub">MHD ram–scramjet combustor</span>
+      </div>
+    </div>
+
+    <div class="engine-canal" id="canal">
+      <div class="canal-bg"></div>
+
+      <!-- Dividers -->
+      <div class="section-divider-v" style="left:33%"></div>
+      <div class="section-divider-v" style="left:58%"></div>
+
+      <!-- Zone 1: ring-mount blades (deployed) -->
+      <div class="blade" style="left:3%;top:0;width:6px;height:28px;opacity:0.7"></div>
+      <div class="blade" style="left:3%;bottom:0;width:6px;height:28px;opacity:0.7"></div>
+      <div class="blade" style="left:7%;top:0;width:6px;height:38px;opacity:0.7"></div>
+      <div class="blade" style="left:7%;bottom:0;width:6px;height:38px;opacity:0.7"></div>
+      <div class="blade" style="left:11%;top:0;width:6px;height:44px;opacity:0.7"></div>
+      <div class="blade" style="left:11%;bottom:0;width:6px;height:44px;opacity:0.7"></div>
+      <!-- folded blades -->
+      <div class="blade folded" style="left:16%;top:0;width:4px;height:52px;opacity:0.8"></div>
+      <div class="blade folded" style="left:16%;bottom:0;width:4px;height:52px;opacity:0.8"></div>
+      <div class="blade folded" style="left:20%;top:0;width:4px;height:56px;opacity:0.7"></div>
+      <div class="blade folded" style="left:20%;bottom:0;width:4px;height:56px;opacity:0.7"></div>
+      <div class="blade folded" style="left:24%;top:0;width:3px;height:60px;opacity:0.6"></div>
+      <div class="blade folded" style="left:24%;bottom:0;width:3px;height:60px;opacity:0.6"></div>
+      <div class="blade folded" style="left:28%;top:0;width:3px;height:62px;opacity:0.55"></div>
+      <div class="blade folded" style="left:28%;bottom:0;width:3px;height:62px;opacity:0.55"></div>
+
+      <!-- Zone 2: VC tubes -->
+      <div class="vc-tube top"></div>
+      <div class="vc-tube bot"></div>
+
+      <!-- Zone 3: MHD arcs (top wall) -->
+      <div class="mhd-arc" style="left:60%;top:0;height:18px;width:18px;border-color:rgba(157,111,219,0.5)"></div>
+      <div class="mhd-arc" style="left:67%;top:0;height:22px;width:22px;border-color:rgba(157,111,219,0.4)"></div>
+      <div class="mhd-arc" style="left:74%;top:0;height:18px;width:18px;border-color:rgba(157,111,219,0.5)"></div>
+      <div class="mhd-arc" style="left:81%;top:0;height:22px;width:22px;border-color:rgba(157,111,219,0.4)"></div>
+      <div class="mhd-arc" style="left:88%;top:0;height:18px;width:18px;border-color:rgba(157,111,219,0.5)"></div>
+
+      <!-- Plasma glow -->
+      <div class="plasma-glow" style="left:57%;top:50%;transform:translate(-50%,-50%);width:60px;height:100px;opacity:0.7"></div>
+
+      <!-- Flow arrow -->
+      <div class="flow-main"></div>
+    </div>
+
+    <div class="schematic-footer">
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(65,144,217,0.6)"></div>Turbofan blades (deployed)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(159,225,203,0.7)"></div>Turbofan blades (folded/flush)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(242,166,35,0.8)"></div>Phase-change vapor chambers</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(157,111,219,0.6)"></div>MHD electromagnetic coils</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(232,88,60,0.7)"></div>Plasma actuator / combustor</div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── ZONE CARDS ───── -->
+<section>
+  <div class="section-label">Propulsion zones — detail</div>
+  <h2>Engineering the <em>impossible flow.</em></h2>
+
+  <div class="zone-cards">
+    <div class="zone-card">
+      <div class="zone-num">Zone 01 ·</div>
+      <div class="zone-card-title">Ring-Mount Turbofan</div>
+      <p>Fan stages and compressor rings ride the canal walls on magnetic bearings — no central shaft, no flow obstruction. At subsonic speeds, rings spin and blades bite air normally. At transonic transition, variable-pitch actuators feather all blades flush against the wall in under 200ms. Residual blade curvature acts as passive flow-straightening vanes — conditioning inlet air before it reaches the ramjet section.</p>
+      <span class="zone-card-tag tag-cold">Subsonic / transonic</span>
+    </div>
+    <div class="zone-card">
+      <div class="zone-num">Zone 02 ·</div>
+      <div class="zone-card-title">Phase-Change Thermal Corridor</div>
+      <p>High-temperature vapor chambers embedded along the canal walls absorb heat from the rear combustion zone. Insulated central channel prevents premature evaporation mid-run. Condensate vapor travels forward, shedding heat through the folded turbofan blade fins — a perfect heat-exchange surface at sonic airspeeds. Residual condensate empties directly into LH₂ fuel lines, completing the thermodynamic loop.</p>
+      <span class="zone-card-tag tag-warm">Thermal management</span>
+    </div>
+    <div class="zone-card">
+      <div class="zone-num">Zone 03 ·</div>
+      <div class="zone-card-title">MHD Ram–Scramjet Combustor</div>
+      <p>Zero moving parts. Magnetohydrodynamic inlet conditioning replaces all variable-geometry hardware — electromagnetic fields shape, decelerate, and ionize incoming supersonic air with no mechanical actuation. Plasma-assisted combustion stabilizes the flame front at speeds where physical flameholders would disintegrate. AJAX-class MHD energy bypass extracts energy from inlet air, slows it to combustible velocities, then reinjects that energy electromagnetically post-combustion.</p>
+      <span class="zone-card-tag tag-hot">Mach 0.8 → 4+</span>
+    </div>
+  </div>
+</section>
+
+<!-- ───── THERMODYNAMIC LOOP ───── -->
+<section class="thermo-section">
+  <div class="section-label">Closed thermodynamic loop</div>
+  <h2>Waste heat becomes <em>fuel energy.</em></h2>
+  <p>The Starscrammer operates a fully self-contained thermal cycle — waste heat from the scramjet combustor is captured, transported, exchanged, and converted into preheated propellant. Nothing is vented or wasted.</p>
+
+  <div class="thermo-grid">
+    <div class="thermo-loop">
+      <div class="loop-step">
+        <div class="loop-icon hot">HTR</div>
+        <div class="loop-text">
+          <h4>Heat absorption</h4>
+          <p>Heat-synced wall panels along the rear combustion zone absorb extreme thermal output. Panels connect to embedded high-temperature vapor chambers (sodium or water/ammonia formulation).</p>
+        </div>
+      </div>
+      <div class="loop-step">
+        <div class="loop-icon warm">VCP</div>
+        <div class="loop-text">
+          <h4>Vapor transport (insulated)</h4>
+          <p>Evaporated working fluid travels forward through insulated central tubes. Insulation prevents the canal's ambient heat from interfering with mid-run fluid state — only the endpoints exchange heat.</p>
+        </div>
+      </div>
+      <div class="loop-step">
+        <div class="loop-icon cold">FIN</div>
+        <div class="loop-text">
+          <h4>Condensation via folded blades</h4>
+          <p>Uncapped tube ends discharge into the folded turbofan stage zone, where blade fin surfaces and sonic airspeed fully condense all remaining vapor back to liquid. No capping needed — sonic flow completes condensation.</p>
+        </div>
+      </div>
+      <div class="loop-step">
+        <div class="loop-icon fuel">LH₂</div>
+        <div class="loop-text">
+          <h4>Fuel preheating + wick return</h4>
+          <p>Condensate that hasn't fully turned liquid is routed into LH₂ fuel lines — simultaneously cooling residual vapor and preheating cryogenic propellant for improved scramjet combustion efficiency. Liquid wicks back to the rear, repeating the cycle.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="thermo-callout">
+        <div class="callout-title">Fuel: Liquid Hydrogen (LH₂)</div>
+        <div class="callout-body">
+          <strong>Why LH₂?</strong> Highest specific impulse of any chemical fuel. Excellent cryogenic heat sink. Ignites readily under plasma excitation. The cryogenic temperature of the fuel (–253°C) creates a massive heat capacity differential relative to the scramjet exhaust — making the fuel line a perfect thermal dump for VC condensate.<br><br>
+          <strong>Nitrogen as alternative?</strong> Liquid nitrogen can be used as a non-reactive thermal buffer if full combustion power isn't needed — functioning as a pure coolant with no propulsion contribution.<br><br>
+          <strong>The closed loop payoff:</strong> Preheating LH₂ from cryogenic to near-ambient temperatures before combustion reduces ignition delay and increases specific impulse by 8–14% in theoretical models — effectively recovering scramjet efficiency from waste heat that conventional engines simply radiate away.
+        </div>
+        <div class="note-block">
+          "The blades fold to open the path. And in opening the path, they become the radiator. Thermodynamics doesn't waste anything if you refuse to let it."
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── MHD / PLASMA ───── -->
+<section class="mhd-section">
+  <div class="section-label">Magnetohydrodynamics + Plasma actuation</div>
+  <h2>No geometry. <em>Pure field.</em></h2>
+  <p>Traditional variable-geometry inlets (intake ramps, mixed-compression spikes) are mechanically fragile at extreme Mach numbers and add enormous weight. The Starscrammer replaces every moving aerodynamic surface in the scramjet zone with electromagnetic equivalents.</p>
+
+  <div class="mhd-grid">
+    <div class="mhd-card">
+      <div class="mhd-icon">B⃗</div>
+      <h3>MHD inlet shaping</h3>
+      <p>At Mach 2+, incoming air partially ionizes. Magnetic fields reshape the effective inlet geometry without physical ramps — slowing, compressing, and aligning airflow for clean combustion entry. No actuators. No failure modes.</p>
+    </div>
+    <div class="mhd-card">
+      <div class="mhd-icon">ψ</div>
+      <h3>Plasma combustion stabilization</h3>
+      <p>Dielectric barrier discharge (DBD) plasma actuators maintain combustion stability at speeds where conventional flameholders would fail catastrophically. Plasma torch arrays provide continuous ignition authority across the full operating Mach range.</p>
+    </div>
+    <div class="mhd-card">
+      <div class="mhd-icon">∮E</div>
+      <h3>AJAX energy bypass</h3>
+      <p>Inspired by Russian AJAX research: MHD energy extraction at the inlet slows air to combustible velocities, storing that energy electromagnetically. Post-combustion, the stored energy is reinjected — recovering kinetic energy that would otherwise be wasted as drag.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ───── THREE-MODULE ASSEMBLY ───── -->
+<section class="assembly-section">
+  <div class="section-label">Modular airframe integration</div>
+  <h2>Body. Engine. Wing. <em>Three parts. One aircraft.</em></h2>
+  <p>The Starscrammer is designed for the modular airframe architecture of NewGen's B2-silhouette platform. Each element manufactures, ships, and certifies independently. On the flight line, the engine slides into the side fuselage slot — the wing clamps over, its structural spars threading through keyed channels in the engine frame, locking all three into a single load path.</p>
+
+  <div class="assembly-diagram">
+    <div class="module-row">
+      <div class="module-block">
+        <div class="module-number">MODULE 01 ·</div>
+        <div class="module-name body-c">BODY</div>
+        <p>Fuselage structure, pressurized cabin, avionics bay. Side fuselage slot pre-formed to Starscrammer module profile. Compatible attachment geometry is fixed — any engine generation fits any body generation.</p>
+      </div>
+      <div class="module-block">
+        <div class="module-number">MODULE 02 ·</div>
+        <div class="module-name eng-c">ENGINE</div>
+        <p>Complete Starscrammer propulsion module. Slides into side fuselage slot along longitudinal axis. Self-contained thermal loop, fuel system, and MHD power bus. Full module swap in under 4 hours on-line.</p>
+      </div>
+      <div class="module-block">
+        <div class="module-number">MODULE 03 ·</div>
+        <div class="module-name wing-c">WING</div>
+        <p>Blended wing–body panel. Attachment spars thread through keyed spar channels in the engine module frame, simultaneously locking the engine in place and completing the primary load path for all three modules.</p>
+      </div>
+    </div>
+    <div class="assembly-note">
+      Wing spar channels double as the primary engine retention structure — the wing cannot be attached without securing the engine. Structural integration is mechanically enforced.
+    </div>
+  </div>
+</section>
+
+<!-- ───── SPECS ───── -->
+<section class="specs-section">
+  <div class="section-label">Technical specification</div>
+  <h2>By the <em>numbers.</em></h2>
+
+  <div class="specs-grid">
+    <div class="spec-group">
+      <h3>Propulsion</h3>
+      <div class="spec-row">
+        <span class="spec-key">Operating modes</span>
+        <span class="spec-val">Turbofan · Ramjet · Scramjet</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">Mach ceiling</span>
+        <span class="spec-val accent">Mach 4+ (scramjet mode)</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">Mode transition</span>
+        <span class="spec-val">Mach 0.8 → 2.5 → 4+ (automatic)</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">Turbofan blade actuation</span>
+        <span class="spec-val">&lt;200ms feather to flush</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">Inlet geometry control</span>
+        <span class="spec-val cold">Fully electromagnetic (MHD)</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">Combustion stabilization</span>
+        <span class="spec-val">DBD plasma actuators</span>
+      </div>
+    </div>
+    <div class="spec-group">
+      <h3>Thermal &amp; Fuel</h3>
+      <div class="spec-row">
+        <span class="spec-key">Primary fuel</span>
+        <span class="spec-val cold">Liquid hydrogen (LH₂)</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">Thermal management</span>
+        <span class="spec-val">Phase-change vapor chambers</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">VC working fluid</span>
+        <span class="spec-val">Na or H₂O/NH₃ (high-temp)</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">Fuel preheat gain</span>
+        <span class="spec-val accent">+8–14% specific impulse (est.)</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">Module footprint</span>
+        <span class="spec-val">Full side fuselage span</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">On-wing swap time</span>
+        <span class="spec-val">&lt;4 hr (target)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── PARTNER STRIP ───── -->
+<div class="company-strip">
+  <div class="company-strip-label">NewGen Conglomerate · partner technology</div>
+  <div class="company-logos">
+    <span class="company-name-tag highlight">NewGen Aerospace</span>
+    <span class="company-name-tag">Intel</span>
+    <span class="company-name-tag">Sony</span>
+    <span class="company-name-tag">Ford</span>
+    <span class="company-name-tag">Asus</span>
+    <span class="company-name-tag">Bang &amp; Olufsen</span>
+    <span class="company-name-tag">Alloy OS</span>
+  </div>
+</div>
+
+<!-- ───── FOOTER ───── -->
+<footer>
+  <div class="footer-left">
+    <div class="footer-brand">NEW<span>GEN</span> · Aerospace Division</div>
+    <div class="footer-copy">STARSCRAMMER™ is a proprietary NewGen Aerospace propulsion concept. All specifications indicative.<br>For the Greater Glory. · © NewGen Conglomerate</div>
+  </div>
+  <div class="footer-right">
+    CONFIDENTIAL PREVIEW<br>
+    DOCUMENT CLASS: PROPULSION<br>
+    REF: NGA-SCR-001-A
+  </div>
+</footer>
+
+</body>
+</html>
