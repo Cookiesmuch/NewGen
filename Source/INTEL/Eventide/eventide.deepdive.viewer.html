@@ -231,18 +231,22 @@ async function loadDeepdive() {
   const container = document.getElementById('deepdive-container');
   const appBasePath = detectAppBasePath(window.location.pathname);
 
-  // Get the pathname from parent window if we're in an iframe, otherwise from current window
-  let currentPath;
+  // Prefer explicit route from query string for direct/raw deep-dive links.
+  const urlParams = new URLSearchParams(window.location.search);
+  let currentPath = urlParams.get('path');
+
+  // Fall back to parent/current pathname when no explicit route is provided.
   try {
-    if (window.parent && window.parent !== window && window.parent.location) {
-      currentPath = window.parent.location.pathname;
-    } else {
-      currentPath = window.location.pathname;
+    if (!currentPath) {
+      if (window.parent && window.parent !== window && window.parent.location) {
+        currentPath = window.parent.location.pathname;
+      } else {
+        currentPath = window.location.pathname;
+      }
     }
   } catch (e) {
-    // Cross-origin access blocked, fall back to URL parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    currentPath = urlParams.get('path') || window.location.pathname;
+    // Cross-origin access blocked, fall back to current window path.
+    currentPath = currentPath || window.location.pathname;
   }
   currentPath = stripBasePath(currentPath, appBasePath);
 
