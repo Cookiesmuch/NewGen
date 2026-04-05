@@ -251,6 +251,12 @@ Customize appearance by modifying these CSS variables in `index.html`:
 ### ASUS
 - Ceralumenesium Sapphire Material
 
+### Bang & Olufsen
+- wH105 (`/BangOlufsen/wH105`)
+
+### Aerospace division
+- STARSCRAMMER™ (`/Aerospace/STARSCRAMMER`)
+
 ## Future Enhancements
 
 The modular structure allows for easy implementation of:
