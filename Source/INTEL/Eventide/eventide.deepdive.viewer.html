@@ -233,7 +233,7 @@ async function loadDeepdive() {
 
   // Prefer explicit route from query string for direct/raw deep-dive links.
   const urlParams = new URLSearchParams(window.location.search);
-  let currentPath = urlParams.get('path');
+  let currentPath = urlParams.get('path') || null;
 
   // Fall back to parent/current pathname when no explicit route is provided.
   try {
