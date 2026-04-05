@@ -7,3 +7,9 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Jekyll build artifacts
+_site/
+.jekyll-cache/
+.jekyll-metadata
+Gemfile.lock
