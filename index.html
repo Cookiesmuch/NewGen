@@ -818,6 +818,9 @@
         .filter(Boolean)
     );
     for (const routePath of routePaths) {
+      if (routePath === '/') {
+        continue;
+      }
       const markerIndex = normalizedPath.indexOf(routePath);
       if (markerIndex > 0) {
         return normalizedPath.slice(0, markerIndex);
