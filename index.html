@@ -832,11 +832,6 @@
     const segments = normalizedPath.split('/').filter(Boolean);
     if (!segments.length) return '';
     if (routeRoots.has(segments[0])) return '';
-    const host = window.location.hostname.toLowerCase();
-    const isGitHubPagesHost = host.endsWith('.github.io');
-    if (isGitHubPagesHost) {
-      return `/${segments[0]}`;
-    }
     return '';
   }
 

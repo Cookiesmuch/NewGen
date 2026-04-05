@@ -1,9 +1,8 @@
 title: NewGen
 description: Dynamic showcase loader for premium Intel Eventide, Sony, and ASUS brochure experiences.
 
-# GitHub Pages project site URL.
-# actions/configure-pages will override baseurl automatically during CI builds.
-baseurl: "/NewGen"
+# Serve from root base path.
+baseurl: ""
 url: "https://cookiesmuch.github.io"
 
 # Exclude development and server files from the static build output.

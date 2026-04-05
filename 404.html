@@ -195,17 +195,13 @@
 
       function detectBasePath(pathname) {
         const normalized = pathname.replace(/\/+$/, '') || '/';
-        const host = window.location.hostname.toLowerCase();
-        const isGitHubPagesHost = host.endsWith('.github.io');
         const html404Suffix = '/404.html';
         if (normalized === html404Suffix) {
           return '';
         }
         if (normalized.endsWith(html404Suffix)) {
           const candidateBase = normalized.slice(0, -html404Suffix.length);
-          const baseSegments = candidateBase.split('/').filter(Boolean);
-          if (!baseSegments.length) return '';
-          if (baseSegments.length === 1 && !isGitHubPagesHost) return '';
+          if (!candidateBase || candidateBase === '/') return '';
           return candidateBase;
         }
 
@@ -215,9 +211,6 @@
         }
         if (knownRouteRoots.has(segments[0])) {
           return '';
-        }
-        if (isGitHubPagesHost) {
-          return `/${segments[0]}`;
         }
         return '';
       }
