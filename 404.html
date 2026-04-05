@@ -20,6 +20,13 @@
       background: #ffffff;
       color: #171717;
       padding: 24px;
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    body.route-ready {
+      visibility: visible;
+      opacity: 1;
     }
 
     .card {
@@ -234,6 +241,8 @@
         window.location.replace(`${withBasePath('/', basePath)}?${redirectParams.toString()}`);
         return;
       }
+
+      document.body.classList.add('route-ready');
 
       const paramPath = url.searchParams.get('ng_404_route');
       const paramSearch = url.searchParams.get('ng_404_search');
