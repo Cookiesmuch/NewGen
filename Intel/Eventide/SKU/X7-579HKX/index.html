@@ -8,19 +8,33 @@
   <style>
     :root { color-scheme: dark; }
     body { margin: 0; font-family: Inter, Segoe UI, Arial, sans-serif; background: #0b0b0f; color: #f5f5f5; }
-    header { padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,.12); }
-    h1 { margin: 0 0 8px; font-size: 20px; }
+    main { padding: 16px 20px; }
+    h1 { margin: 0 0 10px; font-size: 20px; }
     p { margin: 0 0 8px; color: #cfd4dc; }
     a { color: #8cc8ff; word-break: break-all; }
-    iframe { display: block; border: 0; width: 100%; height: calc(100vh - 122px); background: #111; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 16px; }
+    .btn { display: inline-block; padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,.24); text-decoration: none; }
+    iframe { display: block; border: 0; width: 100%; height: calc(100vh - 220px); min-height: 420px; background: #111; }
   </style>
+  <script>
+    (function () {
+      const target = "/?ng_route=%2FIntel%2FEventide%2FSKU%2FX7-579HKX";
+      if (window.location.pathname !== '/' || window.location.search.indexOf('ng_route=') === -1) {
+        window.location.replace(target);
+      }
+    })();
+  </script>
 </head>
 <body>
-  <header>
+  <main>
     <h1>/Intel/Eventide/SKU/X7-579HKX</h1>
-    <p>Static crawler-access page for this NewGen route.</p>
-    <p>Raw content URL: <a href="/Source/INTEL/Eventide/eventide.deepdive.viewer.html?path=%2FIntel%2FEventide%2FSKU%2FX7-579HKX">/Source/INTEL/Eventide/eventide.deepdive.viewer.html?path=%2FIntel%2FEventide%2FSKU%2FX7-579HKX</a></p>
-  </header>
-  <iframe src="/Source/INTEL/Eventide/eventide.deepdive.viewer.html?path=%2FIntel%2FEventide%2FSKU%2FX7-579HKX" title="/Intel/Eventide/SKU/X7-579HKX content" loading="eager"></iframe>
+    <p>This direct route loads the NewGen shell with topbar/sidebar in browsers.</p>
+    <p>For crawlers and no-JS clients, links and embedded content are provided below.</p>
+    <div class="actions">
+      <a class="btn" href="/?ng_route=%2FIntel%2FEventide%2FSKU%2FX7-579HKX">Open full shell route</a>
+      <a class="btn" href="/Source/INTEL/Eventide/eventide.deepdive.viewer.html?path=%2FIntel%2FEventide%2FSKU%2FX7-579HKX">Open raw content source</a>
+    </div>
+    <iframe src="/Source/INTEL/Eventide/eventide.deepdive.viewer.html?path=%2FIntel%2FEventide%2FSKU%2FX7-579HKX" title="/Intel/Eventide/SKU/X7-579HKX content" loading="eager"></iframe>
+  </main>
 </body>
 </html>
