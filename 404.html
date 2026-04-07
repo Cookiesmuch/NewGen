@@ -273,14 +273,6 @@
         window.location.href = withBasePath('/', basePath);
       });
 
-      const fallbackJokes = [
-        'Ah yes, the most advanced product of NewGen yet: "{PATH}".',
-        'Breaking news: "{PATH}" was promoted to a stealth prototype and then immediately misplaced.',
-        'Our engineers looked for "{PATH}" and found only empty coffee cups and confusion.',
-        'Legend says "{PATH}" exists in a parallel build where deadlines are optional.',
-        'We ran "{PATH}" through QA and QA ran away.'
-      ];
-
       const randomLimitCache = new Map();
 
       function randomInt(maxExclusive) {
@@ -365,15 +357,14 @@
       }
 
       function normalizeTemplates(templates) {
-        const validTemplates = templates
+        return templates
           .map((line) => line.trim())
           .filter((line) => line.length > 0);
-        return validTemplates.length > 0 ? validTemplates : fallbackJokes;
       }
 
       function renderNextJoke() {
-        const sourceTemplates = activeJokeTemplates.length > 0 ? activeJokeTemplates : fallbackJokes;
-        const template = pickRandom(sourceTemplates);
+        if (activeJokeTemplates.length === 0) return;
+        const template = pickRandom(activeJokeTemplates);
         jokeEl.textContent = template.replace(/\{PATH\}/g, routeLabel);
       }
 
@@ -457,9 +448,7 @@
           startJokeCountdown();
         })
         .catch(() => {
-          activeJokeTemplates = fallbackJokes;
-          renderNextJoke();
-          startJokeCountdown();
+          jokeEl.textContent = '';
         });
     })();
   </script>
