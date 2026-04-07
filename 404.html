@@ -436,7 +436,7 @@
         resumeJokeCountdown();
       });
 
-      const jokesUrl = withBasePath('/Server/404%20jokes.txt', basePath);
+      const jokesUrl = withBasePath('/Server/404-jokes.txt', basePath);
       fetch(jokesUrl, { cache: 'no-store' })
         .then((response) => {
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
