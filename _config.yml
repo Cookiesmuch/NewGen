@@ -11,7 +11,7 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - node_modules/
-  - Server/
+  - Server/server.js
   - scripts/
   - package.json
   - package-lock.json
