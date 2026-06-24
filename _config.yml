@@ -1,23 +1,38 @@
-title: NewGen
-description: Dynamic showcase loader for premium Intel Eventide, Sony, and ASUS brochure experiences.
+theme: jekyll-theme-cayman
+plugins:
+  - jekyll-default-layouts
 
-# GitHub Pages project site URL.
-# actions/configure-pages will override baseurl automatically during CI builds.
-baseurl: "/NewGen"
-url: "https://cookiesmuch.github.io"
+# Proper index document resolution for directory-based navigation
+index_file: index.html
 
-# Exclude development and server files from the static build output.
+# Set the base URL if needed for GitHub Pages subdirectory deployment
+# baseurl: /NewGen
+
+# Enable safe mode (important for GitHub Pages)
+safe: true
+
+# Include dotfiles in the build
+include:
+  - .well-known
+
+# Exclude unnecessary files
 exclude:
+  - vendor
+  - .git
+  - .gitignore
   - Gemfile
   - Gemfile.lock
-  - node_modules/
-  - Server/server.js
-  - scripts/
+  - README.md
+  - node_modules
   - package.json
-  - package-lock.json
+  - .DS_Store
   - start-newgen.bat
   - start-newgen.ps1
   - NewGen.code-workspace
-  - README.md
   - NAVIGATION.md
-  - test-navigation.html
+
+# Markdown processor
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
