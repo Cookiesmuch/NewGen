@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SONY CRT-VR — Vector-Scanned Miniature CRT for VR</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Noto+Serif+Display:ital,wght@0,200;0,300;1,200;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #04050a;
+    --bg2: #080b14;
+    --surface: #0d1220;
+    --border: #1a2240;
+    --border-bright: #2a3860;
+    --text: #d8e4ff;
+    --text-dim: #6a7fa8;
+    --text-dimmer: #3a4a6a;
+    --accent: #00ff99;      /* phosphor green — the hero */
+    --accent2: #00b4ff;
+    --accent3: #ffe135;
+    --accent4: #ff3c6e;
+    --accent5: #cc44ff;
+    --accent6: #ff7a00;
+    --sony-red: #ff2d20;
+    --white: #f0f4ff;
+    --glow: rgba(0,255,153,0.12);
+    --glow2: rgba(0,180,255,0.10);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* ── SCANLINE — for once, thematically load-bearing ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(0,0,0,0.05) 2px,
+      rgba(0,0,0,0.05) 4px
+    );
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    padding: 120px 60px 80px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    background: var(--bg2);
+  }
+
+  .header-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 40%, rgba(0,255,153,0.13) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 20% 80%, rgba(255,45,32,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 30% at 85% 10%, rgba(0,180,255,0.10) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .header-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  .header-vignette {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 120% 120% at 50% 50%, transparent 40%, var(--bg) 100%);
+    pointer-events: none;
+  }
+
+  .header-content { position: relative; z-index: 2; }
+
+  .sony-mark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--sony-red);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .sony-mark::before {
+    content: '';
+    display: block;
+    width: 28px; height: 1px;
+    background: var(--sony-red);
+  }
+
+  .main-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 10vw, 120px);
+    letter-spacing: 0.02em;
+    line-height: 0.9;
+    color: var(--white);
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  .main-title span {
+    color: var(--accent);
+    position: relative;
+  }
+
+  .main-title span::after {
+    content: 'CRT-VR';
+    position: absolute;
+    left: 2px; top: 2px;
+    color: var(--sony-red);
+    opacity: 0.3;
+    z-index: -1;
+  }
+
+  .subtitle {
+    font-family: 'Noto Serif Display', serif;
+    font-style: italic;
+    font-weight: 200;
+    font-size: 18px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+  }
+
+  .keynote-line {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.35em;
+    color: var(--text-dimmer);
+    margin-bottom: 48px;
+  }
+  .keynote-line em { font-style: normal; color: var(--accent); }
+
+  .header-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .tag {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    padding: 4px 12px;
+    border: 1px solid var(--border-bright);
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .tag.hot { border-color: var(--accent); color: var(--accent); }
+  .tag.warn { border-color: var(--accent3); color: var(--accent3); }
+
+  /* ── SECTIONS ── */
+  .section {
+    padding: 100px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px),
+      radial-gradient(ellipse 80% 60% at 70% 40%, rgba(0,255,153,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 20% 80%, rgba(255,45,32,0.05) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 30% at 85% 10%, rgba(0,180,255,0.05) 0%, transparent 50%);
+    background-size: 50px 50px, 50px 50px, 100% 100%, 100% 100%, 100% 100%;
+    pointer-events: none;
+  }
+
+  .section > * { position: relative; z-index: 1; }
+
+  .section:nth-of-type(even) { background: var(--bg2); }
+
+  .section::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+    z-index: 10;
+  }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--text-dimmer);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 200px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    margin-bottom: 16px;
+    line-height: 1;
+  }
+
+  .section-intro {
+    font-size: 12px;
+    color: var(--text-dim);
+    max-width: 760px;
+    margin-bottom: 48px;
+    line-height: 1.8;
+  }
+  .section-intro strong { color: var(--text); font-weight: 500; }
+
+  /* ── TRL BANNER ── */
+  .trl-banner {
+    border: 1px solid var(--accent3);
+    background: rgba(255,225,53,0.04);
+    padding: 20px 28px;
+    margin: 0 60px;
+    margin-top: -1px;
+    display: flex;
+    gap: 20px;
+    align-items: baseline;
+    position: relative;
+    z-index: 5;
+  }
+  .trl-banner .trl-chip {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.1em;
+    color: var(--accent3);
+    white-space: nowrap;
+  }
+  .trl-banner p {
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+  .trl-banner p strong { color: var(--accent3); font-weight: 500; }
+
+  /* ── SPEC GRID ── */
+  .spec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+
+  .spec-cell {
+    background: var(--bg);
+    padding: 24px 28px;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .spec-cell:hover { background: var(--surface); }
+  .spec-cell.wide { grid-column: span 2; }
+  .spec-cell.full { grid-column: 1 / -1; }
+
+  .spec-key {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: var(--text-dimmer);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .spec-val {
+    font-size: 22px;
+    color: var(--white);
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .spec-val.big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 0.02em;
+  }
+
+  .spec-val .unit {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-weight: 300;
+    margin-left: 4px;
+  }
+
+  .spec-val .accent  { color: var(--accent);  }
+  .spec-val .accent2 { color: var(--accent2); }
+  .spec-val .accent3 { color: var(--accent3); }
+  .spec-val .accent4 { color: var(--accent4); }
+  .spec-val .accent5 { color: var(--accent5); }
+
+  .spec-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  /* ── BEAM PATH (layer-stack lineage) ── */
+  .layer-stack {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 48px;
+  }
+
+  .layer {
+    display: grid;
+    grid-template-columns: 200px 1fr 120px;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+
+  .layer:last-child { border-bottom: none; }
+  .layer:hover { background: var(--surface); }
+
+  .layer-num {
+    padding: 20px 24px;
+    border-right: 1px solid var(--border);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--text-dimmer);
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .layer-num .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .layer-info { padding: 20px 28px; }
+
+  .layer-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .layer-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .layer-badge {
+    padding: 20px 24px;
+    border-left: 1px solid var(--border);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--text-dimmer);
+    text-align: right;
+    text-transform: uppercase;
+  }
+
+  /* ── TUBE CROSS-SECTION SVG ── */
+  .tube-figure {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    padding: 32px;
+    margin-bottom: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .tube-figure svg { display: block; width: 100%; height: auto; }
+  .tube-caption {
+    font-size: 9px;
+    color: var(--text-dimmer);
+    letter-spacing: 0.1em;
+    margin-top: 16px;
+    text-transform: uppercase;
+  }
+
+  @keyframes beamDash {
+    to { stroke-dashoffset: -60; }
+  }
+  .beam-line {
+    stroke-dasharray: 4 8;
+    animation: beamDash 1.2s linear infinite;
+  }
+  @keyframes phosphorPing {
+    0%   { opacity: 0.9; r: 3; }
+    100% { opacity: 0;   r: 11; }
+  }
+
+  /* ── GUN SHOOTOUT (candidate selector) ── */
+  .gun-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 1px;
+  }
+  .gun-tab {
+    background: var(--bg);
+    border: none;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 18px 12px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    position: relative;
+  }
+  .gun-tab .tier {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+    color: var(--text-dimmer);
+  }
+  .gun-tab:hover { background: var(--surface); color: var(--text); }
+  .gun-tab.active { background: var(--surface); color: var(--white); }
+  .gun-tab.active::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 2px;
+    background: currentColor;
+  }
+  .gun-tab.active .tier { color: inherit; }
+
+  .gun-panel {
+    border: 1px solid var(--border);
+    border-top: none;
+    background: var(--bg);
+    padding: 36px 32px;
+    display: none;
+    margin-bottom: 48px;
+  }
+  .gun-panel.active { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+
+  .gun-verdict {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+  }
+  .gun-body { font-size: 11px; color: var(--text-dim); line-height: 1.8; }
+  .gun-body strong { color: var(--text); font-weight: 500; }
+
+  .gun-meter { margin-top: 6px; }
+  .gun-meter .b-row { grid-template-columns: 150px 1fr 46px; margin-bottom: 14px; }
+
+  /* ── CHART / BAR ROWS ── */
+  .b-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 100px;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .b-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .b-bar-track {
+    height: 8px;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .b-bar {
+    height: 100%;
+    transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .b-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  /* ── DEMO PANELS (interactive canvas blocks) ── */
+  .demo-block {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    margin-bottom: 48px;
+  }
+  .demo-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .demo-head .demo-title {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-dimmer);
+  }
+  .demo-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+  .demo-btn {
+    background: transparent;
+    border: 1px solid var(--border-bright);
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 7px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .demo-btn:hover { color: var(--white); border-color: var(--white); }
+  .demo-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(0,255,153,0.06); }
+  .demo-btn.active.raster { border-color: var(--accent4); color: var(--accent4); background: rgba(255,60,110,0.06); }
+
+  .demo-body { display: grid; grid-template-columns: 1fr 320px; }
+  .demo-body.stack { grid-template-columns: 1fr; }
+  .demo-canvas-wrap { position: relative; border-right: 1px solid var(--border); }
+  .demo-body.stack .demo-canvas-wrap { border-right: none; }
+  .demo-canvas-wrap canvas { display: block; width: 100%; height: auto; cursor: crosshair; }
+  .demo-canvas-hint {
+    position: absolute;
+    bottom: 10px; left: 12px;
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    color: var(--text-dimmer);
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  .demo-readout { padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+
+  .readout-item .r-key {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dimmer);
+    margin-bottom: 2px;
+  }
+  .readout-item .r-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 34px;
+    letter-spacing: 0.03em;
+    color: var(--white);
+    line-height: 1;
+  }
+  .readout-item .r-val .unit { font-size: 14px; color: var(--text-dim); margin-left: 3px; }
+  .readout-item .r-note { font-size: 9px; color: var(--text-dimmer); margin-top: 4px; line-height: 1.5; }
+
+  /* ── SLIDERS ── */
+  .slider-row { display: flex; align-items: center; gap: 14px; }
+  .slider-row label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    flex: 1;
+    min-width: 120px;
+    height: 2px;
+    background: var(--border-bright);
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px; height: 14px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(0,255,153,0.6);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 14px; height: 14px;
+    background: var(--accent);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(0,255,153,0.6);
+  }
+
+  /* ── GAMUT / COLOR SECTION ── */
+  .gamut-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+  .gamut-pane { background: var(--bg); padding: 32px; }
+  .gamut-pane svg { display: block; width: 100%; height: auto; }
+
+  .color-system {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+
+  .color-swatch {
+    padding: 28px 16px 24px;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    transition: background 0.2s;
+    cursor: default;
+  }
+  .color-swatch:hover { background: var(--surface); }
+
+  .swatch-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    box-shadow: 0 0 20px currentColor;
+  }
+
+  .swatch-name {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .swatch-layer {
+    font-size: 9px;
+    color: var(--text-dimmer);
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+
+  /* ── CONTROLLER / LIST BLOCKS ── */
+  .controller-block {
+    border: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    margin-bottom: 48px;
+  }
+
+  .ctrl-cell { background: var(--bg); padding: 32px; }
+
+  .ctrl-title {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-dimmer);
+    margin-bottom: 16px;
+  }
+
+  .ctrl-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ctrl-list li {
+    font-size: 12px;
+    color: var(--text-dim);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+
+  .ctrl-list li::before {
+    content: '—';
+    color: var(--text-dimmer);
+    flex-shrink: 0;
+  }
+
+  .ctrl-list li strong { color: var(--text); font-weight: 500; }
+
+  /* ── COMPARISON TABLE ── */
+  .compare-scroller { overflow-x: auto; border: 1px solid var(--border); margin-bottom: 24px; }
+  table.compare {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 980px;
+    font-size: 11px;
+  }
+  table.compare th, table.compare td {
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    text-align: left;
+    vertical-align: top;
+    line-height: 1.55;
+  }
+  table.compare thead th {
+    background: var(--surface);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    font-weight: 400;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  table.compare thead th.crt { color: var(--accent); }
+  table.compare tbody th {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dimmer);
+    font-weight: 400;
+    background: var(--bg2);
+    white-space: nowrap;
+  }
+  table.compare td { color: var(--text-dim); background: var(--bg); }
+  table.compare td.crt { background: rgba(0,255,153,0.035); color: var(--text); }
+  table.compare tbody tr:hover td { background: var(--surface); }
+  table.compare tbody tr:hover td.crt { background: rgba(0,255,153,0.07); }
+  table.compare .win  { color: var(--accent);  }
+  table.compare .win2 { color: var(--accent2); }
+  table.compare .loss { color: var(--accent4); }
+
+  /* ── OPEN QUESTIONS ACCORDION ── */
+  .oq-tier {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.1em;
+    margin: 36px 0 12px;
+  }
+  .oq-tier:first-of-type { margin-top: 0; }
+  .oq-tier .oq-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-dimmer);
+    margin-left: 14px;
+  }
+
+  details.oq {
+    border: 1px solid var(--border);
+    border-bottom: none;
+    background: var(--bg);
+  }
+  details.oq:last-of-type { border-bottom: 1px solid var(--border); }
+  details.oq summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 18px 24px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    transition: background 0.2s;
+  }
+  details.oq summary::-webkit-details-marker { display: none; }
+  details.oq summary:hover { background: var(--surface); }
+  details.oq summary .oq-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--text-dimmer);
+    min-width: 30px;
+  }
+  details.oq summary .oq-title {
+    font-size: 12px;
+    color: var(--text);
+    letter-spacing: 0.04em;
+    flex: 1;
+  }
+  details.oq summary .oq-caret {
+    font-size: 10px;
+    color: var(--text-dimmer);
+    transition: transform 0.2s;
+  }
+  details.oq[open] summary .oq-caret { transform: rotate(90deg); }
+  details.oq .oq-body {
+    padding: 0 24px 22px 70px;
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+  details.oq .oq-body strong { color: var(--text); font-weight: 500; }
+
+  /* ── FOVEATION TIER TABLE ── */
+  .tier-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+  .tier-card { background: var(--bg); padding: 32px 28px; transition: background 0.2s; }
+  .tier-card:hover { background: var(--surface); }
+  .tier-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+  .tier-tag {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border: 1px solid;
+    display: inline-block;
+    margin-bottom: 18px;
+  }
+  .tier-body { font-size: 11px; color: var(--text-dim); line-height: 1.7; }
+  .tier-body strong { color: var(--text); font-weight: 500; }
+
+  /* ── FOOTNOTES / FOOTER ── */
+  .footnote-block { padding: 40px 60px; border-top: 1px solid var(--border); }
+
+  .footnote {
+    font-size: 10px;
+    color: var(--text-dimmer);
+    line-height: 1.8;
+    margin-bottom: 6px;
+  }
+  .footnote strong { color: var(--text-dim); }
+
+  .footer {
+    background: var(--bg2);
+    padding: 60px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    color: rgba(255,255,255,0.12);
+    letter-spacing: 0.05em;
+  }
+  .footer-brand span { color: var(--sony-red); opacity: 0.6; }
+
+  .footer-links { display: flex; flex-direction: column; gap: 12px; }
+
+  .footer-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--white); }
+
+  .footer-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--text-dimmer);
+    line-height: 2;
+    text-align: right;
+  }
+
+  .footer-bar {
+    background: var(--bg);
+    padding: 16px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border-bright);
+  }
+
+  .footer-bar-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--text-dimmer);
+    text-transform: uppercase;
+  }
+
+  .anno {
+    font-size: 9px;
+    color: var(--text-dimmer);
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+  }
+
+  .hl  { color: var(--accent);  }
+  .hl2 { color: var(--accent2); }
+  .hl3 { color: var(--accent3); }
+  .hl4 { color: var(--accent4); }
+  .hl5 { color: var(--accent5); }
+  .hl6 { color: var(--accent6); }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border-bright), transparent);
+    margin: 40px 0;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .section { animation: fadeUp 0.5s ease both; }
+
+  @keyframes glowPulse {
+    0%, 100% { text-shadow: 0 0 20px rgba(0,255,153,0.3); }
+    50%       { text-shadow: 0 0 40px rgba(0,255,153,0.7), 0 0 80px rgba(0,255,153,0.2); }
+  }
+  .glow-pulse { animation: glowPulse 3s ease-in-out infinite; }
+
+  @media (max-width: 900px) {
+    header, .section { padding-left: 24px; padding-right: 24px; }
+    .trl-banner { margin: 0 24px; flex-direction: column; gap: 8px; }
+    .demo-body { grid-template-columns: 1fr; }
+    .demo-canvas-wrap { border-right: none; border-bottom: 1px solid var(--border); }
+    .gamut-wrap, .controller-block, .gun-panel.active { grid-template-columns: 1fr; }
+    .tier-cards { grid-template-columns: 1fr; }
+    .gun-tabs { grid-template-columns: repeat(2, 1fr); }
+    .layer { grid-template-columns: 90px 1fr; }
+    .layer-badge { display: none; }
+    .footer { grid-template-columns: 1fr; }
+    .footer-note { text-align: left; }
+    .spec-cell.wide { grid-column: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="header-bg"></div>
+  <div class="header-grid"></div>
+  <div class="header-vignette"></div>
+  <div class="header-content">
+    <div class="sony-mark">SONY SEMICONDUCTOR SOLUTIONS — ADVANCED DISPLAY RESEARCH</div>
+    <div class="main-title">SONY <span class="glow-pulse">CRT-VR</span></div>
+    <div class="subtitle">Vector-Scanned Miniature Cathode Ray Tube for Virtual Reality</div>
+    <div class="keynote-line">CATHODE. RAY. TUBE. — <em>THE IMMERSIVE PHOTON-NATIVE DISPLAY</em></div>
+    <div class="header-tags">
+      <span class="tag warn">TRL 2–3 — THEORY / DESIGN STUDY</span>
+      <span class="tag hot">SCHOTTKY ZrO/W GUN</span>
+      <span class="tag hot">ELECTROSTATIC MEMS DEFLECTION</span>
+      <span class="tag hot">VECTOR / RANDOM-ACCESS SCAN</span>
+      <span class="tag">QD NANOPHOSPHOR · ALD-PASSIVATED</span>
+      <span class="tag">RGBMCY 6-PRIMARY</span>
+      <span class="tag">WAFER-LEVEL VACUUM + NEG</span>
+      <span class="tag hot">HARDWARE-NATIVE FOVEATION</span>
+      <span class="tag">CURVED-NATIVE FACEPLATE</span>
+      <span class="tag">2–5″ PER EYE</span>
+    </div>
+  </div>
+</header>
+
+<!-- ══ TRL DISCLOSURE ══ -->
+<div class="trl-banner">
+  <div class="trl-chip">TRL 2–3</div>
+  <p><strong>Pure design/theory. Nothing has been built.</strong> Every performance figure on this page is a physics-grounded estimate extrapolated from real component technologies — electron microscopy columns, e-beam lithography, MEMS wafer packaging, cathodoluminescent quantum-dot research — never a measured spec. Theory-vs-measured status is flagged wherever numbers appear. The core thesis: CRT was abandoned for <strong>market-fit</strong> reasons (bulk, weight, power at living-room scale), not physics reasons — and VR is the one application space that punishes none of CRT's weaknesses while rewarding its exact strengths.</p>
+</div>
+
+
+<!-- ══ SECTION 1 — HEADLINE ══ -->
+<div class="section" id="s-overview">
+  <div class="section-label">01 — System Overview</div>
+  <div class="section-title">HEADLINE DESIGN TARGETS</div>
+  <div class="section-intro">A single steered electron-gun assembly per eye — six converged beams, one per primary, Trinitron converged-assembly lineage — writing onto a litho-patterned quantum-dot phosphor faceplate inside a wafer-level-sealed vacuum envelope. No fixed pixel grid. No per-pixel drive electronics. The beam goes where the eye is looking.</div>
+
+  <div class="spec-grid">
+    <div class="spec-cell">
+      <div class="spec-key">Screen Size (Per Eye)</div>
+      <div class="spec-val big accent">2–5<span class="unit">inch diagonal</span></div>
+      <div class="spec-sub">The scale that erases every historical CRT weakness: deflection angle, vacuum load, envelope depth all collapse.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Addressing Model</div>
+      <div class="spec-val big accent2">VECTOR</div>
+      <div class="spec-sub">Random-access beam steering (oscilloscope / Vectrex lineage). No fixed raster, no fixed grid — resolution is a scan plan, not a panel property.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Refresh Ceiling</div>
+      <div class="spec-val big">MULTI-<span class="accent">kHz</span></div>
+      <div class="spec-sub">Electrostatic deflection is capacitive — multi-MHz drivable. Ceiling moves to phosphor decay + gun modulation. Theory estimate.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Pixel Density Target</div>
+      <div class="spec-val big accent3">1000–2500+<span class="unit">PPI-class</span></div>
+      <div class="spec-sub">Set by phosphor-stripe lithography + color bleed — NOT by gun or yoke, which carry 100–1000× precision margin.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Brightness (At Phosphor)</div>
+      <div class="spec-val big accent4">500–1000+<span class="unit">nits</span></div>
+      <div class="spec-sub">Phosphor-saturation-limited, not gun-limited: Schottky current headroom is 2–4 orders of magnitude beyond need. Theory estimate.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Response</div>
+      <div class="spec-val big">SUB-<span class="accent">ms</span></div>
+      <div class="spec-sub">Impulse-driven phosphor flash + decay. Zero sample-and-hold persistence blur — CRT's most legitimate historical advantage, fully retained.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Color System</div>
+      <div class="spec-val">RGBMCY 6-Primary</div>
+      <div class="spec-sub">Dual-triangle hex close-packed cluster (RYG / MBC rows). Gamut hexagon structurally exceeds any RGB triangle. Zero PPI cost.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Blacks</div>
+      <div class="spec-val">True Zero</div>
+      <div class="spec-sub">Unstruck phosphor emits nothing. MicroOLED effectively ties here — no overclaim.</div>
+    </div>
+    <div class="spec-cell wide">
+      <div class="spec-key">The Structural Advantage</div>
+      <div class="spec-val">Hardware-Native Foveated Rendering</div>
+      <div class="spec-sub">Fixed-grid panels must refresh every physical pixel every frame — foveation there saves GPU only. A vector-scanned beam physically skips low-priority space: peripheral resolution savings convert <span class="hl">directly into central refresh-rate gains</span>. No flat panel can replicate this at the hardware level.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ SECTION 2 — TUBE ARCHITECTURE ══ -->
+<div class="section" id="s-tube">
+  <div class="section-label">02 — Physical Architecture</div>
+  <div class="section-title">TUBE CROSS-SECTION — GUN TO EYE</div>
+  <div class="section-intro">Every subsystem below is a locked-in architecture decision. Component lineages are real and shipping in other industries; the combination is not.</div>
+
+  <div class="tube-figure">
+    <svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" aria-label="CRT-VR tube cross-section diagram">
+      <defs>
+        <linearGradient id="envGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#0d1220"/>
+          <stop offset="100%" stop-color="#080b14"/>
+        </linearGradient>
+        <radialGradient id="phosGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="rgba(0,255,153,0.5)"/>
+          <stop offset="100%" stop-color="rgba(0,255,153,0)"/>
+        </radialGradient>
+      </defs>
+
+      <!-- vacuum envelope -->
+      <path d="M 60 130 L 240 130 L 620 40 Q 700 40 706 90 L 712 250 Q 700 300 620 300 L 240 210 L 60 210 Z"
+            fill="url(#envGrad)" stroke="#2a3860" stroke-width="1.5"/>
+      <text x="430" y="290" font-family="DM Mono, monospace" font-size="9" letter-spacing="2" fill="#3a4a6a">WAFER-LEVEL VACUUM · THIN-FILM NEG GETTER WALLS</text>
+
+      <!-- gun assembly -->
+      <rect x="70" y="150" width="90" height="40" fill="#0d1220" stroke="#2a3860"/>
+      <circle cx="160" cy="170" r="5" fill="#ffe135">
+        <animate attributeName="opacity" values="1;0.5;1" dur="1.6s" repeatCount="indefinite"/>
+      </circle>
+      <text x="70" y="142" font-family="DM Mono, monospace" font-size="9" letter-spacing="1.5" fill="#ffe135">SCHOTTKY ZrO/W GUN ×6</text>
+      <text x="70" y="205" font-family="DM Mono, monospace" font-size="8" letter-spacing="1" fill="#3a4a6a">~1800 K · 6 CONVERGED BEAMS</text>
+
+      <!-- deflection plates -->
+      <rect x="230" y="118" width="110" height="9" fill="#00b4ff" opacity="0.55"/>
+      <rect x="230" y="213" width="110" height="9" fill="#00b4ff" opacity="0.55"/>
+      <text x="230" y="110" font-family="DM Mono, monospace" font-size="9" letter-spacing="1.5" fill="#00b4ff">ELECTROSTATIC MEMS PLATES</text>
+      <text x="230" y="245" font-family="DM Mono, monospace" font-size="8" letter-spacing="1" fill="#3a4a6a">CAPACITIVE · LITHO-FABRICATED · MULTI-kHz+</text>
+
+      <!-- animated beams -->
+      <path class="beam-line" d="M 165 170 L 285 170 L 660 70"  stroke="#00ff99" stroke-width="1.6" fill="none" opacity="0.9"/>
+      <path class="beam-line" d="M 165 170 L 285 170 L 672 170" stroke="#00ff99" stroke-width="1.6" fill="none" opacity="0.6" style="animation-delay:-0.4s"/>
+      <path class="beam-line" d="M 165 170 L 285 170 L 660 268" stroke="#00ff99" stroke-width="1.6" fill="none" opacity="0.9" style="animation-delay:-0.8s"/>
+
+      <!-- curved phosphor faceplate -->
+      <path d="M 655 55 Q 692 170 655 285" stroke="#00ff99" stroke-width="4" fill="none" opacity="0.85"/>
+      <circle cx="660" cy="70" r="7" fill="url(#phosGlow)"/>
+      <circle cx="672" cy="170" r="7" fill="url(#phosGlow)"/>
+      <circle cx="660" cy="268" r="7" fill="url(#phosGlow)"/>
+      <circle cx="660" cy="70" r="3" fill="#00ff99">
+        <animate attributeName="opacity" values="1;0.2;1" dur="1.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="672" cy="170" r="3" fill="#00ff99">
+        <animate attributeName="opacity" values="0.2;1;0.2" dur="1.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="660" cy="268" r="3" fill="#00ff99">
+        <animate attributeName="opacity" values="1;0.2;1" dur="1.2s" begin="0.6s" repeatCount="indefinite"/>
+      </circle>
+      <text x="600" y="30" font-family="DM Mono, monospace" font-size="9" letter-spacing="1.5" fill="#00ff99">QD NANOPHOSPHOR FACEPLATE</text>
+      <text x="600" y="322" font-family="DM Mono, monospace" font-size="8" letter-spacing="1" fill="#3a4a6a">CURVED-NATIVE · CONVEX TOWARD VIEWER</text>
+
+      <!-- relay optics -->
+      <ellipse cx="780" cy="170" rx="12" ry="70" fill="none" stroke="#cc44ff" stroke-width="1.5" opacity="0.8"/>
+      <ellipse cx="812" cy="170" rx="9" ry="55" fill="none" stroke="#cc44ff" stroke-width="1.5" opacity="0.6"/>
+      <text x="748" y="70" font-family="DM Mono, monospace" font-size="9" letter-spacing="1.5" fill="#cc44ff">RELAY LENS ARRAY</text>
+      <text x="748" y="84" font-family="DM Mono, monospace" font-size="8" letter-spacing="1" fill="#3a4a6a">SONY CAMERA-GRADE</text>
+
+      <!-- eye -->
+      <circle cx="872" cy="170" r="16" fill="none" stroke="#6a7fa8" stroke-width="1.5"/>
+      <circle cx="866" cy="170" r="5" fill="#6a7fa8"/>
+      <text x="852" y="212" font-family="DM Mono, monospace" font-size="9" letter-spacing="1.5" fill="#6a7fa8">EYE</text>
+    </svg>
+    <div class="tube-caption">Fig. 01 — Schematic, not to scale. One assembly per eye. Beam paths animated for illustration; real scan order is the vector scheduler's problem (§04).</div>
+  </div>
+
+  <div class="layer-stack">
+    <div class="layer">
+      <div class="layer-num" style="color:#ffe135"><span class="dot" style="background:#ffe135; box-shadow:0 0 8px #ffe135"></span>S1</div>
+      <div class="layer-info">
+        <div class="layer-name">Electron Source — Schottky Field Emission (ZrO/W)</div>
+        <div class="layer-desc">Zirconium-oxide-coated tungsten tip at ~1800 K; extraction field lowers work function via Schottky effect. The standard source in modern SEM/TEM columns. Single steered gun <em>assembly</em> with 6 converged beams — one per primary — explicitly NOT per-subpixel emitter arrays (the 2000s FED manufacturing nightmare, and it defeats the steered-beam architecture). Thermally self-cleaning → stable and long-life; nm-scale coherent virtual source; &lt;1 W heat plausible.</div>
+      </div>
+      <div class="layer-badge">Source</div>
+    </div>
+    <div class="layer">
+      <div class="layer-num" style="color:#00b4ff"><span class="dot" style="background:#00b4ff; box-shadow:0 0 8px #00b4ff"></span>S2</div>
+      <div class="layer-info">
+        <div class="layer-name">Deflection — Electrostatic MEMS Plates</div>
+        <div class="layer-desc">Capacitive flat electrodes, lithographically batch-fabricated — no wound copper yokes. Electrostatic deflection's one historical weakness was voltage cost at wide angles; at 2–5″ screens the required angle collapses, removing it. Beam position = plate voltage = a DAC bit-depth problem. E-beam lithography demonstrates nm-scale electrostatic addressing — 100–1000× margin over subpixel pitch.</div>
+      </div>
+      <div class="layer-badge">Steering</div>
+    </div>
+    <div class="layer">
+      <div class="layer-num" style="color:#3a4a6a"><span class="dot" style="background:#3a4a6a; box-shadow:0 0 8px #3a4a6a"></span>S3</div>
+      <div class="layer-info">
+        <div class="layer-name">Vacuum Envelope — Wafer-Level Sealed + NEG</div>
+        <div class="layer-desc">Anodic / glass-frit bonding of gun-side substrate to phosphor faceplate under vacuum — standard MEMS process (gyros, bolometers). Thin-film non-evaporable getter coatings on internal cavity walls scavenge continuously; no flash-getter mirror. Short throw at this scale → short scatter path → forgiving vacuum spec. Scattering closed as a non-issue at this scale.</div>
+      </div>
+      <div class="layer-badge">Envelope</div>
+    </div>
+    <div class="layer">
+      <div class="layer-num" style="color:#00ff99"><span class="dot" style="background:#00ff99; box-shadow:0 0 8px #00ff99"></span>S4</div>
+      <div class="layer-info">
+        <div class="layer-name">Phosphor Screen — QD Nanophosphor, Litho-Patterned, ALD-Passivated</div>
+        <div class="layer-desc">Quantum-dot-doped phosphors, emission wavelength tuned by dot size (quantum confinement) → narrow peaks, purer primaries than legacy P22-class grains. ALD-deposited atomically-thin oxide shells per grain resist e-beam degradation and raise quantum efficiency. Photolithographic stripe/dot deposition — Sony aperture-grille geometric lineage with zero mechanical wires. The system's real bottlenecks live here: stripe-pitch lithography and beam-scatter color bleed set max PPI.</div>
+      </div>
+      <div class="layer-badge">Emission</div>
+    </div>
+    <div class="layer">
+      <div class="layer-num" style="color:#cc44ff"><span class="dot" style="background:#cc44ff; box-shadow:0 0 8px #cc44ff"></span>S5</div>
+      <div class="layer-info">
+        <div class="layer-name">Optics — Curved-Native Faceplate + Camera-Grade Relay</div>
+        <div class="layer-desc">Faceplate curvature is a physics byproduct (constant beam throw distance), and it lands in the favorable direction: convex toward the viewer for wide-FOV eyepiece field-curvature correction. Relay: small array of Sony camera-grade aspherical multi-coated elements at fixed deterministic distance. Structurally simpler than pancake stacks correcting flat panels — avoids the sweet-spot, ghosting, and brightness-tax problems documented in shipping 2026 headsets.</div>
+      </div>
+      <div class="layer-badge">Optics</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ SECTION 3 — GUN SHOOTOUT ══ -->
+<div class="section" id="s-gun">
+  <div class="section-label">03 — Electron Source Trade Study</div>
+  <div class="section-title">THE GUN SHOOTOUT — FOUR CANDIDATES, ONE SURVIVOR</div>
+  <div class="section-intro">Select a candidate. Decision is final unless reopened; ratings are qualitative engineering-judgment scores from the trade study, not measurements.</div>
+
+  <div class="gun-tabs" role="tablist">
+    <button class="gun-tab active" data-gun="schottky" style="color:#00ff99"><span class="tier">TIER 1 ✓</span>Schottky ZrO/W</button>
+    <button class="gun-tab" data-gun="cold" style="color:#00b4ff"><span class="tier">TIER 2</span>Cold Field Emission</button>
+    <button class="gun-tab" data-gun="photo" style="color:#cc44ff"><span class="tier">TIER 3</span>Photocathode</button>
+    <button class="gun-tab" data-gun="thermionic" style="color:#ff3c6e"><span class="tier">REJECTED</span>Thermionic BaO</button>
+  </div>
+
+  <div class="gun-panel active" data-gun="schottky">
+    <div>
+      <div class="gun-verdict" style="color:#00ff99">CHOSEN — THE SEM/TEM COLUMN SOURCE</div>
+      <div class="gun-body">
+        ZrO/W tip at ~1800 K with strong extraction field. <strong>2–4 orders of magnitude more current density than thermionic</strong>; nm-scale coherent virtual source; <strong>thermally self-cleaning</strong> — adsorbed gas bakes off continuously, so emission is stable for years, not hours. Forgiving vacuum requirement, non-toxic materials, &lt;1 W heat plausible.<br><br>
+        Consequence: the gun is <strong>never the brightness bottleneck</strong> (phosphor saturation is), and spot size carries 3+ orders of magnitude headroom over the ~5–10 µm subpixel pitch needed for 1000–2500+ PPI.
+      </div>
+    </div>
+    <div class="gun-meter">
+      <div class="b-row"><div class="b-label">Current Density</div><div class="b-bar-track"><div class="b-bar" style="width:90%; background:linear-gradient(to right,#004433,#00ff99)"></div></div><div class="b-val" style="color:#00ff99">9</div></div>
+      <div class="b-row"><div class="b-label">Stability / Life</div><div class="b-bar-track"><div class="b-bar" style="width:95%; background:linear-gradient(to right,#004433,#00ff99)"></div></div><div class="b-val" style="color:#00ff99">9.5</div></div>
+      <div class="b-row"><div class="b-label">Vacuum Tolerance</div><div class="b-bar-track"><div class="b-bar" style="width:80%; background:linear-gradient(to right,#004433,#00ff99)"></div></div><div class="b-val" style="color:#00ff99">8</div></div>
+      <div class="b-row"><div class="b-label">Power / Heat</div><div class="b-bar-track"><div class="b-bar" style="width:75%; background:linear-gradient(to right,#004433,#00ff99)"></div></div><div class="b-val" style="color:#00ff99">7.5</div></div>
+      <div class="b-row"><div class="b-label">System Simplicity</div><div class="b-bar-track"><div class="b-bar" style="width:85%; background:linear-gradient(to right,#004433,#00ff99)"></div></div><div class="b-val" style="color:#00ff99">8.5</div></div>
+    </div>
+  </div>
+
+  <div class="gun-panel" data-gun="cold">
+    <div>
+      <div class="gun-verdict" style="color:#00b4ff">TIER 2 — BEST RAW EFFICIENCY, WORST HABITS</div>
+      <div class="gun-body">
+        CNT / Spindt / nanodiamond cold cathodes: best raw efficiency and instant-on. But emission current <strong>drifts as gas molecules adsorb onto the tip</strong> — the classic cold-FE reliability problem — demanding ~10⁻¹⁰ torr and periodic tip flashing.<br><br>
+        Manageable with modern getter technology, but it trades away the one property a consumer display must have: <strong>set-and-forget stability</strong>. Kept on the bench as the fallback if Schottky heater power ever becomes the binding constraint.
+      </div>
+    </div>
+    <div class="gun-meter">
+      <div class="b-row"><div class="b-label">Current Density</div><div class="b-bar-track"><div class="b-bar" style="width:85%; background:linear-gradient(to right,#003a55,#00b4ff)"></div></div><div class="b-val" style="color:#00b4ff">8.5</div></div>
+      <div class="b-row"><div class="b-label">Stability / Life</div><div class="b-bar-track"><div class="b-bar" style="width:40%; background:linear-gradient(to right,#003a55,#00b4ff)"></div></div><div class="b-val" style="color:#00b4ff">4</div></div>
+      <div class="b-row"><div class="b-label">Vacuum Tolerance</div><div class="b-bar-track"><div class="b-bar" style="width:25%; background:linear-gradient(to right,#003a55,#00b4ff)"></div></div><div class="b-val" style="color:#00b4ff">2.5</div></div>
+      <div class="b-row"><div class="b-label">Power / Heat</div><div class="b-bar-track"><div class="b-bar" style="width:95%; background:linear-gradient(to right,#003a55,#00b4ff)"></div></div><div class="b-val" style="color:#00b4ff">9.5</div></div>
+      <div class="b-row"><div class="b-label">System Simplicity</div><div class="b-bar-track"><div class="b-bar" style="width:70%; background:linear-gradient(to right,#003a55,#00b4ff)"></div></div><div class="b-val" style="color:#00b4ff">7</div></div>
+    </div>
+  </div>
+
+  <div class="gun-panel" data-gun="photo">
+    <div>
+      <div class="gun-verdict" style="color:#cc44ff">TIER 3 — SOLVING A BOTTLENECK WE DON'T HAVE</div>
+      <div class="gun-body">
+        Laser-triggered photocathodes are the <strong>fastest, most precise</strong> electron sources in existence — free-electron laser and ultrafast electron diffraction heritage.<br><br>
+        But they add a laser driver and an optical excitation path inside the envelope, for temporal precision the display never needs: gun modulation already carries massive headroom over phosphor decay. <strong>Complexity purchased, nothing gained.</strong>
+      </div>
+    </div>
+    <div class="gun-meter">
+      <div class="b-row"><div class="b-label">Current Density</div><div class="b-bar-track"><div class="b-bar" style="width:70%; background:linear-gradient(to right,#33004d,#cc44ff)"></div></div><div class="b-val" style="color:#cc44ff">7</div></div>
+      <div class="b-row"><div class="b-label">Stability / Life</div><div class="b-bar-track"><div class="b-bar" style="width:60%; background:linear-gradient(to right,#33004d,#cc44ff)"></div></div><div class="b-val" style="color:#cc44ff">6</div></div>
+      <div class="b-row"><div class="b-label">Vacuum Tolerance</div><div class="b-bar-track"><div class="b-bar" style="width:45%; background:linear-gradient(to right,#33004d,#cc44ff)"></div></div><div class="b-val" style="color:#cc44ff">4.5</div></div>
+      <div class="b-row"><div class="b-label">Power / Heat</div><div class="b-bar-track"><div class="b-bar" style="width:55%; background:linear-gradient(to right,#33004d,#cc44ff)"></div></div><div class="b-val" style="color:#cc44ff">5.5</div></div>
+      <div class="b-row"><div class="b-label">System Simplicity</div><div class="b-bar-track"><div class="b-bar" style="width:20%; background:linear-gradient(to right,#33004d,#cc44ff)"></div></div><div class="b-val" style="color:#cc44ff">2</div></div>
+    </div>
+  </div>
+
+  <div class="gun-panel" data-gun="thermionic">
+    <div>
+      <div class="gun-verdict" style="color:#ff3c6e">REJECTED — THE LEGACY CATHODE</div>
+      <div class="gun-body">
+        The barium-oxide cathode that powered every living-room CRT: <strong>~800 °C heater, 5–10 W continuous draw, 30–60 s warm-up</strong>, and toxic barium/strontium oxide chemistry.<br><br>
+        Every one of those properties is disqualifying in a head-mounted device. Rejected without regret — this is precisely the part of CRT heritage the design leaves behind.
+      </div>
+    </div>
+    <div class="gun-meter">
+      <div class="b-row"><div class="b-label">Current Density</div><div class="b-bar-track"><div class="b-bar" style="width:20%; background:linear-gradient(to right,#550010,#ff3c6e)"></div></div><div class="b-val" style="color:#ff3c6e">2</div></div>
+      <div class="b-row"><div class="b-label">Stability / Life</div><div class="b-bar-track"><div class="b-bar" style="width:65%; background:linear-gradient(to right,#550010,#ff3c6e)"></div></div><div class="b-val" style="color:#ff3c6e">6.5</div></div>
+      <div class="b-row"><div class="b-label">Vacuum Tolerance</div><div class="b-bar-track"><div class="b-bar" style="width:75%; background:linear-gradient(to right,#550010,#ff3c6e)"></div></div><div class="b-val" style="color:#ff3c6e">7.5</div></div>
+      <div class="b-row"><div class="b-label">Power / Heat</div><div class="b-bar-track"><div class="b-bar" style="width:10%; background:linear-gradient(to right,#550010,#ff3c6e)"></div></div><div class="b-val" style="color:#ff3c6e">1</div></div>
+      <div class="b-row"><div class="b-label">System Simplicity</div><div class="b-bar-track"><div class="b-bar" style="width:60%; background:linear-gradient(to right,#550010,#ff3c6e)"></div></div><div class="b-val" style="color:#ff3c6e">6</div></div>
+    </div>
+  </div>
+
+  <div class="spec-grid">
+    <div class="spec-cell">
+      <div class="spec-key">Precision Headroom — Spot Size</div>
+      <div class="spec-val big accent">100–1000×</div>
+      <div class="spec-sub">Schottky spot size (sub-nm to low-nm in electron microscopy) vs. the ~5–10 µm subpixel pitch this display needs. The gun is never the resolution bottleneck.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Current Headroom vs. Need</div>
+      <div class="spec-val big accent">10²–10⁴<span class="unit">×</span></div>
+      <div class="spec-sub">Brightness ceiling is set by phosphor saturation, not beam current. Theory extrapolation from SEM/TEM column data.</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-key">Beam Configuration</div>
+      <div class="spec-val">6 Beams · 1 Assembly</div>
+      <div class="spec-sub">Classic Trinitron "single gun" = one assembly, three converged beams, geometric color separation. CRT-VR: same converged-assembly principle at six — "6 guns, 6 dots" — with a litho-patterned grille.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ SECTION 4 — SCANNING MODEL ══ -->
+<div class="section" id="s-scan">
+  <div class="section-label">04 — Addressing Model</div>
+  <div class="section-title">RASTER vs VECTOR — WHY THE BEAM DOESN'T SWEEP</div>
+  <div class="section-intro">A fixed raster wastes beam time sweeping low-priority space at constant density. Vector / random-access steering (oscilloscope, radar, Vectrex lineage) jumps the beam point-to-point and <strong>skips sparse regions entirely</strong> — the enabler of hardware-native foveation (§05). Toggle the modes; the frame-time budget on the right is the whole argument.</div>
+
+  <div class="demo-block">
+    <div class="demo-head">
+      <div class="demo-title">Interactive · Scan Model Simulator</div>
+      <div class="demo-controls">
+        <button class="demo-btn raster" id="btnRaster">Raster Scan</button>
+        <button class="demo-btn active" id="btnVector">Vector Scan</button>
+      </div>
+    </div>
+    <div class="demo-body">
+      <div class="demo-canvas-wrap">
+        <canvas id="scanCanvas" width="720" height="420"></canvas>
+        <div class="demo-canvas-hint">Simulated phosphor persistence · illustration, not a physical model</div>
+      </div>
+      <div class="demo-readout">
+        <div class="readout-item">
+          <div class="r-key">Mode</div>
+          <div class="r-val" id="scanMode" style="color:var(--accent)">VECTOR</div>
+        </div>
+        <div class="readout-item">
+          <div class="r-key">Beam Dwell Points / Frame</div>
+          <div class="r-val" id="scanPoints">—</div>
+          <div class="r-note">Raster must visit every grid position; vector visits only where content lives.</div>
+        </div>
+        <div class="readout-item">
+          <div class="r-key">Frame-Time Budget Used</div>
+          <div class="r-val" id="scanBudget">—</div>
+          <div class="r-note">Unused budget converts directly into refresh rate or foveal density — nowhere for a fixed grid to bank it.</div>
+        </div>
+        <div class="readout-item">
+          <div class="r-key">Lineage</div>
+          <div class="r-val" style="font-size:20px; color:var(--text-dim)" id="scanLineage">OSCILLOSCOPE · VECTREX</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ SECTION 5 — FOVEATION ══ -->
+<div class="section" id="s-fovea">
+  <div class="section-label">05 — The Killer Feature</div>
+  <div class="section-title">HARDWARE-NATIVE FOVEATED RENDERING</div>
+  <div class="section-intro">Shipping headsets already do eye-tracked Dynamic Foveated Rendering — but on fixed grids it saves <strong>GPU only</strong>: every physical pixel still refreshes every frame, so display-refresh time saved is zero. Here the beam physically skips low-priority space, so peripheral savings convert into central refresh gains. <strong>Move your cursor across the display below</strong> — it is the gaze point. Structural, not incremental: panels cannot close this gap by iterating.</div>
+
+  <div class="demo-block">
+    <div class="demo-head">
+      <div class="demo-title">Interactive · Gaze-Following Scan Density</div>
+      <div class="demo-controls">
+        <div class="slider-row">
+          <label for="fovSlider">Foveation Aggressiveness</label>
+          <input type="range" id="fovSlider" min="0" max="100" value="60">
+        </div>
+      </div>
+    </div>
+    <div class="demo-body">
+      <div class="demo-canvas-wrap">
+        <canvas id="fovCanvas" width="720" height="420"></canvas>
+        <div class="demo-canvas-hint">Cursor = gaze · green = fovea · blue = midground (interlaced) · dim = periphery (full temporal rate)</div>
+      </div>
+      <div class="demo-readout">
+        <div class="readout-item">
+          <div class="r-key">Scan Points This Frame</div>
+          <div class="r-val" id="fovPoints">—</div>
+          <div class="r-note">vs. <span id="fovFixed">—</span> for a fixed grid at equal foveal density — the grid must refresh all of them, every frame.</div>
+        </div>
+        <div class="readout-item">
+          <div class="r-key">Beam Time Reclaimed</div>
+          <div class="r-val" id="fovSaved" style="color:var(--accent)">—</div>
+          <div class="r-note">Converts directly into central refresh-rate gain.</div>
+        </div>
+        <div class="readout-item">
+          <div class="r-key">Illustrative Central Refresh</div>
+          <div class="r-val" id="fovRefresh" style="color:var(--accent)">—<span class="unit">Hz-class</span></div>
+          <div class="r-note">Illustration of the conversion mechanism from a 120 Hz full-field baseline — not a measured or committed spec (TRL 2–3).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tier-cards">
+    <div class="tier-card">
+      <div class="tier-name" style="color:var(--accent)">FOVEA</div>
+      <div class="tier-tag" style="border-color:var(--accent); color:var(--accent)">No Compromise</div>
+      <div class="tier-body">Full/native resolution (AI-upscaled from ~1080p optional) at <strong>full progressive refresh</strong>. Acuity AND flicker sensitivity both peak here — nothing is cut.</div>
+    </div>
+    <div class="tier-card">
+      <div class="tier-name" style="color:var(--accent2)">MIDGROUND</div>
+      <div class="tier-tag" style="border-color:var(--accent2); color:var(--accent2)">Temporal Cuts Live Here</div>
+      <div class="tier-body">Low resolution, AI-upscaled, <strong>interlaced / temporally subsampled</strong>. Acuity is low and motion sensitivity has already fallen from its peripheral peak — the one safe place to cut temporal corners. Vector addressing means "interlace" can be any per-region subsampling pattern, not just alternating lines.</div>
+    </div>
+    <div class="tier-card">
+      <div class="tier-name" style="color:var(--accent3)">FAR PERIPHERY</div>
+      <div class="tier-tag" style="border-color:var(--accent3); color:var(--accent3)">Never Interlace — Perceptual Trap</div>
+      <div class="tier-body">Lowest resolution, raw — but <strong>FULL temporal refresh</strong>. Peripheral vision is rod-dominated: LOW acuity but HIGH flicker/motion sensitivity (evolutionary motion detection). Interlacing here reads as visible shimmer. Counter-intuitive; do not violate. Cut spatial detail only.</div>
+    </div>
+  </div>
+
+  <div class="spec-cell full" style="border:1px solid var(--border); padding:24px 28px;">
+    <div class="spec-key">Precedent & Open Thread</div>
+    <div class="spec-sub" style="margin-top:8px; line-height:1.9;">Tiering precedent: Varjo's dual-panel foveated headsets, optically stitched — CRT-VR is one continuous beam-addressed surface, a cleaner solve. Honest open thread: the <span class="hl3">eye-tracking → beam-steering control-loop latency budget</span> (saccade velocity vs. per-frame scan-plan recompute) has been raised and never worked out. See §08.</div>
+  </div>
+</div>
+
+
+<!-- ══ SECTION 6 — COLOR ══ -->
+<div class="section" id="s-color">
+  <div class="section-label">06 — Color Architecture</div>
+  <div class="section-title">6-PRIMARY RGBMCY — THE GAMUT HEXAGON</div>
+  <div class="section-intro">Dual interleaved triangles per pixel cluster, hex close-packing (RYG / MBC rows). Same pixel pitch as 3-primary — each dot shrinks to ~half area (~30% diameter reduction) — so the sixth primary costs <strong>zero PPI</strong>. Mixing is spatial/eye-blended only, like classic subpixel rendering; colocated photon summation was rejected as unnecessary complexity. Precedent: Sharp Quattron (RGBY) and the multi-primary display literature.</div>
+
+  <div class="color-system">
+    <div class="color-swatch"><div class="swatch-dot" style="background:#ff2020; color:#ff2020;"></div><div class="swatch-name">Red</div><div class="swatch-layer">QD stripe · R</div></div>
+    <div class="color-swatch"><div class="swatch-dot" style="background:#ffe135; color:#ffe135;"></div><div class="swatch-name">Yellow</div><div class="swatch-layer">QD stripe · Y</div></div>
+    <div class="color-swatch"><div class="swatch-dot" style="background:#00ff44; color:#00ff44;"></div><div class="swatch-name">Green</div><div class="swatch-layer">QD stripe · G</div></div>
+    <div class="color-swatch"><div class="swatch-dot" style="background:#ff00cc; color:#ff00cc;"></div><div class="swatch-name">Magenta</div><div class="swatch-layer">QD stripe · M</div></div>
+    <div class="color-swatch"><div class="swatch-dot" style="background:#0055ff; color:#0055ff;"></div><div class="swatch-name">Blue</div><div class="swatch-layer">QD stripe · B</div></div>
+    <div class="color-swatch"><div class="swatch-dot" style="background:#00ffee; color:#00ffee;"></div><div class="swatch-name">Cyan</div><div class="swatch-layer">QD stripe · C</div></div>
+  </div>
+
+  <div class="gamut-wrap">
+    <div class="gamut-pane">
+      <div class="spec-key" style="margin-bottom:16px">Chromaticity Coverage — Hexagon vs Triangle <span style="color:var(--text-dimmer)">(schematic)</span></div>
+      <svg id="gamutSvg" viewBox="0 0 400 380" xmlns="http://www.w3.org/2000/svg">
+        <!-- schematic spectral-locus-ish backdrop -->
+        <path d="M 200 30 C 90 60, 40 170, 70 300 C 110 355, 290 355, 330 300 C 360 170, 310 60, 200 30 Z"
+              fill="rgba(255,255,255,0.02)" stroke="#1a2240" stroke-width="1"/>
+        <text x="196" y="22" font-family="DM Mono, monospace" font-size="8" fill="#3a4a6a" text-anchor="middle">SPECTRAL LOCUS (SCHEMATIC)</text>
+
+        <!-- RGB triangle -->
+        <polygon id="rgbTri" points="120,300 200,60 300,290" fill="rgba(255,60,110,0.06)" stroke="#ff3c6e" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <!-- RGBMCY hexagon -->
+        <polygon id="hexGamut" points="120,300 100,180 200,60 300,120 300,290 210,330"
+                 fill="rgba(0,255,153,0.07)" stroke="#00ff99" stroke-width="1.8"/>
+
+        <!-- primaries -->
+        <g font-family="DM Mono, monospace" font-size="9">
+          <circle cx="120" cy="300" r="6" fill="#ff2020"/><text x="104" y="322" fill="#ff2020">R</text>
+          <circle cx="100" cy="180" r="6" fill="#ff00cc"/><text x="80"  y="176" fill="#ff00cc">M</text>
+          <circle cx="200" cy="60"  r="6" fill="#0055ff"/><text x="212" y="56"  fill="#0055ff">B</text>
+          <circle cx="300" cy="120" r="6" fill="#00ffee"/><text x="312" y="118" fill="#00ffee">C</text>
+          <circle cx="300" cy="290" r="6" fill="#00ff44"/><text x="312" y="308" fill="#00ff44">G</text>
+          <circle cx="210" cy="330" r="6" fill="#ffe135"/><text x="222" y="345" fill="#ffe135">Y</text>
+        </g>
+
+        <!-- clipped-region callouts -->
+        <text x="258" y="200" font-family="DM Mono, monospace" font-size="8" fill="#00ffee" opacity="0.8">SATURATED CYANS —</text>
+        <text x="258" y="212" font-family="DM Mono, monospace" font-size="8" fill="#00ffee" opacity="0.8">RGB CLIPS THESE</text>
+        <text x="120" y="222" font-family="DM Mono, monospace" font-size="8" fill="#ff00cc" opacity="0.8">MAGENTAS</text>
+      </svg>
+      <div class="anno" style="margin-top:12px">Geometric schematic, not CIE-accurate — final primary wavelengths are open question №6 (§08). The structural point holds regardless: a hexagon through six primaries contains every triangle through three of them.</div>
+    </div>
+    <div class="gamut-pane">
+      <div class="spec-key" style="margin-bottom:16px">Pixel Cluster — Dual-Triangle Hex Close-Pack <span style="color:var(--text-dimmer)">(RYG / MBC)</span></div>
+      <svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
+        <g id="clusterDots"></g>
+      </svg>
+      <div class="divider" style="margin:24px 0"></div>
+      <div class="spec-key" style="margin-bottom:10px">Drive Strategy — XCD-LED Heritage <span style="color:var(--text-dimmer)">(interactive)</span></div>
+      <div class="slider-row" style="margin-bottom:14px">
+        <label for="lumSlider">Target Luminance</label>
+        <input type="range" id="lumSlider" min="0" max="100" value="25">
+        <span id="lumVal" style="font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--accent3); min-width:44px; text-align:right;">25%</span>
+      </div>
+      <div class="gun-body" id="lumDesc" style="min-height:88px;"></div>
+    </div>
+  </div>
+
+  <div class="controller-block">
+    <div class="ctrl-cell">
+      <div class="ctrl-title">Drive Logic (XCD-LED Adaptive Heritage)</div>
+      <ul class="ctrl-list">
+        <li><strong>Low brightness →</strong> purest 1–2 primaries per hue. Hue discrimination peaks at low-to-mid luminance; saturation is protected where the eye can see it.</li>
+        <li><strong>High brightness →</strong> recruit all relevant cluster dots for maximum luminance. Chromatic sensitivity falls at high luminance — Bezold-Brücke territory — so purity can be traded away invisibly.</li>
+        <li>Pure firmware/driver logic — <strong>the hardware doesn't care.</strong></li>
+        <li>Crossover points and perceptual validation: open question №11 (§08).</li>
+      </ul>
+    </div>
+    <div class="ctrl-cell">
+      <div class="ctrl-title">Gamut-Mapping Pipeline (Host-Side)</div>
+      <ul class="ctrl-list">
+        <li>Real-time <strong>RGB→RGBMCY conversion</strong>, metamerism-aware: multiple valid drive combinations exist per color — optimize for brightness / efficiency / power.</li>
+        <li>Natural home: the <strong>VR render pipeline</strong>, which already performs heavy per-frame distortion and color correction. Compute cost lives here, not in display hardware.</li>
+        <li>Precedent: Sharp Quattron processing silicon; multi-primary display literature.</li>
+        <li>Software-prototypable today — flagged as a good first build task (§08, №5).</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ SECTION 7 — COMPARISON ══ -->
+<div class="section" id="s-compare">
+  <div class="section-label">07 — Competitive Position</div>
+  <div class="section-title">CRT-VR vs THE FIELD — MID-2026</div>
+  <div class="section-intro"><strong>Disclosure, stated every time this table is reused:</strong> the CRT-VR column is physics-grounded theory at TRL 2–3 — nothing built. Every other column is shipping or mass-produced technology as of mid-2026 (Pimax Dream Air: Sony 4K microOLED, 3840×3552/eye, &lt;170 g; Pimax Crystal Super: 116° horizontal FOV, 57 PPD; Apple Vision Pro class: Sony 1.3″ 4K OLED-on-silicon; refresh record: XREAL X1 at 240 Hz, 1080p only). That asymmetry is real.</div>
+
+  <div class="compare-scroller">
+    <table class="compare">
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th class="crt">CRT-VR (theoretical)</th>
+          <th>MicroOLED</th>
+          <th>OLED (TV-class)</th>
+          <th>True RGB LED</th>
+          <th>MiniLED LCD</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Peak Brightness</th>
+          <td class="crt"><span class="win">~500–1000+ nits at phosphor</span> — phosphor-saturation-limited, not gun-limited. Relay optics lose less than pancakes → at-eye advantage even at equal panel output.</td>
+          <td>1000 nits panel-rated (Sony ECX344A); substantially less at eye through pancakes</td>
+          <td>800–1500 nits</td>
+          <td>Very high, coarse pitch</td>
+          <td>1000–4000 nits</td>
+        </tr>
+        <tr>
+          <th>Blacks / Contrast</th>
+          <td class="crt">True zero — unstruck phosphor emits nothing</td>
+          <td><span class="win2">Effectively infinite — tie, no overclaim</span></td>
+          <td>Effectively infinite</td>
+          <td>Per-LED off</td>
+          <td><span class="loss">Blooming from zones</span></td>
+        </tr>
+        <tr>
+          <th>Color Gamut</th>
+          <td class="crt"><span class="win">6-primary RGBMCY hexagon</span> — structurally exceeds any RGB triangle (cyan/yellow/magenta coverage)</td>
+          <td>Wide RGB triangle (P3-class)</td>
+          <td>RGB triangle</td>
+          <td>RGB triangle</td>
+          <td><span class="loss">RGB triangle, narrowed by filters/backlight</span></td>
+        </tr>
+        <tr>
+          <th>Resolution</th>
+          <td class="crt">Variable, beam-addressed — no fixed grid. PPI ceiling set by phosphor litho + color bleed; targeted competitive at 1000–2500+ PPI-class</td>
+          <td><span class="win2">Fixed ~4K/eye, 1000–2500+ PPI — current density leader</span></td>
+          <td>Large-panel PPI</td>
+          <td><span class="loss">Very low PPI</span></td>
+          <td>Panel-dependent</td>
+        </tr>
+        <tr>
+          <th>Refresh</th>
+          <td class="crt"><span class="win">Variable, multi-kHz ceiling</span> — foveation converts peripheral savings to central refresh gains</td>
+          <td>90–120 Hz typical; 240 Hz record only at 1080p</td>
+          <td>Up to 240 Hz</td>
+          <td>Fast</td>
+          <td><span class="loss">LC response is the bottleneck</span></td>
+        </tr>
+        <tr>
+          <th>Motion Blur</th>
+          <td class="crt"><span class="win">Essentially none — impulse-driven</span> (phosphor flash + decay)</td>
+          <td><span class="loss">Persistence blur</span>; strobing helps at brightness cost</td>
+          <td><span class="loss">Persistence blur</span></td>
+          <td>Depends on drive</td>
+          <td><span class="loss">Worst of group</span></td>
+        </tr>
+        <tr>
+          <th>Burn-In</th>
+          <td class="crt">QD + ALD passivation designed against it — <span class="loss">unproven</span></td>
+          <td><span class="loss">Real, documented on static HUDs in 2026 product</span></td>
+          <td><span class="loss">Real</span></td>
+          <td>Minimal</td>
+          <td><span class="win2">None</span></td>
+        </tr>
+        <tr>
+          <th>Weight / Packaging</th>
+          <td class="crt"><span class="loss">Unknown — honest open question №1</span></td>
+          <td><span class="win2">107–170 g shipping</span></td>
+          <td>N/A</td>
+          <td>N/A</td>
+          <td>N/A</td>
+        </tr>
+        <tr>
+          <th>Power</th>
+          <td class="crt">Single emission point + deflection — no per-pixel tax; plausibly better per-lumen</td>
+          <td>Millions of driven diodes; scales with lit pixels</td>
+          <td>Same</td>
+          <td>Same</td>
+          <td><span class="loss">Backlight-dominated</span></td>
+        </tr>
+        <tr>
+          <th>Foveated Rendering</th>
+          <td class="crt"><span class="win">Hardware-native — beam skips sparse regions; savings become refresh</span></td>
+          <td><span class="loss">GPU-side only; every pixel still refreshes</span></td>
+          <td>GPU-side only</td>
+          <td>GPU-side only</td>
+          <td>GPU-side only</td>
+        </tr>
+        <tr>
+          <th>Maturity / Cost</th>
+          <td class="crt"><span class="loss">TRL 2–3; unknown yield, cost, lifetime</span></td>
+          <td><span class="win2">Mass production, $899–$2,200 street</span></td>
+          <td>Mature</td>
+          <td>Mature</td>
+          <td>Mature</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="anno" style="margin-bottom:40px">Hover rows to compare. Where microOLED flatly wins: it exists — proven longevity, mature supply chain, no vacuum envelope, no HV near the face, silicon-backplane sensor integration, solved per-eye packaging. Every measurable-today metric defaults to shipping product.</div>
+
+  <div class="controller-block">
+    <div class="ctrl-cell">
+      <div class="ctrl-title">The "Window-Through" Sum</div>
+      <ul class="ctrl-list">
+        <li><strong>Impulse motion clarity</strong> — under fast head motion (VR's constant condition) CRT should read as glass, not screen.</li>
+        <li><strong>No fixed pixel structure</strong> — phosphor point-spread function is a natural reconstruction filter: no screen door, no hard edges, graceful non-native scaling. Analogous to a DAC reconstruction filter. Friendly to weak GPUs.</li>
+        <li><strong>True blacks</strong> + <strong>hexagon gamut</strong> reaching the real-world saturated cyans/teals/yellows RGB clips.</li>
+        <li>MicroOLED delivers blacks and near-invisible pixels; it cannot deliver impulse motion or the gamut hexagon.</li>
+      </ul>
+    </div>
+    <div class="ctrl-cell">
+      <div class="ctrl-title">Verdict Framing</div>
+      <ul class="ctrl-list">
+        <li>The pitch is <strong>not</strong> "better specs."</li>
+        <li>The pitch is: <strong>"the only display architecture where foveated rendering is physics instead of software."</strong></li>
+        <li>Keynote guardrail — never "we shoot your eyes with an electron gun." Preferred framing: <strong>"immersive photon-native display."</strong> Product name plays it straight: <strong>Cathode. Ray. Tube.</strong></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ SECTION 8 — OPEN QUESTIONS ══ -->
+<div class="section" id="s-open">
+  <div class="section-label">08 — Engineering Honesty</div>
+  <div class="section-title">OPEN QUESTIONS — PRIORITIZED</div>
+  <div class="section-intro">Unresolved threads, stated plainly. Perceptual constraints already established and not up for re-litigation: never interlace the far periphery (rod-dominated, flicker-sensitive); the midground is the correct place for temporal subsampling; the fovea gets no compromise; Bezold-Brücke justifies multi-primary recruitment at high luminance.</div>
+
+  <div class="oq-tier" style="color:var(--accent4)">P0 <span class="oq-sub">Feasibility-Deciding</span></div>
+  <details class="oq">
+    <summary><span class="oq-num" style="color:var(--accent4)">01</span><span class="oq-title">Per-eye packaging &amp; weight budget</span><span class="oq-caret">▶</span></summary>
+    <div class="oq-body">Two miniature vacuum tubes + relay optics covering 100°+ FOV vs. 107–170 g shipping microOLED headsets. <strong>No honest mass/volume estimate exists yet.</strong> This is where "smaller, thinner" is proven or dies. Inputs needed: tube envelope wall thickness at wafer-level-sealed scale, relay lens element count/mass, HV supply mass.</div>
+  </details>
+  <details class="oq">
+    <summary><span class="oq-num" style="color:var(--accent4)">02</span><span class="oq-title">Phosphor-stripe lithography ceiling &amp; color bleed</span><span class="oq-caret">▶</span></summary>
+    <div class="oq-body">The actual PPI limit of the whole system. Model beam scatter at short throw + QD stripe pitch vs. cross-talk. Gun and yoke carry 100–1000× margin; <strong>this subsystem sets max resolution.</strong></div>
+  </details>
+  <details class="oq">
+    <summary><span class="oq-num" style="color:var(--accent4)">03</span><span class="oq-title">Phosphor saturation ceiling</span><span class="oq-caret">▶</span></summary>
+    <div class="oq-body">The 500–1000+ nit estimates hinge on QD-phosphor saturation/degradation limits under e-beam flux. Needs a literature review of cathodoluminescent QD data at minimum; <strong>ideally lab data.</strong></div>
+  </details>
+
+  <div class="oq-tier" style="color:var(--accent3)">P1 <span class="oq-sub">Architecture-Completing</span></div>
+  <details class="oq">
+    <summary><span class="oq-num" style="color:var(--accent3)">04</span><span class="oq-title">Eye-tracking → beam-steering control loop</span><span class="oq-caret">▶</span></summary>
+    <div class="oq-body">Latency budget: how fast can the foveal boundary shift before the beam schedule can't keep up? Saccade velocities vs. per-frame scan-plan recompute. <strong>Flagged in design sessions, never worked out.</strong></div>
+  </details>
+  <details class="oq">
+    <summary><span class="oq-num" style="color:var(--accent3)">05</span><span class="oq-title">RGB→RGBMCY gamut-mapping pipeline</span><span class="oq-caret">▶</span></summary>
+    <div class="oq-body">Real-time 6-channel conversion, metamerism-aware optimization (multiple valid drive combos per color — optimize for brightness/efficiency/power). Precedent: Sharp Quattron processing silicon. Lives in the VR render pipeline. <strong>Could be prototyped in software now.</strong></div>
+  </details>
+  <details class="oq">
+    <summary><span class="oq-num" style="color:var(--accent3)">06</span><span class="oq-title">Six QD emission wavelengths</span><span class="oq-caret">▶</span></summary>
+    <div class="oq-body">Lock the RGBMCY primary wavelengths for maximum hexagon area vs. the spectral locus, considering QD linewidths and eye sensitivity (CIE 1931 / CIE 170-2 observer).</div>
+  </details>
+  <details class="oq">
+    <summary><span class="oq-num" style="color:var(--accent3)">07</span><span class="oq-title">Scan scheduler design</span><span class="oq-caret">▶</span></summary>
+    <div class="oq-body">Vector scan-plan generation per frame: foveal density map → point list → deflection DAC waveform. Tier boundaries, temporal subsampling patterns for the midground. <strong>Also software-prototypable.</strong></div>
+  </details>
+
+  <div class="oq-tier" style="color:var(--accent2)">P2 <span class="oq-sub">Productization</span></div>
+  <details class="oq">
+    <summary><span class="oq-num" style="color:var(--accent2)">08</span><span class="oq-title">High-voltage supply near the face</span><span class="oq-caret">▶</span></summary>
+    <div class="oq-body">Acceleration voltage choice, insulation, failure modes, regulatory pathway. Solvable, but real engineering.</div>
+  </details>
+  <details class="oq">
+    <summary><span class="oq-num" style="color:var(--accent2)">09</span><span class="oq-title">Vacuum envelope lifetime at miniature scale</span><span class="oq-caret">▶</span></summary>
+    <div class="oq-body">NEG getter capacity vs. outgassing over product life.</div>
+  </details>
+  <details class="oq">
+    <summary><span class="oq-num" style="color:var(--accent2)">10</span><span class="oq-title">Manufacturing yield / cost</span><span class="oq-caret">▶</span></summary>
+    <div class="oq-body">Litho phosphor striping + MEMS electrostatic yoke + QD emitters + wafer vacuum sealing have <strong>never been combined in one device.</strong> Identify closest analog processes: FED post-mortems, MEMS bolometer lines, QD-OLED deposition.</div>
+  </details>
+  <details class="oq">
+    <summary><span class="oq-num" style="color:var(--accent2)">11</span><span class="oq-title">Drive-strategy tuning</span><span class="oq-caret">▶</span></summary>
+    <div class="oq-body">XCD-LED-style purity-vs-brightness crossover points; perceptual validation of high-luminance primary recruitment.</div>
+  </details>
+</div>
+
+
+<!-- ══ FOOTNOTES ══ -->
+<div class="footnote-block">
+  <div class="footnote">† <strong>TRL 2–3 throughout.</strong> All figures are physics-grounded estimates extrapolated from real component technologies (SEM/TEM Schottky columns, e-beam lithography, MEMS wafer-level packaging, cathodoluminescent QD research) — never measured specs of this device, because this device has not been built.</div>
+  <div class="footnote">† <strong>Refresh &amp; brightness ceilings are headroom statements, not commitments.</strong> Electrostatic deflection is multi-MHz-drivable and Schottky current headroom is 10²–10⁴× — but the shipped ceiling would be set by phosphor decay/saturation, which needs lab data (open questions №3).</div>
+  <div class="footnote">† <strong>Foveation refresh figures in the §05 simulator are illustrations of the conversion mechanism</strong> (peripheral scan savings → central refresh), computed from a notional 120 Hz full-field baseline. They are not performance claims.</div>
+  <div class="footnote">† <strong>Chromaticity diagram in §06 is a geometric schematic,</strong> not CIE-accurate; final primary wavelengths are unlocked (open question №6). The structural claim — a hexagon through six primaries contains every triangle through three — is geometry, not projection.</div>
+  <div class="footnote">† <strong>Cathodoluminescent quantum-dot phosphors</strong> are active research, not fantasy — but unproven at product scale. ALD passivation against e-beam degradation is design intent, not demonstrated lifetime.</div>
+  <div class="footnote">† <strong>MicroOLED ties on blacks</strong> and leads outright on maturity, packaging, and proven density. Comparison rows state this without hedging; the asymmetry (theory vs. shipping product) is disclosed at the top of §07.</div>
+  <div class="footnote">† <strong>"6 guns, 6 dots":</strong> classic Trinitron "single gun" marketing = one assembly, three converged beams, purely geometric color separation via aperture grille. CRT-VR extends the same converged-assembly principle to six beams with a litho-patterned grille — no mechanical wires, no damper-wire shadows.</div>
+  <div class="footnote">† <strong>Adaptive drive strategy</strong> (purity at low luminance, recruitment at high luminance) originates in the XCD-LED display concept and is applied here as firmware/driver logic. See /Sony/XCD-LED for the originating architecture.</div>
+</div>
+
+
+<!-- ══ FOOTER ══ -->
+<footer class="footer">
+  <div class="footer-brand">SONY <span>CRT-VR</span></div>
+  <div class="footer-links">
+    <a href="#s-overview">System Overview</a>
+    <a href="#s-tube">Tube Architecture</a>
+    <a href="#s-gun">Electron Source</a>
+    <a href="#s-fovea">Foveated Rendering</a>
+    <a href="#s-color">Color Architecture</a>
+    <a href="#s-compare">Competitive Position</a>
+    <a href="#s-open">Open Questions</a>
+  </div>
+  <div class="footer-note">
+    Internal Design Study — TRL 2–3<br>
+    Theory / Pre-Prototype Reference<br>
+    Confidential &amp; Proprietary
+  </div>
+</footer>
+<div class="footer-bar">
+  <div class="footer-bar-text">© 2026 SONY SEMICONDUCTOR SOLUTIONS CORP. — ADVANCED DISPLAY RESEARCH</div>
+  <div class="footer-bar-text">CATHODE. RAY. TUBE.</div>
+</div>
+
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── GUN SHOOTOUT TABS ── */
+  var gunTabs = document.querySelectorAll('.gun-tab');
+  var gunPanels = document.querySelectorAll('.gun-panel');
+  gunTabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      gunTabs.forEach(function (t) { t.classList.remove('active'); });
+      gunPanels.forEach(function (p) { p.classList.remove('active'); });
+      tab.classList.add('active');
+      document.querySelector('.gun-panel[data-gun="' + tab.dataset.gun + '"]').classList.add('active');
+    });
+  });
+
+  /* ── SCAN SIMULATOR (raster vs vector) ── */
+  var scanCanvas = document.getElementById('scanCanvas');
+  var sctx = scanCanvas.getContext('2d');
+  var SW = scanCanvas.width, SH = scanCanvas.height;
+  var scanModeEl = document.getElementById('scanMode');
+  var scanPointsEl = document.getElementById('scanPoints');
+  var scanBudgetEl = document.getElementById('scanBudget');
+  var scanLineageEl = document.getElementById('scanLineage');
+  var btnRaster = document.getElementById('btnRaster');
+  var btnVector = document.getElementById('btnVector');
+  var mode = 'vector';
+
+  // Vector content: a wireframe "ship" + starfield (Vectrex homage)
+  var vecSegs = [];
+  (function buildVectorScene() {
+    var cx = SW * 0.5, cy = SH * 0.52, s = 60;
+    var ship = [[0,-1.2],[0.8,1],[0.35,0.6],[-0.35,0.6],[-0.8,1],[0,-1.2]];
+    for (var i = 0; i < ship.length - 1; i++) {
+      vecSegs.push([cx + ship[i][0]*s, cy + ship[i][1]*s, cx + ship[i+1][0]*s, cy + ship[i+1][1]*s]);
+    }
+    // asteroids
+    function rock(ax, ay, r, n) {
+      var pts = [];
+      for (var k = 0; k <= n; k++) {
+        var a = (k % n) / n * Math.PI * 2;
+        var rr = r * (0.7 + 0.3 * Math.sin(k * 3.7 + ax));
+        pts.push([ax + Math.cos(a)*rr, ay + Math.sin(a)*rr]);
+      }
+      for (var j = 0; j < pts.length - 1; j++) vecSegs.push([pts[j][0], pts[j][1], pts[j+1][0], pts[j+1][1]]);
+    }
+    rock(140, 110, 45, 8);
+    rock(560, 90, 32, 7);
+    rock(610, 320, 50, 9);
+    rock(110, 330, 28, 7);
+  })();
+  var vecPoints = [];
+  vecSegs.forEach(function (sg) {
+    var len = Math.hypot(sg[2]-sg[0], sg[3]-sg[1]);
+    var n = Math.max(2, Math.round(len / 7));
+    for (var i = 0; i <= n; i++) {
+      vecPoints.push([sg[0] + (sg[2]-sg[0]) * i/n, sg[1] + (sg[3]-sg[1]) * i/n]);
+    }
+  });
+
+  var GRID_X = 72, GRID_Y = 42; // raster grid
+  var rasterTotal = GRID_X * GRID_Y;
+  var beamIdx = 0;
+  var trail = []; // [x, y, age-birth timestamp]
+
+  function setMode(m) {
+    mode = m;
+    beamIdx = 0;
+    trail = [];
+    btnRaster.classList.toggle('active', m === 'raster');
+    btnVector.classList.toggle('active', m === 'vector');
+    if (m === 'raster') {
+      scanModeEl.textContent = 'RASTER';
+      scanModeEl.style.color = 'var(--accent4)';
+      scanPointsEl.textContent = rasterTotal.toLocaleString();
+      scanBudgetEl.textContent = '100%';
+      scanLineageEl.textContent = 'NTSC · FIXED-GRID PANELS';
+    } else {
+      scanModeEl.textContent = 'VECTOR';
+      scanModeEl.style.color = 'var(--accent)';
+      scanPointsEl.textContent = vecPoints.length.toLocaleString();
+      scanBudgetEl.textContent = Math.round(vecPoints.length / rasterTotal * 100) + '%';
+      scanLineageEl.textContent = 'OSCILLOSCOPE · VECTREX';
+    }
+  }
+  btnRaster.addEventListener('click', function () { setMode('raster'); });
+  btnVector.addEventListener('click', function () { setMode('vector'); });
+
+  function scanStep() {
+    var now = performance.now();
+    sctx.fillStyle = 'rgba(4,5,10,0.28)'; // phosphor persistence fade
+    sctx.fillRect(0, 0, SW, SH);
+
+    var speed = mode === 'raster' ? 46 : 22; // points per tick
+    for (var i = 0; i < speed; i++) {
+      var x, y, hit = true;
+      if (mode === 'raster') {
+        var gx = beamIdx % GRID_X, gy = Math.floor(beamIdx / GRID_X) % GRID_Y;
+        x = (gx + 0.5) / GRID_X * SW;
+        y = (gy + 0.5) / GRID_Y * SH;
+        // raster lights everything faintly; content cells brighter
+        hit = false;
+        for (var v = 0; v < vecPoints.length; v += 6) {
+          if (Math.abs(vecPoints[v][0]-x) < 7 && Math.abs(vecPoints[v][1]-y) < 7) { hit = true; break; }
+        }
+        beamIdx = (beamIdx + 1) % rasterTotal;
+      } else {
+        var p = vecPoints[beamIdx % vecPoints.length];
+        x = p[0]; y = p[1];
+        beamIdx++;
+      }
+      trail.push([x, y, now, hit]);
+    }
+    // draw trail (persistence)
+    for (var t = trail.length - 1; t >= 0; t--) {
+      var age = now - trail[t][2];
+      if (age > 900) { trail.splice(t, 1); continue; }
+      var a = 1 - age / 900;
+      if (mode === 'raster') {
+        sctx.fillStyle = trail[t][3]
+          ? 'rgba(255,60,110,' + (0.85 * a) + ')'
+          : 'rgba(255,60,110,' + (0.16 * a) + ')';
+      } else {
+        sctx.fillStyle = 'rgba(0,255,153,' + (0.85 * a) + ')';
+      }
+      sctx.fillRect(trail[t][0] - 1.4, trail[t][1] - 1.4, 2.8, 2.8);
+    }
+    // hot beam spot at current position
+    if (trail.length) {
+      var last = trail[trail.length - 1];
+      sctx.beginPath();
+      sctx.arc(last[0], last[1], 4, 0, Math.PI * 2);
+      sctx.fillStyle = '#f0f4ff';
+      sctx.fill();
+    }
+  }
+
+  /* ── FOVEATION SIMULATOR ── */
+  var fovCanvas = document.getElementById('fovCanvas');
+  var fctx = fovCanvas.getContext('2d');
+  var FW = fovCanvas.width, FH = fovCanvas.height;
+  var gaze = { x: FW * 0.5, y: FH * 0.5, tx: FW * 0.5, ty: FH * 0.5 };
+  var fovSlider = document.getElementById('fovSlider');
+  var fovPointsEl = document.getElementById('fovPoints');
+  var fovFixedEl = document.getElementById('fovFixed');
+  var fovSavedEl = document.getElementById('fovSaved');
+  var fovRefreshEl = document.getElementById('fovRefresh');
+  var fovFrame = 0;
+
+  function canvasPos(canvas, evt) {
+    var r = canvas.getBoundingClientRect();
+    var cx = (evt.touches ? evt.touches[0].clientX : evt.clientX);
+    var cy = (evt.touches ? evt.touches[0].clientY : evt.clientY);
+    return { x: (cx - r.left) / r.width * canvas.width, y: (cy - r.top) / r.height * canvas.height };
+  }
+  fovCanvas.addEventListener('mousemove', function (e) {
+    var p = canvasPos(fovCanvas, e); gaze.tx = p.x; gaze.ty = p.y;
+  });
+  fovCanvas.addEventListener('touchmove', function (e) {
+    e.preventDefault();
+    var p = canvasPos(fovCanvas, e); gaze.tx = p.x; gaze.ty = p.y;
+  }, { passive: false });
+
+  var FOV_CELL = 10;
+  var fovCols = Math.floor(FW / FOV_CELL), fovRows = Math.floor(FH / FOV_CELL);
+  var fixedGridPoints = fovCols * fovRows;
+  fovFixedEl.textContent = fixedGridPoints.toLocaleString();
+
+  function fovStep() {
+    // gaze eases toward cursor — a stand-in for the eye-tracking loop
+    gaze.x += (gaze.tx - gaze.x) * 0.18;
+    gaze.y += (gaze.ty - gaze.y) * 0.18;
+    fovFrame++;
+
+    var agg = fovSlider.value / 100; // 0 = off, 1 = maximal
+    var rFovea = 70, rMid = 190;
+    fctx.fillStyle = 'rgba(4,5,10,0.5)';
+    fctx.fillRect(0, 0, FW, FH);
+
+    var drawn = 0;
+    for (var gy = 0; gy < fovRows; gy++) {
+      for (var gx = 0; gx < fovCols; gx++) {
+        var x = gx * FOV_CELL + FOV_CELL / 2;
+        var y = gy * FOV_CELL + FOV_CELL / 2;
+        var d = Math.hypot(x - gaze.x, y - gaze.y);
+        if (d < rFovea) {
+          // fovea: full density, full progressive refresh
+          fctx.fillStyle = 'rgba(0,255,153,0.85)';
+          fctx.fillRect(x - 1.5, y - 1.5, 3, 3);
+          drawn++;
+        } else if (d < rMid) {
+          // midground: spatially subsampled + interlaced (temporal cuts live here)
+          var keepEvery = 1 + Math.round(agg * 3); // 1..4
+          if ((gx + gy) % keepEvery === 0) {
+            var interlaceOn = ((gx + gy + fovFrame) % 2 === 0) || agg < 0.15;
+            if (interlaceOn) {
+              fctx.fillStyle = 'rgba(0,180,255,0.55)';
+              fctx.fillRect(x - 1.2, y - 1.2, 2.4, 2.4);
+            }
+            drawn++; // scheduled point even on its off-phase (half-rate dwell)
+          }
+        } else {
+          // far periphery: sparse spatially, but FULL temporal rate — never interlaced
+          var keepP = 2 + Math.round(agg * 6); // 2..8
+          if (gx % keepP === 0 && gy % keepP === 0) {
+            fctx.fillStyle = 'rgba(216,228,255,0.30)';
+            fctx.fillRect(x - 1, y - 1, 2, 2);
+            drawn++;
+          }
+        }
+      }
+    }
+
+    // tier rings
+    fctx.strokeStyle = 'rgba(0,255,153,0.5)';
+    fctx.beginPath(); fctx.arc(gaze.x, gaze.y, rFovea, 0, Math.PI * 2); fctx.stroke();
+    fctx.strokeStyle = 'rgba(0,180,255,0.3)';
+    fctx.beginPath(); fctx.arc(gaze.x, gaze.y, rMid, 0, Math.PI * 2); fctx.stroke();
+
+    if (fovFrame % 6 === 0) {
+      var saved = 1 - drawn / fixedGridPoints;
+      fovPointsEl.textContent = drawn.toLocaleString();
+      fovSavedEl.textContent = Math.round(saved * 100) + '%';
+      // illustrative: full-field baseline 120Hz; scan time ∝ points
+      fovRefreshEl.innerHTML = Math.round(120 / Math.max(0.05, drawn / fixedGridPoints)) + '<span class="unit">Hz-class</span>';
+    }
+  }
+
+  /* ── PIXEL CLUSTER (dual-triangle hex) + DRIVE STRATEGY SLIDER ── */
+  var clusterG = document.getElementById('clusterDots');
+  var PRIM = [
+    { n: 'R', c: '#ff2020' }, { n: 'Y', c: '#ffe135' }, { n: 'G', c: '#00ff44' },
+    { n: 'M', c: '#ff00cc' }, { n: 'B', c: '#0055ff' }, { n: 'C', c: '#00ffee' }
+  ];
+  // Build a small field of clusters: top row RYG, bottom row MBC, hex offset
+  var clusterDots = []; // {el, prim}
+  (function buildCluster() {
+    var r = 13, gapX = 34, gapY = 30, x0 = 52, y0 = 60;
+    for (var row = 0; row < 4; row++) {
+      var prims = (row % 2 === 0) ? ['R','Y','G'] : ['M','B','C'];
+      for (var col = 0; col < 9; col++) {
+        var p = prims[col % 3];
+        var prim = PRIM.filter(function (q) { return q.n === p; })[0];
+        var cx = x0 + col * gapX + (row % 2 ? gapX / 2 : 0);
+        var cy = y0 + row * gapY;
+        var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', r);
+        c.setAttribute('fill', prim.c);
+        c.setAttribute('stroke', 'rgba(255,255,255,0.15)');
+        clusterG.appendChild(c);
+        clusterDots.push({ el: c, prim: p });
+      }
+    }
+    var t1 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t1.textContent = 'RYG / MBC ROWS · HEX CLOSE-PACK · EYE-BLENDED SPATIAL MIXING';
+    t1.setAttribute('x', 52); t1.setAttribute('y', 200);
+    t1.setAttribute('font-family', 'DM Mono, monospace');
+    t1.setAttribute('font-size', '8'); t1.setAttribute('letter-spacing', '1.5');
+    t1.setAttribute('fill', '#3a4a6a');
+    clusterG.appendChild(t1);
+  })();
+
+  var lumSlider = document.getElementById('lumSlider');
+  var lumVal = document.getElementById('lumVal');
+  var lumDesc = document.getElementById('lumDesc');
+
+  function applyDrive() {
+    var v = +lumSlider.value;
+    lumVal.textContent = v + '%';
+    // Demo hue: orange-ish target. Low lum: R+Y only (purest). High: recruit M, G, then all.
+    var active;
+    var desc;
+    if (v < 34) {
+      active = ['R', 'Y'];
+      desc = '<strong style="color:var(--accent3)">PURITY MODE.</strong> Target hue driven by its purest 1–2 primaries only (here: R + Y). Hue discrimination peaks at low-to-mid luminance — saturation is protected exactly where the eye can resolve it.';
+    } else if (v < 72) {
+      active = ['R', 'Y', 'M', 'G'];
+      desc = '<strong style="color:var(--accent6)">TRANSITION.</strong> Neighboring primaries begin recruiting as luminance demand rises. Crossover points are open engineering (question №11) — perceptual validation pending.';
+    } else {
+      active = ['R', 'Y', 'G', 'M', 'B', 'C'];
+      desc = '<strong style="color:var(--accent4)">RECRUITMENT MODE.</strong> All relevant cluster dots fire for maximum luminance. Chromatic sensitivity falls at high luminance (Bezold-Brücke) — purity is traded away where the eye cannot see the trade. Pure firmware logic; the hardware doesn\'t care.';
+    }
+    clusterDots.forEach(function (d) {
+      var on = active.indexOf(d.prim) !== -1;
+      d.el.setAttribute('opacity', on ? '1' : '0.12');
+    });
+    lumDesc.innerHTML = desc;
+  }
+  lumSlider.addEventListener('input', applyDrive);
+  applyDrive();
+
+  /* ── SHARED ANIMATION LOOP ── */
+  setMode('vector');
+  function loop() {
+    scanStep();
+    fovStep();
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+
+</body>
+</html>
