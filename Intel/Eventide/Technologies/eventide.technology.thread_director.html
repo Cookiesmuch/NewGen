@@ -5,8 +5,8 @@
         --td-dd-primary-light: #7BC8FF;
         --td-dd-secondary: #4A90E2;
         --td-dd-accent: #5EC4FF;
-        --td-dd-dark-base: #050A14;
-        --td-dd-grid-glow: rgba(96, 180, 255, 0.035);
+        --td-dd-dark-base: #010810;
+        --td-dd-grid-glow: rgba(96, 180, 255, 0.09);
         --td-dd-border-accent: rgba(96, 180, 255, 0.22);
         --td-dd-stat-number: #7BC8FF;
         --td-dd-text-primary: #E8EDF6;
@@ -23,11 +23,15 @@
 
     .td-dd-wrap {
         width: 100%;
+        /* Same blueprint treatment as the brochure's HW Thread Director
+           overview: fine 16px grid + major 64px grid + top radial glow. */
         background:
-            linear-gradient(90deg, var(--td-dd-grid-glow) 1px, transparent 1px),
-            linear-gradient(0deg, var(--td-dd-grid-glow) 1px, transparent 1px),
-            linear-gradient(160deg, #050A14 0%, #060E1E 55%, #04080F 100%);
-        background-size: 44px 44px, 44px 44px, cover;
+            radial-gradient(ellipse 100% 60% at 50% 10%, rgba(96,180,255,0.07) 0%, transparent 70%),
+            repeating-linear-gradient(0deg, transparent, transparent 63px, rgba(96,180,255,0.09) 63px, rgba(96,180,255,0.09) 64px),
+            repeating-linear-gradient(90deg, transparent, transparent 63px, rgba(96,180,255,0.09) 63px, rgba(96,180,255,0.09) 64px),
+            repeating-linear-gradient(0deg, transparent, transparent 15px, rgba(96,180,255,0.03) 15px, rgba(96,180,255,0.03) 16px),
+            repeating-linear-gradient(90deg, transparent, transparent 15px, rgba(96,180,255,0.03) 15px, rgba(96,180,255,0.03) 16px),
+            linear-gradient(180deg, #010810 0%, #020C1C 100%);
         color: var(--td-dd-text-primary);
         font-family: var(--td-dd-font-body);
     }
