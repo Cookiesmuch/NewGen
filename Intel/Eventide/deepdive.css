@@ -1,4 +1,10 @@
 /* Shared styles for Eventide deep-dive pages (used by every route stub). */
+
+/* Content fragments were written for the brochure context, which loads these
+   display faces in its own head — stubs must load them too or every heading
+   falls back to the default serif. */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
 :root {
   --intel-blue: #0068B5;
   --intel-blue-dark: #004A86;

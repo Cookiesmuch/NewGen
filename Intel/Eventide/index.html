@@ -1081,7 +1081,22 @@
 
   /* ── AFFINITY UPDATE ── */
   .affinity-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .affinity-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
   .aff-unleashed .affinity-header { background: linear-gradient(135deg, #CC4A00 0%, #6B21A8 100%); }
+  .aff-supersaver .affinity-header { background: linear-gradient(135deg, #047857 0%, #022C22 100%); }
+  .affinity-ctx-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 26px; }
+  .affinity-ctx {
+    border-radius: 6px; padding: 14px 16px; font-size: 12px; line-height: 1.55;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary);
+  }
+  .affinity-ctx-name { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+  .affinity-ctx-env { font-family: var(--font-mono); font-size: 10px; opacity: 0.8; margin-bottom: 6px; }
+  .affinity-ctx-battery { border-left: 3px solid #0F766E; }
+  .affinity-ctx-battery .affinity-ctx-name, .affinity-ctx-battery .affinity-ctx-env { color: #0F766E; }
+  .affinity-ctx-adapter { border-left: 3px solid #1D4ED8; }
+  .affinity-ctx-adapter .affinity-ctx-name, .affinity-ctx-adapter .affinity-ctx-env { color: #1D4ED8; }
+  .affinity-ctx-dock { border-left: 3px solid #CC4A00; }
+  .affinity-ctx-dock .affinity-ctx-name, .affinity-ctx-dock .affinity-ctx-env { color: #CC4A00; }
   .affinity-req-note { font-size: 10px; color: rgba(255,107,53,0.8); font-family: var(--font-mono); letter-spacing: 0.05em; margin-top: 6px; padding: 5px 10px; background: rgba(255,107,53,0.08); border: 1px solid rgba(255,107,53,0.2); border-radius: 2px; display: inline-block; }
   .affinity-ai-note { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; padding: 3px 8px; background: rgba(147,51,234,0.1); border: 1px solid rgba(147,51,234,0.25); border-radius: 2px; color: #C084FC; margin-bottom: 12px; display: inline-block; }
 
@@ -1094,6 +1109,8 @@
     .v8-cylinder-art { grid-template-columns: repeat(4, 1fr); }
     .xess-grid { grid-template-columns: repeat(2, 1fr); }
     .affinity-grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .affinity-grid-5 { grid-template-columns: repeat(2, 1fr); }
+    .affinity-ctx-strip { grid-template-columns: 1fr; }
     .dkr-highlight-row { grid-template-columns: repeat(2, 1fr); }
     .mem-ds-grid { grid-template-columns: repeat(2, 1fr); }
     .foveros-stats { grid-template-columns: 1fr 1fr; }
@@ -1856,6 +1873,11 @@ document.addEventListener('DOMContentLoaded', function() {
         predicts workload class in advance — feeding predictive dispatch decisions to the Thread Director
         before threads even become runnable. The result: smarter core selection, fewer thermal missteps,
         and better sustained performance over time.
+        <br><br>
+        The Thread Director is also the enforcement engine behind <strong style="color: #F0B848;">System AFFINITY™</strong> —
+        Eventide's hardware power identities. The same physical chip glides at 0.5W on battery and, on high-end
+        SKUs, scales to a 2,000W monster in its dock, with the Thread Director holding smoothness constant across
+        the entire range.
       </p>
       <div data-deepdive-path="/Intel/Eventide/Technology/ThreadDirector" style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; padding: 8px 12px; border-radius: 4px; border: 1px solid rgba(96,180,255,0.3); background: rgba(0,104,181,0.15); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #60B4FF; cursor: pointer;">
         Open Thread Director Technology Page <span style="font-size: 12px;">→</span>
@@ -4051,35 +4073,74 @@ document.addEventListener('DOMContentLoaded', function() {
 <div>
 <div class="section">
   <div class="section-label">Intelligent Power Management</div>
-  <div class="section-heading">The Affinity System</div>
+  <div class="section-heading">The AFFINITY™ System</div>
   <p class="section-intro">
-    Eventide's Affinity System is <strong>dynamic, not static</strong>. Profiles are generated in real-time
-    by the Hardware Thread Director working in tandem with the system AI (LPNPU co-pilot model).
-    The HW-TD enforces Affinity decisions in silicon — sub-millisecond transitions. The LPNPU predicts
-    workload intent before it's scheduled, allowing the system to <em>proactively</em> shift between
-    performance domains rather than reacting. Profiles can be tailored by users or third-party software,
-    but the HW-TD and LPNPU continuously refine them at runtime.
+    Eventide's AFFINITY™ System is <strong>dynamic and user-choosable at the same time</strong> — the AI and the
+    human share the wheel. Profiles are generated in real-time by the Hardware Thread Director working in tandem
+    with the system AI (LPNPU co-pilot model); on NewGen's custom OS, users can pin, tailor, or hand-tune any
+    profile and the HW-TD + LPNPU keep refining it at runtime. Enforcement happens in silicon — sub-millisecond
+    transitions, wake vetoes, envelope caps.
+  </p>
+  <p class="section-intro">
+    AFFINITY is also <strong>context-aware</strong>: the machine carries a completely different profile set
+    depending on whether it runs on battery, on a power adapter, or docked. And it is
+    <strong>not a TDP throttle</strong> — profiles optimize for <em>smoothness first</em>, combining OS, hardware,
+    and software tuning: 2D Kanvas keeps scrolling silky while GPUs sleep, FOveros 2.0 cuts power to entire tiles
+    (dark fiber-optic interconnects leak nothing), the display drops below the industry 1Hz floor to true
+    refresh-on-demand, and the OS itself stops ticking until the next event. Even the monstrous Core™ Xeon® 9 can
+    AFFINITY down to 0.5–5W — then wake up in its dock as a 2,000W machine.
   </p>
 
-  <div style="font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; padding: 8px 14px; background: rgba(255,107,53,0.07); border: 1px solid rgba(255,107,53,0.2); border-radius: 4px; color: rgba(255,153,112,0.85); display: inline-block; margin-bottom: 24px;">
-    ⚡ V8 HyperBOOST, 4× GPU tiles, and All-Cores mode are available ONLY when connected to an External PSU + External Cooler
+  <div class="affinity-ctx-strip">
+    <div class="affinity-ctx affinity-ctx-battery">
+      <div class="affinity-ctx-name">🔋 On Battery</div>
+      <div class="affinity-ctx-env">0.5W – 45W envelope</div>
+      Supersaver + Efficiency first; Balanced capped. LP Island leads, compute and GPU tiles power-cut.
+    </div>
+    <div class="affinity-ctx affinity-ctx-adapter">
+      <div class="affinity-ctx-name">🔌 On Adapter</div>
+      <div class="affinity-ctx-env">15W – 175W envelope</div>
+      Balanced and Performance unlock full turbo residency and sustained all-core work.
+    </div>
+    <div class="affinity-ctx affinity-ctx-dock">
+      <div class="affinity-ctx-name">🧊 Docked</div>
+      <div class="affinity-ctx-env">Up to 2,000W envelope</div>
+      Specialized cooling + power-delivery dock: V8 HyperBOOST, all 4× E1080 tiles, All-Cores Unleashed —
+      up to 2,000W on the top Core™ Xeon® 9.
+    </div>
   </div>
 
-  <div class="affinity-grid-4">
+  <div class="affinity-grid-5">
 
-    <div class="affinity-card aff-performance">
+    <div class="affinity-card aff-supersaver">
       <div class="affinity-header">
-        <div class="affinity-name">PERFORMANCE</div>
-        <div class="affinity-sub">Max throughput · plugged in</div>
+        <div class="affinity-name">SUPERSAVER</div>
+        <div class="affinity-sub">Battery · maximum quiescence</div>
       </div>
       <div class="affinity-body">
-        <span class="affinity-ai-note">HW-TD + LPNPU managed</span>
-        <div class="affinity-row"><div class="affinity-key">UHP cores</div><div class="affinity-val">All active; max turbo</div></div>
-        <div class="affinity-row"><div class="affinity-key">V8 HyperBOOST</div><div class="affinity-val">Off on battery, on w/ ext. PSU</div></div>
-        <div class="affinity-row"><div class="affinity-key">DP + SPE</div><div class="affinity-val">All active; full SMT</div></div>
-        <div class="affinity-row"><div class="affinity-key">Arc E1080</div><div class="affinity-val">1–2 tiles; scalable</div></div>
-        <div class="affinity-row"><div class="affinity-key">HNPU</div><div class="affinity-val">Full 256 TOPS</div></div>
-        <div class="affinity-row"><div class="affinity-key">Typical TDP</div><div class="affinity-val">55–95W</div></div>
+        <span class="affinity-ai-note">LPNPU + GNA managed</span>
+        <div class="affinity-row"><div class="affinity-key">Active silicon</div><div class="affinity-val">LPE cores only</div></div>
+        <div class="affinity-row"><div class="affinity-key">All other tiles</div><div class="affinity-val">Full power-cut</div></div>
+        <div class="affinity-row"><div class="affinity-key">Display</div><div class="affinity-val">0Hz refresh-on-demand</div></div>
+        <div class="affinity-row"><div class="affinity-key">OS kernel</div><div class="affinity-val">Fully tickless (event-driven)</div></div>
+        <div class="affinity-row"><div class="affinity-key">2DKR</div><div class="affinity-val">Sole display renderer</div></div>
+        <div class="affinity-row"><div class="affinity-key">Typical TDP</div><div class="affinity-val">0.5–5W</div></div>
+      </div>
+    </div>
+
+    <div class="affinity-card aff-efficiency">
+      <div class="affinity-header">
+        <div class="affinity-name">EFFICIENCY</div>
+        <div class="affinity-sub">Battery · casual daily use</div>
+      </div>
+      <div class="affinity-body">
+        <span class="affinity-ai-note">LPNPU solo managed</span>
+        <div class="affinity-row"><div class="affinity-key">Compute Tile</div><div class="affinity-val">Full shutdown</div></div>
+        <div class="affinity-row"><div class="affinity-key">UHE + LPE</div><div class="affinity-val">Primary; background tasks</div></div>
+        <div class="affinity-row"><div class="affinity-key">Arc E1080</div><div class="affinity-val">Full shutdown</div></div>
+        <div class="affinity-row"><div class="affinity-key">Arc Druid</div><div class="affinity-val">Ultra-low standby</div></div>
+        <div class="affinity-row"><div class="affinity-key">2DKR</div><div class="affinity-val">Primary display renderer</div></div>
+        <div class="affinity-row"><div class="affinity-key">Typical TDP</div><div class="affinity-val">1–12W</div></div>
       </div>
     </div>
 
@@ -4099,26 +4160,26 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
     </div>
 
-    <div class="affinity-card aff-efficiency">
+    <div class="affinity-card aff-performance">
       <div class="affinity-header">
-        <div class="affinity-name">EFFICIENCY</div>
-        <div class="affinity-sub">Battery · LP Island priority</div>
+        <div class="affinity-name">PERFORMANCE</div>
+        <div class="affinity-sub">Max throughput · plugged in</div>
       </div>
       <div class="affinity-body">
-        <span class="affinity-ai-note">LPNPU solo managed</span>
-        <div class="affinity-row"><div class="affinity-key">Compute Tile</div><div class="affinity-val">Full shutdown</div></div>
-        <div class="affinity-row"><div class="affinity-key">UHE + LPE</div><div class="affinity-val">Primary; background tasks</div></div>
-        <div class="affinity-row"><div class="affinity-key">Arc E1080</div><div class="affinity-val">Full shutdown</div></div>
-        <div class="affinity-row"><div class="affinity-key">Arc Druid</div><div class="affinity-val">Ultra-low standby</div></div>
-        <div class="affinity-row"><div class="affinity-key">2DKR</div><div class="affinity-val">Primary display renderer</div></div>
-        <div class="affinity-row"><div class="affinity-key">Typical TDP</div><div class="affinity-val">1–8W</div></div>
+        <span class="affinity-ai-note">HW-TD + LPNPU managed</span>
+        <div class="affinity-row"><div class="affinity-key">UHP cores</div><div class="affinity-val">All active; max turbo</div></div>
+        <div class="affinity-row"><div class="affinity-key">V8 HyperBOOST</div><div class="affinity-val">Off on battery; dock unlocks</div></div>
+        <div class="affinity-row"><div class="affinity-key">DP + SPE</div><div class="affinity-val">All active; full SMT</div></div>
+        <div class="affinity-row"><div class="affinity-key">Arc E1080</div><div class="affinity-val">1–2 tiles; scalable</div></div>
+        <div class="affinity-row"><div class="affinity-key">HNPU</div><div class="affinity-val">Full 256 TOPS</div></div>
+        <div class="affinity-row"><div class="affinity-key">Typical TDP</div><div class="affinity-val">55–95W</div></div>
       </div>
     </div>
 
     <div class="affinity-card aff-unleashed">
       <div class="affinity-header">
         <div class="affinity-name">UNLEASHED</div>
-        <div class="affinity-sub">All cores · All GPUs · Ext. PSU+Cooler</div>
+        <div class="affinity-sub">Docked · all cores · all GPUs</div>
       </div>
       <div class="affinity-body">
         <span class="affinity-ai-note">HW-TD + System AI profile</span>
@@ -4127,11 +4188,15 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="affinity-row"><div class="affinity-key">Arc E1080</div><div class="affinity-val">All 4 tiles; 20× RTX 5090</div></div>
         <div class="affinity-row"><div class="affinity-key">LP Island</div><div class="affinity-val">Active (assist)</div></div>
         <div class="affinity-row"><div class="affinity-key">HNPU + LPNPU</div><div class="affinity-val">Full 344 TOPS</div></div>
-        <div class="affinity-row"><div class="affinity-key">Typical TDP</div><div class="affinity-val">175W+ (ext. PSU req.)</div></div>
-        <div class="affinity-req-note">⚡ EXTERNAL PSU + COOLER REQUIRED</div>
+        <div class="affinity-row"><div class="affinity-key">Envelope</div><div class="affinity-val">Up to 2,000W (X9 · dock)</div></div>
+        <div class="affinity-req-note">⚡ COOLING + POWER-DELIVERY DOCK REQUIRED · TOP CORE™ XEON® 9 REACHES FULL 2,000W</div>
       </div>
     </div>
 
+  </div>
+
+  <div data-deepdive-path="/Intel/Eventide/Technology/ThreadDirector" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 26px; padding: 8px 12px; border-radius: 4px; border: 1px solid rgba(240,184,72,0.35); background: rgba(240,184,72,0.08); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #C8922A; cursor: pointer;">
+    Full AFFINITY™ + Thread Director Deep Dive <span style="font-size: 12px;">→</span>
   </div>
 </div>
 </div>
