@@ -6,6 +6,11 @@ description: Dynamic showcase loader for premium Intel Eventide, Sony, and ASUS 
 baseurl: "/NewGen"
 url: "https://cookiesmuch.github.io"
 
+# Jekyll drops dot-directories by default; .well-known must ship for
+# agent discovery (see robots.txt and /.well-known/agent-skills/).
+include:
+  - .well-known
+
 # Exclude development and server files from the static build output.
 exclude:
   - Gemfile

@@ -214,6 +214,19 @@ The batch launcher:
 
 ---
 
+## 🤖 Agent Readiness
+
+The site is deliberately friendly to AI crawlers and agents:
+
+- **`/robots.txt`** — allows all crawlers, with explicit entries for AI crawlers (GPTBot, ClaudeBot, Google-Extended, PerplexityBot, …), [Content Signals](https://contentsignals.org/) (`search=yes, ai-input=yes, ai-train=yes`), and a sitemap reference
+- **`/sitemap.xml`** — all canonical routes; regenerate with `node scripts/generate-sitemap.js` after adding pages (the test suite fails if it goes stale)
+- **`/.well-known/agent-skills/index.json`** — [Agent Skills Discovery](https://github.com/cloudflare/agent-skills-discovery-rfc) index pointing at a site-navigation SKILL.md that explains the route model and where to fetch deep-dive fragments without JavaScript
+- **WebMCP** — pages expose `list-site-pages` and `navigate-to-page` tools via the experimental `navigator.modelContext` API when available
+
+Not implemented because GitHub Pages cannot serve them: custom `Link` response headers, `Accept: text/markdown` content negotiation, and OAuth/API-catalog metadata (the site has no APIs). DNS-AID records would be configured at the DNS provider, not in this repo.
+
+---
+
 ## 🧪 Development Notes
 
 - `npm test` runs `scripts/test-debug.js`, a diagnostics test that:
