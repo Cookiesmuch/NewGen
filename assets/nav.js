@@ -840,8 +840,59 @@
     window.addEventListener('pagehide', sendClosedSignal);
   }
 
+  /* ------------------------------------------------------------------ *
+   * Per-route scroll memory. The old shell kept scroll positions across
+   * route switches; with real page loads that lives in sessionStorage:
+   * saved on pagehide, restored when the same route is revisited (e.g.
+   * "Back to Overview" from a deep dive back to the Eventide brochure).
+   * ------------------------------------------------------------------ */
+  const SCROLL_STORE_PREFIX = 'ng-scroll:';
+
+  function saveScrollPosition() {
+    try {
+      sessionStorage.setItem(SCROLL_STORE_PREFIX + currentRoute(), String(Math.round(window.scrollY)));
+    } catch (e) { /* storage unavailable */ }
+  }
+
+  function restoreScrollPosition() {
+    let saved = null;
+    try {
+      saved = sessionStorage.getItem(SCROLL_STORE_PREFIX + currentRoute());
+    } catch (e) {
+      return;
+    }
+    const target = parseInt(saved, 10);
+    if (!Number.isFinite(target) || target <= 0) return;
+
+    // Pages build sections dynamically, so the document may still be too
+    // short when we first try; retry briefly, but stop the moment the user
+    // scrolls on their own.
+    let cancelled = false;
+    const cancel = () => { cancelled = true; };
+    ['wheel', 'touchstart', 'keydown'].forEach((type) => {
+      window.addEventListener(type, cancel, { once: true, passive: true });
+    });
+
+    const startedAt = Date.now();
+    const attempt = () => {
+      if (cancelled) return;
+      window.scrollTo(0, target);
+      if (Math.abs(window.scrollY - target) <= 2) return;
+      if (Date.now() - startedAt > 2000) return;
+      window.setTimeout(attempt, 100);
+    };
+    if (document.readyState === 'complete') {
+      attempt();
+    } else {
+      window.addEventListener('load', attempt, { once: true });
+    }
+  }
+
+  window.addEventListener('pagehide', saveScrollPosition);
+
   function init() {
     injectNavigator();
+    restoreScrollPosition();
     setupWatchdog();
   }
 
