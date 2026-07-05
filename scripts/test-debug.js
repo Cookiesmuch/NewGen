@@ -151,6 +151,43 @@ async function main() {
       fail('Unknown route did not 404', `(status=${notFoundStatus})`);
     }
 
+    // Agent-readiness surface: robots.txt, sitemap, agent-skills index.
+    const { status: robotsStatus, body: robotsBody } = await fetchStatus(`${BASE_URL}/robots.txt`);
+    if (robotsStatus === 200 && robotsBody.includes('Sitemap:') && robotsBody.includes('User-agent:')) {
+      ok('robots.txt served with sitemap reference');
+    } else {
+      fail('robots.txt missing or incomplete', `(status=${robotsStatus})`);
+    }
+
+    const { status: sitemapStatus, body: sitemapBody } = await fetchStatus(`${BASE_URL}/sitemap.xml`);
+    if (sitemapStatus === 200) {
+      const staleRoutes = navRoutes.filter((route) => {
+        const loc = route === '/' ? 'https://newgen.renovait.qzz.io/' : `https://newgen.renovait.qzz.io${route}/`;
+        return !sitemapBody.includes(`<loc>${loc}</loc>`);
+      });
+      if (staleRoutes.length === 0) {
+        ok('sitemap.xml lists every nav route');
+      } else {
+        fail('sitemap.xml is stale — rerun scripts/generate-sitemap.js', `(missing=${staleRoutes.slice(0, 3).join(', ')}…)`);
+      }
+    } else {
+      fail('sitemap.xml missing', `(status=${sitemapStatus})`);
+    }
+
+    const { status: skillsStatus, body: skillsBody } = await fetchStatus(`${BASE_URL}/.well-known/agent-skills/index.json`);
+    let skillsOk = false;
+    if (skillsStatus === 200) {
+      try {
+        const parsed = JSON.parse(skillsBody);
+        skillsOk = Array.isArray(parsed.skills) && parsed.skills.every((s) => s.name && s.url && s.sha256);
+      } catch (error) { /* fall through to fail */ }
+    }
+    if (skillsOk) {
+      ok('agent-skills index served and well-formed');
+    } else {
+      fail('agent-skills index missing or malformed', `(status=${skillsStatus})`);
+    }
+
     const watchdogChecks = [
       { path: '/__launcher/status', expectedStatus: 200, label: 'status endpoint' },
       { path: '/__launcher/heartbeat', expectedStatus: 204, label: 'heartbeat endpoint', method: 'POST' },

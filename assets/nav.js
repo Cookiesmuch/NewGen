@@ -890,9 +890,57 @@
 
   window.addEventListener('pagehide', saveScrollPosition);
 
+  /* ------------------------------------------------------------------ *
+   * WebMCP (navigator.modelContext) — experimental browser API that lets
+   * pages expose tools to AI agents. Feature-detected; a no-op elsewhere.
+   * ------------------------------------------------------------------ */
+  function registerWebMcpTools() {
+    try {
+      const modelContext = navigator.modelContext;
+      if (!modelContext || typeof modelContext.provideContext !== 'function') return;
+      const pageLookup = buildPageLookup();
+      const pages = Object.entries(pageLookup).map(([path, info]) => ({ path, title: info.label }));
+      pages.unshift({ path: '/', title: 'NewGen Conglomerate' });
+      modelContext.provideContext({
+        tools: [
+          {
+            name: 'list-site-pages',
+            description: 'List every page on the NewGen showcase site as {path, title} entries. Paths are site-root-relative routes usable with navigate-to-page.',
+            inputSchema: { type: 'object', properties: {} },
+            async execute() {
+              return { content: [{ type: 'text', text: JSON.stringify(pages, null, 2) }] };
+            },
+          },
+          {
+            name: 'navigate-to-page',
+            description: 'Navigate the browser to a NewGen page by route path, e.g. "/Intel/Eventide" or "/Intel/Eventide/Technology/ThreadDirector".',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                path: { type: 'string', description: 'A route path returned by list-site-pages' },
+              },
+              required: ['path'],
+            },
+            async execute(input) {
+              const path = input && input.path;
+              if (!pages.some((p) => p.path === path)) {
+                return { content: [{ type: 'text', text: `Unknown path: ${path}. Call list-site-pages for valid routes.` }] };
+              }
+              window.location.href = routeHref(path);
+              return { content: [{ type: 'text', text: `Navigating to ${path}` }] };
+            },
+          },
+        ],
+      });
+    } catch (error) {
+      // Experimental API surface may change shape; never break the page.
+    }
+  }
+
   function init() {
     injectNavigator();
     restoreScrollPosition();
+    registerWebMcpTools();
     setupWatchdog();
   }
 
