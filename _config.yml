@@ -20,4 +20,3 @@ exclude:
   - NewGen.code-workspace
   - README.md
   - NAVIGATION.md
-  - test-navigation.html

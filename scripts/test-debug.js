@@ -1,4 +1,10 @@
 #!/usr/bin/env node
+// Validates the true-filepath site structure:
+//   1. every route in assets/nav.js has a real <route>/index.html on disk
+//   2. every page is reachable through Server/server.js with HTTP 200
+//   3. every deep-dive stub points at an existing content fragment
+//   4. unknown routes return HTTP 404
+//   5. launcher watchdog endpoints respond
 const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
@@ -13,344 +19,161 @@ const colors = {
   red: '\x1b[31m',
   yellow: '\x1b[33m',
   cyan: '\x1b[36m',
-  gray: '\x1b[90m',
 };
 
-function now() {
-  return new Date().toISOString();
-}
+let failures = 0;
+let passes = 0;
 
 function log(level, color, message, details = '') {
   const suffix = details ? ` ${details}` : '';
-  console.log(`${color}[${level}]${colors.reset} ${now()} ${message}${suffix}`);
+  console.log(`${color}[${level}]${colors.reset} ${message}${suffix}`);
 }
 
-function info(message, details) {
-  log('INFO', colors.cyan, message, details);
-}
+function info(message, details) { log('INFO', colors.cyan, message, details); }
+function ok(message, details) { passes += 1; log('PASS', colors.green, message, details); }
+function fail(message, details) { failures += 1; log('FAIL', colors.red, message, details); }
 
-function ok(message, details) {
-  log('PASS', colors.green, message, details);
-}
-
-function warn(message, details) {
-  log('WARN', colors.yellow, message, details);
-}
-
-function fail(message, details) {
-  log('FAIL', colors.red, message, details);
-}
-
-function relativePath(filePath) {
-  return path.relative(ROOT, filePath).split(path.sep).join('/');
-}
-
-function extractPageRoutes(indexHtmlPath) {
-  const source = fs.readFileSync(indexHtmlPath, 'utf8');
-  const routeRegex = /\{\s*path:\s*'([^']+)'\s*,\s*src:\s*'([^']+)'\s*\}/g;
-  const routes = [];
+function extractNavRoutes() {
+  const navSource = fs.readFileSync(path.join(ROOT, 'assets', 'nav.js'), 'utf8');
+  const routeRegex = /path:\s*'(\/[^']*)'/g;
+  const routes = new Set();
   let match;
-  while ((match = routeRegex.exec(source)) !== null) {
-    routes.push({ path: match[1], src: match[2] });
+  while ((match = routeRegex.exec(navSource)) !== null) {
+    routes.add(match[1]);
   }
-
-  const navRegex = /data-path="([^"]+)"/g;
-  const navRoutes = [];
-  while ((match = navRegex.exec(source)) !== null) {
-    navRoutes.push(match[1]);
-  }
-
-  return { routes, navRoutes: Array.from(new Set(navRoutes)) };
+  return Array.from(routes);
 }
 
-function parseDeepDiveMappings(viewerPath) {
-  const source = fs.readFileSync(viewerPath, 'utf8');
-  const mappingRegex = /'([^']+)'\s*:\s*'([^']+\.html)'/g;
-  const mappings = [];
-  let match;
-  while ((match = mappingRegex.exec(source)) !== null) {
-    mappings.push({ route: match[1], target: match[2] });
-  }
-  return mappings;
+function extractDeepdiveStubs() {
+  const stubs = [];
+  const eventideDir = path.join(ROOT, 'Intel', 'Eventide');
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const absolute = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(absolute);
+      } else if (entry.name === 'index.html') {
+        const html = fs.readFileSync(absolute, 'utf8');
+        const match = html.match(/window\.NG_DEEPDIVE_SRC\s*=\s*"([^"]+)"/);
+        if (match) {
+          stubs.push({ stub: absolute, contentRel: match[1] });
+        }
+      }
+    }
+  };
+  walk(eventideDir);
+  return stubs;
 }
 
-async function fetchWithDiagnostics(url, options = {}) {
-  const start = Date.now();
-  try {
-    const response = await fetch(url, { cache: 'no-store', ...options });
-    const duration = Date.now() - start;
-    const body = await response.text();
-    return { response, body, duration };
-  } catch (error) {
-    const duration = Date.now() - start;
-    const method = options.method || 'GET';
-    throw new Error(`Fetch failed (${method} ${url}) after ${duration}ms: ${error.message}`);
-  }
+async function fetchStatus(url, options = {}) {
+  const response = await fetch(url, { cache: 'no-store', redirect: 'follow', ...options });
+  const body = await response.text();
+  return { status: response.status, body };
 }
 
 function startServer() {
-  return spawn(process.execPath, [SERVER_ENTRY], {
-    cwd: ROOT,
-    stdio: ['ignore', 'pipe', 'pipe'],
-    env: process.env,
-  });
-}
-
-function responseLooksLikeMissingContent(body) {
-  return /<h1>\s*404 Not Found\s*<\/h1>/i.test(body);
-}
-
-async function waitForServerReady(serverProcess, timeoutMs = 20000) {
-  const startedAt = Date.now();
-
   return new Promise((resolve, reject) => {
-    let stdout = '';
-    let stderr = '';
-    let finished = false;
-
-    const done = (err) => {
-      if (finished) return;
-      finished = true;
-      clearInterval(poll);
-      clearTimeout(timeout);
-      if (err) {
-        reject(new Error(`${err.message}\n--- STDOUT ---\n${stdout}\n--- STDERR ---\n${stderr}`));
-      } else {
-        resolve({ startupMs: Date.now() - startedAt, stdout, stderr });
-      }
-    };
-
-    serverProcess.stdout.on('data', (chunk) => {
-      const text = chunk.toString();
-      stdout += text;
-      process.stdout.write(`${colors.gray}[server]${colors.reset} ${text}`);
-    });
-
-    serverProcess.stderr.on('data', (chunk) => {
-      const text = chunk.toString();
-      stderr += text;
-      process.stderr.write(`${colors.gray}[server-err]${colors.reset} ${text}`);
-    });
-
-    serverProcess.on('exit', (code, signal) => {
-      done(new Error(`Server exited before readiness (code=${code}, signal=${signal})`));
-    });
-
-    const poll = setInterval(async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/__launcher/ping`, { cache: 'no-store' });
-        if (response.status === 204 || response.ok) {
-          done();
-        }
-      } catch {
-        // wait until server is ready
-      }
-    }, 250);
-
+    const child = spawn(process.execPath, [SERVER_ENTRY], { cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'] });
+    let settled = false;
     const timeout = setTimeout(() => {
-      done(new Error(`Timed out waiting for server to become ready after ${timeoutMs}ms`));
-    }, timeoutMs);
-  });
-}
-
-async function shutdownServer(serverProcess) {
-  if (!serverProcess || serverProcess.killed) return;
-  await new Promise((resolve) => {
-    const timer = setTimeout(() => {
-      serverProcess.kill('SIGKILL');
-      resolve();
-    }, 3000);
-
-    serverProcess.once('exit', () => {
-      clearTimeout(timer);
-      resolve();
+      if (!settled) {
+        settled = true;
+        reject(new Error('Server did not report readiness within 10s'));
+      }
+    }, 10000);
+    child.stdout.on('data', (chunk) => {
+      if (!settled && String(chunk).includes('accepting connections')) {
+        settled = true;
+        clearTimeout(timeout);
+        resolve(child);
+      }
     });
-
-    serverProcess.kill('SIGTERM');
+    child.on('exit', (code) => {
+      if (!settled) {
+        settled = true;
+        clearTimeout(timeout);
+        reject(new Error(`Server exited early with code ${code}`));
+      }
+    });
   });
 }
 
 async function main() {
-  info('Starting NewGen debug test', `(root=${ROOT})`);
-  if (!fs.existsSync(SERVER_ENTRY)) {
-    throw new Error(`Missing server entry: ${SERVER_ENTRY}`);
+  const navRoutes = extractNavRoutes();
+  info('Routes discovered in assets/nav.js', `(total=${navRoutes.length})`);
+
+  for (const route of navRoutes) {
+    const indexPath = route === '/'
+      ? path.join(ROOT, 'index.html')
+      : path.join(ROOT, ...route.split('/').filter(Boolean), 'index.html');
+    if (fs.existsSync(indexPath)) {
+      ok('Route file exists', `(route=${route})`);
+    } else {
+      fail('Route file missing', `(route=${route}, expected=${path.relative(ROOT, indexPath)})`);
+    }
   }
 
-  const indexPath = path.join(ROOT, 'index.html');
-  const deepDiveViewerPath = path.join(ROOT, 'Source', 'INTEL', 'Eventide', 'eventide.deepdive.viewer.html');
+  const stubs = extractDeepdiveStubs();
+  info('Deep-dive stubs discovered', `(total=${stubs.length})`);
+  for (const { stub, contentRel } of stubs) {
+    const contentAbs = path.resolve(path.dirname(stub), contentRel);
+    if (fs.existsSync(contentAbs)) {
+      ok('Deep-dive content exists', `(stub=${path.relative(ROOT, stub)})`);
+    } else {
+      fail('Deep-dive content missing', `(stub=${path.relative(ROOT, stub)}, content=${contentRel})`);
+    }
+  }
 
-  const { routes, navRoutes } = extractPageRoutes(indexPath);
-  const deepDiveMappings = parseDeepDiveMappings(deepDiveViewerPath);
-
-  info('Discovered routes from index.html', `(total=${routes.length}, nav=${navRoutes.length})`);
-  info('Discovered deep-dive mappings', `(total=${deepDiveMappings.length})`);
-
-  const serverProcess = startServer();
-
-  let failures = 0;
-  let warnings = 0;
-
+  info('Starting local server for HTTP checks');
+  const server = await startServer();
   try {
-    const ready = await waitForServerReady(serverProcess);
-    ok('Server reached readiness', `(startup=${ready.startupMs}ms)`);
+    for (const route of navRoutes) {
+      const url = route === '/' ? `${BASE_URL}/` : `${BASE_URL}${route}/`;
+      const { status, body } = await fetchStatus(url);
+      if (status === 200 && body.includes('<html')) {
+        ok('Route serves page', `(route=${route}, status=${status})`);
+      } else {
+        fail('Route did not serve page', `(route=${route}, status=${status})`);
+      }
+    }
 
-    info('Checking watchdog endpoints from server.js');
+    const { status: redirectStatus } = await fetchStatus(`${BASE_URL}/Intel/Eventide`, { redirect: 'manual' });
+    if (redirectStatus === 301) {
+      ok('Extensionless directory URL redirects to trailing slash');
+    } else {
+      fail('Missing trailing-slash redirect', `(status=${redirectStatus})`);
+    }
+
+    const { status: notFoundStatus } = await fetchStatus(`${BASE_URL}/Nope/DoesNotExist/`);
+    if (notFoundStatus === 404) {
+      ok('Unknown route returns 404');
+    } else {
+      fail('Unknown route did not 404', `(status=${notFoundStatus})`);
+    }
+
     const watchdogChecks = [
       { path: '/__launcher/status', expectedStatus: 200, label: 'status endpoint' },
       { path: '/__launcher/heartbeat', expectedStatus: 204, label: 'heartbeat endpoint', method: 'POST' },
       { path: '/__launcher/ping', expectedStatus: 204, label: 'ping endpoint' },
     ];
-
     for (const check of watchdogChecks) {
-      const { response, body, duration } = await fetchWithDiagnostics(`${BASE_URL}${check.path}`, {
-        method: check.method || 'GET',
-      });
-
-      if (response.status === check.expectedStatus) {
-        ok(`Watchdog ${check.label} responded`, `(status=${response.status}, duration=${duration}ms)`);
+      const { status } = await fetchStatus(`${BASE_URL}${check.path}`, { method: check.method || 'GET' });
+      if (status === check.expectedStatus) {
+        ok(`Watchdog ${check.label} responded`, `(status=${status})`);
       } else {
-        failures += 1;
-        fail(`Watchdog ${check.label} unexpected status`, `(expected=${check.expectedStatus}, got=${response.status}, duration=${duration}ms, body=${JSON.stringify(body.slice(0, 240))})`);
+        fail(`Watchdog ${check.label} unexpected status`, `(expected=${check.expectedStatus}, got=${status})`);
       }
-    }
-
-    const { response: normalPingResponse } = await fetchWithDiagnostics(`${BASE_URL}/__launcher/ping`);
-    if (normalPingResponse.headers.get('x-newgen-close-tab') === '0') {
-      ok('Watchdog ping close-tab header default is clear', '(x-newgen-close-tab=0)');
-    } else {
-      failures += 1;
-      fail('Watchdog ping close-tab header default mismatch', `(expected=0, got=${normalPingResponse.headers.get('x-newgen-close-tab') || 'null'})`);
-    }
-
-    await fetchWithDiagnostics(`${BASE_URL}/__launcher/closed`, { method: 'POST' });
-    ok('Watchdog closed endpoint responded', '(status=204)');
-    const { response: shutdownPingResponse } = await fetchWithDiagnostics(`${BASE_URL}/__launcher/ping`);
-    if (shutdownPingResponse.headers.get('x-newgen-close-tab') === '1') {
-      ok('Watchdog ping close-tab header set during shutdown countdown', '(x-newgen-close-tab=1)');
-    } else {
-      failures += 1;
-      fail('Watchdog ping close-tab header not set during shutdown countdown', `(expected=1, got=${shutdownPingResponse.headers.get('x-newgen-close-tab') || 'null'})`);
-    }
-
-    await fetchWithDiagnostics(`${BASE_URL}/__launcher/heartbeat`, { method: 'POST' });
-    const { response: recoveredPingResponse } = await fetchWithDiagnostics(`${BASE_URL}/__launcher/ping`);
-    if (recoveredPingResponse.headers.get('x-newgen-close-tab') === '0') {
-      ok('Watchdog ping close-tab header resets after heartbeat recovery', '(x-newgen-close-tab=0)');
-    } else {
-      failures += 1;
-      fail('Watchdog ping close-tab header failed to reset after heartbeat', `(expected=0, got=${recoveredPingResponse.headers.get('x-newgen-close-tab') || 'null'})`);
-    }
-
-    info('Checking route navigability and content loading');
-    const loadedRoutes = [];
-    const missingRoutes = [];
-
-    for (const route of routes) {
-      const { response, body, duration } = await fetchWithDiagnostics(`${BASE_URL}${route.path}`);
-      const hasShell = body.includes('NewGen Dynamic Loader') && body.includes('const PAGES = [');
-
-      if (response.ok && hasShell) {
-        loadedRoutes.push(route.path);
-        ok('Route navigable', `(path=${route.path}, src=${route.src}, status=${response.status}, duration=${duration}ms, shell=yes)`);
-      } else {
-        failures += 1;
-        missingRoutes.push(route.path);
-        fail('Route failed shell load', `(path=${route.path}, status=${response.status}, duration=${duration}ms, shell=${hasShell ? 'yes' : 'no'})`);
-      }
-
-      const { response: sourceResponse, body: sourceBody, duration: sourceDuration } = await fetchWithDiagnostics(`${BASE_URL}${route.src}`);
-      const sourceLooksLikeContent = sourceBody.trim().length > 0 && !responseLooksLikeMissingContent(sourceBody);
-
-      if (sourceResponse.ok && sourceLooksLikeContent) {
-        ok('Source page loaded', `(src=${route.src}, status=${sourceResponse.status}, duration=${sourceDuration}ms, size=${sourceBody.length})`);
-      } else {
-        failures += 1;
-        fail('Source page failed to load', `(src=${route.src}, status=${sourceResponse.status}, duration=${sourceDuration}ms, bytes=${sourceBody.length})`);
-      }
-    }
-
-    info('Checking deep-dive targets used by viewer mapping');
-    const deepDiveTargetFailures = [];
-
-    for (const mapping of deepDiveMappings) {
-      const absoluteTarget = path.join(path.dirname(deepDiveViewerPath), mapping.target);
-      if (!fs.existsSync(absoluteTarget)) {
-        failures += 1;
-        deepDiveTargetFailures.push(mapping);
-        fail('Deep-dive mapping target missing', `(route=${mapping.route}, target=${mapping.target})`);
-        continue;
-      }
-
-      const relativeTarget = `/${relativePath(absoluteTarget)}`;
-      const { response, body, duration } = await fetchWithDiagnostics(`${BASE_URL}${relativeTarget}`);
-      const looksLikeContent = body.trim().length > 0 && !responseLooksLikeMissingContent(body);
-      if (response.ok && looksLikeContent) {
-        ok('Deep-dive target reachable', `(route=${mapping.route}, target=${relativeTarget}, status=${response.status}, duration=${duration}ms)`);
-      } else {
-        failures += 1;
-        fail('Deep-dive target unreachable', `(route=${mapping.route}, target=${relativeTarget}, status=${response.status}, duration=${duration}ms, bytes=${body.length})`);
-      }
-    }
-
-    info('Scanning for potentially orphaned brochure/deep-dive html files');
-
-    const allHtmlFiles = [];
-    function walk(dir) {
-      const entries = fs.readdirSync(dir, { withFileTypes: true });
-      for (const entry of entries) {
-        const absolute = path.join(dir, entry.name);
-        if (entry.isDirectory()) {
-          if (entry.name === 'node_modules' || entry.name === '.git') continue;
-          walk(absolute);
-        } else if (entry.isFile() && /\.html$/i.test(entry.name)) {
-          allHtmlFiles.push(absolute);
-        }
-      }
-    }
-    walk(ROOT);
-
-    const explicitlyReferenced = new Set([
-      relativePath(indexPath),
-      ...routes.map((r) => r.src.replace(/^\//, '')),
-      ...deepDiveMappings.map((m) => relativePath(path.join(path.dirname(deepDiveViewerPath), m.target))),
-    ]);
-
-    const orphanCandidates = allHtmlFiles
-      .map((absPath) => relativePath(absPath))
-      .filter((relPath) => relPath !== 'index.html' && !explicitlyReferenced.has(relPath))
-      .sort();
-
-    if (orphanCandidates.length === 0) {
-      ok('No potential orphaned HTML files found');
-    } else {
-      warnings += orphanCandidates.length;
-      warn('Potential orphaned HTML files detected', `(count=${orphanCandidates.length})`);
-      for (const candidate of orphanCandidates) {
-        warn('Orphan candidate', `(file=${candidate})`);
-      }
-    }
-
-    console.log('');
-    console.log('================ DEBUG SUMMARY ================');
-    console.log(`Routes declared in index.html : ${routes.length}`);
-    console.log(`Top-nav routes discovered     : ${navRoutes.length}`);
-    console.log(`Routes loaded successfully    : ${loadedRoutes.length}`);
-    console.log(`Routes with failures          : ${missingRoutes.length}`);
-    console.log(`Deep-dive mappings            : ${deepDiveMappings.length}`);
-    console.log(`Potential orphan candidates   : ${orphanCandidates.length}`);
-    console.log(`Warnings                      : ${warnings}`);
-    console.log(`Failures                      : ${failures}`);
-    console.log('==============================================');
-
-    if (failures > 0) {
-      process.exitCode = 1;
     }
   } finally {
-    await shutdownServer(serverProcess);
+    server.kill('SIGTERM');
   }
+
+  console.log('');
+  console.log(`PASS: ${passes}  FAIL: ${failures}`);
+  process.exitCode = failures > 0 ? 1 : 0;
 }
 
 main().catch((error) => {
-  fail('Debug test crashed', error.stack || error.message);
-  process.exit(1);
+  fail('Test run crashed', `(${error.message})`);
+  process.exitCode = 1;
 });

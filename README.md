@@ -1,6 +1,6 @@
 # ✨ NewGen
 
-> A dynamic showcase loader for premium Intel Eventide, Sony, and ASUS brochure experiences with smart collapsible navigation.
+> A static brochure site for premium Intel Eventide, Sony, ASUS, Bang & Olufsen, and Aerospace experiences — every page lives at a real file path, with a shared collapsible navigator.
 
 ![Platform](https://img.shields.io/badge/platform-Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
 ![Frontend](https://img.shields.io/badge/frontend-HTML%20%7C%20CSS%20%7C%20JS-1f2937?style=for-the-badge)
@@ -27,32 +27,33 @@
 
 ## 🌌 Overview
 
-**NewGen** is a lightweight local web experience that launches a dynamic HTML loader and lets you switch between curated brochure pages:
+**NewGen** is a static site where the address bar path *is* the file path. Every route is a real folder with an `index.html`, so pages are directly linkable, crawlable, and refresh-safe with no client-side routing tricks:
 
-- **NewGen Conglomerate Placeholder** - Root (`/`) default placeholder with NewGen logo
+- **NewGen Conglomerate** — Root (`/`) landing page with the NewGen logo
+- **Intel Eventide** (`/Intel/Eventide/`) — Full processor architecture showcase with CPU, GPU, Tile, and Technology deep-dives
+- **Sony a0, XCD-LED & CRT-VR** (`/Sony/...`) — Professional camera and display systems
+- **ASUS Ceralumenesium Sapphire** (`/ASUS/Ceralumenesium/`) — Advanced material technology
+- **Bang & Olufsen wH105** (`/BangOlufsen/wH105/`) — Audio
+- **Aerospace STARSCRAMMER™** (`/Aerospace/STARSCRAMMER/`) — Aerospace division
 
-- **Intel Eventide** - Full processor architecture showcase with CPU, GPU, Tile, and Technology deep-dives
-- **Sony a0 & XCD-LED** - Professional camera systems
-- **ASUS Ceraluminesium Sapphire** - Advanced material technology
-
-The app is intentionally simple and fast: a Node.js static server powers a polished browser shell (`index.html`) that loads brochure pages in an iframe with one-click navigation, while History API routes keep the browser URL in sync for direct linking and refresh.
+A shared navigator (`assets/nav.js` + `assets/nav.css`) is included by every page and injects the collapsible sidebar, so the global GUI survives direct navigation to any URL.
 
 ---
 
 ## 🚀 Features
 
-- 🎯 **Hover-to-expand sidebar** - Automatically expands on hover (52px → 280px), collapses when you move away
-- 🎨 **Icon-based navigation** - Every company, product, category, and page has a unique emoji icon
-- 🗂️ **4-level nested navigation** - Company → Product → Category → Individual Pages
-- ✨ **Smooth animations** - Cubic-bezier transitions for professional feel
-- 🧭 **History API routing** with URL-aware navigation and back/forward support
-- 🏠 **Root-first default route** (`/`) loading a NewGen placeholder brochure page
-- 🚫 **Embedded 404 handling** with randomized jokes and correct typed-path interpolation
-- 🖥️ **Single local server** (`Server/server.js`) with static file delivery
+- 📁 **True file-path routing** — `/Intel/Eventide/CPU/SolarEclipse/` is literally `Intel/Eventide/CPU/SolarEclipse/index.html`
+- 🎯 **Hover-to-expand sidebar** — Automatically expands on hover (52px → 280px), collapses when you move away
+- 🎨 **Icon-based navigation** — Every company, product, category, and page has a unique emoji icon
+- 🗂️ **4-level nested navigation** — Company → Product → Category → Individual Pages
+- ✨ **Smooth animations** — Cubic-bezier transitions for professional feel
+- 🔗 **Real links everywhere** — Sidebar entries are plain `<a>` elements; no History API, no iframe shell
+- 🚫 **Honest 404s** — Unknown paths get `404.html` (with randomized jokes); real pages never flash a 404
+- 🖥️ **Single local server** (`Server/server.js`) with GitHub-Pages-style directory serving
 - 📦 **No framework overhead** (vanilla Node.js + HTML/CSS/JS)
 - 📱 **Mobile responsive** with slide-in sidebar (900px breakpoint)
 - 🧰 **Verbose Windows launcher UX** with structured startup diagnostics
-- 🛡️ **Launcher watchdog lifecycle** (`/__launcher/*`) with close-tab countdown signaling
+- 🛡️ **Launcher watchdog lifecycle** (`/__launcher/*`) with close-tab countdown signaling (localhost only)
 
 ---
 
@@ -60,13 +61,14 @@ The app is intentionally simple and fast: a Node.js static server powers a polis
 
 ### Hover-Based Collapsible Sidebar
 
-The sidebar starts collapsed (52px width) and automatically expands to 280px when you hover over it. This saves screen space while keeping navigation easily accessible.
+The sidebar starts collapsed (52px width) and automatically expands to 280px when you hover over it. It is injected on every page by `assets/nav.js`, so it works no matter which URL you land on.
 
 **Features:**
-- **Auto-expand on hover** - No clicking required
-- **Smooth animations** - 350ms cubic-bezier transitions
-- **Icon indicators** - Visual feedback for every navigation item
-- **Nested categories** - Support for unlimited hierarchy depth
+- **Auto-expand on hover** — No clicking required
+- **Smooth animations** — 350ms cubic-bezier transitions
+- **Icon indicators** — Visual feedback for every navigation item
+- **Nested categories** — Support for unlimited hierarchy depth
+- **URL-aware active state** — The current page and its ancestors are highlighted and expanded automatically
 
 ### Navigation Hierarchy
 
@@ -85,9 +87,7 @@ Company (e.g., Intel 🔷)
 
 ### Adding New Navigation Items
 
-To add new companies or brochures, update the `NAV_STRUCTURE` and `ICONS` objects in `index.html`. See [NAVIGATION.md](NAVIGATION.md) for detailed instructions.
-
-> Note: the current route is a legacy compatibility path: `/ASUS/Ceralumenesium`; on-disk brochure assets use `Ceraluminesium`.
+To add new companies or brochures, create the route folder with an `index.html` and update the `NAV_STRUCTURE` and `ICONS` objects in `assets/nav.js`. See [NAVIGATION.md](NAVIGATION.md) for detailed instructions.
 
 ---
 
@@ -95,32 +95,44 @@ To add new companies or brochures, update the `NAV_STRUCTURE` and `ICONS` object
 
 ```text
 NewGen/
-├── index.html                  # Main dynamic loader UI with hover sidebar
-├── newgen.conglomerate.brochure.html  # Root (/) placeholder brochure page
-├── 404.html                    # Embedded 404 experience with rotating jokes
+├── index.html                  # Root (/) landing page (NewGen Conglomerate)
+├── 404.html                    # 404 experience with rotating jokes
 ├── NAVIGATION.md               # Navigation system documentation
+├── assets/
+│   ├── nav.css                 # Shared navigator styles
+│   └── nav.js                  # Shared navigator (sidebar, active state, watchdog)
+├── Media/
+│   └── NewGenLogo.svg
 ├── Server/
 │   └── server.js               # Node.js static server (port 3000)
 ├── start-newgen.bat            # Windows batch launcher
 ├── start-newgen.ps1            # PowerShell launcher
-└── Source/
-    ├── INTEL/
-    │   └── Eventide/
-    │       ├── intel.eventide.brochure.html
-    │       ├── CPU.Architectures/
-    │       ├── GPU.architectures/
-    │       ├── Technologies/
-    │       ├── Tiles/
-    │       └── Media/
-    ├── SONY/
-    │   ├── ILCE-0/
-    │   │   └── sony.a0.brochure.html
-    │   └── XCD-LED/
-    │       └── sony,XCDLED.brochure.html
-    └── ASUS/
-        └── Material/
-            └── Ceraluminesium/
-                └── asus.ceraluminesium.brochure.html
+├── Intel/
+│   └── Eventide/
+│       ├── index.html          # Brochure page (/Intel/Eventide/)
+│       ├── deepdive.js         # Shared deep-dive content loader
+│       ├── deepdive.css
+│       ├── CPU/<Name>/index.html        # Deep-dive route stubs
+│       ├── SKU/<Id>/index.html
+│       ├── GPU/<Name>/index.html
+│       ├── Tile/<Name>/index.html
+│       ├── Technology/<Name>/index.html
+│       ├── CPU.Architectures/  # Deep-dive content fragments
+│       ├── CPU.SKU/
+│       ├── GPU.architectures/
+│       ├── Tiles/
+│       ├── Technologies/
+│       └── Media/
+├── Sony/
+│   ├── ILCE-0/index.html
+│   ├── XCD-LED/index.html
+│   └── CRT-VR/index.html
+├── ASUS/
+│   └── Ceralumenesium/index.html
+├── BangOlufsen/
+│   └── wH105/index.html
+└── Aerospace/
+    └── STARSCRAMMER/index.html
 ```
 
 ---
@@ -193,26 +205,25 @@ The batch launcher:
 ## ⚙️ How It Works
 
 1. `Server/server.js` starts a local HTTP server on port **3000**.
-2. URL paths without file extensions (for example `/` or `/Intel/Eventide`) resolve to `index.html`.
-3. `index.html` renders the top navigation and iframe viewer.
-4. Visiting `/` loads `newgen.conglomerate.brochure.html` as the default placeholder page.
-5. Clicking a nav button updates browser history (`pushState`) and swaps the iframe source to the selected brochure file.
-6. Browser back/forward (`popstate`) restores the correct brochure view.
-7. Unknown extensionless routes render `404.html` inside the shell and preserve the typed path for `{PATH}` jokes.
-8. Static assets and brochure files are served directly from disk.
+2. Directory URLs (for example `/Intel/Eventide/`) serve that folder's `index.html`; URLs without a trailing slash are redirected first, matching GitHub Pages behavior.
+3. Every page includes `assets/nav.js`, which injects the global sidebar, marks the current page active, and expands its ancestor categories.
+4. Sidebar entries are ordinary links — each click is a normal page load to a real path.
+5. Eventide deep-dive pages are small stubs that declare their content fragment (`window.NG_DEEPDIVE_SRC`) and let the shared `Intel/Eventide/deepdive.js` fetch and inline it — this keeps multi-fragment pages assembled client-side where needed.
+6. Unknown paths return `404.html` with a 404 status and preserve the typed path for `{PATH}` jokes.
+7. Static assets and brochure files are served directly from disk.
 
 ---
 
 ## 🧪 Development Notes
 
-- `npm test` runs `scripts/test-debug.js`, a verbose diagnostics test that:
-  - verifies default shell routing behavior (including root-route loading)
-  - validates watchdog endpoints (`/__launcher/status`, `/__launcher/heartbeat`, `/__launcher/ping`, `/__launcher/closed`)
-  - checks route navigability for declared `index.html` paths
-  - verifies declared source pages and deep-dive mapping targets are loadable
-  - reports potential orphaned `.html` files that are not referenced by route/deep-dive mappings
+- `npm test` runs `scripts/test-debug.js`, a diagnostics test that:
+  - verifies every route declared in `assets/nav.js` has a real `index.html` on disk
+  - starts the local server and checks every route responds with HTTP 200
+  - verifies deep-dive stubs point at existing content fragments
+  - checks trailing-slash redirects and 404 behavior
+  - validates watchdog endpoints (`/__launcher/status`, `/__launcher/heartbeat`, `/__launcher/ping`)
 - There is currently no configured linter/build pipeline in `package.json`.
-- This repository is focused on static brochure presentation and local hosting.
+- This repository is focused on static brochure presentation; it deploys to GitHub Pages via `.github/workflows/jekyll.yml`.
 
 ---
 

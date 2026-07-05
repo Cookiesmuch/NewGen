@@ -60,14 +60,26 @@ function escapeHtml(value) {
   ));
 }
 
+function serveNotFound(res, fallbackUrl) {
+  // Mirror GitHub Pages: unknown paths get 404.html with a 404 status.
+  fs.readFile(path.join(ROOT, '404.html'), (err, content) => {
+    if (err) {
+      res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(`<h1>404 Not Found</h1><p>${escapeHtml(fallbackUrl)}</p>`);
+      return;
+    }
+    res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(content);
+  });
+}
+
 function serveFile(filePath, res, fallbackUrl) {
   const ext = path.extname(filePath).toLowerCase();
   const contentType = mimeTypes[ext] || 'application/octet-stream';
   fs.readFile(filePath, (err, content) => {
     if (err) {
-      if (err.code === 'ENOENT') {
-        res.writeHead(404, { 'Content-Type': 'text/html' });
-        res.end(`<h1>404 Not Found</h1><p>${escapeHtml(fallbackUrl)}</p>`);
+      if (err.code === 'ENOENT' || err.code === 'EISDIR') {
+        serveNotFound(res, fallbackUrl);
       } else {
         res.writeHead(500, { 'Content-Type': 'text/html' });
         res.end(`<h1>500 Server Error</h1>`);
@@ -150,14 +162,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // If the request has no file extension it is a page route — serve the SPA shell
-  const ext = path.extname(fileSystemPath).toLowerCase();
-  if (!ext) {
-    serveFile(path.join(ROOT, 'index.html'), res, req.url);
-    return;
-  }
-
-  // Normalize path separators/dots, then force relative asset lookup under ROOT.
+  // Normalize path separators/dots, then force relative lookup under ROOT.
   const normalizedAssetPath = path.normalize(fileSystemPath);
   const trimmedAssetPath = normalizedAssetPath.replace(/^[\\/]+/, '');
   const resolvedAssetPath = path.resolve(path.join(ROOT, trimmedAssetPath));
@@ -166,6 +171,26 @@ const server = http.createServer((req, res) => {
   if (relativeAssetPath.startsWith('..') || path.isAbsolute(relativeAssetPath)) {
     res.writeHead(403, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end('<h1>403 Forbidden</h1>');
+    return;
+  }
+
+  // Routes are real folders (like GitHub Pages): a directory serves its
+  // index.html, and extensionless directory URLs redirect to a trailing
+  // slash first so relative links inside the page resolve correctly.
+  const ext = path.extname(fileSystemPath).toLowerCase();
+  if (!ext) {
+    fs.stat(resolvedAssetPath, (err, stats) => {
+      if (!err && stats.isDirectory()) {
+        if (!fileSystemPath.endsWith('/')) {
+          res.writeHead(301, { Location: `${encodeURI(fileSystemPath)}/` });
+          res.end();
+          return;
+        }
+        serveFile(path.join(resolvedAssetPath, 'index.html'), res, req.url);
+        return;
+      }
+      serveNotFound(res, req.url);
+    });
     return;
   }
 
