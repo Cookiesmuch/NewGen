@@ -53,6 +53,20 @@
       const parser = new DOMParser();
       const doc = parser.parseFromString(htmlContent, 'text/html');
 
+      // Carry over the fragment's stylesheet links (fonts, shared CSS) —
+      // resolving relative hrefs against the fragment's own location.
+      const fragmentUrl = new URL(deepdiveSrc, window.location.href);
+      doc.querySelectorAll('link[rel="stylesheet"]').forEach((linkNode) => {
+        const href = linkNode.getAttribute('href');
+        if (!href) return;
+        const resolved = new URL(href, fragmentUrl).href;
+        if (document.head.querySelector(`link[href="${resolved}"]`)) return;
+        const injectedLink = document.createElement('link');
+        injectedLink.rel = 'stylesheet';
+        injectedLink.href = resolved;
+        document.head.appendChild(injectedLink);
+      });
+
       const styleNodes = Array.from(doc.querySelectorAll('style'));
       styleNodes.forEach((styleNode) => {
         const injectedStyle = document.createElement('style');
