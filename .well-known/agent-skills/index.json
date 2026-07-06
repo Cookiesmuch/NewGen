@@ -1,14 +1,14 @@
 {
   "$schema": "https://agentskills.io/schemas/v0.2.0/index.json",
   "version": "0.2.0",
-  "site": "https://newgen.renovait.qzz.io/",
+  "site": "https://newgen.firev.xx.kg/",
   "skills": [
     {
       "name": "newgen-site-navigation",
       "type": "skill",
       "description": "How to navigate and read the NewGen showcase site as an AI agent: route map, deep-dive fragment locations for no-JS reading, WebMCP tools, and crawl policy.",
-      "url": "https://newgen.renovait.qzz.io/.well-known/agent-skills/site-navigation/SKILL.md",
-      "sha256": "69834080f57cb8ce572fb5a5cc2fa60685ffb68ccfb13949913e6573998eb4ff"
+      "url": "https://newgen.firev.xx.kg/.well-known/agent-skills/site-navigation/SKILL.md",
+      "sha256": "96b7b4da97b0d0f08327adf25321073e575d3012d77990445225e8974372263d"
     }
   ]
 }

@@ -1,4 +1,4 @@
-# NewGen — https://newgen.renovait.qzz.io/
+# NewGen — https://newgen.firev.xx.kg/
 # This site is built to be readable by humans and AI agents alike.
 # Every page lives at a real file path; see the sitemap for the full route map.
 # Agent-facing site guide: /.well-known/agent-skills/index.json
@@ -46,4 +46,4 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-Sitemap: https://newgen.renovait.qzz.io/sitemap.xml
+Sitemap: https://newgen.firev.xx.kg/sitemap.xml

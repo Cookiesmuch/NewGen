@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const SITE_ORIGIN = 'https://newgen.renovait.qzz.io';
+const SITE_ORIGIN = 'https://newgen.firev.xx.kg';
 
 function extractNavRoutes() {
   const navSource = fs.readFileSync(path.join(ROOT, 'assets', 'nav.js'), 'utf8');
