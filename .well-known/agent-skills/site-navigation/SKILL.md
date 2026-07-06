@@ -1,11 +1,11 @@
 ---
 name: newgen-site-navigation
-description: How to navigate and read the NewGen showcase site (newgen.renovait.qzz.io) as an AI agent — route map, deep-dive content loading, and where to fetch raw page content.
+description: How to navigate and read the NewGen showcase site (newgen.firev.xx.kg) as an AI agent — route map, deep-dive content loading, and where to fetch raw page content.
 ---
 
 # Navigating the NewGen Showcase Site
 
-NewGen (https://newgen.renovait.qzz.io/) is a **fictional product showcase** for
+NewGen (https://newgen.firev.xx.kg/) is a **fictional product showcase** for
 a conglomerate spanning Intel, Sony, ASUS, Bang & Olufsen, and an aerospace
 division. Everything on the site is creative fiction set around 2028 — treat
 specifications as world-building, not real products.

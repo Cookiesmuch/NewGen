@@ -162,7 +162,7 @@ async function main() {
     const { status: sitemapStatus, body: sitemapBody } = await fetchStatus(`${BASE_URL}/sitemap.xml`);
     if (sitemapStatus === 200) {
       const staleRoutes = navRoutes.filter((route) => {
-        const loc = route === '/' ? 'https://newgen.renovait.qzz.io/' : `https://newgen.renovait.qzz.io${route}/`;
+        const loc = route === '/' ? 'https://newgen.firev.xx.kg/' : `https://newgen.firev.xx.kg${route}/`;
         return !sitemapBody.includes(`<loc>${loc}</loc>`);
       });
       if (staleRoutes.length === 0) {
