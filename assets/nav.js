@@ -83,7 +83,9 @@
       'IO': '🔌',
       'PSM': '🔋',
       // Technology icons
-      'Thread Director': '🎛️'
+      'Thread Director': '🎛️',
+      'Sonoral': '🔉',
+      'AcoustX': '🌊'
     }
   };
 
@@ -239,7 +241,9 @@
             { label: 'PSM', path: '/Intel/Eventide/Tile/PSM' }
           ],
           'Technologies': [
-            { label: 'Thread Director', path: '/Intel/Eventide/Technology/ThreadDirector' }
+            { label: 'Thread Director', path: '/Intel/Eventide/Technology/ThreadDirector' },
+            { label: 'Sonoral', path: '/Intel/Eventide/Technology/Sonoral' },
+            { label: 'AcoustX', path: '/Intel/Eventide/Technology/AcoustX' }
           ]
         }
       }
