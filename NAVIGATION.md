@@ -188,7 +188,7 @@ Customize appearance by modifying these CSS variables in `assets/nav.css`:
 - **Products**: Core 500 / i500 / u500 / x500 SKU sheets
 - **GPU Architectures**: Elementalist, Druid, 2D Kanvas
 - **Tiles**: ZAM, HNPU, LPNPU, GNA, BionzXR, MFX, IPU, Klangkerne, Display, KillerS1, IO, PSM
-- **Technologies**: Thread Director
+- **Technologies**: Thread Director, Sonoral, AcoustX
 
 ### Sony
 - Alpha 0 (a0)

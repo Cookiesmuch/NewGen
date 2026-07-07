@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sonoral™ — Eventide Deep Dive</title>
+<link rel="stylesheet" href="../../../../assets/nav.css">
+<script src="../../../../assets/nav.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   SONORAL™ — Intel engineering document. Technology/ sibling of
+   ThreadDirector. Near-black #0A0E14, Intel-blue-shifted cyan
+   #00A8E0. Klangkerne amber appears ONLY at hybrid-bond handoff.
+   ================================================================ */
+:root {
+  --bg:        #0A0E14;
+  --bg2:       #0D1420;
+  --panel:     rgba(0,168,224,0.04);
+  --cyan:      #00A8E0;
+  --cyan-hi:   #3DC6F2;
+  --cyan-soft: rgba(0,168,224,0.10);
+  --cyan-bdr:  rgba(0,168,224,0.25);
+  --cyan-faint:rgba(0,168,224,0.06);
+  --amber:     #C9A227;
+  --amber-hi:  #E0BA3E;
+  --ink:       #E6EDF5;
+  --ink-2:     #9AA8BD;
+  --ink-3:     #5D6B80;
+  --warn:      #FF6B35;
+  --ok:        #4AE380;
+  --f-display: 'Bebas Neue', sans-serif;
+  --f-body:    'Space Grotesk', sans-serif;
+  --f-mono:    'IBM Plex Mono', monospace;
+  --max-w: 1200px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background:
+    radial-gradient(ellipse 1400px 700px at 50% 0px, rgba(0,168,224,0.07) 0%, transparent 70%),
+    linear-gradient(180deg, #0A0E14 0%, #0C1220 100%);
+  color: var(--ink);
+  font-family: var(--f-body);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 63px, rgba(0,168,224,0.06) 63px, rgba(0,168,224,0.06) 64px),
+    repeating-linear-gradient(90deg, transparent, transparent 63px, rgba(0,168,224,0.06) 63px, rgba(0,168,224,0.06) 64px);
+}
+.back-button {
+  position: fixed;
+  top: 20px;
+  left: 72px;
+  z-index: 1000;
+  padding: 12px 20px;
+  background: rgba(0, 104, 181, 0.95);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+.back-button:hover { background: rgba(0, 104, 181, 1); }
+@media (max-width: 900px) { .back-button { left: 20px; } }
+
+.wrap { position: relative; z-index: 1; }
+.section { max-width: var(--max-w); margin: 0 auto; padding: 76px 48px; }
+@media (max-width: 720px) { .section { padding: 56px 22px; } }
+
+.eyebrow {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.eyebrow::before { content: ''; width: 26px; height: 2px; background: var(--cyan); flex: none; }
+
+h2.title {
+  font-family: var(--f-display);
+  font-size: clamp(36px, 5.5vw, 52px);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.02;
+  margin-bottom: 22px;
+  color: var(--ink);
+}
+h2.title .cy { color: var(--cyan-hi); }
+.intro {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--ink-2);
+  margin-bottom: 40px;
+  max-width: 820px;
+}
+.intro strong { color: var(--cyan-hi); font-weight: 600; }
+.intro em { color: var(--ink); font-style: normal; font-weight: 600; }
+.copy { font-size: 14.5px; line-height: 1.85; color: var(--ink-2); max-width: 820px; margin-bottom: 18px; }
+.copy strong { color: var(--ink); }
+.copy .cy { color: var(--cyan-hi); font-weight: 600; }
+.copy a { color: var(--cyan-hi); }
+
+/* HERO */
+.hero { padding-top: 120px; text-align: left; }
+.hero-headline {
+  font-family: var(--f-display);
+  font-size: clamp(64px, 10vw, 108px);
+  font-weight: 400;
+  line-height: 0.94;
+  margin-bottom: 24px;
+  background: linear-gradient(180deg, #FFFFFF 0%, var(--cyan-hi) 58%, var(--cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub { font-size: 18px; line-height: 1.7; color: var(--ink-2); max-width: 780px; margin-bottom: 30px; }
+.hero-sub strong { color: var(--cyan-hi); font-weight: 600; }
+.badges { display: flex; flex-wrap: wrap; gap: 10px; }
+.bdg {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 7px 13px;
+  border: 1px solid var(--cyan-bdr);
+  border-radius: 4px;
+  color: var(--cyan-hi);
+  background: var(--cyan-faint);
+}
+.bdg.dim { border-color: rgba(230,237,245,.14); color: var(--ink-2); background: rgba(255,255,255,.02); }
+
+/* ray divider */
+.ray-divider { max-width: var(--max-w); margin: 0 auto; padding: 0 48px; }
+.ray-divider svg { display: block; width: 100%; height: 46px; }
+
+/* stat row */
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-top: 42px; }
+.stat {
+  border: 1px solid var(--cyan-bdr);
+  border-radius: 6px;
+  background: var(--panel);
+  padding: 20px 18px 16px;
+}
+.stat-n { font-family: var(--f-display); font-size: 34px; line-height: 1; color: var(--cyan-hi); }
+.stat-n .u { font-size: .5em; color: var(--ink-3); letter-spacing: .05em; }
+.stat-l { margin-top: 8px; font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+
+/* tables */
+.tbl-wrap { overflow-x: auto; margin-top: 28px; }
+table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 640px; }
+.tbl th {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--cyan);
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 2px solid var(--cyan-bdr);
+  background: var(--cyan-faint);
+}
+.tbl td {
+  padding: 13px 14px;
+  border-bottom: 1px solid rgba(0,168,224,0.1);
+  color: var(--ink-2);
+  vertical-align: top;
+  line-height: 1.65;
+}
+.tbl tr:hover td { background: rgba(0,168,224,0.04); }
+.tbl td:first-child { color: var(--ink); font-weight: 600; white-space: nowrap; }
+.tbl .mono { font-family: var(--f-mono); font-size: 12px; color: var(--cyan-hi); }
+.tbl .hi td { background: rgba(0,168,224,0.07); }
+.tbl .hi td:first-child { color: var(--cyan-hi); }
+
+/* panels */
+.panel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 32px; }
+.pcard {
+  border: 1px solid rgba(0,168,224,0.16);
+  border-radius: 6px;
+  background: var(--panel);
+  padding: 24px;
+}
+.pcard h4 { font-family: var(--f-display); font-size: 21px; font-weight: 400; letter-spacing: .02em; color: var(--cyan-hi); margin-bottom: 10px; }
+.pcard h4 .tag { font-family: var(--f-mono); font-size: 10px; color: var(--ink-3); letter-spacing: .1em; margin-left: 8px; }
+.pcard p { font-size: 13px; line-height: 1.75; color: var(--ink-2); }
+.pcard p strong { color: var(--ink); }
+.pcard .metric { margin-top: 12px; font-family: var(--f-mono); font-size: 11px; color: var(--cyan); }
+
+/* diagram frame */
+.dcard {
+  border: 1px solid rgba(0,168,224,0.18);
+  border-radius: 6px;
+  background: rgba(4,10,18,.55);
+  padding: 26px;
+  margin-top: 34px;
+}
+.dcard-title { font-family: var(--f-mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 18px; }
+.dcard-note { margin-top: 14px; font-size: 12px; line-height: 1.7; color: var(--ink-3); max-width: 720px; }
+svg text { user-select: none; }
+
+.trace-btn {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  padding: 12px 22px;
+  border: 1px solid var(--cyan);
+  border-radius: 4px;
+  background: var(--cyan-soft);
+  color: var(--cyan-hi);
+  cursor: pointer;
+  transition: all .18s;
+  margin-bottom: 18px;
+}
+.trace-btn:hover { background: rgba(0,168,224,.2); }
+.trace-btn:disabled { opacity: .5; cursor: default; }
+.trace-tip {
+  min-height: 3.2em;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  margin-top: 14px;
+  max-width: 720px;
+}
+.trace-tip b { color: var(--cyan-hi); font-family: var(--f-mono); font-size: 12px; }
+.trace-tip .amber { color: var(--amber-hi); }
+
+/* pipeline blocks (svg-driven) */
+.pipe-node.active rect { stroke: var(--cyan-hi) !important; stroke-width: 2 !important; filter: drop-shadow(0 0 8px rgba(61,198,242,.6)); }
+.pipe-node.active-amber rect { stroke: var(--amber-hi) !important; stroke-width: 2 !important; filter: drop-shadow(0 0 8px rgba(224,186,62,.6)); }
+
+/* methodology callouts */
+.note-block {
+  border-left: 3px solid var(--cyan);
+  background: var(--cyan-faint);
+  border-radius: 0 6px 6px 0;
+  padding: 20px 24px;
+  margin-top: 26px;
+  max-width: 860px;
+}
+.note-block h5 { font-family: var(--f-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--cyan-hi); margin-bottom: 8px; }
+.note-block p { font-size: 13px; line-height: 1.75; color: var(--ink-2); }
+.note-block p strong { color: var(--ink); }
+.note-block.contra { border-left-color: var(--warn); background: rgba(255,107,53,.05); }
+.note-block.contra h5 { color: var(--warn); }
+
+/* debts */
+.debt {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 18px;
+  border: 1px solid rgba(0,168,224,0.14);
+  border-radius: 6px;
+  background: var(--panel);
+  padding: 22px;
+  margin-top: 14px;
+}
+.debt-num { font-family: var(--f-display); font-size: 30px; color: var(--ink-3); line-height: 1; }
+.debt h4 { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.debt p { font-size: 13px; line-height: 1.75; color: var(--ink-2); }
+.debt p a { color: var(--cyan-hi); }
+
+/* link cards */
+.link-card {
+  display: block;
+  text-decoration: none;
+  border: 1px solid rgba(230,237,245,.12);
+  border-radius: 6px;
+  padding: 26px;
+  background: rgba(255,255,255,.02);
+  transition: transform .25s, border-color .25s, box-shadow .25s;
+}
+.link-card:hover { transform: translateY(-3px); }
+.link-card .lc-eyebrow { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; margin-bottom: 10px; }
+.link-card .lc-title { font-family: var(--f-display); font-size: 22px; font-weight: 400; letter-spacing: .02em; color: var(--ink); margin-bottom: 8px; }
+.link-card .lc-body { font-size: 12.5px; line-height: 1.7; color: var(--ink-2); margin-bottom: 14px; }
+.link-card .lc-cta { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; }
+.link-card.amber { border-top: 3px solid #C9A227; }
+.link-card.amber .lc-eyebrow, .link-card.amber .lc-cta { color: #E0BA3E; }
+.link-card.amber:hover { border-color: rgba(201,162,39,.5); box-shadow: 0 12px 32px rgba(201,162,39,.12); }
+.link-card.teal { border-top: 3px solid #0D9488; }
+.link-card.teal .lc-eyebrow, .link-card.teal .lc-cta { color: #2DD4BF; }
+.link-card.teal:hover { border-color: rgba(13,148,136,.5); box-shadow: 0 12px 32px rgba(13,148,136,.15); }
+.lc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+
+footer { border-top: 1px solid rgba(0,168,224,.14); margin-top: 40px; }
+.footer-inner { max-width: var(--max-w); margin: 0 auto; padding: 48px 48px 36px; }
+.footer-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: 36px; }
+.footer-brand { font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; color: var(--ink-2); }
+.footer-ng { font-family: var(--f-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--cyan); opacity: .7; }
+.footer-disclaimer { margin-top: 14px; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .08em; color: var(--ink-3); }
+
+.fu { opacity: 0; transform: translateY(18px); transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); }
+.fu.vis { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+<a class="back-button" href="../../">← Back to Overview</a>
+<div class="wrap">
+
+<!-- HERO -->
+<section class="section hero">
+  <div class="eyebrow">Intel Technology · Acoustic Compute</div>
+  <h1 class="hero-headline">Sonoral™</h1>
+  <p class="hero-sub"><strong>Sonoral is Intel's implementation of AcoustX</strong> — the silicon, firmware and driver stack behind hardware acoustic ray tracing on Eventide. The relationship is exactly the one you already know: AcoustX is the open specification, Sonoral is the vendor implementation. <strong>DXR is the spec; RTX is the machine.</strong> Same architecture of trust, applied to sound.</p>
+  <div class="badges">
+    <span class="bdg">SoRT · Sound Ray Tracing</span>
+    <span class="bdg">AcoustX Conformant</span>
+    <span class="bdg dim">Intel 04A · 7.2 mm²</span>
+    <span class="bdg dim">Foveros 2.0 on Klangkerne</span>
+    <span class="bdg dim">Core 500 · Laptop · Xeon 500</span>
+  </div>
+  <div class="stat-row">
+    <div class="stat fu"><div class="stat-n">96M<span class="u"> ray-steps/s</span></div><div class="stat-l">Traversal Engine, per cluster</div></div>
+    <div class="stat fu"><div class="stat-n">2.67<span class="u"> ms</span></div><div class="stat-l">Audio-block deadline · 128 smp @ 48 kHz</div></div>
+    <div class="stat fu"><div class="stat-n">1–4<span class="u"> clusters</span></div><div class="stat-l">Feature-uniform · quantity-scaled</div></div>
+    <div class="stat fu"><div class="stat-n">118<span class="u"> mW</span></div><div class="stat-l">Benchmark scene, audio workload</div></div>
+  </div>
+</section>
+
+<div class="ray-divider"><svg viewBox="0 0 1104 46" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,40 180,10 380,34 610,6 830,30 1104,12" fill="none" stroke="rgba(0,168,224,.35)" stroke-width="1"/><circle cx="180" cy="10" r="2.5" fill="#00A8E0"/><circle cx="380" cy="34" r="2.5" fill="#00A8E0"/><circle cx="610" cy="6" r="2.5" fill="#00A8E0"/><circle cx="830" cy="30" r="2.5" fill="#00A8E0"/></svg></div>
+
+<!-- MICROARCHITECTURE -->
+<section class="section" id="microarch">
+  <div class="eyebrow">SoRT Microarchitecture</div>
+  <h2 class="title">Five blocks. <span class="cy">One deadline.</span></h2>
+  <p class="intro">Each SoRT cluster is a short, deep pipeline of fixed-function blocks built around a single scheduling truth: an impulse-response update is due every <em>2.67&nbsp;ms</em>, and it is never allowed to be late. No shader cores, no occupancy games — every block exists because a closed-form acoustic quantity wanted silicon.</p>
+  <div class="tbl-wrap fu">
+    <table class="tbl">
+      <thead><tr><th>Block</th><th>Function</th><th>Key metric</th></tr></thead>
+      <tbody>
+        <tr><td>Traversal Engine <span class="mono">TE</span></td><td>BVH walk, ray-box / ray-tri intersect, 8-octave-band payload per ray, high-precision path length (the delay tap is the geometry)</td><td class="mono">96M ray-steps/s @ 210 mW peak</td></tr>
+        <tr><td>Diffraction Unit <span class="mono">DU</span></td><td>UTD edge-diffraction coefficients per band; edges flagged at bake, evaluated only where flagged</td><td class="mono">2.4M edge evaluations/s</td></tr>
+        <tr><td>Binaural Divergence Unit <span class="mono">BDU</span></td><td>Woodworth ITD, frequency-dependent ILD head shadow, creeping-wave LF shelf; forks direct + first-order early reflections only; head radius is a runtime parameter</td><td class="mono">512 paths/frame forked · 1.08× ray overhead</td></tr>
+        <tr><td>IR Assembler <span class="mono">IRA</span></td><td>Delay-tap + per-band gain collection; temporal accumulation with exponential decay; dirty-flag flush on TLAS refit</td><td class="mono">8-frame history · 2,048-tap staging buffer</td></tr>
+        <tr><td>Material LUT <span class="mono">LUT</span></td><td>Local SRAM — the only non-centralized data in the design</td><td class="mono">64 × 8 bands × 16-bit = 8 KB · 1-cycle</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tbl-wrap fu">
+    <table class="tbl">
+      <thead><tr><th>Tier</th><th>Clusters</th><th>Ray budget / audio block</th><th>Max concurrent sources</th></tr></thead>
+      <tbody>
+        <tr><td>Core 500</td><td class="mono">×1</td><td class="mono">6,144 ray-paths</td><td class="mono">64</td></tr>
+        <tr><td>Laptop-class</td><td class="mono">×2</td><td class="mono">12,288 ray-paths</td><td class="mono">128</td></tr>
+        <tr><td>Xeon 500</td><td class="mono">×4</td><td class="mono">24,576 ray-paths</td><td class="mono">256</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="copy" style="margin-top: 22px;">Scaling is <strong>feature-uniform and quantity-scaled</strong>: a handheld gets the same UTD diffraction and the same binaural math as a Xeon workstation — just fewer rays. A title tuned against one tier behaves identically on every other. That determinism is the point.</p>
+
+  <div class="dcard fu">
+    <div class="dcard-title">Cluster pipeline — source registration to Hallraum</div>
+    <button class="trace-btn" id="traceBtn">▶ Trace one ray</button>
+    <svg id="pipeSvg" viewBox="0 0 1120 250" role="img" aria-label="SoRT pipeline flow diagram"></svg>
+    <div class="trace-tip" id="traceTip">Press <b>Trace one ray</b> to follow a single ray-path through the pipeline, stage by stage.</div>
+    <div class="dcard-note">Cyan is SoRT's domain; the line turns amber at the hybrid-bond handoff — from there on, the parametric IR belongs to Klangkerne's FDN/convolution engines and the Hallraum output stage. That color seam is the architecture boundary.</div>
+  </div>
+</section>
+
+<div class="ray-divider"><svg viewBox="0 0 1104 46" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,8 240,36 470,12 700,38 940,10 1104,30" fill="none" stroke="rgba(0,168,224,.35)" stroke-width="1"/><circle cx="240" cy="36" r="2.5" fill="#00A8E0"/><circle cx="470" cy="12" r="2.5" fill="#00A8E0"/><circle cx="700" cy="38" r="2.5" fill="#00A8E0"/><circle cx="940" cy="10" r="2.5" fill="#00A8E0"/></svg></div>
+
+<!-- FIXED RESOLVERS -->
+<section class="section" id="resolvers">
+  <div class="eyebrow">Fixed Resolver Roster</div>
+  <h2 class="title">Seven resolvers. <span class="cy">Zero shaders.</span></h2>
+  <p class="intro">Graphics needed programmable shading because surface appearance is open-ended. Acoustic propagation is not: every quantity below is <em>closed-form or low-dimensional</em>, which is precisely the argument for casting it as fixed-function silicon. Per core, per ray, per block — these run in lockstep with traversal.</p>
+  <div class="panel-grid">
+    <div class="pcard fu"><h4>Distance Attenuation</h4><p>Spherical spreading (1/r) plus ISO 9613 per-band atmospheric absorption, held in ROM. Two table lookups and a multiply — there is nothing to program, so nothing programmable was built.</p></div>
+    <div class="pcard fu"><h4>Doppler</h4><p>The TE already computes high-precision path length per frame; Doppler is its time derivative mapped to a resample ratio. One subtraction, one divide — the resolver is nearly free because the traversal payload was designed for it.</p></div>
+    <div class="pcard fu"><h4>Material Coefficient Fetch</h4><p>6-bit material index into the local 8&nbsp;KB LUT: 8 absorption bands × 16-bit, single-cycle. Sits inside the innermost intersection loop, which is why it is the one deliberately local memory in the design.</p></div>
+    <div class="pcard fu"><h4>UTD Edge Diffraction</h4><p>The Uniform Theory of Diffraction reduces an edge to a closed-form coefficient per band, given geometry the bake already flagged. Low-dimensional inputs, deterministic output — a textbook fixed-function candidate, and the feature software ray tracers habitually fake.</p></div>
+    <div class="pcard fu"><h4>Woodworth ITD / Head-Shadow ILD</h4><p>Interaural time from the Woodworth model, level from a frequency-dependent head-shadow fit, plus a creeping-wave LF shelf. Head radius is a runtime parameter, not a bake constant. Feeds the BDU's per-ear fork.</p></div>
+    <div class="pcard fu"><h4>Source Directivity</h4><p>Spherical-harmonic cardioid-family polar patterns evaluated per band. A handful of SH coefficients per source covers loudspeakers, voices and engines — low-dimensional by construction.</p></div>
+    <div class="pcard fu"><h4>Ambisonic / HOA Encode</h4><p>Direction to spherical-harmonic weights: a fixed matrix multiply. Emits scene-agnostic soundfield components for downstream mixers and the codec bridge without a render-to-channels detour.</p></div>
+  </div>
+</section>
+
+<div class="ray-divider"><svg viewBox="0 0 1104 46" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,30 200,8 430,36 660,10 890,34 1104,14" fill="none" stroke="rgba(0,168,224,.35)" stroke-width="1"/><circle cx="200" cy="8" r="2.5" fill="#00A8E0"/><circle cx="430" cy="36" r="2.5" fill="#00A8E0"/><circle cx="660" cy="10" r="2.5" fill="#00A8E0"/><circle cx="890" cy="34" r="2.5" fill="#00A8E0"/></svg></div>
+
+<!-- MEMORY -->
+<section class="section" id="memory">
+  <div class="eyebrow">Memory Hierarchy</div>
+  <h2 class="title">One cache. <span class="cy">One exception.</span></h2>
+  <p class="intro">SoRT owns almost no memory. The acoustic BLAS lives in shared bLLC (Kache Kore) beside the graphics BVH it was decimated from; HRTF sets, transducer profiles and IR history ride the central memory controller and ZAM bandwidth. The design duplicates <em>nothing</em> — except one 8&nbsp;KB table, on purpose.</p>
+  <div class="dcard fu">
+    <div class="dcard-title">Latency / capacity ladder — what audio data lives at each rung</div>
+    <svg id="ladderSvg" viewBox="0 0 1120 330" role="img" aria-label="Memory latency and capacity ladder"></svg>
+    <div class="dcard-note">The Material Coefficient LUT is the single deliberately local structure: it sits inside the intersection loop, where a 9&nbsp;ns bLLC round-trip would cost ~22 potential ray-steps per fetch at TE rates. Latency merit earned its 8&nbsp;KB of SRAM; nothing else made that case.</div>
+  </div>
+  <div class="tbl-wrap fu">
+    <table class="tbl">
+      <thead><tr><th>Item</th><th>Footprint / behavior</th></tr></thead>
+      <tbody>
+        <tr><td>Acoustic BLAS</td><td><span class="mono">14–60 MB/scene</span> — versus 400 MB–1.2 GB for the graphics BLAS of the same scene (typical decimation 2.1M tris → 8,400-tri proxy, 250:1)</td></tr>
+        <tr><td>bLLC (Kache Kore)</td><td>Shared with CPU/GPU; up to <span class="mono">4 GB</span> on top-spec Core x9 · round-trip from SoRT <span class="mono">9 ns</span></td></tr>
+        <tr><td>Material LUT</td><td>Local SRAM · <span class="mono">0.4 ns</span> (1-cycle) · 64 entries × 8 bands × 16-bit = 8 KB</td></tr>
+        <tr><td>HRTF set</td><td>720 directions × 2 ears × 256-tap FIR @ 24-bit ≈ <span class="mono">1.1 MB/profile</span> · ZAM load &lt;0.2 ms</td></tr>
+        <tr><td>Transducer profiles</td><td><span class="mono">64–256 KB</span>, signed, loaded on device handshake</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+<div class="ray-divider"><svg viewBox="0 0 1104 46" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,12 260,38 500,10 760,36 1000,12 1104,26" fill="none" stroke="rgba(0,168,224,.35)" stroke-width="1"/><circle cx="260" cy="38" r="2.5" fill="#00A8E0"/><circle cx="500" cy="10" r="2.5" fill="#00A8E0"/><circle cx="760" cy="36" r="2.5" fill="#00A8E0"/><circle cx="1000" cy="12" r="2.5" fill="#00A8E0"/></svg></div>
+
+<!-- BENCHMARKS -->
+<section class="section" id="benchmarks">
+  <div class="eyebrow">Deep Benchmarks</div>
+  <h2 class="title">The full table, <span class="cy">on the record.</span></h2>
+  <p class="intro">Reference scene: <em>64 sources × 32 rays × 3 bounces</em>, 48&nbsp;kHz / 128-sample blocks, identical acoustic content on all four paths. The Klangkerne page carries the headline charts; this is the complete accounting.</p>
+  <div class="tbl-wrap fu">
+    <table class="tbl">
+      <thead><tr><th></th><th>CPU software</th><th>GPU compute</th><th>GPU RTU-shared</th><th>SoRT</th></tr></thead>
+      <tbody>
+        <tr class="rowhead"><td>Power (audio workload)</td><td class="mono">1,840 mW</td><td class="mono">1,120 mW</td><td class="mono">640 mW</td><td class="mono">118 mW</td></tr>
+        <tr><td>Motion-to-ear latency</td><td class="mono">62 ms</td><td class="mono">41 ms</td><td class="mono">18 ms</td><td class="mono">6.4 ms</td></tr>
+        <tr><td>Frame-render impact</td><td class="mono">−4.1% fps</td><td class="mono">−7.8% fps</td><td class="mono">−11.2% fps</td><td class="mono">0.0%</td></tr>
+        <tr><td>Diffraction fidelity</td><td>none / faked</td><td>none</td><td>none</td><td>full UTD</td></tr>
+        <tr><td>Max sources @ deadline</td><td class="mono">24</td><td class="mono">48</td><td class="mono">96</td><td class="mono">64 / 128 / 256 by tier</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note-block fu">
+    <h5>Methodology</h5>
+    <p>All four paths consume the same <strong>.ablx</strong> acoustic BLAS and the same source set. CPU software is a SIMD-optimized geometric tracer on 4 P-cores; GPU compute runs the same kernel via compute queues; RTU-shared time-slices the Druid GPU's RTU4 ray units between frame rendering and audio batches; SoRT is a single Core 500 cluster. Power figures are the marginal draw attributable to the audio workload, measured at the package rails over a 10-minute traversal-heavy loop. Latency is motion event to transducer drive signal, including output-stage cost on the identical Hallraum path.</p>
+  </div>
+  <div class="note-block fu">
+    <h5>The scheduling-domain argument</h5>
+    <p>Audio deadlines and render deadlines are different clocks. A frame is due every 8–16&nbsp;ms and may slip a frame under load; an audio block is due every <strong>2.67&nbsp;ms</strong> and a miss is an audible glitch, not a dropped frame. Any shared-hardware scheme must arbitrate between these domains — and under combined load, one of them loses. SoRT never arbitrates: its scheduling domain is the audio block, alone, always. That is why its frame impact is exactly 0.0% and why its latency has no long tail.</p>
+  </div>
+  <div class="note-block contra fu">
+    <h5>Counterargument, kept on record</h5>
+    <p>On dual-GPU systems — an Elementalist dGPU rendering while the Druid iGPU idles — the idle GPU's RTU4 units could absorb the acoustic workload at zero frame cost, and the 640&nbsp;mW figure would drop meaningfully. We ran it; it works. It ships nowhere. Two reasons: <strong>deterministic cross-tier behavior</strong> — a feature that exists only when a second GPU is present is a feature titles cannot depend on, and the handhelds that need acoustic offload most are exactly the single-GPU machines it abandons; and <strong>clock-domain mismatch</strong> — the iGPU's power-management ramps are tuned for burst rendering, not a hard 2.67&nbsp;ms heartbeat, and holding it awake at audio cadence erases most of the power win. The dedicated block is smaller, always present, and always the same.</p>
+  </div>
+</section>
+
+<div class="ray-divider"><svg viewBox="0 0 1104 46" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,34 220,10 460,36 690,8 920,32 1104,16" fill="none" stroke="rgba(0,168,224,.35)" stroke-width="1"/><circle cx="220" cy="10" r="2.5" fill="#00A8E0"/><circle cx="460" cy="36" r="2.5" fill="#00A8E0"/><circle cx="690" cy="8" r="2.5" fill="#00A8E0"/><circle cx="920" cy="32" r="2.5" fill="#00A8E0"/></svg></div>
+
+<!-- DESIGN DEBTS -->
+<section class="section" id="debts">
+  <div class="eyebrow">Design Debts</div>
+  <h2 class="title">What it can't do. <span class="cy">Written down.</span></h2>
+  <p class="intro">Every architecture carries debts. These are Sonoral's, stated plainly — with what we did about each.</p>
+  <div class="debt fu">
+    <div class="debt-num">01</div>
+    <div>
+      <h4>Geometric acoustics fails below ~200 Hz</h4>
+      <p>In small rooms, sub-200&nbsp;Hz wavelengths reach room scale and standing-wave modes dominate — no ray count fixes a wrong physical model. The answer is architectural, not incremental: <a href="../../Tile/Klangkerne/#tiefton">Tiefton</a>, Klangkerne's FEM-baked modal-correction subsystem, owns everything below the 180&nbsp;Hz crossover. SoRT does not pretend to trace where rays are not physics.</p>
+    </div>
+  </div>
+  <div class="debt fu">
+    <div class="debt-num">02</div>
+    <div>
+      <h4>The acoustic BLAS is a bake-time cost</h4>
+      <p>Decimation, material assignment and edge flagging run offline in the NewGen bake tool — roughly 4&nbsp;s per reverb zone for the Tiefton FEM solve on a Core 500 development machine, plus the proxy build itself. Fully dynamic geometry (destruction beyond TLAS refit granularity) inherits stale acoustic proxies until the next bake. Runtime refit covers transforms and visibility; it does not re-decimate.</p>
+    </div>
+  </div>
+  <div class="debt fu">
+    <div class="debt-num">03</div>
+    <div>
+      <h4>The HRTF individualization ceiling</h4>
+      <p>With a generic 720-direction HRTF set, front/back confusion remains the realism ceiling — a property of human hearing, not of the silicon. The hardware renders its transfer function faithfully; the function worth rendering is per-human. Photogrammetry personalization (a delta layer over the base set, first-party tier) is the mitigation, not a cure.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="lc-grid">
+      <a class="link-card amber" href="../../Tile/Klangkerne/">
+        <div class="lc-eyebrow">Intel × Bang &amp; Olufsen · Tile</div>
+        <div class="lc-title">Klangkerne™</div>
+        <div class="lc-body">The tile Sonoral lives on: die stack and power domains, Tiefton, Hallraum output fidelity, the binaural demo, and the headline benchmark story.</div>
+        <div class="lc-cta">Tile / Klangkerne →</div>
+      </a>
+      <a class="link-card teal" href="../AcoustX/">
+        <div class="lc-eyebrow">Open Specification</div>
+        <div class="lc-title">AcoustX</div>
+        <div class="lc-body">The royalty-free API Sonoral implements: listener.h and compat.h, the feature matrix, code samples, and the one-recompile migration path.</div>
+        <div class="lc-cta">Technology / AcoustX →</div>
+      </a>
+    </div>
+    <div class="footer-row">
+      <div class="footer-brand">Intel · Eventide · Sonoral™ Acoustic Compute</div>
+      <div class="footer-ng">NewGen Conglomerate · 2026</div>
+    </div>
+    <div class="footer-disclaimer">Not a real product &nbsp;·&nbsp; All specifications are fictional</div>
+  </div>
+</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+var SVGNS='http://www.w3.org/2000/svg';
+function el(svg,tag,attrs,txt){var n=document.createElementNS(SVGNS,tag);for(var k in attrs)n.setAttribute(k,attrs[k]);if(txt!=null)n.textContent=txt;svg.appendChild(n);return n;}
+var MONO='IBM Plex Mono, monospace';
+var CYAN='#00A8E0',CYAN_HI='#3DC6F2',AMBER='#E0BA3E',INK2='#9AA8BD',INK3='#5D6B80';
+
+/* ===== PIPELINE + TRACE-ONE-RAY ===== */
+var STAGES=[
+ {id:'src', name:'SOURCE\nREGISTRATION', amber:false, tip:'<b>Source registration.</b> The title registers an emitter through AcoustX — position, directivity SH coefficients, per-band level. Sonoral assigns it a slot in the active source table (64 per cluster).'},
+ {id:'tlas',name:'TLAS / bLLC\nFETCH', amber:false, tip:'<b>TLAS + acoustic BLAS fetch.</b> The ray’s traversal state streams from shared bLLC — the same TLAS the GPU refits for rendering, pointing into the 14–60 MB .ablx acoustic proxy. 9 ns round-trip; nothing is duplicated.'},
+ {id:'te',  name:'TRAVERSAL\nENGINE', amber:false, tip:'<b>Traversal Engine.</b> BVH walk with ray-box and ray-tri intersection at up to 96M ray-steps/s, carrying an 8-octave-band payload. Path length is kept at high precision — it becomes the delay tap.'},
+ {id:'du',  name:'DIFFRACTION\nUNIT', amber:false, tip:'<b>Diffraction Unit.</b> Where the path grazes an edge the bake flagged, UTD coefficients are evaluated per band — 2.4M edge evaluations/s. Sound bends around the corner; the ray records by how much, per octave.'},
+ {id:'bdu', name:'BINAURAL\nDIVERGENCE', amber:false, tip:'<b>Binaural Divergence Unit.</b> Direct and first-order paths fork per-ear: Woodworth ITD from path geometry, head-shadow ILD per band, creeping-wave LF shelf. 512 forked paths per frame at only 1.08× ray overhead.'},
+ {id:'ira', name:'IR\nASSEMBLER', amber:false, tip:'<b>IR Assembler.</b> Every surviving path lands as a delay tap with per-band gains in the 2,048-tap staging buffer, accumulated across an 8-frame history with exponential decay. A TLAS refit raises the dirty flag and flushes stale energy.'},
+ {id:'bond',name:'HYBRID\nBOND', amber:true, tip:'<b class="amber">Hybrid-bond handoff — 0.02 ms.</b> The parametric IR crosses the Foveros 2.0 bond into the Klangkerne base die. From here the signal path belongs to amber: DSP, not ray tracing.'},
+ {id:'fdn', name:'FDN /\nCONVOLUTION', amber:true, tip:'<b class="amber">FDN / convolution.</b> Early reflections render as true sparse convolution taps; the late field becomes a feedback delay network driven by the IRA’s statistical parameters — hundreds of MACs per sample where brute-force convolution would take ~100k.'},
+ {id:'hall',name:'HALLRAUM', amber:true, tip:'<b class="amber">Hallraum.</b> Transducer profile inversion, HRTF convolution, codec bridge to Atmos/DTS:X objects straight from the parametric domain. The computed field, rendered true on whatever is on your head.'}
+];
+var pipe=document.getElementById('pipeSvg');
+var nodes=[];
+(function drawPipe(){
+  var W=1120,y0=70,bw=100,bh=64,gap=(W-40-9*bw)/8,x=20;
+  // connecting line first
+  var lineY=y0+bh/2;
+  el(pipe,'line',{x1:20,y1:lineY,x2:W-20,y2:lineY,stroke:'rgba(0,168,224,.2)','stroke-width':1});
+  STAGES.forEach(function(s,i){
+    var g=el(pipe,'g',{class:'pipe-node',id:'pn-'+s.id});
+    var col=s.amber?AMBER:CYAN;
+    el(g,'rect',{x:x,y:y0,width:bw,height:bh,rx:5,fill:s.amber?'rgba(201,162,39,.08)':'rgba(0,168,224,.07)',stroke:s.amber?'rgba(201,162,39,.4)':'rgba(0,168,224,.35)','stroke-width':1});
+    s.name.split('\n').forEach(function(line,li){
+      el(g,'text',{x:x+bw/2,y:y0+26+li*14,'text-anchor':'middle','font-family':MONO,'font-size':9.5,fill:s.amber?AMBER:CYAN_HI,'letter-spacing':'.5'},line);
+    });
+    if(i<STAGES.length-1){
+      var ax=x+bw+gap/2;
+      el(pipe,'path',{d:'M'+(ax-4)+' '+(lineY-4)+' L'+(ax+2)+' '+lineY+' L'+(ax-4)+' '+(lineY+4),fill:'none',stroke:s.amber||STAGES[i+1].amber?'rgba(201,162,39,.5)':'rgba(0,168,224,.45)','stroke-width':1.2});
+    }
+    nodes.push({g:g,x:x+bw/2,y:lineY,stage:s});
+    x+=bw+gap;
+  });
+  // domain labels
+  var bondX=nodes[6].x;
+  el(pipe,'text',{x:(nodes[0].x+nodes[5].x)/2,y:30,'text-anchor':'middle','font-family':MONO,'font-size':10,fill:CYAN,'letter-spacing':'3'},'SoRT · INTEL 04A · CYAN');
+  el(pipe,'text',{x:(nodes[7].x+nodes[8].x)/2,y:30,'text-anchor':'middle','font-family':MONO,'font-size':10,fill:AMBER,'letter-spacing':'3'},'KLANGKERNE · AMBER');
+  el(pipe,'line',{x1:bondX,y1:40,x2:bondX,y2:62,stroke:'rgba(201,162,39,.5)','stroke-width':1,'stroke-dasharray':'3 3'});
+  // deadline ruler
+  el(pipe,'line',{x1:20,y1:190,x2:W-20,y2:190,stroke:'rgba(0,168,224,.15)'});
+  el(pipe,'text',{x:20,y:212,'font-family':MONO,'font-size':9.5,fill:INK3},'0 ms');
+  el(pipe,'text',{x:W-20,y:212,'text-anchor':'end','font-family':MONO,'font-size':9.5,fill:INK3},'every 128 samples · 2.67 ms deadline · never late');
+})();
+var pulse=el(pipe,'circle',{cx:-20,cy:0,r:6,fill:CYAN_HI,opacity:0});
+var tracing=false;
+var tip=document.getElementById('traceTip');
+var btn=document.getElementById('traceBtn');
+btn.addEventListener('click',function(){
+  if(tracing)return; tracing=true; btn.disabled=true;
+  var i=0;
+  function step(){
+    nodes.forEach(function(n){n.g.classList.remove('active','active-amber');});
+    if(i>=nodes.length){
+      pulse.setAttribute('opacity',0);
+      tip.innerHTML='<b class="amber">Impulse response delivered.</b> One ray of 6,144 this block — and the block made its 2.67 ms deadline, like every block before it.';
+      tracing=false; btn.disabled=false; return;
+    }
+    var n=nodes[i];
+    n.g.classList.add(n.stage.amber?'active-amber':'active');
+    pulse.setAttribute('cx',n.x); pulse.setAttribute('cy',n.y);
+    pulse.setAttribute('opacity',1);
+    pulse.setAttribute('fill',n.stage.amber?AMBER:CYAN_HI);
+    tip.innerHTML=n.stage.tip;
+    i++;
+    setTimeout(step,2400);
+  }
+  step();
+});
+
+/* ===== MEMORY LADDER ===== */
+(function(){
+  var svg=document.getElementById('ladderSvg');
+  var W=1120,H=330,L=70,R=40,T=30,B=64;
+  // log latency axis 0.1ns .. 1000ns
+  function lx(ns){return L+(Math.log10(ns/0.1)/4)*(W-L-R);}
+  [0.1,1,10,100,1000].forEach(function(ns){
+    el(svg,'line',{x1:lx(ns),y1:T,x2:lx(ns),y2:H-B,stroke:'rgba(0,168,224,.1)'});
+    el(svg,'text',{x:lx(ns),y:H-B+18,'text-anchor':'middle','font-family':MONO,'font-size':10,fill:INK3},ns<1?ns+' ns':ns+' ns');
+  });
+  el(svg,'text',{x:(L+W-R)/2,y:H-B+40,'text-anchor':'middle','font-family':MONO,'font-size':9.5,fill:INK3,'letter-spacing':'2'},'ACCESS LATENCY FROM SoRT · LOG SCALE');
+  var rungs=[
+    {ns:0.4,cap:'8 KB',name:'MATERIAL LUT · local SRAM',data:'64 materials × 8-band α — the innermost loop’s only local table',y:60,hi:true},
+    {ns:9,cap:'≤ 4 GB',name:'bLLC · KACHE KORE (shared)',data:'graphics TLAS + acoustic BLAS (14–60 MB) + IR staging',y:130},
+    {ns:65,cap:'system',name:'ZAM · Z-ANGLE MEMORY',data:'HRTF sets (1.1 MB/profile) · transducer profiles · .ablx streaming',y:200}
+  ];
+  rungs.forEach(function(r,i){
+    var x=lx(r.ns);
+    var col=r.hi?CYAN_HI:CYAN;
+    var flip=i===rungs.length-1;
+    var tx=flip?x-14:x+14, anch=flip?'end':'start';
+    el(svg,'circle',{cx:x,cy:r.y,r:6,fill:col});
+    el(svg,'line',{x1:x,y1:r.y,x2:x,y2:H-B,stroke:'rgba(0,168,224,.25)','stroke-dasharray':'2 4'});
+    el(svg,'text',{x:tx,y:r.y-6,'text-anchor':anch,'font-family':MONO,'font-size':11,fill:col,'font-weight':'600'},r.name);
+    el(svg,'text',{x:tx,y:r.y+10,'text-anchor':anch,'font-family':MONO,'font-size':10,fill:INK2},r.ns+' ns · '+r.cap);
+    el(svg,'text',{x:tx,y:r.y+26,'text-anchor':anch,'font-size':11.5,fill:INK3,'font-family':'Space Grotesk, sans-serif'},r.data);
+  });
+  // connect rungs
+  el(svg,'polyline',{points:rungs.map(function(r){return lx(r.ns)+','+r.y;}).join(' '),fill:'none',stroke:'rgba(0,168,224,.35)','stroke-width':1});
+})();
+
+/* reveal */
+var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('vis');});},{threshold:.08,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.fu').forEach(function(n){obs.observe(n);});
+})();
+</script>
+</body>
+</html>
