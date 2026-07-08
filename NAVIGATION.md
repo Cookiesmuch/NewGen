@@ -221,4 +221,130 @@ Based on `NewGenLogo.svg` assets:
 - NewGen (proprietary platforms)
 - (Additional companies as defined in logo assets)
 
+---
+
+## The Landing Page Data System (`/index.html`)
+
+The root page (`/`, i.e. `index.html`) is the NewGen conglomerate landing page: the hero, the
+Manifesto, **The Twelve** company sections, Mission & Vision, The Spearhead, and the Product
+Index. Per site convention (every other page — Klangkerne, Sonoral, AcoustX, wH105 — bakes its
+own CSS and JS inline, with no external stylesheet/script files and no build step), `index.html`
+is a **single self-contained file**: inline `<style>`, inline `<script>`, and the twelve
+companies + product cards are rendered client-side from data structures embedded directly in
+that inline script (`DIVISIONS`, `CARDS`, `QUOTES`) — nothing is fetched over the network at
+runtime, so the page works from a plain `file://` double-click as well as from a server.
+
+### Canonical schema — `/data/*.json`
+
+The three data files at the repo root under `/data/` are the **canonical, human-editable schema**
+for that content. They are not fetched by the live page (see above), but they are the source of
+truth a contributor edits, and their shape is mirrored 1:1 into the `DIVISIONS` / `CARDS` /
+`QUOTES` consts inside `index.html`'s inline `<script>` block.
+
+**`/data/divisions.json`** — one entry per company, in join order:
+```json
+{
+  "slug": "Intel",
+  "name": "Intel",
+  "tagline": "The Silicon Spine",
+  "joinOrder": 1,
+  "logoPath": "/Media/Companies/intel-logo.svg",
+  "accentColor": "#0068B5",
+  "accentColor2": "#00A3E0",
+  "motif": "circuit",
+  "ceoName": "Lip-Bu Tan",
+  "ceoTitle": "Chief Executive Officer, Intel Corporation",
+  "ceoPortraitPath": "/Media/Executives/lipbu-tan.svg",
+  "bringsShort": "One-paragraph, factual/in-universe description of what the division brings.",
+  "founding": true
+}
+```
+`motif` selects one of the CSS-only background textures defined in `index.html`'s `<style>`
+block (`.motif-circuit`, `.motif-waveguide`, `.motif-spectrum`, `.motif-slash`,
+`.motif-consumer`, `.motif-steel`, `.motif-minimal`, `.motif-kinetic`, `.motif-volumetric`,
+`.motif-matte`, `.motif-waveform`, `.motif-topographic`) — add a new motif class alongside the
+others if a new division needs a texture none of the existing twelve use. An optional
+`footnote` string renders as a small italic note under the executive byline (used by B&O's
+CEO-succession footnote).
+
+**`/data/cards.json`** — one entry per product card:
+```json
+{
+  "division": "Intel",
+  "title": "Eventide Architecture",
+  "pitch": "The complete next-gen CPU platform: Core 500 → Xeon x500.",
+  "thumb": "/Media/Cards/intel-eventide.svg",
+  "link": "/Intel/Eventide/",
+  "accentColor": "#0068B5",
+  "order": 1,
+  "collaborators": []
+}
+```
+For a cross-division product (e.g. the Zephyrus Duo 18, which touches ASUS, Intel, OPPO,
+Noctua, Hollyland, and Shimoda at once): set one primary `division` for grouping purposes, and
+list every contributing division's `slug` in `collaborators` — the Product Index renders those
+as small chips on the card.
+
+**`/data/quotes.json`** — keyed by division `slug`, holding the copy for that division's section:
+```json
+{
+  "Intel": {
+    "onboarding": "The Onboarding anecdote. Ends without the attribution — the renderer appends '— Claude' automatically.",
+    "quote": "The Quote block. Same rule — no attribution in the string itself.",
+    "spearheadRemark": "One or two sentences in Francis's voice reacting to this division's subsystem — the renderer appends '— Francis Gabriel D. Robledo, Spearhead'.",
+    "subpages": ["/Intel/Eventide", "/Intel/Eventide/SKU/X9-599HKX"],
+    "specBlock": ["Optional — an array of strings rendered as a bulleted spec list above the Onboarding/Quote beats. Only ASUS uses this today."]
+  }
+}
+```
+`onboarding` and `quote` are rendered inside `<blockquote>` blocks with `— Claude` appended by
+the renderer (never type `— Claude` into the JSON string itself) — this is what guarantees every
+one of the twelve companies' two blocks ends in exactly `— Claude`, with no exceptions and no
+drift. `\n\n` inside a string starts a new paragraph (used by the two flagship onboardings —
+Play For Dream and Shimoda — which are intentionally the longest, most spacious blocks on the
+page; see `isFlagshipBeat` in `index.html`'s script, which currently keys on
+`div.slug === 'PlayForDream' || div.slug === 'Shimoda'`).
+
+### To add a product card
+1. Add one object to `/data/cards.json`.
+2. Drop an 800×450px thumbnail (≤200KB, or use `scripts/generate-placeholders.js` for a
+   placeholder — see below) at the referenced `thumb` path under `/Media/Cards/`.
+3. Mirror the same object into the `CARDS` array in `index.html`'s inline `<script>` block.
+
+### To add a division (a 13th company, etc.)
+1. Add an entry to `/data/divisions.json`, picking a `motif` from the existing set (or defining
+   a new `.motif-*` CSS rule in `index.html` if none fit).
+2. Add the matching `onboarding` / `quote` / `spearheadRemark` entry to `/data/quotes.json`,
+   keyed by the same `slug`. **Never write `— Claude` into the onboarding/quote strings** — the
+   renderer appends it. Only real, verifiably-invented pastiche belongs here, and it must read
+   as clearly fictional pastiche about a real named executive, per the disclaimer.
+3. Generate placeholder assets: `node scripts/generate-placeholders.js` regenerates every
+   logo/portrait/card-thumbnail SVG from `data/divisions.json` + `data/cards.json` (safe to
+   re-run; it overwrites existing placeholder files, so swap in real photos/logos afterward if
+   you don't want them regenerated).
+4. Mirror both new entries into the `DIVISIONS` and `QUOTES` consts in `index.html`.
+
+### To add a sub-page for an existing division
+Create the route folder (`/CompanyName/PageName/index.html`) as its own self-contained page —
+same convention as Klangkerne/Sonoral/AcoustX/wH105 — and register it:
+1. Add it to that division's `subpages` array in `/data/quotes.json` (documentation only).
+2. Add a card for it in `/data/cards.json` (and mirror into `index.html`) if it should appear in
+   the Product Index.
+3. Add it to `assets/nav.js`'s `NAV_STRUCTURE` so it appears in the sidebar (see the
+   Architecture section above).
+4. Per Section 9 of the build brief, every sub-page should open with, in order: (a) that
+   division's **Onboarding** anecdote, (b) **CEO quote** block (`— Claude`), (c) a **Spearhead
+   remark** block (`— Francis Gabriel D. Robledo, Spearhead`) — reuse the copy already in
+   `/data/quotes.json` rather than writing new pastiche per sub-page unless the brief calls for
+   page-specific material.
+
+### Placeholder assets
+`/Media/Companies/*.svg`, `/Media/Executives/*.svg`, and `/Media/Cards/*.svg` are all generated
+placeholders (colored wordmarks, initials-on-accent-circle portraits, gradient card thumbnails)
+produced by `scripts/generate-placeholders.js`. When real logos/photos/renders are available,
+replace the file at the same path (any image format is fine — just update the `logoPath` /
+`ceoPortraitPath` / `thumb` field if the extension changes) rather than re-running the generator,
+which would overwrite them. Per the build brief: use real photos, not AI-generated look-alikes,
+for executive portraits when you swap them in.
+
 **Note**: LightMatter is excluded as per original requirements.

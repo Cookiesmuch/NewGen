@@ -29,7 +29,7 @@
 
 **NewGen** is a static site where the address bar path *is* the file path. Every route is a real folder with an `index.html`, so pages are directly linkable, crawlable, and refresh-safe with no client-side routing tricks:
 
-- **NewGen Conglomerate** — Root (`/`) landing page with the NewGen logo
+- **NewGen Conglomerate** — Root (`/`) landing page: the Manifesto, all twelve founding companies (Intel, Lightmatter, Sony, ASUS/ROG, OPPO, Ford, Bang & Olufsen, ShallXR, Play For Dream, Noctua, Hollyland, Shimoda), Mission & Vision, The Spearhead, and a Product Index — see `NAVIGATION.md` for the data schema behind it
 - **Intel Eventide** (`/Intel/Eventide/`) — Full processor architecture showcase with CPU, GPU, Tile, and Technology deep-dives
 - **Sony a0, XCD-LED & CRT-VR** (`/Sony/...`) — Professional camera and display systems
 - **ASUS Ceralumenesium Sapphire** (`/ASUS/Ceralumenesium/`) — Advanced material technology

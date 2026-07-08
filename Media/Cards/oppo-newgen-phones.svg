@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="NewGen Flagship Phones placeholder thumbnail">
+  <defs>
+    <linearGradient id="gf2km7t" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0FA35B" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#0FA35B" stop-opacity="0.55"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="#05070F"/>
+  <rect width="800" height="450" fill="url(#gf2km7t)"/>
+  <text x="40" y="400" font-family="'Space Grotesk', Arial, sans-serif" font-size="34" font-weight="700" fill="#F5F5F0">NewGen Flagship Phones</text>
+  <text x="40" y="50" font-family="'JetBrains Mono', monospace" font-size="14" letter-spacing="2" fill="#F5F5F0" opacity="0.75">OPPO</text>
+</svg>
