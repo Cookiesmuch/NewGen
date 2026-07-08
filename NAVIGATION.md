@@ -263,7 +263,17 @@ truth a contributor edits, and their shape is mirrored 1:1 into the `DIVISIONS` 
 block (`.motif-circuit`, `.motif-waveguide`, `.motif-spectrum`, `.motif-slash`,
 `.motif-consumer`, `.motif-steel`, `.motif-minimal`, `.motif-kinetic`, `.motif-volumetric`,
 `.motif-matte`, `.motif-waveform`, `.motif-topographic`) — add a new motif class alongside the
-others if a new division needs a texture none of the existing twelve use. An optional
+others if a new division needs a texture none of the existing twelve use.
+
+On top of the static motif, each division also gets an **animated background** injected at
+runtime into a `.company-anim` layer by the `BG_BUILDERS` map in `index.html`'s inline script,
+keyed by division `slug` (Intel's self-rerouting circuit traces, Lightmatter's waveguide light
+pulses, ASUS's self-drawing laptop silhouettes, Play For Dream's canvas vector-scan beam, and
+so on). A division without a builder falls back to `bgGeneric` (gentle diagonal drift).
+Animations pause when the section scrolls offscreen (IntersectionObserver) and are fully
+disabled under `prefers-reduced-motion` — builders must render a sensible static frame in that
+case. To give a new division its own animation, add a `bgYourSlug(host, accent, accent2)`
+function and register it in `BG_BUILDERS`. An optional
 `footnote` string renders as a small italic note under the executive byline (used by B&O's
 CEO-succession footnote).
 
