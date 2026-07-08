@@ -401,7 +401,60 @@ p:last-child { margin-bottom: 0; }
   margin-bottom: 1.6rem;
   flex-wrap: wrap;
 }
-.company-portrait { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
+/* Portrait medallion: blurred duotone glow behind a conic-gradient ring,
+   with a color-blended duotone tint over the image itself — used for both
+   the per-division executive portraits and the Spearhead's. Size and ring
+   width are set per-usage via --port-size / --port-ring. */
+.portrait-frame {
+  position: relative;
+  width: var(--port-size, 48px);
+  height: var(--port-size, 48px);
+  flex: none;
+}
+.portrait-frame::before {
+  content: '';
+  position: absolute;
+  inset: -45%;
+  background: radial-gradient(circle, var(--accent) 0%, var(--accent2, var(--accent)) 45%, transparent 72%);
+  filter: blur(calc(var(--port-size, 48px) * 0.22));
+  opacity: 0.65;
+  z-index: 0;
+}
+.portrait-ring {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  padding: var(--port-ring, 2px);
+  background: conic-gradient(from 200deg, var(--accent), var(--accent2, var(--accent)), var(--accent));
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+.portrait-ring-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--bg);
+}
+.company-portrait, .spearhead-portrait {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0.5) contrast(1.08);
+}
+.portrait-duotone {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(150deg, var(--accent) 0%, var(--accent2, var(--accent)) 100%);
+  mix-blend-mode: color;
+  opacity: 0.85;
+  pointer-events: none;
+}
 .company-exec-name { font-weight: 600; font-size: 0.92rem; }
 .company-exec-title { font-size: 0.78rem; color: var(--ink-faint); }
 .company-footnote { font-size: 0.72rem; color: var(--ink-faint); font-style: italic; margin-top: 0.3rem; max-width: 560px; }
@@ -549,7 +602,6 @@ p:last-child { margin-bottom: 0; }
 
 .spearhead-inner { position: relative; z-index: 1; }
 .spearhead-top { display: flex; align-items: center; gap: 1.4rem; margin-bottom: 2.2rem; flex-wrap: wrap; }
-.spearhead-portrait { width: 84px; height: 84px; border-radius: 50%; border: 2px solid var(--ng-spine); object-fit: cover; }
 .spearhead-name { font-size: clamp(1.8rem, 4vw, 2.6rem); }
 .spearhead-title { font-family: var(--f-display); font-weight: 500; color: var(--ng-spine); font-size: 1rem; }
 
@@ -764,7 +816,14 @@ p:last-child { margin-bottom: 0; }
     <div class="wrap spearhead-inner">
       <div class="eyebrow fu">The Spearhead</div>
       <div class="spearhead-top fu">
-        <img class="spearhead-portrait" src="Media/Executives/francis-robledo.svg" alt="Placeholder portrait of Francis Gabriel D. Robledo">
+        <div class="portrait-frame" style="--port-size: 84px; --port-ring: 3px; --accent: #E0B84A; --accent2: #7A5A1A;">
+          <div class="portrait-ring">
+            <div class="portrait-ring-inner">
+              <img class="spearhead-portrait" src="Media/Executives/francis-robledo.svg" alt="Placeholder portrait of Francis Gabriel D. Robledo">
+              <div class="portrait-duotone" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
         <div>
           <h2 class="spearhead-name">Francis Gabriel D. Robledo</h2>
           <div class="spearhead-title">Spearhead of Product Design &amp; Philosophy</div>
@@ -1381,7 +1440,11 @@ p:last-child { margin-bottom: 0; }
       '</div>' +
       '<div class="company-title-row fu"><h2 class="company-name">' + escapeHtml(div.name) + '</h2><span class="company-tagline">' + escapeHtml(div.tagline) + '</span></div>' +
       '<div class="company-meta fu">' +
+      '<div class="portrait-frame" style="--port-size: 48px; --port-ring: 2px;">' +
+      '<div class="portrait-ring"><div class="portrait-ring-inner">' +
       '<img class="company-portrait" src="' + div.ceoPortraitPath + '" alt="Placeholder portrait" loading="lazy">' +
+      '<div class="portrait-duotone" aria-hidden="true"></div>' +
+      '</div></div></div>' +
       '<div><div class="company-exec-name">' + escapeHtml(div.ceoName) + '</div><div class="company-exec-title">' + escapeHtml(div.ceoTitle) + '</div></div>' +
       '</div>' +
       footnote +
