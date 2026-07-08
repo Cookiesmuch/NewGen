@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="α0 (ILCE-0) placeholder thumbnail">
+  <defs>
+    <linearGradient id="gg7u" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.55"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="#05070F"/>
+  <rect width="800" height="450" fill="url(#gg7u)"/>
+  <text x="40" y="400" font-family="'Space Grotesk', Arial, sans-serif" font-size="34" font-weight="700" fill="#0A0A0A">α0 (ILCE-0)</text>
+  <text x="40" y="50" font-family="'JetBrains Mono', monospace" font-size="14" letter-spacing="2" fill="#0A0A0A" opacity="0.75">SONY</text>
+</svg>

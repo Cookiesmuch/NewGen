@@ -1,38 +1,2403 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NewGen Conglomerate</title>
-  <link rel="stylesheet" href="assets/nav.css">
-  <script src="assets/nav.js" defer></script>
-  <style>
-    :root {
-      color-scheme: light dark;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NewGen — Technology for the NEW generation.</title>
+<meta name="description" content="Twelve companies. One spine. NewGen is a fictional, non-commercial conglomerate universe imagined by Francis Gabriel D. Robledo.">
+<link rel="stylesheet" href="assets/nav.css">
+<script src="assets/nav.js" defer></script>
+<style>
+/* ================================================================
+   NEWGEN — Landing Page (root /)
+   Design system: near-black navy base, twelve division accent colors,
+   Space Grotesk display / Inter body / JetBrains Mono spec type.
+   Signature motif: a drill/spiral line (the "spine"), and a twelve-mark
+   orbit ring behind the hero literalizing "twelve companies, one spine."
+   ================================================================ */
 
-    * {
-      box-sizing: border-box;
-    }
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: #0b0f17;
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      padding: 18px 22px;
-    }
+:root {
+  --bg: #05070F;
+  --bg-1: #080B16;
+  --bg-2: #0C1120;
+  --ink: #F4F5F7;
+  --ink-dim: #B7BDCB;
+  --ink-faint: #7B8296;
+  --hairline: rgba(244, 245, 247, 0.10);
+  --hairline-strong: rgba(244, 245, 247, 0.18);
 
-    .logo {
-      width: 152px;
-      height: auto;
-      display: block;
-    }
-  </style>
+  --ng-spine: #E0B84A;
+  --ng-spine-dim: rgba(224, 184, 74, 0.35);
+
+  --f-display: 'Space Grotesk', 'Arial Black', sans-serif;
+  --f-body: 'Inter', system-ui, sans-serif;
+  --f-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+
+  --max-w: 1280px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* the twelve, in join order, for the gradient sweep + orbit ring */
+  --c1: #0068B5;  /* Intel */
+  --c2: #00E5CF;  /* Lightmatter */
+  --c3: #FFFFFF;  /* Sony */
+  --c4: #FF0029;  /* ASUS */
+  --c5: #0FA35B;  /* OPPO */
+  --c6: #003478;  /* Ford */
+  --c7: #F4F1EC;  /* B&O */
+  --c8: #E8E8E8;  /* ShallXR */
+  --c9: #FF7A1A;  /* Play For Dream */
+  --c10: #8B5E3C; /* Noctua */
+  --c11: #FF6A00; /* Hollyland */
+  --c12: #8A9A7E; /* Shimoda */
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body.ng-landing {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+
+.wrap {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 3rem);
+}
+
+.eyebrow {
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+}
+.eyebrow::before { content: ''; width: 22px; height: 1px; background: var(--hairline-strong); }
+
+h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 700; line-height: 1.05; margin: 0; }
+p { margin: 0 0 1rem; }
+p:last-child { margin-bottom: 0; }
+
+.mono { font-family: var(--f-mono); }
+
+/* ================= DISCLAIMER STRIP ================= */
+.disclaimer-strip {
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  background: #14100A;
+  border-bottom: 1px solid rgba(224, 184, 74, 0.3);
+  color: #E8D9AE;
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+.disclaimer-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0.6rem clamp(1rem, 3vw, 2rem);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.disclaimer-inner strong { color: var(--ng-spine); }
+.disclaimer-text { flex: 1; }
+.disclaimer-close {
+  flex: none;
+  background: none;
+  border: 1px solid rgba(224, 184, 74, 0.35);
+  color: #E8D9AE;
+  border-radius: 4px;
+  width: 26px;
+  height: 26px;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.disclaimer-close:hover { background: rgba(224, 184, 74, 0.12); }
+
+/* ================= TOP BAR ================= */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem clamp(1.25rem, 4vw, 3rem);
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+.topbar-brand { display: flex; align-items: center; gap: 0.6rem; }
+.topbar-brand img { width: 26px; height: 26px; }
+.topbar-brand-name { font-family: var(--f-display); font-weight: 700; letter-spacing: 0.02em; font-size: 1rem; }
+.topbar-nav { display: flex; gap: 1.6rem; list-style: none; margin: 0; padding: 0; }
+.topbar-nav a {
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink-dim);
+}
+.topbar-nav a:hover { color: var(--ink); }
+@media (max-width: 720px) { .topbar-nav { display: none; } }
+
+/* ================= HERO ================= */
+.hero {
+  position: relative;
+  padding: clamp(3rem, 8vw, 6rem) 0 clamp(4rem, 10vw, 7rem);
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: -10% -10% auto -10%;
+  height: 140%;
+  background-image:
+    linear-gradient(var(--hairline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+  background-size: 64px 64px;
+  opacity: 0.4;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse 60% 55% at 50% 30%, black, transparent);
+}
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 1.6rem;
+}
+
+/* Orbit ring — the signature visual moment: twelve marks around the N,
+   a conic gradient sweep through all twelve accents, slow rotation. */
+.orbit-stage {
+  position: relative;
+  width: min(78vw, 460px);
+  aspect-ratio: 1;
+  margin: 0 auto 0.5rem;
+  display: grid;
+  place-items: center;
+}
+.orbit-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg,
+    var(--c1), var(--c2), var(--c3), var(--c4), var(--c5), var(--c6),
+    var(--c7), var(--c8), var(--c9), var(--c10), var(--c11), var(--c12), var(--c1));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), black calc(100% - 3px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), black calc(100% - 3px));
+  animation: orbit-spin 40s linear infinite;
+  opacity: 0.9;
+}
+@keyframes orbit-spin { to { transform: rotate(360deg); } }
+.orbit-marks { position: absolute; inset: 0; animation: orbit-spin 40s linear infinite; }
+.orbit-mark {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  transform-origin: 0 0;
+  box-shadow: 0 0 10px currentColor;
+}
+.orbit-logo {
+  position: relative;
+  z-index: 2;
+  width: 34%;
+  filter: drop-shadow(0 0 24px rgba(224, 184, 74, 0.35));
+}
+@media (prefers-reduced-motion: reduce) {
+  .orbit-ring, .orbit-marks { animation: none; }
+}
+
+.hero-headline {
+  font-size: clamp(2.6rem, 9vw, 5.4rem);
+  letter-spacing: -0.02em;
+}
+.hero-subhead {
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: clamp(1.1rem, 2.6vw, 1.5rem);
+  color: var(--ink-dim);
+}
+.hero-body {
+  max-width: 680px;
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  color: var(--ink-dim);
+}
+.hero-body strong { color: var(--ink); }
+
+.hero-quote {
+  max-width: 640px;
+  border-left: 2px solid var(--ng-spine);
+  padding-left: 1.2rem;
+  text-align: left;
+  margin-top: 0.8rem;
+}
+.hero-quote p { font-size: 1.05rem; font-style: italic; color: var(--ink); }
+.hero-quote cite { font-style: normal; font-size: 0.8rem; color: var(--ink-faint); display: block; margin-top: 0.5rem; }
+.hero-quote cite strong { color: var(--ink-dim); }
+
+.cta-row { display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center; margin-top: 0.6rem; }
+.btn {
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.85rem 1.4rem;
+  border-radius: 6px;
+  border: 1px solid var(--hairline-strong);
+  color: var(--ink);
+  transition: border-color 0.2s var(--ease), background 0.2s var(--ease), transform 0.15s var(--ease);
+}
+.btn:hover { border-color: var(--ng-spine); background: rgba(224, 184, 74, 0.08); transform: translateY(-1px); }
+.btn.primary { background: var(--ng-spine); color: #14100A; border-color: var(--ng-spine); font-weight: 600; }
+.btn.primary:hover { background: #EFC968; transform: translateY(-1px); }
+
+/* ================= SECTION SCAFFOLD ================= */
+.section { padding: clamp(3.5rem, 8vw, 6rem) 0; position: relative; }
+.section-head { max-width: 760px; margin-bottom: 2.4rem; }
+.section-title { font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: -0.015em; }
+.section-title em { font-style: normal; color: var(--ng-spine); }
+.section-lede { color: var(--ink-dim); font-size: 1.02rem; margin-top: 0.8rem; max-width: 640px; }
+.divider { height: 1px; background: linear-gradient(90deg, transparent, var(--hairline-strong), transparent); }
+
+/* ================= MANIFESTO ================= */
+.manifesto { background: var(--bg-1); }
+.manifesto-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 3rem; align-items: start; }
+@media (max-width: 860px) { .manifesto-grid { grid-template-columns: 1fr; } }
+.manifesto-body { font-size: 1.08rem; color: var(--ink-dim); }
+.manifesto-body strong { color: var(--ink); }
+.manifesto-body em { color: var(--ng-spine); font-style: normal; }
+
+.origin-box {
+  border: 1px solid var(--hairline-strong);
+  border-left: 3px solid var(--ng-spine);
+  border-radius: 4px;
+  padding: 1.4rem 1.6rem;
+  margin-top: 1.6rem;
+  background: rgba(224, 184, 74, 0.04);
+  font-size: 0.92rem;
+  color: var(--ink-dim);
+}
+
+.laws-list { list-style: none; margin: 1.6rem 0 0; padding: 0; counter-reset: law; }
+.laws-list li {
+  counter-increment: law;
+  padding: 1rem 0 1rem 2.6rem;
+  position: relative;
+  border-top: 1px solid var(--hairline);
+  font-size: 0.95rem;
+  color: var(--ink-dim);
+}
+.laws-list li::before {
+  content: counter(law);
+  position: absolute;
+  left: 0;
+  top: 1rem;
+  font-family: var(--f-display);
+  font-size: 1.2rem;
+  color: var(--ng-spine);
+}
+.laws-list li strong { color: var(--ink); }
+
+.spiral-panel {
+  position: relative;
+  min-height: 320px;
+  display: grid;
+  place-items: center;
+}
+.spiral-panel svg { width: 100%; max-width: 340px; opacity: 0.85; }
+.spiral-panel .rotor { animation: orbit-spin 44s linear infinite; transform-origin: 50% 50%; }
+@media (prefers-reduced-motion: reduce) { .spiral-panel .rotor { animation: none; } }
+
+.pull-quote {
+  margin-top: 2.2rem;
+  font-family: var(--f-display);
+  font-size: clamp(1.2rem, 2.6vw, 1.6rem);
+  font-weight: 500;
+  color: var(--ink);
+  max-width: 780px;
+}
+.pull-quote cite { display: block; font-family: var(--f-mono); font-style: normal; font-size: 0.75rem; color: var(--ink-faint); margin-top: 0.7rem; }
+
+/* ================= THE TWELVE ================= */
+.twelve-intro { background: var(--bg); }
+.twelve-standing-disclaimer {
+  border: 1px solid rgba(224, 184, 74, 0.3);
+  background: rgba(224, 184, 74, 0.05);
+  border-radius: 6px;
+  padding: 1rem 1.3rem;
+  font-size: 0.82rem;
+  color: #E8D9AE;
+  max-width: 760px;
+  margin-top: 1.4rem;
+}
+.twelve-standing-disclaimer strong { color: var(--ng-spine); }
+
+.company-section {
+  position: relative;
+  padding: clamp(3.5rem, 9vw, 6.5rem) 0;
+  border-top: 1px solid var(--hairline);
+  overflow: hidden;
+  --accent: #0068B5;
+  --accent2: #00A3E0;
+}
+.company-bg { position: absolute; inset: 0; pointer-events: none; opacity: 0.55; z-index: 0; }
+.company-section .wrap { position: relative; z-index: 1; }
+
+.company-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+.company-logo { height: 34px; width: auto; border-radius: 4px; }
+.company-logo.logo-chip { background: #f4f4f2; padding: 0.35rem 0.6rem; box-sizing: content-box; }
+.company-order {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+}
+.company-founding {
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #14100A;
+  background: var(--ng-spine);
+  border-radius: 999px;
+  padding: 0.25rem 0.6rem;
+}
+
+.company-title-row { display: flex; align-items: baseline; gap: 0.9rem; flex-wrap: wrap; margin-bottom: 0.4rem; }
+.company-name { font-size: clamp(1.9rem, 4.5vw, 2.9rem); color: var(--accent); }
+.company-tagline { font-family: var(--f-display); font-weight: 500; color: var(--ink-dim); font-size: clamp(1rem, 2vw, 1.25rem); }
+
+.company-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.6rem;
+  flex-wrap: wrap;
+}
+/* Portrait medallion: blurred duotone glow behind a conic-gradient ring,
+   with a color-blended duotone tint over the image itself — used for both
+   the per-division executive portraits and the Spearhead's. Size and ring
+   width are set per-usage via --port-size / --port-ring. */
+.portrait-frame {
+  position: relative;
+  width: var(--port-size, 48px);
+  height: var(--port-size, 48px);
+  flex: none;
+}
+.portrait-frame::before {
+  content: '';
+  position: absolute;
+  inset: -45%;
+  background: radial-gradient(circle, var(--accent) 0%, var(--accent2, var(--accent)) 45%, transparent 72%);
+  filter: blur(calc(var(--port-size, 48px) * 0.22));
+  opacity: 0.65;
+  z-index: 0;
+}
+.portrait-ring {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  padding: var(--port-ring, 2px);
+  background: conic-gradient(from 200deg, var(--accent), var(--accent2, var(--accent)), var(--accent));
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+.portrait-ring-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--bg);
+}
+.company-portrait, .spearhead-portrait {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0.5) contrast(1.08);
+}
+.portrait-duotone {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(150deg, var(--accent) 0%, var(--accent2, var(--accent)) 100%);
+  mix-blend-mode: color;
+  opacity: 0.85;
+  pointer-events: none;
+}
+.company-exec-name { font-weight: 600; font-size: 0.92rem; }
+.company-exec-title { font-size: 0.78rem; color: var(--ink-faint); }
+.company-footnote { font-size: 0.72rem; color: var(--ink-faint); font-style: italic; margin-top: 0.3rem; max-width: 560px; }
+
+.company-brings { max-width: 720px; color: var(--ink-dim); font-size: 1rem; margin-bottom: 2rem; }
+
+.company-body-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+
+.spec-block {
+  border: 1px solid var(--hairline-strong);
+  border-radius: 8px;
+  padding: 1.5rem 1.7rem;
+  background: rgba(255, 255, 255, 0.02);
+  margin-bottom: 2rem;
+}
+.spec-block-title { font-family: var(--f-mono); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+.spec-block ul { list-style: none; margin: 0; padding: 0; }
+.spec-block li {
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--hairline);
+  font-size: 0.9rem;
+  color: var(--ink-dim);
+  display: flex;
+  gap: 0.7rem;
+}
+.spec-block li:first-child { border-top: none; }
+.spec-block li::before { content: '—'; color: var(--accent); flex: none; }
+
+.beat {
+  border: 1px solid var(--hairline-strong);
+  border-radius: 10px;
+  padding: clamp(1.5rem, 3.5vw, 2.4rem);
+  background: linear-gradient(160deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01));
+  margin-bottom: 1.6rem;
+}
+.beat-label { font-family: var(--f-mono); font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.9rem; }
+.beat blockquote { margin: 0; }
+.beat p { color: var(--ink); font-size: 1rem; line-height: 1.85; }
+.beat p + p { margin-top: 1rem; }
+.beat cite { display: block; margin-top: 1.1rem; font-style: normal; font-family: var(--f-mono); font-size: 0.72rem; color: var(--ink-faint); }
+
+/* the two flagship beats (Play For Dream, Shimoda) get more visual room */
+.beat.flagship {
+  padding: clamp(2rem, 5vw, 3.2rem);
+  border-width: 1px;
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--hairline-strong));
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 8%, transparent), transparent 60%);
+}
+.beat.flagship p { font-size: 1.05rem; }
+
+.spearhead-remark {
+  border-left: 2px solid var(--ng-spine);
+  padding-left: 1.1rem;
+  margin-top: 1.8rem;
+  max-width: 640px;
+}
+.spearhead-remark p { font-family: var(--f-display); font-weight: 500; font-style: italic; color: var(--ink); font-size: 0.98rem; }
+.spearhead-remark cite { display: block; font-family: var(--f-mono); font-style: normal; font-size: 0.68rem; color: var(--ng-spine); margin-top: 0.5rem; }
+
+/* ---- per-division motif backgrounds (CSS-only, no external images) ---- */
+.motif-circuit {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--accent) 14%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--accent) 14%, transparent) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: radial-gradient(ellipse 70% 60% at 80% 20%, black, transparent 70%);
+}
+.motif-waveguide {
+  background-image: repeating-linear-gradient(115deg, color-mix(in srgb, var(--accent) 18%, transparent) 0 2px, transparent 2px 26px);
+  mask-image: radial-gradient(ellipse 65% 55% at 15% 15%, black, transparent 70%);
+}
+.motif-spectrum {
+  background: linear-gradient(90deg, #6B2FD6, #2F6FD6, #2FD6C9, #2FD65E, #E0D62F, #E0742F, #D62F2F);
+  opacity: 0.06 !important;
+  mask-image: linear-gradient(180deg, black, transparent);
+}
+.motif-slash {
+  background-image: repeating-linear-gradient(-35deg, color-mix(in srgb, var(--accent) 16%, transparent) 0 3px, transparent 3px 40px);
+  mask-image: radial-gradient(ellipse 60% 55% at 85% 25%, black, transparent 70%);
+}
+.motif-consumer {
+  background-image: radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 45%),
+    radial-gradient(circle at 80% 60%, color-mix(in srgb, var(--accent2) 16%, transparent), transparent 45%);
+}
+.motif-steel {
+  background-image: repeating-linear-gradient(180deg, color-mix(in srgb, var(--accent) 10%, transparent) 0 1px, transparent 1px 8px);
+  mask-image: radial-gradient(ellipse 60% 60% at 50% 10%, black, transparent 75%);
+}
+.motif-minimal { background: none; }
+.motif-kinetic {
+  background-image: repeating-linear-gradient(100deg, color-mix(in srgb, var(--accent2) 20%, transparent) 0 1px, transparent 1px 3px, transparent 3px 46px);
+  mask-image: radial-gradient(ellipse 70% 50% at 30% 30%, black, transparent 75%);
+}
+.motif-volumetric {
+  background: radial-gradient(ellipse 55% 60% at 50% 25%, color-mix(in srgb, var(--accent) 28%, transparent), transparent 70%);
+}
+.motif-matte { background: none; }
+.motif-waveform {
+  background-image: repeating-linear-gradient(90deg, color-mix(in srgb, var(--accent) 18%, transparent) 0 2px, transparent 2px 22px);
+  mask-image: linear-gradient(180deg, transparent, black 40%, black 60%, transparent);
+}
+.motif-topographic {
+  background-image:
+    radial-gradient(circle at 30% 40%, transparent 38%, color-mix(in srgb, var(--accent) 12%, transparent) 39%, color-mix(in srgb, var(--accent) 12%, transparent) 40%, transparent 41%),
+    radial-gradient(circle at 30% 40%, transparent 58%, color-mix(in srgb, var(--accent) 10%, transparent) 59%, color-mix(in srgb, var(--accent) 10%, transparent) 60%, transparent 61%),
+    radial-gradient(circle at 30% 40%, transparent 78%, color-mix(in srgb, var(--accent) 8%, transparent) 79%, color-mix(in srgb, var(--accent) 8%, transparent) 80%, transparent 81%);
+}
+
+/* ---- Animated division backgrounds (injected as a .company-anim layer,
+   sibling of .company-bg, so the static motif textures stay untouched
+   as the no-JS / reduced-motion fallback) ---- */
+.company-anim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+  overflow: hidden;
+}
+.bg-svg, .bg-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.bg-paused .bg-svg *, .bg-paused .bg-canvas { animation-play-state: paused !important; }
+
+@keyframes bgDriftX { from { transform: translateX(-60px); } to { transform: translateX(60px); } }
+.anim-drift-x { animation: bgDriftX 16s ease-in-out infinite alternate; }
+@keyframes bgScanY { from { transform: translateY(-20px); } to { transform: translateY(620px); } }
+.anim-scan-y { animation: bgScanY 11s linear infinite; }
+@keyframes bgDraw { from { stroke-dashoffset: 340; } to { stroke-dashoffset: -340; } }
+.anim-draw { stroke-dasharray: 170 170; animation: bgDraw 7s linear infinite; }
+@keyframes bgRipple { 0% { transform: scale(0.25); opacity: 0.55; } 100% { transform: scale(4.2); opacity: 0; } }
+.anim-ripple { transform-box: fill-box; transform-origin: center; animation: bgRipple 6s linear infinite; }
+@keyframes bgDash { to { stroke-dashoffset: -84; } }
+.anim-dash { animation: bgDash 3s linear infinite; }
+@keyframes bgSpin { to { transform: rotate(360deg); } }
+.anim-spin { transform-box: fill-box; transform-origin: center; animation: bgSpin 40s linear infinite; }
+@keyframes bgWave { from { transform: translateX(0); } to { transform: translateX(-1200px); } }
+.anim-wave { animation: bgWave 26s linear infinite; }
+@keyframes bgBreathe { from { transform: scale(1); } to { transform: scale(1.05); } }
+.anim-breathe { transform-box: fill-box; transform-origin: center; animation: bgBreathe 9s ease-in-out infinite alternate; }
+@keyframes bgChevron { 0% { transform: translateX(0); opacity: 0; } 15% { opacity: 0.85; } 85% { opacity: 0.85; } 100% { transform: translateX(140px); opacity: 0; } }
+.anim-chevron { animation: bgChevron 3.4s linear infinite; }
+@keyframes bgSlash { from { transform: translate(-300px, 150px); } to { transform: translate(1500px, -150px); } }
+.anim-slash { animation: bgSlash 8s linear infinite; }
+@keyframes bgHue { to { filter: hue-rotate(360deg); } }
+.anim-hue { animation: bgHue 8s linear infinite; }
+@keyframes bgPiston { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(34px); } }
+.anim-piston { animation: bgPiston 1.4s ease-in-out infinite; }
+@keyframes bgEq { 0%, 100% { transform: scaleY(0.22); } 50% { transform: scaleY(1); } }
+.anim-eq { transform-box: fill-box; transform-origin: center; animation: bgEq 2.8s ease-in-out infinite; }
+@keyframes bgFlicker { 0%, 100% { opacity: 0.14; } 50% { opacity: 0.42; } }
+.anim-flicker { animation: bgFlicker 4s ease-in-out infinite; }
+.spearhead-tribute { position: absolute; inset: 0; pointer-events: none; opacity: 0.4; overflow: hidden; }
+@media (prefers-reduced-motion: reduce) {
+  .bg-svg *, .bg-canvas { animation: none !important; }
+}
+
+/* Sony + B&O + ShallXR sections need dark text disambiguation since their accent is near-white */
+.company-section[data-division="Sony"] .company-name,
+.company-section[data-division="BO"] .company-name,
+.company-section[data-division="ShallXR"] .company-name {
+  color: var(--ink);
+  -webkit-text-stroke: 1px var(--accent);
+}
+.company-section[data-division="BO"] { background: linear-gradient(180deg, rgba(244,241,236,0.03), transparent 40%); }
+
+/* ================= MISSION & VISION ================= */
+.mission-vision { background: var(--bg-1); }
+.mv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4rem; }
+@media (max-width: 780px) { .mv-grid { grid-template-columns: 1fr; } }
+.mv-card { border: 1px solid var(--hairline-strong); border-radius: 10px; padding: 1.8rem; }
+.mv-card h3 { font-size: 1.3rem; color: var(--ng-spine); margin-bottom: 0.8rem; }
+.mv-card p { color: var(--ink-dim); }
+
+.values-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-top: 2.2rem; }
+.value-card {
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  padding: 1.2rem;
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 0.98rem;
+  color: var(--ink);
+  background: rgba(255,255,255,0.02);
+}
+.value-card span { display: block; font-family: var(--f-mono); font-weight: 400; font-size: 0.68rem; color: var(--ng-spine); margin-bottom: 0.5rem; }
+
+/* ================= SPEARHEAD ================= */
+.spearhead { position: relative; background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(224,184,74,0.08), transparent 70%), var(--bg); overflow: hidden; }
+.spearhead-spiral { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0.18; pointer-events: none; }
+.spearhead-spiral svg { width: min(90vw, 900px); }
+.spearhead-spiral .rotor { animation: orbit-spin 22s linear infinite; transform-origin: 50% 50%; }
+@media (prefers-reduced-motion: reduce) { .spearhead-spiral .rotor { animation: none; } }
+
+.spearhead-inner { position: relative; z-index: 1; }
+.spearhead-top { display: flex; align-items: center; gap: 1.4rem; margin-bottom: 2.2rem; flex-wrap: wrap; }
+.spearhead-name { font-size: clamp(1.8rem, 4vw, 2.6rem); }
+.spearhead-title { font-family: var(--f-display); font-weight: 500; color: var(--ng-spine); font-size: 1rem; }
+
+.spearhead-quotes { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2.4rem; }
+@media (max-width: 900px) { .spearhead-quotes { grid-template-columns: 1fr; } }
+.spearhead-card {
+  border: 1px solid rgba(224,184,74,0.28);
+  border-radius: 10px;
+  padding: clamp(1.4rem, 3vw, 2rem);
+  background: rgba(224,184,74,0.04);
+}
+.spearhead-card .beat-label { color: var(--ng-spine); }
+.spearhead-card p { color: var(--ink-dim); font-size: 0.96rem; line-height: 1.85; }
+.spearhead-card p + p { margin-top: 1rem; }
+.spearhead-card strong { color: var(--ink); }
+
+.spearhead-connective { text-align: center; font-family: var(--f-display); font-weight: 500; font-size: 1.1rem; color: var(--ink-dim); max-width: 640px; margin: 0 auto 2.4rem; }
+
+.spearhead-pull { text-align: center; font-family: var(--f-display); font-size: clamp(1.4rem, 3.5vw, 2.1rem); color: var(--ng-spine); max-width: 820px; margin: 0 auto 2.4rem; }
+
+.stat-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; }
+.stat-cell { text-align: center; border: 1px solid var(--hairline-strong); border-radius: 8px; padding: 1.2rem 0.8rem; }
+.stat-num { font-family: var(--f-display); font-size: 1.9rem; color: var(--ng-spine); }
+.stat-label { font-family: var(--f-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin-top: 0.4rem; }
+
+/* ================= PRODUCT INDEX ================= */
+.product-index { background: var(--bg-1); }
+.division-group { margin-bottom: 3rem; }
+.division-group:last-child { margin-bottom: 0; }
+.division-group-head { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.2rem; }
+.division-group-head img { height: 22px; }
+.division-group-head img.logo-chip { background: #f4f4f2; border-radius: 4px; padding: 0.25rem 0.4rem; box-sizing: content-box; }
+.division-group-head h3 { font-size: 1.15rem; color: var(--dg-accent, var(--ink)); }
+
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.1rem; }
+.product-card {
+  display: block;
+  text-decoration: none;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg-2);
+  transition: transform 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+.product-card:hover { transform: translateY(-3px); border-color: var(--card-accent, var(--ng-spine)); }
+.product-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+.product-card-body { padding: 1rem 1.1rem 1.2rem; }
+.product-card-title { font-family: var(--f-display); font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem; }
+.product-card-pitch { font-size: 0.84rem; color: var(--ink-dim); }
+.product-card-collab { margin-top: 0.7rem; display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.collab-chip { font-family: var(--f-mono); font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); border: 1px solid var(--hairline); border-radius: 999px; padding: 0.15rem 0.5rem; }
+
+/* ================= FOOTER ================= */
+.site-footer { background: #030409; border-top: 1px solid var(--hairline); padding: clamp(2.5rem, 6vw, 4rem) 0 2rem; }
+.footer-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.footer-brand { display: flex; align-items: center; gap: 0.6rem; }
+.footer-brand img { width: 24px; }
+.footer-tagline { font-family: var(--f-mono); font-size: 0.72rem; color: var(--ink-faint); margin-top: 0.4rem; }
+.footer-nav { display: flex; gap: 1.4rem; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
+.footer-nav a { font-family: var(--f-mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; color: var(--ink-dim); }
+.footer-nav a:hover { color: var(--ink); }
+
+.footer-disclaimer {
+  border: 1px solid rgba(224,184,74,0.25);
+  background: rgba(224,184,74,0.04);
+  border-radius: 8px;
+  padding: 1.2rem 1.4rem;
+  font-size: 0.78rem;
+  color: #E8D9AE;
+  line-height: 1.7;
+  margin-bottom: 1.6rem;
+}
+.footer-disclaimer strong { color: var(--ng-spine); }
+
+.footer-copyright { font-size: 0.72rem; color: var(--ink-faint); line-height: 1.8; }
+.footer-fineprint { font-size: 0.68rem; color: var(--ink-faint); opacity: 0.8; margin-top: 0.8rem; font-style: italic; }
+
+/* ================= REVEAL-ON-SCROLL ================= */
+.fu { opacity: 0; transform: translateY(16px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+.fu.vis { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .fu { opacity: 1; transform: none; transition: none; }
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 640px) {
+  .company-title-row { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
+  .cta-row { flex-direction: column; align-items: stretch; }
+  .btn { text-align: center; }
+}
+
+</style>
 </head>
-<body>
-  <img class="logo" src="Media/NewGenLogo.svg" alt="NewGen logo">
+<body class="ng-landing">
+
+  <!-- ================= DISCLAIMER STRIP ================= -->
+  <div class="disclaimer-strip" id="disclaimerStrip">
+    <div class="disclaimer-inner">
+      <span class="disclaimer-text"><strong>THIS IS A WORK OF FICTION</strong> — an internal, non-commercial gag project. Real company names, logos, and trademarks belong to their respective owners; every quote and onboarding anecdote attributed to a named executive is invented pastiche written by Claude (AI), marked <strong>— Claude</strong>, and is not a real statement or event.</span>
+      <button class="disclaimer-close" id="disclaimerClose" aria-label="Dismiss disclaimer">×</button>
+    </div>
+  </div>
+
+  <!-- ================= TOP BAR ================= -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <img src="Media/NewGenLogo.svg" alt="NewGen logo">
+      <span class="topbar-brand-name">NEWGEN</span>
+    </div>
+    <nav>
+      <ul class="topbar-nav">
+        <li><a href="#the-twelve">Divisions</a></li>
+        <li><a href="#manifesto">Manifesto</a></li>
+        <li><a href="#product-index">Products</a></li>
+        <li><a href="#spearhead">The Spearhead</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- ================= SECTION 0 — HERO ================= -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="orbit-stage" aria-hidden="true">
+        <div class="orbit-ring"></div>
+        <div class="orbit-marks" id="orbitMarks"></div>
+        <img class="orbit-logo" src="Media/NewGenLogo.svg" alt="">
+      </div>
+      <h1 class="hero-headline">NEWGEN</h1>
+      <p class="hero-subhead">Technology for the NEW generation.</p>
+      <p class="hero-body">Twelve companies. One spine. NewGen is what happens when the best silicon, optics, sound, materials, machines, cooling, and light in the world stop shipping parts to each other — and start being <strong>one thing</strong>.</p>
+      <blockquote class="hero-quote">
+        <p>"We don't integrate vertically because it's efficient. We do it because a chain of vendors can only ever agree on the average. We're not here for the average."</p>
+        <cite>— <strong>Francis Gabriel D. Robledo</strong>, Spearhead of Product Design &amp; Philosophy</cite>
+      </blockquote>
+      <div class="cta-row">
+        <a class="btn primary" href="#the-twelve">Explore the Divisions</a>
+        <a class="btn" href="#manifesto">Read the Manifesto</a>
+        <a class="btn" href="#product-index">Product Index</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION 1 — MANIFESTO ================= -->
+  <section class="section manifesto" id="manifesto">
+    <div class="wrap">
+      <div class="eyebrow fu">What is NewGen?</div>
+      <div class="manifesto-grid">
+        <div>
+          <p class="manifesto-body fu">Not "partnership." Not "ecosystem." <strong>Ownership of the whole pipeline.</strong> The photon leaves a scene, hits a Sony hexa-stacked sensor, rides an Intel Eventide iDP link across Lightmatter photonic fabric, gets scheduled by Hardware Thread Director, and lands on a six-primary display — capture to glass, no committee in between.</p>
+
+          <div class="origin-box fu">
+            NewGen didn't begin as twelve companies. It began as one: Intel, and Eventide. Everything else got pulled in only when a real wall got hit — the first wall was moving data fast enough between tiles once Eventide's architecture actually worked, which is why Lightmatter was the second name ever added to the roster. Every company since joined the same way: not by invitation for its own sake, but because NewGen ran into something it couldn't solve alone, and someone, somewhere, had already solved it better than anyone else on Earth.
+          </div>
+
+          <ol class="laws-list fu">
+            <li><strong>Segment ruthlessly.</strong> Every function gets true, dedicated hardware.</li>
+            <li><strong>Integrate vertically.</strong> One design authority, end to end.</li>
+            <li><strong>Ship the impossible standard.</strong> Specs are set before feasibility is confirmed. Engineering closes the gap. It always closes.</li>
+          </ol>
+
+          <blockquote class="pull-quote fu">
+            "Every other company designs to what's possible. We design to what's necessary, then make it possible."
+            <cite>— Francis Gabriel D. Robledo</cite>
+          </blockquote>
+        </div>
+        <div class="spiral-panel fu" id="manifestoSpiral" aria-hidden="true"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION 2 — THE TWELVE ================= -->
+  <section class="section twelve-intro" id="the-twelve">
+    <div class="wrap">
+      <div class="eyebrow fu">The Twelve</div>
+      <div class="section-head">
+        <h2 class="section-title fu">NewGen wasn't assembled in a day, <em>and it wasn't assembled by committee.</em></h2>
+        <p class="section-lede fu">It grew one bottleneck at a time. Here's how each of them remembers walking in — and what they actually said once they sat down.</p>
+        <div class="twelve-standing-disclaimer fu">
+          <strong>⚠ Every person named below is real.</strong> Every anecdote and quote is invented pastiche, written by Claude (AI), tagged <strong>— Claude</strong>. None of it happened.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="twelveHost"><!-- rendered by the inline script below from the DIVISIONS/QUOTES data (mirrors /data/divisions.json + /data/quotes.json) --></div>
+
+  <!-- ================= SECTION 3 — MISSION & VISION ================= -->
+  <section class="section mission-vision">
+    <div class="wrap">
+      <div class="eyebrow fu">Mission &amp; Vision</div>
+      <div class="mv-grid">
+        <div class="mv-card fu">
+          <h3>Mission</h3>
+          <p>To build technology for the NEW generation — by owning every layer of the stack, segmenting every function into true dedicated hardware, and refusing every compromise that exists only because two companies couldn't agree.</p>
+        </div>
+        <div class="mv-card fu">
+          <h3>Vision</h3>
+          <p>A world where the pipeline is the product. Where capture, transport, compute, sound, material, motion, cooling, and carry are designed in one room, by one authority, to one impossible standard — and where the next generation inherits tools that were built for them, not adapted to them.</p>
+        </div>
+      </div>
+      <div class="values-strip">
+        <div class="value-card fu"><span>01</span>Vertical or nothing.</div>
+        <div class="value-card fu"><span>02</span>Dedicated hardware for everything.</div>
+        <div class="value-card fu"><span>03</span>Impossible standards, real deadlines.</div>
+        <div class="value-card fu"><span>04</span>Fiction with rigor. (Yes, even magenta.)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION 4 — THE SPEARHEAD ================= -->
+  <section class="section spearhead" id="spearhead">
+    <div class="spearhead-spiral" id="spearheadSpiral"></div>
+    <div class="wrap spearhead-inner">
+      <div class="eyebrow fu">The Spearhead</div>
+      <div class="spearhead-top fu">
+        <div class="portrait-frame" style="--port-size: 84px; --port-ring: 3px; --accent: #E0B84A; --accent2: #7A5A1A;">
+          <div class="portrait-ring">
+            <div class="portrait-ring-inner">
+              <img class="spearhead-portrait" src="Media/Executives/francis-robledo.jpg" alt="Portrait of Francis Gabriel D. Robledo">
+              <div class="portrait-duotone" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h2 class="spearhead-name">Francis Gabriel D. Robledo</h2>
+          <div class="spearhead-title">Spearhead of Product Design &amp; Philosophy</div>
+        </div>
+      </div>
+
+      <div class="spearhead-quotes">
+        <div class="spearhead-card fu">
+          <div class="beat-label">In his own words</div>
+          <p>"I don't finance. I don't engineer — not completely. I don't architect, I don't mechanic. I don't even study design.</p>
+          <p>My job is to reach for the stars. To be the visionary. To rip and tear — to <strong>drill a spiral through the heavens themselves</strong> if I have to. Like the founders who came before, if they'd never been caged by having to start the companies and raise the money first.</p>
+          <p>I'm the one who walks in, spouts nonsense, and sets impossible standards on impossible timelines. Three months. No, less. And I'll be there every step of the way when the engineers get stuck — not because I'm the professional. They are. But because I can pull something out of thin air and make it make sense, and that's something for them to build toward."</p>
+        </div>
+        <div class="spearhead-card fu">
+          <div class="beat-label">On what the Spearhead actually is</div>
+          <p>"Let's be clear about something, because I think it matters more than the title does: I'm not a computer scientist. I'm not an engineer, in any field, on any day, with any degree to show for it. I'm a pilot. That's the actual job, the one with a license and a cockpit and a very unforgiving checklist.</p>
+          <p>Everything else — the tile architecture, the six-primary color science, the crystallographic dopant chemistry, all of it — I came to as a reader. As someone who loved these fields long before I had any right to sit at a table where they were being designed. I read the papers I wasn't assigned. I geeked out on the datasheets nobody made me open. And somewhere in a few thousand hours of doing that for no reason except that I genuinely loved it, I got to a point where I can sit across from a materials scientist or a photonics PhD and actually hold my own — not because I could build what they build, but because I understood it well enough to ask the one question that made them stop and think.</p>
+          <p>So if you want the honest version: I'm a LARPer. I'm playing the role of a visionary industrialist because I love these fields enough to have earned the right to play it convincingly. The impossible standards are real. The timelines are real. But the guy setting them learned everything he knows the same way anyone reading this page could — by caring more than he had to."</p>
+        </div>
+      </div>
+
+      <p class="spearhead-connective fu">Every division of NewGen answers to its own engineers. Every engineer answers to the spec. The spec answers to the Spearhead.</p>
+
+      <p class="spearhead-pull fu">"Who the hell do you think we are? We're the ones who make the technology for the NEW generation. Row row, fight the power."</p>
+
+      <div class="stat-strip fu">
+        <div class="stat-cell"><div class="stat-num">12</div><div class="stat-label">Companies unified</div></div>
+        <div class="stat-cell"><div class="stat-num">6</div><div class="stat-label">Color primaries, capture to glass</div></div>
+        <div class="stat-cell"><div class="stat-num">1</div><div class="stat-label">Design authority</div></div>
+        <div class="stat-cell"><div class="stat-num">∞</div><div class="stat-label">The size of the spiral</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION 5 — PRODUCT INDEX ================= -->
+  <section class="section product-index" id="product-index">
+    <div class="wrap">
+      <div class="eyebrow fu">Product Index</div>
+      <div class="section-head">
+        <h2 class="section-title fu">The living <em>catalogue.</em></h2>
+        <p class="section-lede fu">Every card links to a full technical deep-dive, opening with that division's CEO quote and a Spearhead remark.</p>
+      </div>
+      <div id="productIndexHost"><!-- rendered by the inline script below from the CARDS/DIVISIONS data (mirrors /data/cards.json + /data/divisions.json) --></div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION 7 — FOOTER ================= -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="Media/NewGenLogo.svg" alt="NewGen logo">
+          <div>
+            <div class="topbar-brand-name">NEWGEN</div>
+            <div class="footer-tagline">Technology for the NEW generation.</div>
+          </div>
+        </div>
+        <ul class="footer-nav">
+          <li><a href="#the-twelve">Divisions</a></li>
+          <li><a href="#manifesto">Manifesto</a></li>
+          <li><a href="#product-index">Products</a></li>
+          <li><a href="#spearhead">The Spearhead</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-disclaimer">
+        <strong>THIS IS A WORK OF FICTION — AN INTERNAL, NON-COMMERCIAL GAG PROJECT.</strong> NewGen is a fictional conglomerate imagined by Francis Gabriel D. Robledo. All real company names, logos, and trademarks (Intel, Sony, ASUS/ROG, Ford, Bang &amp; Olufsen, OPPO/BBK, Lightmatter, ShallXR, Play For Dream, Hollyland, Shimoda, Noctua) belong to their respective owners. All named executives are real people; <strong>every quote and onboarding anecdote attributed to them on this site is invented pastiche, written by Claude (AI), marked with — Claude, and is NOT a real statement or event.</strong> No affiliation, partnership, merger, or endorsement is real or implied. Every onboarding anecdote and executive quote on this site is fictional pastiche written by Claude (AI), marked accordingly.
+      </div>
+
+      <p class="footer-copyright">© 2026 NewGen (a fictional, non-commercial universe by Francis Gabriel D. Robledo). All fictional content rights reserved. All real trademarks, logos, and executive names are property of / belong to their respective owners and individuals: Intel Corporation (Lip-Bu Tan); Lightmatter, Inc. (Nicholas Harris); Sony Group Corporation (Hiroki Totoki); ASUSTeK Computer Inc. (Jonney Shih); OPPO / BBK Electronics (Tony Chen); Ford Motor Company (Jim Farley); Bang &amp; Olufsen A/S (Kristian Teär / Nikolaj Wendelboe); ShallXR (Tang Jianhong); Play For Dream Technology (Huang Feng); Rascom / Noctua (Roland Mossig); Shenzhen Hollyland Technology Co., Ltd. (Jeremy Huang); Shimoda Designs (Ian Millar). No affiliation or endorsement exists or is implied. This site is non-commercial, fan-made speculative fiction / parody.</p>
+      <p class="footer-fineprint">All onboarding anecdotes and quotes attributed to named executives are fictional pastiche written by Claude (AI), imagining these real people inside a fictional NewGen story. They are not real statements or events.</p>
+    </div>
+  </footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var DIVISIONS = [
+  {
+    "slug": "Intel",
+    "name": "Intel",
+    "tagline": "The Silicon Spine",
+    "joinOrder": 1,
+    "logoPath": "Media/Companies/intel-logo.png",
+    "accentColor": "#0068B5",
+    "accentColor2": "#00A3E0",
+    "motif": "circuit",
+    "ceoName": "Lip-Bu Tan",
+    "ceoTitle": "Chief Executive Officer, Intel Corporation",
+    "ceoPortraitPath": "Media/Executives/lipbu-tan.jpg",
+    "bringsShort": "Compute. Eventide architecture — Core 500 through Xeon x500, including the flagship Core™ Xeon® 9 599HKX, Hardware Thread Director, photonic memory, iDP 1.0.",
+    "founding": true
+  },
+  {
+    "slug": "Lightmatter",
+    "name": "Lightmatter USA",
+    "tagline": "The Speed of Light, Literally",
+    "joinOrder": 2,
+    "logoPath": "Media/Companies/lightmatter-logo.png",
+    "accentColor": "#00E5CF",
+    "accentColor2": "#7A5CFF",
+    "motif": "waveguide",
+    "ceoName": "Nicholas (Nick) Harris, PhD",
+    "ceoTitle": "Co-founder & CEO, Lightmatter",
+    "ceoPortraitPath": "Media/Executives/nick-harris.jpg",
+    "bringsShort": "Photonic interconnect — Foveros 2.0 fiber-optic tile fabric, photonic memory links.",
+    "founding": false
+  },
+  {
+    "slug": "Sony",
+    "name": "Sony",
+    "tagline": "The Eyes and the Glass",
+    "joinOrder": 3,
+    "logoPath": "Media/Companies/sony-logo.png",
+    "accentColor": "#FFFFFF",
+    "accentColor2": "#C0C0C0",
+    "motif": "spectrum",
+    "ceoName": "Hiroki Totoki",
+    "ceoTitle": "President & Representative Corporate Executive Officer (CEO), Sony Group Corporation",
+    "ceoPortraitPath": "Media/Executives/hiroki-totoki.jpg",
+    "bringsShort": "α0 (ILCE-0) hexa-stacked RGBMCY sensor, XCD-LED six-primary panels, Bionz XR imaging tile.",
+    "founding": false
+  },
+  {
+    "slug": "ASUS",
+    "name": "ASUS / ROG",
+    "tagline": "The Machine Itself: ROG Zenbook Zephyrus ProArt Duo 18",
+    "joinOrder": 4,
+    "logoPath": "Media/Companies/asus-rog-logo.svg",
+    "accentColor": "#FF0029",
+    "accentColor2": "#3A6FA8",
+    "motif": "slash",
+    "ceoName": "Jonney Shih",
+    "ceoTitle": "Chairman, ASUSTeK Computer Inc.",
+    "ceoPortraitPath": "Media/Executives/jonney-shih.jpg",
+    "bringsShort": "The ASUS ROG Zenbook Zephyrus ProArt Duo 18 — purpose-built around the Intel® Core™ Xeon® 9 599HKX.",
+    "founding": false
+  },
+  {
+    "slug": "OPPO",
+    "name": "OPPO / BBK",
+    "tagline": "The Phone, the Scale, the Signal, the Charge",
+    "joinOrder": 5,
+    "logoPath": "Media/Companies/oppo-bbk-logo.png",
+    "accentColor": "#0FA35B",
+    "accentColor2": "#5FE0A0",
+    "motif": "consumer",
+    "ceoName": "Tony Chen (Chen Mingyong)",
+    "ceoTitle": "Founder & CEO, OPPO",
+    "ceoPortraitPath": "Media/Executives/tony-chen.jpg",
+    "bringsShort": "Flagship Eventide-powered NewGen phones, Eventide networking tile, and SUPERVOOC GaN fast-charging tech.",
+    "founding": false
+  },
+  {
+    "slug": "Ford",
+    "name": "Ford",
+    "tagline": "The Machines That Move",
+    "joinOrder": 6,
+    "logoPath": "Media/Companies/ford-logo.svg",
+    "accentColor": "#003478",
+    "accentColor2": "#6E8CB5",
+    "motif": "steel",
+    "ceoName": "Jim Farley",
+    "ceoTitle": "President & CEO, Ford Motor Company",
+    "ceoPortraitPath": "Media/Executives/jim-farley.jpg",
+    "bringsShort": "NewGen vehicle platforms — Eventide-class automotive silicon, six-primary cabin displays.",
+    "founding": false
+  },
+  {
+    "slug": "BO",
+    "name": "Bang & Olufsen",
+    "tagline": "The Sound",
+    "joinOrder": 7,
+    "logoPath": "Media/Companies/bo-logo.png",
+    "accentColor": "#F4F1EC",
+    "accentColor2": "#B08D57",
+    "motif": "minimal",
+    "ceoName": "Kristian Teär",
+    "ceoTitle": "CEO, Bang & Olufsen A/S (2019–Jan 2026)",
+    "ceoPortraitPath": "Media/Executives/kristian-tear.jpg",
+    "bringsShort": "wH105 headphones, Klangkerne audio tile (SoRT, Hallraum, Tiefton subsystems).",
+    "footnote": "Interim CEO since Jan 7, 2026 is CFO Nikolaj Wendelboe, following a leadership change. This section's voice model is Kristian Teär.",
+    "founding": false
+  },
+  {
+    "slug": "ShallXR",
+    "name": "ShallXR",
+    "tagline": "The Motion",
+    "joinOrder": 8,
+    "logoPath": "Media/Companies/shallxr-logo.jpg",
+    "accentColor": "#E8E8E8",
+    "accentColor2": "#FF5C3C",
+    "motif": "kinetic",
+    "ceoName": "Tang Jianhong (\"Veni Tang\")",
+    "ceoTitle": "Founder & CEO, ShallXR (co-founder Ma Teng credited alongside)",
+    "ceoPortraitPath": "Media/Executives/veni-tang.jpg",
+    "bringsShort": "Motion simulation hardware — 3-axis platforms in the “iFly Chair” lineage, synced to Play For Dream's headset output.",
+    "founding": false
+  },
+  {
+    "slug": "PlayForDream",
+    "name": "Play For Dream",
+    "tagline": "The Headset",
+    "joinOrder": 9,
+    "logoPath": "Media/Companies/playfordream-logo.jpg",
+    "accentColor": "#FF7A1A",
+    "accentColor2": "#1A1440",
+    "motif": "volumetric",
+    "ceoName": "Huang Feng (\"F\")",
+    "ceoTitle": "Founder & CEO, Play For Dream Technology",
+    "ceoPortraitPath": "Media/Executives/huang-feng.jpg",
+    "bringsShort": "The actual VR/XR headset platform — chassis, tracking, thermals, spatial OS — built around Sony's CRT-VR display technology.",
+    "founding": false
+  },
+  {
+    "slug": "Noctua",
+    "name": "Noctua",
+    "tagline": "The Silence Underneath Everything",
+    "joinOrder": 10,
+    "logoPath": "Media/Companies/noctua-logo.png",
+    "accentColor": "#8B5E3C",
+    "accentColor2": "#E8DCC8",
+    "motif": "matte",
+    "ceoName": "Roland Mossig",
+    "ceoTitle": "Founder & CEO, Rascom (Noctua's Austrian founding company)",
+    "ceoPortraitPath": "Media/Executives/roland-mossig.jpg",
+    "bringsShort": "Thermal engineering for both the Duo 18's internal cooling (fanless below 8W) and the dock's 2000W thermal solution.",
+    "founding": false
+  },
+  {
+    "slug": "Hollyland",
+    "name": "Hollyland",
+    "tagline": "The Link in the Field (and now, on the Desk)",
+    "joinOrder": 11,
+    "logoPath": "Media/Companies/hollyland-logo.png",
+    "accentColor": "#FF6A00",
+    "accentColor2": "#111111",
+    "motif": "waveform",
+    "ceoName": "Jeremy Huang",
+    "ceoTitle": "CEO, Shenzhen Hollyland Technology Co., Ltd.",
+    "ceoPortraitPath": "Media/Executives/jeremy-huang.jpg",
+    "bringsShort": "Zero-latency wireless video/audio transmission for α0 Hexa RAW, plus the low-latency wireless protocol behind the Duo 18's magnetic keyboard.",
+    "founding": false
+  },
+  {
+    "slug": "Shimoda",
+    "name": "Shimoda",
+    "tagline": "The Carry",
+    "joinOrder": 12,
+    "logoPath": "Media/Companies/shimoda-logo.png",
+    "accentColor": "#8A9A7E",
+    "accentColor2": "#C2A878",
+    "motif": "topographic",
+    "ceoName": "Ian Millar",
+    "ceoTitle": "Founder, Shimoda Designs",
+    "ceoPortraitPath": "Media/Executives/ian-millar.jpg",
+    "bringsShort": "Adventure-grade carry systems built around exact NewGen product dimensions, including a purpose-fit case for the full Duo 18 system.",
+    "founding": false
+  }
+];
+  var CARDS = [
+  {
+    "division": "Intel",
+    "title": "Eventide Architecture",
+    "pitch": "The complete next-gen CPU platform: Core 500 → Xeon x500.",
+    "thumb": "Media/Cards/intel-eventide.svg",
+    "link": "/Intel/Eventide/",
+    "accentColor": "#0068B5",
+    "order": 1,
+    "collaborators": []
+  },
+  {
+    "division": "Intel",
+    "title": "Core™ Xeon® 9 599HKX",
+    "pitch": "The flagship SKU — the reason the ProArt Duo 18 exists.",
+    "thumb": "Media/Cards/intel-x9-599hkx.svg",
+    "link": "/Intel/Eventide/SKU/X9-599HKX/",
+    "accentColor": "#0068B5",
+    "order": 2,
+    "collaborators": [
+      "ASUS"
+    ]
+  },
+  {
+    "division": "Intel",
+    "title": "Hardware Thread Director",
+    "pitch": "Per-core, per-frame, per-packet scheduling silicon.",
+    "thumb": "Media/Cards/intel-htd.svg",
+    "link": "/Intel/Eventide/Technology/ThreadDirector/",
+    "accentColor": "#0068B5",
+    "order": 3,
+    "collaborators": []
+  },
+  {
+    "division": "Sony",
+    "title": "α0 (ILCE-0)",
+    "pitch": "Hexa-stacked RGBMCY sensor camera.",
+    "thumb": "Media/Cards/sony-a0.svg",
+    "link": "/Sony/ILCE-0/",
+    "accentColor": "#8A8A8A",
+    "order": 1,
+    "collaborators": []
+  },
+  {
+    "division": "Sony",
+    "title": "XCD-LED",
+    "pitch": "The originating six-primary panel technology.",
+    "thumb": "Media/Cards/sony-xcdled.svg",
+    "link": "/Sony/XCD-LED/",
+    "accentColor": "#8A8A8A",
+    "order": 2,
+    "collaborators": []
+  },
+  {
+    "division": "Sony",
+    "title": "CRT-VR",
+    "pitch": "Vector-scanned six-primary display, hosted inside Play For Dream's headset.",
+    "thumb": "Media/Cards/sony-crtvr.svg",
+    "link": "/Sony/CRT-VR/",
+    "accentColor": "#8A8A8A",
+    "order": 3,
+    "collaborators": [
+      "PlayForDream"
+    ]
+  },
+  {
+    "division": "ASUS",
+    "title": "ROG Zenbook Zephyrus ProArt Duo 18",
+    "pitch": "0.5W silent to 2000W docked. One machine, built around the X9 599HKX.",
+    "thumb": "Media/Cards/asus-zephyrus-duo18.svg",
+    "link": "/ASUS/ZephyrusProArtDuo18/",
+    "accentColor": "#FF0029",
+    "order": 1,
+    "collaborators": [
+      "Intel",
+      "OPPO",
+      "Noctua",
+      "Hollyland",
+      "Shimoda"
+    ]
+  },
+  {
+    "division": "ASUS",
+    "title": "Ceraluminesium Sapphire",
+    "pitch": "The structural-color material inside the Duo 18's chassis.",
+    "thumb": "Media/Cards/asus-ceraluminesium.svg",
+    "link": "/ASUS/Ceralumenesium/",
+    "accentColor": "#FF0029",
+    "order": 2,
+    "collaborators": []
+  },
+  {
+    "division": "OPPO",
+    "title": "NewGen Flagship Phones",
+    "pitch": "The Eventide-powered handset — six-primary camera, in your pocket.",
+    "thumb": "Media/Cards/oppo-newgen-phones.svg",
+    "link": "/OPPO/NewGenPhones/",
+    "accentColor": "#0FA35B",
+    "order": 1,
+    "collaborators": []
+  },
+  {
+    "division": "OPPO",
+    "title": "SUPERVOOC GaN Charger",
+    "pitch": "The first laptop-class GaN SUPERVOOC charger, built for the Duo 18.",
+    "thumb": "Media/Cards/oppo-supervooc-gan.svg",
+    "link": "/OPPO/SUPERVOOCGaN/",
+    "accentColor": "#0FA35B",
+    "order": 2,
+    "collaborators": [
+      "ASUS"
+    ]
+  },
+  {
+    "division": "Noctua",
+    "title": "Duo 18 Internal Cooling",
+    "pitch": "Fanless below 8W. Silent thinking, guaranteed.",
+    "thumb": "Media/Cards/noctua-internal.svg",
+    "link": "/Noctua/ZephyrusInternalCooling/",
+    "accentColor": "#8B5E3C",
+    "order": 1,
+    "collaborators": [
+      "ASUS"
+    ]
+  },
+  {
+    "division": "Noctua",
+    "title": "2000W Dock Thermals",
+    "pitch": "Full Xeon 9 ceiling, desk-friendly acoustics.",
+    "thumb": "Media/Cards/noctua-dock.svg",
+    "link": "/Noctua/DockThermals/",
+    "accentColor": "#8B5E3C",
+    "order": 2,
+    "collaborators": [
+      "ASUS",
+      "Intel"
+    ]
+  },
+  {
+    "division": "Hollyland",
+    "title": "Magnetic Peripheral Link",
+    "pitch": "The wireless protocol that replaced Bluetooth for the Duo 18's keyboard/trackpad.",
+    "thumb": "Media/Cards/hollyland-peripheral.svg",
+    "link": "/Hollyland/SignalboostS1Collab/",
+    "accentColor": "#FF6A00",
+    "order": 1,
+    "collaborators": [
+      "ASUS",
+      "Intel",
+      "OPPO"
+    ]
+  },
+  {
+    "division": "Shimoda",
+    "title": "Zephyrus Travel System",
+    "pitch": "Laptop, dock, charger, peripherals — one bag, built to survive the climb.",
+    "thumb": "Media/Cards/shimoda-zephyrus-case.svg",
+    "link": "/Shimoda/ZephyrusTravelCase/",
+    "accentColor": "#8A9A7E",
+    "order": 1,
+    "collaborators": [
+      "ASUS"
+    ]
+  }
+];
+  var QUOTES = {
+  "Intel": {
+    "onboarding": "There was no room yet when Francis first came to me — there was just him, a whiteboard sketch of something called Eventide, and a level of confidence in a chip that didn't exist that I honestly hadn't seen since I was young enough to have that kind of confidence myself. I told him the timeline was impossible. He said, correctly, that I'd said that before about things that eventually shipped. Intel didn't join NewGen. Intel was the reason there was a NewGen to join.",
+    "quote": "I've spent a career watching companies chase the next quarter and call it vision. When Francis put 'tech for the new generation' on that whiteboard, my honest first reaction was — okay, but who's going to build it, and will they still be humble about it in year three? Intel's job in this room isn't to be the loudest chip. It's to be the one every other division can trust without asking twice. Stay humble, work hard, delight the generation that hasn't been born yet. That's the whole pitch to me.",
+    "spearheadRemark": "Every tile on this chip only works because the scheduling silicon underneath it never sleeps on the job — Hardware Thread Director is the reason the rest of NewGen gets to argue about optics and sound instead of about jitter.",
+    "subpages": [
+      "/Intel/Eventide",
+      "/Intel/Eventide/SKU/X9-599HKX",
+      "/Intel/Eventide/ThreadDirector"
+    ]
+  },
+  "Lightmatter": {
+    "onboarding": "Eventide was already real by the time Francis called me, which is rarer than people think — usually it's a deck. He had tiles that worked in isolation and no way to move data between them at the speed the rest of the chip demanded. That's a physics problem before it's a business problem, and he knew that, which is the only reason I took the meeting seriously. We were company number two for a reason — interconnect is always the first thing that breaks once you actually build something worth connecting.",
+    "quote": "Copper was always a compromise we'd forgotten was a compromise. Every year we keep shipping electrons through wire, we're taxing the next generation's compute budget for no physical reason anymore. When Francis says 'build for the new generation,' the first-principles version of that sentence, to me, is: don't hand them our bottlenecks. Give them light.",
+    "spearheadRemark": "Foveros 2.0 riding actual photons between tiles instead of electrons through copper — that's not a faster bus, that's a different physics budget for everything built on top of it.",
+    "subpages": [
+      "/Lightmatter/Foveros2",
+      "/Lightmatter/PhotonicMemory"
+    ]
+  },
+  "Sony": {
+    "onboarding": "When Francis explained to me the six-primary thesis — capture to display, one language, no compromise in between — I will say, honestly, first I thought this is very ambitious for outside person to propose to Sony. But he had already brought Intel and Lightmatter to table, and interconnect problem, they had solved already. So the only question remaining for me was: can our sensor and our panel finally speak the same language as chip that carries them. I entered that room as third, and I remember thinking, this room already has more conviction in it than most companies have in fifty years.",
+    "quote": "At Sony we have one word we return to for everything — Kando. Emotional impact. The new generation Francis speaks of, they will not remember spec sheet of sensor that captured their childhood. They will remember only how it felt to watch it back. My commitment to this table is simple: whatever silicon we build together, it must still make someone feel something, thirty years from now.",
+    "spearheadRemark": "A hexa-stacked RGBMCY sensor talking directly to a six-primary panel over one link, with nothing in between that has to guess — that's the whole 'capture to glass' promise sitting in two pieces of Sony glass.",
+    "subpages": [
+      "/Sony/AlphaZero",
+      "/Sony/XCDLED"
+    ]
+  },
+  "ASUS": {
+    "onboarding": "Francis didn't come to me asking for a material. He came to me with a CPU nobody had a chassis worthy of yet — the Xeon 9 599HKX — and a very specific, very stubborn demand: eighteen inches, dual screen, silent below eight watts, and a dock that lets the same chip hit two thousand watts with no compromise between the two states. I told him that was three or four different laptops pretending to be one. He said, correctly, that was exactly the point.",
+    "quote": "'In Search of Incredible' was never a slogan to me, it was a standard nobody was allowed to lower. Francis didn't ask us to build a fast laptop. He asked us to build a laptop that is silent doing email and a full workstation the moment you dock it — and to not treat those as two different machines. We do not paint our chassis, we dope the crystal lattice, and now we've built one machine that has to be two things perfectly instead of one thing adequately. That is the incredible we were actually searching for.",
+    "spearheadRemark": "0.5 watts to 2000 watts, on demand, out of the same silicon and the same chassis — that dynamic range is the whole argument for vertical integration made physical, in one machine you can actually close the lid on.",
+    "subpages": [
+      "/ASUS/ZephyrusProArtDuo18",
+      "/ASUS/Ceralumenesium"
+    ],
+    "specBlock": [
+      "18-inch chassis, dual-screen ProArt DUO layout, engineered around a genuinely desktop-class CPU rather than a downclocked mobile part",
+      "0.5W–200W dynamic power envelope inside the chassis alone — full efficiency-core idle through sustained full-tilt Xeon 9 performance, slim form factor maintained throughout",
+      "Massive internal battery sized to actually matter at that power envelope, not a token cell",
+      "Magnetic wireless peripheral system — keyboard and trackpad detach and reattach magnetically, wireless from day one (Bluetooth couldn't hold the bandwidth a workstation laptop needed — this is the seed of the Hollyland collaboration)",
+      "Companion DOCK, sold/bundled as part of the system, unlocking the X9 599HKX's full 2000W ceiling with zero throttling",
+      "GaN SUPERVOOC mini fast charger — co-developed with OPPO's SUPERVOOC fast-charging division, the first laptop-class GaN SUPERVOOC charger ever shipped",
+      "Shimoda-collaboration carry case, purpose-fit for the laptop + dock + charger + peripherals as one traveling system",
+      "Ceraluminesium Sapphire chassis — the functionally-graded metal-ceramic detailed as a material choice within this laptop's design",
+      "Noctua-collaboration cooling for both the internal laptop thermal solution and the external dock — internal cooling genuinely fanless below 8W sustained load"
+    ]
+  },
+  "OPPO": {
+    "onboarding": "By the time I was invited, the pipeline already worked in laboratory. Francis's question to me was not only 'can you make a networking tile.' He also asked, almost as afterthought, 'can your fast-charging team make something small enough to fit in a laptop bag but strong enough to matter.' I did not expect SUPERVOOC to end up inside an ASUS laptop dock. But this is, I think, exactly what NewGen is — nobody's technology stays in its own lane for long.",
+    "quote": "I do not think a company needs to be loud to have a mission. Benfen — knowing your role, and doing it without seeking credit. But I will say this clearly: OPPO's role in NewGen is not small. We are the reason a sensor with six primaries and a chip with a mind of its own becomes something a person actually holds, actually trusts — and now, something that charges a workstation laptop in a fraction of the time anyone expected. The phone is where the new generation first touches everything we built. That is not a small duty.",
+    "spearheadRemark": "The phone is the honest test of everything else on this page — if the six-primary pipeline doesn't survive being shrunk into something that fits in a pocket and gets dropped, none of the rest of it matters.",
+    "subpages": [
+      "/OPPO/NewGenPhones",
+      "/OPPO/NetworkingTile",
+      "/OPPO/SUPERVOOCGaN"
+    ]
+  },
+  "Ford": {
+    "onboarding": "Francis flew out and the first thing he asked me wasn't about horsepower, it was about dashboards — could a cabin display actually show six real primaries instead of faking two of them. By then he already had chip guys, glass guys, connection guys, laptop guys sitting at that table. I walked in a little late to the party, honestly, and the bar was already stupid high.",
+    "quote": "Look, I've been a car guy since I was a kid named Jimmy Car-Car, so when somebody tells me we're building the dashboard for the next generation, I don't hear a spec sheet — I hear my own kids someday sitting in something we made and trusting it. We are maybe in the first inning of a nine-inning game on this vertical-integration thing, but I'd rather be honest about inning one than pretend we're already in extras.",
+    "spearheadRemark": "A cabin display running the same six-primary pipeline as the sensor that shot the movie you're watching in the back seat — that's the platform leaving the desk and getting on the road.",
+    "subpages": []
+  },
+  "BO": {
+    "onboarding": "I'll admit, my first honest reaction when Francis called was not excitement, it was a question: why does a company that has just spent an hour convincing Sony to hand over their sensor and their panel now also want my division, when Sony has audio engineers of their own. I asked him directly. He told me, plainly, that Sony builds toward the eye, and he needed someone who builds toward the ear the same way — with nothing borrowed, nothing shared with another product line internally. There was a moment of real tension in that room before I said yes, because I think everyone, including Sony's people, wanted to know whether two very different definitions of 'quality' could actually share a table without one of them quietly winning. I don't think either one 'won.' I think we just stopped pretending sound was a smaller problem than sight.",
+    "quote": "In Denmark we have a habit of saying less than we mean and building more than we promise. So when Francis asked what B&O owes the new generation, my answer is not a bigger speaker. It is a quieter room around a better one. Klangkerne only earns its name if a twenty-year-old somewhere trusts it the way their grandmother trusted a record player.",
+    "spearheadRemark": "Sound was the one sense nobody else at that table was building for on purpose — Klangkerne is what happens when you finally give the ear the same dedicated silicon the eye already had.",
+    "subpages": [
+      "/BO/wH105",
+      "/BO/Klangkerne"
+    ]
+  },
+  "ShallXR": {
+    "onboarding": "By the time Francis contact our team, Play For Dream headset already exist, already very immersive for the eyes. But eyes is not whole body. He ask me, very simply: what happen to a person's stomach, their balance, their whole body, when the headset says you are falling but the chair says you are sitting still. Nobody at that table had good answer yet, because nobody had thought about body as separate problem from eyes. I say yes before he finish explaining, because I already know we solve this — this is exactly what iFly Chair is for.",
+    "quote": "Our mission always is to bring people beyond boundary of what their body tells them is real — this is what 'go beyond reality' actually mean for us, not slogan, engineering target. A headset can show the fall. Only we can make the body believe the fall. We are the motion underneath Play For Dream's image — the part of immersion that lives below the neck.",
+    "spearheadRemark": "The eyes can be fooled by a headset in isolation — the inner ear can't. ShallXR is the piece that keeps the illusion honest below the neck.",
+    "subpages": []
+  },
+  "PlayForDream": {
+    "onboarding": "I will say, first, I was confused. Francis tells me the display technology is CRT — and my honest first reaction is, CRT, this is what my father's generation threw away, why are we going backward. I have spent my whole career trying to escape the pixel grid, the fixed resolution, the flat-panel limitations, and here is someone telling me the answer was a scanning tube. I almost said no in that first meeting, I will admit this.\n\nBut then he explains it properly — not nostalgia, physics. Vector scan, no fixed pixel grid at all, which means foveation is not a software trick anymore, it is structural. The beam simply spends more time where the eye is actually looking. I have worked in this industry fifteen years and nobody, not one engineer, not one company, had said this sentence to me before. Sony had the display sitting on a bench, extremely beautiful, and — I think this is important to say — even Sony's own people had not fully connected what it meant for headset foveation the way Francis had. He was not the display engineer in that room. He was the one who understood what the display engineers had actually built, better than they did. I remember thinking, this man has never held a soldering iron in a display lab, and he just explained my industry's next ten years back to me. I said yes before I finished being embarrassed about almost saying no.",
+    "quote": "Everyone in this room is building one piece of pipeline. My job is to build the thing you put on your face and forget is hardware — and I will say honestly, I did not expect that thing to be built around a technology my own industry had already decided was finished. CRT was never the past that XR left behind. It was the future nobody in my industry looked back far enough to see, until Francis did. Give me Sony's panel, Intel's iDP link, and ShallXR's motion platform underneath me, and I give you a room nobody wants to take off.",
+    "spearheadRemark": "Vector scan means foveation stops being a software trick and becomes a property of the beam itself — that's not a headset feature, that's a different relationship between the eye and the display, and it was sitting in a warehouse the whole time.",
+    "subpages": []
+  },
+  "Noctua": {
+    "onboarding": "Francis's team called about a dock, not a laptop — two thousand watts, they said, and it needs to be quiet enough to sit on a desk next to someone working. I've heard 'quiet and powerful' as a request for twenty years, usually meaning one or the other. Then he mentioned the laptop itself needed to run completely fanless under eight watts, which is a much harder and much more honest engineering problem than the loud one. We didn't get invited for the impressive number. We got invited for the number nobody else thought to ask about.",
+    "quote": "It's still the same annoyance with noisy environments that fuels our passion to make things quieter — that hasn't changed in twenty years, and it won't change because the chip inside got faster. So our part of this is simple: whatever Intel puts inside that chassis, whatever power the dock has to dissipate, the person sitting next to it should still be able to think in silence. Performance-to-noise efficiency isn't a spec category for us. It's the whole job.",
+    "spearheadRemark": "Nobody asks the fanless question until the silence stops being free — Noctua is the reason 0.5 watts and 2000 watts can share one chassis without either one being loud about it.",
+    "subpages": [
+      "/Noctua/ZephyrusInternalCooling",
+      "/Noctua/DockThermals"
+    ]
+  },
+  "Hollyland": {
+    "onboarding": "We were invited twice, really, in the same conversation. First for the obvious reason — getting a six-primary camera signal off a set wirelessly without losing a channel. But then Francis mentioned, almost as a side note, that ASUS's new laptop had a magnetic wireless keyboard that Bluetooth simply couldn't keep up with, and did we have anything that could. It's been a tough road getting our transmission gear taken seriously at all, so having two completely different problems solved by the same underlying idea meant a lot.",
+    "quote": "It has not been an easy road getting our transmission gear to where creators actually trust it, so I want to say first — thank you to everyone at this table for letting a smaller company carry something as important as the signal, twice over now. A six-primary sensor means nothing if the link drops, and neither does a beautiful magnetic keyboard if it lags behind your typing. Our job for the new generation is the most invisible one here, on set and now on the desk, and I am proud of both.",
+    "spearheadRemark": "The same low-latency instinct that keeps a six-primary signal alive across a film set is the instinct that keeps a keyboard from ever feeling wireless — that's one company solving the same problem twice, in two rooms nobody expected to be the same room.",
+    "subpages": [
+      "/Hollyland/FieldTransmission",
+      "/Hollyland/SignalboostS1Collab"
+    ]
+  },
+  "Shimoda": {
+    "onboarding": "I've had a lot of pitch meetings in my time, and usually I can tell within two minutes what someone actually wants from Shimoda — a logo on a product page, a discount code, a co-branding favor. Francis was not that. He didn't open with a spec sheet or a deadline like I gather he does with everyone else. He opened by telling me about a Urban Explore 30 he'd carried through Italy and then through Japan as a kid, a Sony body and a 70-200 f/2.8 GM II stuffed inside it, and how the bag never once made him think about the bag on a hike he clearly still thinks about all the time. I make gear for people exactly like that, so I'll admit, he had me before he'd said a word about NewGen.\n\nThen he shifted, and this is the part I actually remember most — he leaned forward and said, more or less, 'every other company at this table is building something that can break. You're the only one whose entire job is making sure none of it does. You are the company who protects all of it.' I don't think anyone had ever put it to me that plainly before. Camera bag makers don't usually get told we're the last line of defense for a six-primary sensor or a Xeon-class laptop — we get told we're an accessory. He wasn't pitching me an accessory. He was telling me, with a straight face and real conviction, that Shimoda was the reason any of the rest of it would survive contact with a person's actual life. I've built this whole company around not letting a hike be ruined by carrying a camera properly. Somehow this stranger understood that better, and faster, than most of my own team did in our first year.",
+    "quote": "I'll be honest, I'm not sure I belong in a room with this much silicon talk — my whole design philosophy came from being annoyed that I had to choose between a good hike and carrying my camera gear properly. But that's exactly the new-generation problem, isn't it? Nobody should have to compromise the actual living of their life to carry the tools NewGen builds. My job is the last unglamorous layer: the bag has to survive the climb, or none of the six primaries in the world matter. And for what it's worth — hearing that a kid once carried an Urban Explore up an Italian hillside with a long lens in it and never once thought about the bag failing him? That's the only review that's ever actually mattered to me.",
+    "spearheadRemark": "Every watt, every primary, every micron of dopant chemistry on this page is worth exactly nothing if it doesn't survive the trailhead — Shimoda is the last layer, and it's the one I actually lost sleep over before I found them.",
+    "subpages": [
+      "/Shimoda/ZephyrusTravelCase"
+    ]
+  }
+};
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function inlineMd(str) {
+    return escapeHtml(str)
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/\n\n/g, '</p><p>');
+  }
+
+  function paragraphs(str) {
+    return '<p>' + inlineMd(str) + '</p>';
+  }
+
+  function spiralPath(turns, steps, scale) {
+    var d = '';
+    for (var i = 0; i <= steps; i++) {
+      var t = (i / steps) * turns * Math.PI * 2;
+      var r = scale * (i / steps);
+      var x = 250 + r * Math.cos(t);
+      var y = 250 + r * Math.sin(t);
+      d += (i === 0 ? 'M' : 'L') + x.toFixed(2) + ',' + y.toFixed(2);
+    }
+    return d;
+  }
+
+  function spiralSvg(color, opts) {
+    opts = opts || {};
+    var d = spiralPath(opts.turns || 5, 220, opts.scale || 230);
+    return '<svg viewBox="0 0 500 500" class="rotor" aria-hidden="true">' +
+      '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="' + (opts.width || 1.4) + '" opacity="' + (opts.opacity || 0.8) + '"/>' +
+      '</svg>';
+  }
+
+  function renderOrbitMarks() {
+    var host = document.getElementById('orbitMarks');
+    if (!host) return;
+    var ordered = DIVISIONS.slice().sort(function (a, b) { return a.joinOrder - b.joinOrder; });
+    var n = ordered.length;
+    var r = 48;
+    host.innerHTML = ordered.map(function (d, i) {
+      var angle = (i / n) * Math.PI * 2 - Math.PI / 2;
+      var x = 50 + r * Math.cos(angle);
+      var y = 50 + r * Math.sin(angle);
+      return '<span class="orbit-mark" style="left:' + x + '%; top:' + y + '%; background:' + d.accentColor + '; color:' + d.accentColor + '" title="' + escapeHtml(d.name) + '"></span>';
+    }).join('');
+  }
+
+  function companySectionHtml(div, q) {
+    var accentStyle = '--accent:' + div.accentColor + '; --accent2:' + (div.accentColor2 || div.accentColor) + ';';
+    var founding = div.founding ? '<span class="company-founding">Founding company</span>' : '';
+    var footnote = div.footnote ? '<div class="company-footnote">' + escapeHtml(div.footnote) + '</div>' : '';
+
+    var specBlock = '';
+    if (q.specBlock && q.specBlock.length) {
+      specBlock = '<div class="spec-block fu"><div class="spec-block-title">The pitch, as delivered</div><ul>' +
+        q.specBlock.map(function (s) { return '<li>' + inlineMd(s) + '</li>'; }).join('') +
+        '</ul></div>';
+    }
+
+    var isFlagshipBeat = div.slug === 'PlayForDream' || div.slug === 'Shimoda';
+    var onboardingBeatClass = isFlagshipBeat ? 'beat flagship fu' : 'beat fu';
+
+    return (
+      '<section class="company-section" data-division="' + div.slug + '" style="' + accentStyle + '">' +
+      '<div class="company-bg motif-' + div.motif + '"></div>' +
+      '<div class="wrap">' +
+      '<div class="company-head fu">' +
+      '<img class="company-logo' + ((div.slug === 'Intel' || div.slug === 'Sony') ? ' logo-chip' : '') + '" src="' + div.logoPath + '" alt="' + escapeHtml(div.name) + ' logo" loading="lazy">' +
+      '<span class="company-order">#' + div.joinOrder + '</span>' + founding +
+      '</div>' +
+      '<div class="company-title-row fu"><h2 class="company-name">' + escapeHtml(div.name) + '</h2><span class="company-tagline">' + escapeHtml(div.tagline) + '</span></div>' +
+      '<div class="company-meta fu">' +
+      '<div class="portrait-frame" style="--port-size: 48px; --port-ring: 2px;">' +
+      '<div class="portrait-ring"><div class="portrait-ring-inner">' +
+      '<img class="company-portrait" src="' + div.ceoPortraitPath + '" alt="' + escapeHtml(div.ceoName) + ' portrait" loading="lazy">' +
+      '<div class="portrait-duotone" aria-hidden="true"></div>' +
+      '</div></div></div>' +
+      '<div><div class="company-exec-name">' + escapeHtml(div.ceoName) + '</div><div class="company-exec-title">' + escapeHtml(div.ceoTitle) + '</div></div>' +
+      '</div>' +
+      footnote +
+      '<p class="company-brings fu">' + inlineMd(div.bringsShort) + '</p>' +
+      specBlock +
+      '<div class="company-body-grid">' +
+      '<div class="' + onboardingBeatClass + '"><div class="beat-label">The Onboarding</div><blockquote>' + paragraphs(q.onboarding) + '</blockquote><cite>— Claude</cite></div>' +
+      '<div class="beat fu"><div class="beat-label">The Quote</div><blockquote>' + paragraphs(q.quote) + '</blockquote><cite>— Claude</cite></div>' +
+      '</div>' +
+      '<div class="spearhead-remark fu"><p>' + inlineMd(q.spearheadRemark) + '</p><cite>— Francis Gabriel D. Robledo, Spearhead</cite></div>' +
+      '</div></section>'
+    );
+  }
+
+  function renderTwelve() {
+    var host = document.getElementById('twelveHost');
+    if (!host) return;
+    var ordered = DIVISIONS.slice().sort(function (a, b) { return a.joinOrder - b.joinOrder; });
+    host.innerHTML = ordered.map(function (div) {
+      return companySectionHtml(div, QUOTES[div.slug] || {});
+    }).join('<div class="divider"></div>');
+  }
+
+  function renderProductIndex() {
+    var host = document.getElementById('productIndexHost');
+    if (!host) return;
+    var byDivision = {};
+    CARDS.forEach(function (c) {
+      (byDivision[c.division] = byDivision[c.division] || []).push(c);
+    });
+    var ordered = DIVISIONS.filter(function (d) { return byDivision[d.slug] && byDivision[d.slug].length; })
+      .sort(function (a, b) { return a.joinOrder - b.joinOrder; });
+
+    host.innerHTML = ordered.map(function (div) {
+      var items = byDivision[div.slug].slice().sort(function (a, b) { return a.order - b.order; });
+      var cardsHtml = items.map(function (c) {
+        var collab = (c.collaborators || []).map(function (slug) {
+          var cd = DIVISIONS.filter(function (d) { return d.slug === slug; })[0];
+          return '<span class="collab-chip">' + escapeHtml(cd ? cd.name : slug) + '</span>';
+        }).join('');
+        return '<a class="product-card fu" href="' + c.link + '" style="--card-accent:' + c.accentColor + '">' +
+          '<img src="' + c.thumb + '" alt="' + escapeHtml(c.title) + ' placeholder thumbnail" loading="lazy">' +
+          '<div class="product-card-body"><div class="product-card-title">' + escapeHtml(c.title) + '</div>' +
+          '<div class="product-card-pitch">' + escapeHtml(c.pitch) + '</div>' +
+          (collab ? '<div class="product-card-collab">' + collab + '</div>' : '') +
+          '</div></a>';
+      }).join('');
+      return '<div class="division-group" style="--dg-accent:' + div.accentColor + '">' +
+        '<div class="division-group-head fu"><img class="' + ((div.slug === 'Intel' || div.slug === 'Sony') ? 'logo-chip' : '') + '" src="' + div.logoPath + '" alt="' + escapeHtml(div.name) + ' logo" loading="lazy"><h3>' + escapeHtml(div.name) + '</h3></div>' +
+        '<div class="card-grid">' + cardsHtml + '</div></div>';
+    }).join('');
+  }
+
+  /* ---- Animated per-division backgrounds ----
+     Each builder injects SVG (or a canvas) into a .company-anim layer and
+     optionally returns a visibility callback; CSS-keyframe animations are
+     paused offscreen via the .bg-paused class, SMIL via pause/unpause,
+     JS loops via the callback. Reduced motion renders everything static. */
+  var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var SVGNS = 'http://www.w3.org/2000/svg';
+
+  function svgEl(tag, attrs) {
+    var n = document.createElementNS(SVGNS, tag);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    return n;
+  }
+  function makeSvg() {
+    var s = svgEl('svg', { viewBox: '0 0 1200 600', preserveAspectRatio: 'xMidYMid slice', 'aria-hidden': 'true' });
+    s.setAttribute('class', 'bg-svg');
+    return s;
+  }
+  function rnd(min, max) { return min + Math.random() * (max - min); }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  // Intel: a living circuit board — traces snake across the canvas
+  // Manhattan-style, tails trailing off-screen while new ones enter from
+  // the edges; a shimmer pulse runs along every trace, and whenever a
+  // trace crosses another's path the intersection detonates a glow.
+  function bgIntel(host, accent) {
+    var W = 1200, H = 600, MARGIN = 30;
+    var canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    canvas.className = 'bg-canvas';
+    host.appendChild(canvas);
+    var ctx = canvas.getContext('2d');
+    var runners = [], glows = [], running = false, raf = null, frame = 0, nextId = 0;
+
+    function spawn(preRun) {
+      var side = Math.floor(rnd(0, 4)); // 0 left, 1 right, 2 top, 3 bottom
+      var r = {
+        pts: [],
+        dir: [0, 2, 1, 3][side],        // 0:+x 1:+y 2:-x 3:-y
+        run: rnd(50, 150),
+        speed: rnd(0.9, 2.2),
+        maxLen: rnd(200, 460),
+        curLen: 0,
+        dying: false,
+        pulseOff: rnd(0, 400),
+        cool: 0,
+        id: ++nextId
+      };
+      var x = side === 0 ? -MARGIN + 6 : side === 1 ? W + MARGIN - 6 : rnd(60, W - 60);
+      var y = side === 2 ? -MARGIN + 6 : side === 3 ? H + MARGIN - 6 : rnd(60, H - 60);
+      r.pts.push([x, y], [x, y]);
+      for (var s = 0; s < (preRun || 0); s++) advance(r);
+      return r;
+    }
+
+    function head(r) { return r.pts[r.pts.length - 1]; }
+
+    function advance(r) {
+      if (!r.dying) {
+        var h = head(r);
+        h[0] += (r.dir === 0 ? 1 : r.dir === 2 ? -1 : 0) * r.speed;
+        h[1] += (r.dir === 1 ? 1 : r.dir === 3 ? -1 : 0) * r.speed;
+        r.curLen += r.speed;
+        r.run -= r.speed;
+        if (r.run <= 0) {
+          r.dir = (r.dir + pick([1, 3])) % 4; // 90° turn, left or right
+          r.run = rnd(50, 160);
+          r.pts.push([h[0], h[1]]);
+        }
+        if (h[0] < -MARGIN || h[0] > W + MARGIN || h[1] < -MARGIN || h[1] > H + MARGIN) r.dying = true;
+      } else {
+        r.curLen -= r.speed * 1.7; // tail retreats off-screen
+      }
+      // trim tail from the back so total length ≤ curLen (and ≤ maxLen)
+      var want = Math.max(0, Math.min(r.curLen, r.maxLen));
+      var total = 0;
+      for (var i = r.pts.length - 1; i > 0; i--) {
+        var a = r.pts[i], b = r.pts[i - 1];
+        var L = Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
+        if (total + L >= want) {
+          var keep = want - total;
+          var ux = a[0] === b[0] ? 0 : (b[0] > a[0] ? 1 : -1);
+          var uy = a[1] === b[1] ? 0 : (b[1] > a[1] ? 1 : -1);
+          r.pts.splice(0, i - 1);
+          r.pts[0] = [a[0] + ux * keep, a[1] + uy * keep];
+          total += keep;
+          break;
+        }
+        total += L;
+      }
+      r.curLen = Math.min(want, total);
+      if (r.cool > 0) r.cool--;
+    }
+
+    function pointAt(r, d) {
+      var rem = d;
+      for (var i = 1; i < r.pts.length; i++) {
+        var a = r.pts[i - 1], b = r.pts[i];
+        var L = Math.abs(b[0] - a[0]) + Math.abs(b[1] - a[1]);
+        if (L >= rem) {
+          var t = L === 0 ? 0 : rem / L;
+          return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+        }
+        rem -= L;
+      }
+      return null;
+    }
+
+    function detectCrossings() {
+      var grid = {};
+      runners.forEach(function (r) {
+        for (var i = 1; i < r.pts.length; i++) {
+          var a = r.pts[i - 1], b = r.pts[i];
+          var L = Math.abs(b[0] - a[0]) + Math.abs(b[1] - a[1]);
+          var steps = Math.max(1, (L / 12) | 0);
+          for (var s = 0; s <= steps; s++) {
+            var key = (((a[0] + (b[0] - a[0]) * (s / steps)) / 12) | 0) + '_' + (((a[1] + (b[1] - a[1]) * (s / steps)) / 12) | 0);
+            (grid[key] || (grid[key] = [])).push(r.id);
+          }
+        }
+      });
+      runners.forEach(function (r) {
+        if (r.dying || r.cool > 0) return;
+        var h = head(r);
+        var ids = grid[((h[0] / 12) | 0) + '_' + ((h[1] / 12) | 0)];
+        if (!ids) return;
+        for (var i = 0; i < ids.length; i++) {
+          if (ids[i] !== r.id) {
+            glows.push({ x: h[0], y: h[1], t: 0 });
+            r.cool = 90;
+            return;
+          }
+        }
+      });
+    }
+
+    function draw(withShimmer) {
+      ctx.clearRect(0, 0, W, H);
+      runners.forEach(function (r) {
+        if (r.pts.length < 2) return;
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 1.3;
+        ctx.globalAlpha = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(r.pts[0][0], r.pts[0][1]);
+        for (var i = 1; i < r.pts.length; i++) ctx.lineTo(r.pts[i][0], r.pts[i][1]);
+        ctx.stroke();
+        var h = head(r);
+        if (!r.dying) {
+          ctx.globalAlpha = 0.85;
+          ctx.fillStyle = accent;
+          ctx.fillRect(h[0] - 1.8, h[1] - 1.8, 3.6, 3.6);
+        }
+        if (withShimmer && r.curLen > 40) {
+          var pt = pointAt(r, (frame * 2.4 + r.pulseOff) % r.curLen);
+          if (pt) {
+            ctx.globalAlpha = 0.9;
+            ctx.shadowColor = '#9FD8FF';
+            ctx.shadowBlur = 9;
+            ctx.fillStyle = '#D6F0FF';
+            ctx.beginPath();
+            ctx.arc(pt[0], pt[1], 1.9, 0, 7);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+          }
+        }
+      });
+      for (var gi = glows.length - 1; gi >= 0; gi--) {
+        var g = glows[gi];
+        g.t++;
+        if (g.t > 50) { glows.splice(gi, 1); continue; }
+        var pr = g.t / 50;
+        var rad = 8 + pr * 36;
+        var grd = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, rad);
+        grd.addColorStop(0, 'rgba(180,228,255,' + (0.85 * (1 - pr)).toFixed(3) + ')');
+        grd.addColorStop(1, 'rgba(0,104,181,0)');
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.arc(g.x, g.y, rad, 0, 7);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    for (var i = 0; i < 14; i++) runners.push(spawn(Math.floor(rnd(60, 380))));
+
+    if (REDUCED) {
+      glows.push({ x: rnd(200, 1000), y: rnd(150, 450), t: 14 }, { x: rnd(200, 1000), y: rnd(150, 450), t: 22 });
+      draw(false);
+      return null;
+    }
+
+    function loop() {
+      if (!running) return;
+      frame++;
+      for (var i = 0; i < runners.length; i++) {
+        advance(runners[i]);
+        if (runners[i].dying && runners[i].curLen <= 6) runners[i] = spawn(0);
+      }
+      if (frame % 2 === 0) detectCrossings();
+      draw(true);
+      raf = requestAnimationFrame(loop);
+    }
+    return function (visible) {
+      if (visible && !running) { running = true; raf = requestAnimationFrame(loop); }
+      else if (!visible && running) { running = false; if (raf) cancelAnimationFrame(raf); }
+    };
+  }
+
+  // Lightmatter: routed waveguides — long straights with 45° jogs — with
+  // light pulses traveling down each guide.
+  function bgLightmatter(host, accent, accent2) {
+    var svg = makeSvg();
+    for (var i = 0; i < 9; i++) {
+      var y = 45 + i * 62 + rnd(-12, 12);
+      var x1 = rnd(120, 420);
+      var jog = pick([-1, 1]) * rnd(40, 110);
+      var x2 = x1 + Math.abs(jog) + rnd(140, 380);
+      var d = 'M0,' + y.toFixed(0) + ' H' + x1.toFixed(0) +
+        ' l' + Math.abs(jog).toFixed(0) + ',' + jog.toFixed(0) +
+        ' H' + x2.toFixed(0) +
+        ' l' + rnd(40, 90).toFixed(0) + ',' + (-jog).toFixed(0) + ' H1200';
+      var col = i % 2 ? accent2 : accent;
+      svg.appendChild(svgEl('path', { d: d, fill: 'none', stroke: col, 'stroke-width': 1, opacity: 0.3 }));
+      if (!REDUCED) {
+        var pulse = svgEl('circle', { r: 3, fill: col, opacity: 0.9 });
+        var mo = svgEl('animateMotion', { dur: rnd(4, 9).toFixed(1) + 's', repeatCount: 'indefinite', path: d, begin: (-rnd(0, 8)).toFixed(1) + 's' });
+        pulse.appendChild(mo);
+        svg.appendChild(pulse);
+      }
+    }
+    host.appendChild(svg);
+    if (REDUCED) return null;
+    return function (visible) {
+      if (visible) svg.unpauseAnimations(); else svg.pauseAnimations();
+    };
+  }
+
+  // Sony: six-primary hairlines drifting slowly, plus a CRT-ish scanline.
+  function bgSony(host) {
+    var svg = makeSvg();
+    var prim = ['#FF4B4B', '#4BFF7E', '#4B7EFF', '#FF4BE1', '#4BFFE1', '#FFE14B'];
+    for (var i = 0; i < 6; i++) {
+      var x = 150 + i * 160;
+      var l = svgEl('line', { x1: x, y1: 0, x2: x, y2: 600, stroke: prim[i], 'stroke-width': 1, opacity: 0.22 });
+      l.setAttribute('class', 'anim-drift-x');
+      l.style.animationDuration = (14 + i * 3) + 's';
+      l.style.animationDelay = (-i * 2.2) + 's';
+      svg.appendChild(l);
+    }
+    var scan = svgEl('line', { x1: 0, y1: 0, x2: 1200, y2: 0, stroke: '#FFFFFF', 'stroke-width': 1, opacity: 0.12 });
+    scan.setAttribute('class', 'anim-scan-y');
+    svg.appendChild(scan);
+    host.appendChild(svg);
+    return null;
+  }
+
+  // ASUS/ROG: a whole armory — open-laptop silhouettes (side-profile and
+  // front dual-screen ProArt DUO views) drawing themselves in and out,
+  // RGB underglow strips cycling hue, sweeping slash streaks, and a
+  // flickering hex cluster. Republic of Gamers energy, line-art register.
+  function bgAsus(host, accent) {
+    var svg = makeSvg();
+    var SIDE = 'M0 0h96l-7-8h-82zM86-8l16-52 6 3-15 49z';
+    // front view: screen shell + inner panel + secondary ProArt DUO screen + base wedge
+    var FRONT = 'M-60-78h120v70h-120zM-54-72h108v50h-108zM-50-18h100v8h-100zM-70 0h140l-12 12h-116z';
+    // sweeping slash streaks
+    for (var s = 0; s < 5; s++) {
+      var wrap = svgEl('g', { transform: 'translate(0,' + rnd(120, 580).toFixed(0) + ')' });
+      var sl = svgEl('path', { d: 'M0 0l36-15h240l-36 15z', fill: accent, opacity: 0.12 });
+      sl.setAttribute('class', 'anim-slash');
+      sl.style.animationDuration = rnd(6, 12).toFixed(1) + 's';
+      sl.style.animationDelay = (-rnd(0, 11)).toFixed(1) + 's';
+      wrap.appendChild(sl);
+      svg.appendChild(wrap);
+    }
+    // hex cluster, flickering like a status readout
+    var hexD = 'M0-22l19 11v22l-19 11-19-11v-22z';
+    [[1040, 120], [1085, 196], [995, 196], [1040, 272]].forEach(function (c, i) {
+      var h = svgEl('path', { d: hexD, fill: 'none', stroke: accent, 'stroke-width': 1.2, transform: 'translate(' + c[0] + ',' + c[1] + ')' });
+      h.setAttribute('class', 'anim-flicker');
+      h.style.animationDuration = rnd(3, 5).toFixed(1) + 's';
+      h.style.animationDelay = (-i * 1.1) + 's';
+      svg.appendChild(h);
+    });
+    // laptops — alternating front/side views, half with RGB underglow
+    for (var i = 0; i < 11; i++) {
+      var front = i % 2 === 0;
+      var g = svgEl('g', {
+        transform: 'translate(' + (70 + (i % 4) * 300 + rnd(-50, 50)).toFixed(0) + ',' +
+          (150 + Math.floor(i / 4) * 190 + rnd(-35, 35)).toFixed(0) + ')' +
+          ' rotate(' + rnd(-12, 10).toFixed(1) + ') scale(' + rnd(0.7, 1.9).toFixed(2) + ')'
+      });
+      var p = svgEl('path', { d: front ? FRONT : SIDE, fill: 'none', stroke: accent, 'stroke-width': 1.4, opacity: 0.4, 'stroke-linejoin': 'round' });
+      p.setAttribute('class', 'anim-draw');
+      p.style.animationDuration = rnd(5, 10).toFixed(1) + 's';
+      p.style.animationDelay = (-rnd(0, 8)).toFixed(1) + 's';
+      g.appendChild(p);
+      if (i % 2 === 1 || i % 3 === 0) {
+        var glow = svgEl('line', front
+          ? { x1: -58, y1: 16, x2: 58, y2: 16 }
+          : { x1: 4, y1: 5, x2: 92, y2: 5 });
+        glow.setAttribute('stroke', '#FF0040');
+        glow.setAttribute('stroke-width', '2.5');
+        glow.setAttribute('opacity', '0.5');
+        glow.setAttribute('stroke-linecap', 'round');
+        glow.setAttribute('class', 'anim-hue');
+        glow.style.animationDuration = rnd(5, 9).toFixed(1) + 's';
+        g.appendChild(glow);
+      }
+      svg.appendChild(g);
+    }
+    host.appendChild(svg);
+    return null;
+  }
+
+  // OPPO: SUPERVOOC charging ripples — concentric rings expanding from a
+  // few points, soft and consumer-warm.
+  function bgOppo(host, accent, accent2) {
+    var svg = makeSvg();
+    var centers = [[240, 180], [880, 420], [600, 90]];
+    centers.forEach(function (c, ci) {
+      for (var i = 0; i < 4; i++) {
+        var r = svgEl('circle', { cx: c[0], cy: c[1], r: 34, fill: 'none', stroke: ci % 2 ? accent2 : accent, 'stroke-width': 1.4, opacity: 0 });
+        r.setAttribute('class', 'anim-ripple');
+        r.style.animationDuration = '6s';
+        r.style.animationDelay = (-(i * 1.5) - ci) + 's';
+        svg.appendChild(r);
+      }
+    });
+    host.appendChild(svg);
+    return null;
+  }
+
+  // Ford: the machine room — a four-cylinder engine firing in sequence,
+  // meshing gears, spinning spoked wheels, lane markings streaming past.
+  function bgFord(host, accent) {
+    var svg = makeSvg();
+    var ink = '#5B82BC'; // lifted accent so machinery reads on near-black
+    // lane markings
+    for (var i = 0; i < 4; i++) {
+      var y = 505 + i * 26;
+      var l = svgEl('line', {
+        x1: 0, y1: y, x2: 1200, y2: y, stroke: ink,
+        'stroke-width': i === 1 ? 2 : 1, opacity: 0.3,
+        'stroke-dasharray': i === 1 ? '46 38' : '18 66'
+      });
+      l.setAttribute('class', 'anim-dash');
+      l.style.animationDuration = (2.0 + i * 0.9) + 's';
+      svg.appendChild(l);
+    }
+    // inline-four engine, staggered firing order 1-3-4-2
+    var eng = svgEl('g', { transform: 'translate(120,110)' });
+    var firing = [0, 2, 3, 1];
+    for (var c = 0; c < 4; c++) {
+      var cx = c * 72;
+      eng.appendChild(svgEl('rect', { x: cx, y: 0, width: 44, height: 150, rx: 5, fill: 'none', stroke: ink, 'stroke-width': 1.3, opacity: 0.4 }));
+      var pist = svgEl('g', {});
+      pist.appendChild(svgEl('rect', { x: cx + 7, y: 10, width: 30, height: 24, rx: 3, fill: ink, opacity: 0.35 }));
+      pist.appendChild(svgEl('line', { x1: cx + 22, y1: 34, x2: cx + 22, y2: 96, stroke: ink, 'stroke-width': 2.4, opacity: 0.4 }));
+      pist.appendChild(svgEl('circle', { cx: cx + 22, cy: 100, r: 5, fill: ink, opacity: 0.4 }));
+      pist.setAttribute('class', 'anim-piston');
+      pist.style.animationDelay = (-firing[c] * 0.35) + 's';
+      eng.appendChild(pist);
+      var crank = svgEl('circle', { cx: cx + 22, cy: 136, r: 14, fill: 'none', stroke: ink, 'stroke-width': 1.2, opacity: 0.3, 'stroke-dasharray': '6 8' });
+      crank.setAttribute('class', 'anim-spin');
+      crank.style.animationDuration = '1.4s';
+      eng.appendChild(crank);
+    }
+    // crankshaft line
+    eng.appendChild(svgEl('line', { x1: -14, y1: 136, x2: 254, y2: 136, stroke: ink, 'stroke-width': 1.4, opacity: 0.3 }));
+    svg.appendChild(eng);
+    // meshing gears (tooth counts 12:8, counter-rotating at matched surface speed)
+    function gearD(r, teeth) {
+      var d = '', steps = teeth * 4;
+      for (var gi = 0; gi <= steps; gi++) {
+        var ang = (gi / steps) * Math.PI * 2;
+        var rad = (gi % 4 < 2) ? r : r * 1.24;
+        d += (gi ? 'L' : 'M') + (rad * Math.cos(ang)).toFixed(1) + ',' + (rad * Math.sin(ang)).toFixed(1);
+      }
+      return d + 'Z';
+    }
+    [[860, 140, 52, 12, 18, 'normal'], [948, 190, 36, 8, 12, 'reverse']].forEach(function (spec) {
+      var g = svgEl('g', { transform: 'translate(' + spec[0] + ',' + spec[1] + ')' });
+      var gp = svgEl('path', { d: gearD(spec[2], spec[3]), fill: 'none', stroke: ink, 'stroke-width': 1.3, opacity: 0.4 });
+      gp.setAttribute('class', 'anim-spin');
+      gp.style.animationDuration = spec[4] + 's';
+      gp.style.animationDirection = spec[5];
+      g.appendChild(gp);
+      g.appendChild(svgEl('circle', { cx: 0, cy: 0, r: spec[2] * 0.3, fill: 'none', stroke: ink, 'stroke-width': 1, opacity: 0.35 }));
+      svg.appendChild(g);
+    });
+    // spinning spoked wheels riding the lane lines
+    function wheel(x, y, r, dur) {
+      var g = svgEl('g', { transform: 'translate(' + x + ',' + y + ')' });
+      var w = svgEl('g', {});
+      w.setAttribute('class', 'anim-spin');
+      w.style.animationDuration = dur + 's';
+      w.appendChild(svgEl('circle', { cx: 0, cy: 0, r: r, fill: 'none', stroke: ink, 'stroke-width': 2, opacity: 0.4 }));
+      w.appendChild(svgEl('circle', { cx: 0, cy: 0, r: r * 0.38, fill: 'none', stroke: ink, 'stroke-width': 1.2, opacity: 0.35 }));
+      for (var k = 0; k < 5; k++) {
+        var a = (k / 5) * Math.PI * 2;
+        w.appendChild(svgEl('line', {
+          x1: (Math.cos(a) * r * 0.38).toFixed(1), y1: (Math.sin(a) * r * 0.38).toFixed(1),
+          x2: (Math.cos(a) * r).toFixed(1), y2: (Math.sin(a) * r).toFixed(1),
+          stroke: ink, 'stroke-width': 1.5, opacity: 0.4
+        }));
+      }
+      g.appendChild(w);
+      return g;
+    }
+    svg.appendChild(wheel(660, 428, 72, 4));
+    svg.appendChild(wheel(1010, 428, 72, 4));
+    // axle between the wheels
+    svg.appendChild(svgEl('line', { x1: 660, y1: 428, x2: 1010, y2: 428, stroke: ink, 'stroke-width': 1, opacity: 0.2 }));
+    host.appendChild(svg);
+    return null;
+  }
+
+  // B&O: still the quietest — but now it's a whole recording. Three brass
+  // harmonics traveling at different speeds, and an audio-file waveform of
+  // mirrored bars breathing through the middle.
+  function bgBo(host, accent, accent2) {
+    var svg = makeSvg();
+    // layered traveling harmonics (periods divide 1200 so the loop is seamless)
+    var waves = [
+      { amp: 22, period: 300, dur: 26, op: 0.3, w: 1, col: accent2 },
+      { amp: 44, period: 600, dur: 46, op: 0.16, w: 1, col: accent2 },
+      { amp: 10, period: 150, dur: 15, op: 0.24, w: 0.8, col: accent },
+      { amp: 66, period: 1200, dur: 70, op: 0.1, w: 1.2, col: accent2 }
+    ];
+    waves.forEach(function (wv) {
+      var d = 'M0,300';
+      for (var x = 0; x <= 2400; x += 12) {
+        d += 'L' + x + ',' + (300 + wv.amp * Math.sin((x / wv.period) * Math.PI * 2)).toFixed(1);
+      }
+      var p = svgEl('path', { d: d, fill: 'none', stroke: wv.col, 'stroke-width': wv.w, opacity: wv.op });
+      p.setAttribute('class', 'anim-wave');
+      p.style.animationDuration = wv.dur + 's';
+      svg.appendChild(p);
+    });
+    // audio-track waveform: mirrored bars, deterministic pseudo-random
+    // heights, each one gently breathing out of phase with its neighbors
+    for (var i = 0; i < 64; i++) {
+      var x = 42 + i * 17.5;
+      var hgt = 12 + 48 * Math.abs(Math.sin(i * 0.55) * Math.sin(i * 0.13) + 0.25 * Math.sin(i * 1.9));
+      var l = svgEl('line', { x1: x, y1: 300 - hgt, x2: x, y2: 300 + hgt, stroke: accent2, 'stroke-width': 2.4, opacity: 0.17, 'stroke-linecap': 'round' });
+      l.setAttribute('class', 'anim-eq');
+      l.style.animationDuration = (2.4 + (i % 5) * 0.5) + 's';
+      l.style.animationDelay = (-(i * 0.14)) + 's';
+      svg.appendChild(l);
+    }
+    var base = svgEl('line', { x1: 0, y1: 300, x2: 1200, y2: 300, stroke: accent2, 'stroke-width': 0.5, opacity: 0.14 });
+    svg.appendChild(base);
+    host.appendChild(svg);
+    return null;
+  }
+
+  // ShallXR: three gimbal rings counter-rotating around a payload dot —
+  // the 3-axis motion platform, abstracted.
+  function bgShallxr(host, accent, accent2) {
+    var svg = makeSvg();
+    var rings = [
+      { rx: 300, ry: 100, rot: 0, dur: 34, dir: 'normal', col: accent },
+      { rx: 240, ry: 150, rot: 55, dur: 26, dir: 'reverse', col: accent },
+      { rx: 170, ry: 190, rot: -35, dur: 44, dir: 'normal', col: accent2 }
+    ];
+    rings.forEach(function (r) {
+      var g = svgEl('g', { transform: 'rotate(' + r.rot + ' 600 300)' });
+      var e = svgEl('ellipse', { cx: 600, cy: 300, rx: r.rx, ry: r.ry, fill: 'none', stroke: r.col, 'stroke-width': 1.1, opacity: 0.3, 'stroke-dasharray': '10 14' });
+      e.setAttribute('class', 'anim-spin');
+      e.style.animationDuration = r.dur + 's';
+      e.style.animationDirection = r.dir;
+      g.appendChild(e);
+      svg.appendChild(g);
+    });
+    svg.appendChild(svgEl('circle', { cx: 600, cy: 300, r: 5, fill: accent2, opacity: 0.6 }));
+    host.appendChild(svg);
+    return null;
+  }
+
+  // Play For Dream: a literal vector-scan beam — a phosphor point tracing
+  // Lissajous figures on a canvas, trail fading behind it. CRT, structural.
+  function bgPfd(host, accent) {
+    var canvas = document.createElement('canvas');
+    canvas.width = 1200; canvas.height = 600;
+    canvas.className = 'bg-canvas';
+    host.appendChild(canvas);
+    var ctx = canvas.getContext('2d');
+    var pts = [], t = rnd(0, 100), running = false, raf = null;
+    if (REDUCED) {
+      ctx.strokeStyle = accent;
+      ctx.globalAlpha = 0.25;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      for (var i = 0; i < 500; i++) {
+        var tt = i * 0.025;
+        var sx = 600 + 420 * Math.sin(3 * tt + 1.3);
+        var sy = 300 + 200 * Math.sin(2 * tt);
+        if (i === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+      }
+      ctx.stroke();
+      return null;
+    }
+    function frame() {
+      if (!running) return;
+      t += 0.016;
+      var a = 3 + Math.sin(t * 0.07), b = 2 + Math.cos(t * 0.05);
+      var x = 600 + 420 * Math.sin(a * t * 0.9 + 1.3);
+      var y = 300 + 200 * Math.sin(b * t * 0.9);
+      pts.push([x, y]);
+      if (pts.length > 90) pts.shift();
+      ctx.clearRect(0, 0, 1200, 600);
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = accent;
+      for (var i = 1; i < pts.length; i++) {
+        ctx.globalAlpha = (i / pts.length) * 0.5;
+        ctx.beginPath();
+        ctx.moveTo(pts[i - 1][0], pts[i - 1][1]);
+        ctx.lineTo(pts[i][0], pts[i][1]);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 0.9;
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.arc(x, y, 2.4, 0, 7);
+      ctx.fill();
+      raf = requestAnimationFrame(frame);
+    }
+    return function (visible) {
+      if (visible && !running) { running = true; raf = requestAnimationFrame(frame); }
+      else if (!visible && running) { running = false; if (raf) cancelAnimationFrame(raf); }
+    };
+  }
+
+  // Noctua: a fan hub rotating so slowly you almost miss it, plus a couple
+  // of airflow streamlines. Boring on purpose — that's the brand.
+  function bgNoctua(host, accent, accent2) {
+    var svg = makeSvg();
+    var fan = svgEl('g', {});
+    var blades = svgEl('g', {});
+    blades.setAttribute('class', 'anim-spin');
+    blades.style.animationDuration = '48s';
+    for (var k = 0; k < 7; k++) {
+      var b = svgEl('path', {
+        d: 'M600,300 q46,-78 102,-64 q-46,62 -102,64z',
+        fill: accent, opacity: 0.1,
+        transform: 'rotate(' + (k * 51.4).toFixed(1) + ' 600 300)'
+      });
+      blades.appendChild(b);
+    }
+    fan.appendChild(blades);
+    fan.appendChild(svgEl('circle', { cx: 600, cy: 300, r: 150, fill: 'none', stroke: accent2, 'stroke-width': 1, opacity: 0.14 }));
+    fan.appendChild(svgEl('circle', { cx: 600, cy: 300, r: 26, fill: 'none', stroke: accent2, 'stroke-width': 1, opacity: 0.2 }));
+    svg.appendChild(fan);
+    for (var i = 0; i < 3; i++) {
+      var y = 140 + i * 160;
+      var s = svgEl('path', { d: 'M0,' + y + ' q300,' + pick([-1, 1]) * 40 + ' 600,0 t600,0', fill: 'none', stroke: accent2, 'stroke-width': 1, opacity: 0.12, 'stroke-dasharray': '18 66' });
+      s.setAttribute('class', 'anim-dash');
+      s.style.animationDuration = (7 + i * 2) + 's';
+      svg.appendChild(s);
+    }
+    host.appendChild(svg);
+    return null;
+  }
+
+  // Hollyland: transmission — signal rings radiating from the transmitter,
+  // chevrons streaming toward the receiver.
+  function bgHollyland(host, accent) {
+    var svg = makeSvg();
+    for (var i = 0; i < 5; i++) {
+      var r = svgEl('circle', { cx: 150, cy: 460, r: 40, fill: 'none', stroke: accent, 'stroke-width': 1.3, opacity: 0 });
+      r.setAttribute('class', 'anim-ripple');
+      r.style.animationDuration = '5s';
+      r.style.animationDelay = (-i * 1.0) + 's';
+      svg.appendChild(r);
+    }
+    for (var row = 0; row < 3; row++) {
+      for (var c = 0; c < 4; c++) {
+        var g = svgEl('g', { transform: 'translate(' + (330 + c * 200) + ',' + (170 + row * 140) + ')' });
+        var ch = svgEl('path', { d: 'M0,-16 L20,0 L0,16', fill: 'none', stroke: accent, 'stroke-width': 1.6 });
+        ch.setAttribute('class', 'anim-chevron');
+        ch.style.animationDelay = (-(c * 0.85 + row * 0.4)) + 's';
+        g.appendChild(ch);
+        svg.appendChild(g);
+      }
+    }
+    svg.appendChild(svgEl('circle', { cx: 150, cy: 460, r: 5, fill: accent, opacity: 0.6 }));
+    host.appendChild(svg);
+    return null;
+  }
+
+  // Shimoda: topographic contours breathing — terrain, alive but patient.
+  function bgShimoda(host, accent, accent2) {
+    var svg = makeSvg();
+    [[820, 280], [280, 430]].forEach(function (c, ci) {
+      for (var ring = 1; ring <= 5; ring++) {
+        var d = '';
+        var base = ring * 42 + (ci ? 12 : 0);
+        for (var a = 0; a <= 24; a++) {
+          var ang = (a / 24) * Math.PI * 2;
+          var wob = base + 16 * Math.sin(ang * 3 + ring * 1.7 + ci * 2) + 8 * Math.cos(ang * 5 + ring);
+          var px = c[0] + wob * Math.cos(ang);
+          var py = c[1] + wob * 0.62 * Math.sin(ang);
+          d += (a === 0 ? 'M' : 'L') + px.toFixed(1) + ',' + py.toFixed(1);
+        }
+        d += 'Z';
+        var p = svgEl('path', { d: d, fill: 'none', stroke: ring % 2 ? accent : accent2, 'stroke-width': 1, opacity: 0.26 });
+        p.setAttribute('class', 'anim-breathe');
+        p.style.animationDuration = (8 + ring * 1.6) + 's';
+        p.style.animationDelay = (-ring * 1.2) + 's';
+        svg.appendChild(p);
+      }
+    });
+    host.appendChild(svg);
+    return null;
+  }
+
+  // Fallback for any future 13th division: gentle diagonal drift.
+  function bgGeneric(host, accent) {
+    var svg = makeSvg();
+    for (var i = 0; i < 8; i++) {
+      var l = svgEl('line', { x1: -100 + i * 190, y1: 640, x2: 100 + i * 190, y2: -40, stroke: accent, 'stroke-width': 1, opacity: 0.2 });
+      l.setAttribute('class', 'anim-drift-x');
+      l.style.animationDuration = (16 + i * 2) + 's';
+      svg.appendChild(l);
+    }
+    host.appendChild(svg);
+    return null;
+  }
+
+  var BG_BUILDERS = {
+    Intel: bgIntel, Lightmatter: bgLightmatter, Sony: bgSony, ASUS: bgAsus,
+    OPPO: bgOppo, Ford: bgFord, BO: bgBo, ShallXR: bgShallxr,
+    PlayForDream: bgPfd, Noctua: bgNoctua, Hollyland: bgHollyland, Shimoda: bgShimoda
+  };
+
+  // The Spearhead's background carries one element from each of the
+  // twelve divisions, each in its own accent color — the whole
+  // conglomerate orbiting the spiral. The spec answers to the Spearhead.
+  function renderSpearheadTribute() {
+    var section = document.getElementById('spearhead');
+    if (!section) return;
+    var layer = document.createElement('div');
+    layer.className = 'spearhead-tribute';
+    layer.setAttribute('aria-hidden', 'true');
+    // Bespoke tall viewBox matching the section's actual proportions (wide
+    // but very tall, once the two quote cards and stat strip stack up) —
+    // the generic 1200x600 makeSvg() would crush everything into the
+    // title band under xMidYMid slice. Every y below stays clear of 0–260
+    // (portrait/title row) so nothing collides with the heading text.
+    var svg = svgEl('svg', { viewBox: '0 0 1200 1900', preserveAspectRatio: 'xMidYMin slice', 'aria-hidden': 'true' });
+    svg.setAttribute('class', 'bg-svg');
+    layer.appendChild(svg);
+
+    // Intel — a circuit trace with current flowing through it
+    var tr = svgEl('path', { d: 'M40,330 h90 v60 h70 v-40 h110', fill: 'none', stroke: '#3D8FD1', 'stroke-width': 1.4, opacity: 0.55, 'stroke-dasharray': '18 66' });
+    tr.setAttribute('class', 'anim-dash');
+    tr.style.animationDuration = '5s';
+    svg.appendChild(tr);
+    svg.appendChild(svgEl('circle', { cx: 310, cy: 350, r: 3, fill: '#3D8FD1', opacity: 0.55 }));
+
+    // Lightmatter — a waveguide with a photon in transit
+    var wgD = 'M1160,300 h-180 l-40,40 h-260';
+    svg.appendChild(svgEl('path', { d: wgD, fill: 'none', stroke: '#00E5CF', 'stroke-width': 1, opacity: 0.45 }));
+    if (!REDUCED) {
+      var pu = svgEl('circle', { r: 2.6, fill: '#00E5CF', opacity: 0.9 });
+      pu.appendChild(svgEl('animateMotion', { dur: '6s', repeatCount: 'indefinite', path: wgD }));
+      svg.appendChild(pu);
+    }
+
+    // Sony — the six primaries
+    ['#FF4B4B', '#4BFF7E', '#4B7EFF', '#FF4BE1', '#4BFFE1', '#FFE14B'].forEach(function (c, i) {
+      svg.appendChild(svgEl('line', { x1: 860 + i * 10, y1: 520, x2: 860 + i * 10, y2: 608, stroke: c, 'stroke-width': 1, opacity: 0.4 }));
+    });
+
+    // ASUS — a laptop drawing itself
+    var lg = svgEl('g', { transform: 'translate(70,860) scale(1.3)' });
+    var lp = svgEl('path', { d: 'M0 0h96l-7-8h-82zM86-8l16-52 6 3-15 49z', fill: 'none', stroke: '#FF0029', 'stroke-width': 1.3, opacity: 0.5, 'stroke-linejoin': 'round' });
+    lp.setAttribute('class', 'anim-draw');
+    lp.style.animationDuration = '8s';
+    lg.appendChild(lp);
+    svg.appendChild(lg);
+
+    // OPPO — a charge ripple
+    for (var oi = 0; oi < 3; oi++) {
+      var rp = svgEl('circle', { cx: 300, cy: 720, r: 24, fill: 'none', stroke: '#0FA35B', 'stroke-width': 1.2, opacity: 0 });
+      rp.setAttribute('class', 'anim-ripple');
+      rp.style.animationDuration = '6s';
+      rp.style.animationDelay = (-oi * 2) + 's';
+      svg.appendChild(rp);
+    }
+
+    // Ford — a turning gear
+    var gearG = svgEl('g', { transform: 'translate(1090,700)' });
+    var gd = '';
+    for (var gi = 0; gi <= 48; gi++) {
+      var gang = (gi / 48) * Math.PI * 2;
+      var grad = gi % 4 < 2 ? 30 : 37;
+      gd += (gi ? 'L' : 'M') + (grad * Math.cos(gang)).toFixed(1) + ',' + (grad * Math.sin(gang)).toFixed(1);
+    }
+    var gp = svgEl('path', { d: gd + 'Z', fill: 'none', stroke: '#6E8CB5', 'stroke-width': 1.2, opacity: 0.45 });
+    gp.setAttribute('class', 'anim-spin');
+    gp.style.animationDuration = '20s';
+    gearG.appendChild(gp);
+    gearG.appendChild(svgEl('circle', { cx: 0, cy: 0, r: 8, fill: 'none', stroke: '#6E8CB5', 'stroke-width': 1, opacity: 0.4 }));
+    svg.appendChild(gearG);
+
+    // B&O — a short brass waveform
+    var bod = 'M470,1020';
+    for (var bx = 8; bx <= 260; bx += 8) {
+      bod += 'L' + (470 + bx) + ',' + (1020 + 10 * Math.sin(bx / 24)).toFixed(1);
+    }
+    svg.appendChild(svgEl('path', { d: bod, fill: 'none', stroke: '#B08D57', 'stroke-width': 1, opacity: 0.5 }));
+
+    // ShallXR — a gimbal ring
+    var se = svgEl('ellipse', { cx: 150, cy: 1080, rx: 72, ry: 26, fill: 'none', stroke: '#BFBFBF', 'stroke-width': 1, opacity: 0.35, 'stroke-dasharray': '8 10' });
+    se.setAttribute('class', 'anim-spin');
+    se.style.animationDuration = '26s';
+    svg.appendChild(se);
+
+    // Play For Dream — a Lissajous figure, flickering like phosphor
+    var ld = '';
+    for (var li = 0; li <= 200; li++) {
+      var lt = li * 0.045;
+      ld += (li ? 'L' : 'M') + (1000 + 96 * Math.sin(3 * lt + 1.3)).toFixed(1) + ',' + (900 + 54 * Math.sin(2 * lt)).toFixed(1);
+    }
+    var lpth = svgEl('path', { d: ld, fill: 'none', stroke: '#FF7A1A', 'stroke-width': 1, opacity: 0.4 });
+    lpth.setAttribute('class', 'anim-flicker');
+    svg.appendChild(lpth);
+
+    // Noctua — fan blades, patient as ever
+    var fanG = svgEl('g', { transform: 'translate(150,1400)' });
+    var blades = svgEl('g', {});
+    blades.setAttribute('class', 'anim-spin');
+    blades.style.animationDuration = '40s';
+    for (var fk = 0; fk < 7; fk++) {
+      blades.appendChild(svgEl('path', { d: 'M0,0 q14,-24 32,-20 q-14,19 -32,20z', fill: '#8B5E3C', opacity: 0.45, transform: 'rotate(' + (fk * 51.4).toFixed(1) + ')' }));
+    }
+    fanG.appendChild(blades);
+    fanG.appendChild(svgEl('circle', { cx: 0, cy: 0, r: 40, fill: 'none', stroke: '#8B5E3C', 'stroke-width': 1, opacity: 0.35 }));
+    svg.appendChild(fanG);
+
+    // Hollyland — the signal, still streaming
+    for (var hc = 0; hc < 5; hc++) {
+      var hg = svgEl('g', { transform: 'translate(' + (470 + hc * 90) + ',150)' });
+      var hch = svgEl('path', { d: 'M0,-26 L34,0 L0,26', fill: 'none', stroke: '#FF6A00', 'stroke-width': 3.2, opacity: 0.85 });
+      hch.setAttribute('class', 'anim-chevron');
+      hch.style.animationDelay = (-hc * 0.7) + 's';
+      hg.appendChild(hch);
+      svg.appendChild(hg);
+    }
+
+    // Shimoda — terrain to carry it all across
+    for (var sr = 1; sr <= 3; sr++) {
+      var sd = '';
+      for (var sa = 0; sa <= 20; sa++) {
+        var sang = (sa / 20) * Math.PI * 2;
+        var srad = sr * 24 + 8 * Math.sin(sang * 3 + sr);
+        sd += (sa ? 'L' : 'M') + (1030 + srad * Math.cos(sang)).toFixed(1) + ',' + (1700 + srad * 0.6 * Math.sin(sang)).toFixed(1);
+      }
+      var sp = svgEl('path', { d: sd + 'Z', fill: 'none', stroke: '#8A9A7E', 'stroke-width': 1, opacity: 0.4 });
+      sp.setAttribute('class', 'anim-breathe');
+      sp.style.animationDuration = (7 + sr * 2) + 's';
+      svg.appendChild(sp);
+    }
+
+    section.insertBefore(layer, section.querySelector('.spearhead-inner'));
+  }
+
+  function renderCompanyBackgrounds() {
+    var io = ('IntersectionObserver' in window)
+      ? new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            var anim = e.target.querySelector('.company-anim');
+            if (anim) anim.classList.toggle('bg-paused', !e.isIntersecting);
+            if (e.target._bgVisible) e.target._bgVisible(e.isIntersecting);
+          });
+        }, { rootMargin: '120px 0px' })
+      : null;
+
+    DIVISIONS.forEach(function (div) {
+      var section = document.querySelector('.company-section[data-division="' + div.slug + '"]');
+      if (!section) return;
+      var anim = document.createElement('div');
+      anim.className = 'company-anim';
+      anim.setAttribute('aria-hidden', 'true');
+      section.insertBefore(anim, section.querySelector('.wrap'));
+      var builder = BG_BUILDERS[div.slug] || bgGeneric;
+      var visCb = builder(anim, div.accentColor, div.accentColor2 || div.accentColor);
+      if (io) {
+        section._bgVisible = visCb || null;
+        io.observe(section);
+      } else if (visCb) {
+        visCb(true);
+      }
+    });
+  }
+
+  function renderSpirals() {
+    var manifestoHost = document.getElementById('manifestoSpiral');
+    if (manifestoHost) manifestoHost.innerHTML = spiralSvg('#E0B84A', { turns: 4.5, scale: 220, opacity: 0.7 });
+    var spearheadHost = document.getElementById('spearheadSpiral');
+    if (spearheadHost) spearheadHost.innerHTML = spiralSvg('#E0B84A', { turns: 6, scale: 240, width: 1.1, opacity: 1 });
+  }
+
+  function wireDisclaimer() {
+    var btn = document.getElementById('disclaimerClose');
+    var strip = document.getElementById('disclaimerStrip');
+    if (btn && strip) {
+      btn.addEventListener('click', function () { strip.remove(); });
+    }
+  }
+
+  function wireReveal() {
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var nodes = document.querySelectorAll('.fu');
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      nodes.forEach(function (n) { n.classList.add('vis'); });
+      return;
+    }
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('vis');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+    nodes.forEach(function (n) { obs.observe(n); });
+  }
+
+  function init() {
+    wireDisclaimer();
+    renderSpirals();
+    renderOrbitMarks();
+    renderTwelve();
+    renderCompanyBackgrounds();
+    renderSpearheadTribute();
+    renderProductIndex();
+    requestAnimationFrame(wireReveal);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
 </body>
 </html>
