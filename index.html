@@ -371,6 +371,7 @@ p:last-child { margin-bottom: 0; }
   flex-wrap: wrap;
 }
 .company-logo { height: 34px; width: auto; border-radius: 4px; }
+.company-logo.logo-chip { background: #f4f4f2; padding: 0.35rem 0.6rem; box-sizing: content-box; }
 .company-order {
   font-family: var(--f-mono);
   font-size: 0.7rem;
@@ -593,7 +594,7 @@ p:last-child { margin-bottom: 0; }
 .anim-wave { animation: bgWave 26s linear infinite; }
 @keyframes bgBreathe { from { transform: scale(1); } to { transform: scale(1.05); } }
 .anim-breathe { transform-box: fill-box; transform-origin: center; animation: bgBreathe 9s ease-in-out infinite alternate; }
-@keyframes bgChevron { 0% { transform: translateX(0); opacity: 0; } 15% { opacity: 0.55; } 85% { opacity: 0.55; } 100% { transform: translateX(140px); opacity: 0; } }
+@keyframes bgChevron { 0% { transform: translateX(0); opacity: 0; } 15% { opacity: 0.85; } 85% { opacity: 0.85; } 100% { transform: translateX(140px); opacity: 0; } }
 .anim-chevron { animation: bgChevron 3.4s linear infinite; }
 @keyframes bgSlash { from { transform: translate(-300px, 150px); } to { transform: translate(1500px, -150px); } }
 .anim-slash { animation: bgSlash 8s linear infinite; }
@@ -680,6 +681,7 @@ p:last-child { margin-bottom: 0; }
 .division-group:last-child { margin-bottom: 0; }
 .division-group-head { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.2rem; }
 .division-group-head img { height: 22px; }
+.division-group-head img.logo-chip { background: #f4f4f2; border-radius: 4px; padding: 0.25rem 0.4rem; box-sizing: content-box; }
 .division-group-head h3 { font-size: 1.15rem; color: var(--dg-accent, var(--ink)); }
 
 .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.1rem; }
@@ -866,7 +868,7 @@ p:last-child { margin-bottom: 0; }
         <div class="portrait-frame" style="--port-size: 84px; --port-ring: 3px; --accent: #E0B84A; --accent2: #7A5A1A;">
           <div class="portrait-ring">
             <div class="portrait-ring-inner">
-              <img class="spearhead-portrait" src="Media/Executives/francis-robledo.svg" alt="Placeholder portrait of Francis Gabriel D. Robledo">
+              <img class="spearhead-portrait" src="Media/Executives/francis-robledo.jpg" alt="Portrait of Francis Gabriel D. Robledo">
               <div class="portrait-duotone" aria-hidden="true"></div>
             </div>
           </div>
@@ -955,13 +957,13 @@ p:last-child { margin-bottom: 0; }
     "name": "Intel",
     "tagline": "The Silicon Spine",
     "joinOrder": 1,
-    "logoPath": "Media/Companies/intel-logo.svg",
+    "logoPath": "Media/Companies/intel-logo.png",
     "accentColor": "#0068B5",
     "accentColor2": "#00A3E0",
     "motif": "circuit",
     "ceoName": "Lip-Bu Tan",
     "ceoTitle": "Chief Executive Officer, Intel Corporation",
-    "ceoPortraitPath": "Media/Executives/lipbu-tan.svg",
+    "ceoPortraitPath": "Media/Executives/lipbu-tan.jpg",
     "bringsShort": "Compute. Eventide architecture — Core 500 through Xeon x500, including the flagship Core™ Xeon® 9 599HKX, Hardware Thread Director, photonic memory, iDP 1.0.",
     "founding": true
   },
@@ -970,13 +972,13 @@ p:last-child { margin-bottom: 0; }
     "name": "Lightmatter USA",
     "tagline": "The Speed of Light, Literally",
     "joinOrder": 2,
-    "logoPath": "Media/Companies/lightmatter-logo.svg",
+    "logoPath": "Media/Companies/lightmatter-logo.png",
     "accentColor": "#00E5CF",
     "accentColor2": "#7A5CFF",
     "motif": "waveguide",
     "ceoName": "Nicholas (Nick) Harris, PhD",
     "ceoTitle": "Co-founder & CEO, Lightmatter",
-    "ceoPortraitPath": "Media/Executives/nick-harris.svg",
+    "ceoPortraitPath": "Media/Executives/nick-harris.jpg",
     "bringsShort": "Photonic interconnect — Foveros 2.0 fiber-optic tile fabric, photonic memory links.",
     "founding": false
   },
@@ -985,13 +987,13 @@ p:last-child { margin-bottom: 0; }
     "name": "Sony",
     "tagline": "The Eyes and the Glass",
     "joinOrder": 3,
-    "logoPath": "Media/Companies/sony-logo.svg",
+    "logoPath": "Media/Companies/sony-logo.png",
     "accentColor": "#FFFFFF",
     "accentColor2": "#C0C0C0",
     "motif": "spectrum",
     "ceoName": "Hiroki Totoki",
     "ceoTitle": "President & Representative Corporate Executive Officer (CEO), Sony Group Corporation",
-    "ceoPortraitPath": "Media/Executives/hiroki-totoki.svg",
+    "ceoPortraitPath": "Media/Executives/hiroki-totoki.jpg",
     "bringsShort": "α0 (ILCE-0) hexa-stacked RGBMCY sensor, XCD-LED six-primary panels, Bionz XR imaging tile.",
     "founding": false
   },
@@ -1006,7 +1008,7 @@ p:last-child { margin-bottom: 0; }
     "motif": "slash",
     "ceoName": "Jonney Shih",
     "ceoTitle": "Chairman, ASUSTeK Computer Inc.",
-    "ceoPortraitPath": "Media/Executives/jonney-shih.svg",
+    "ceoPortraitPath": "Media/Executives/jonney-shih.jpg",
     "bringsShort": "The ASUS ROG Zenbook Zephyrus ProArt Duo 18 — purpose-built around the Intel® Core™ Xeon® 9 599HKX.",
     "founding": false
   },
@@ -1015,13 +1017,13 @@ p:last-child { margin-bottom: 0; }
     "name": "OPPO / BBK",
     "tagline": "The Phone, the Scale, the Signal, the Charge",
     "joinOrder": 5,
-    "logoPath": "Media/Companies/oppo-bbk-logo.svg",
+    "logoPath": "Media/Companies/oppo-bbk-logo.png",
     "accentColor": "#0FA35B",
     "accentColor2": "#5FE0A0",
     "motif": "consumer",
     "ceoName": "Tony Chen (Chen Mingyong)",
     "ceoTitle": "Founder & CEO, OPPO",
-    "ceoPortraitPath": "Media/Executives/tony-chen.svg",
+    "ceoPortraitPath": "Media/Executives/tony-chen.jpg",
     "bringsShort": "Flagship Eventide-powered NewGen phones, Eventide networking tile, and SUPERVOOC GaN fast-charging tech.",
     "founding": false
   },
@@ -1045,13 +1047,13 @@ p:last-child { margin-bottom: 0; }
     "name": "Bang & Olufsen",
     "tagline": "The Sound",
     "joinOrder": 7,
-    "logoPath": "Media/Companies/bo-logo.svg",
+    "logoPath": "Media/Companies/bo-logo.png",
     "accentColor": "#F4F1EC",
     "accentColor2": "#B08D57",
     "motif": "minimal",
     "ceoName": "Kristian Teär",
     "ceoTitle": "CEO, Bang & Olufsen A/S (2019–Jan 2026)",
-    "ceoPortraitPath": "Media/Executives/kristian-tear.svg",
+    "ceoPortraitPath": "Media/Executives/kristian-tear.jpg",
     "bringsShort": "wH105 headphones, Klangkerne audio tile (SoRT, Hallraum, Tiefton subsystems).",
     "footnote": "Interim CEO since Jan 7, 2026 is CFO Nikolaj Wendelboe, following a leadership change. This section's voice model is Kristian Teär.",
     "founding": false
@@ -1061,13 +1063,13 @@ p:last-child { margin-bottom: 0; }
     "name": "ShallXR",
     "tagline": "The Motion",
     "joinOrder": 8,
-    "logoPath": "Media/Companies/shallxr-logo.svg",
+    "logoPath": "Media/Companies/shallxr-logo.jpg",
     "accentColor": "#E8E8E8",
     "accentColor2": "#FF5C3C",
     "motif": "kinetic",
     "ceoName": "Tang Jianhong (\"Veni Tang\")",
     "ceoTitle": "Founder & CEO, ShallXR (co-founder Ma Teng credited alongside)",
-    "ceoPortraitPath": "Media/Executives/veni-tang.svg",
+    "ceoPortraitPath": "Media/Executives/veni-tang.jpg",
     "bringsShort": "Motion simulation hardware — 3-axis platforms in the “iFly Chair” lineage, synced to Play For Dream's headset output.",
     "founding": false
   },
@@ -1076,13 +1078,13 @@ p:last-child { margin-bottom: 0; }
     "name": "Play For Dream",
     "tagline": "The Headset",
     "joinOrder": 9,
-    "logoPath": "Media/Companies/playfordream-logo.svg",
+    "logoPath": "Media/Companies/playfordream-logo.jpg",
     "accentColor": "#FF7A1A",
     "accentColor2": "#1A1440",
     "motif": "volumetric",
     "ceoName": "Huang Feng (\"F\")",
     "ceoTitle": "Founder & CEO, Play For Dream Technology",
-    "ceoPortraitPath": "Media/Executives/huang-feng.svg",
+    "ceoPortraitPath": "Media/Executives/huang-feng.jpg",
     "bringsShort": "The actual VR/XR headset platform — chassis, tracking, thermals, spatial OS — built around Sony's CRT-VR display technology.",
     "founding": false
   },
@@ -1091,13 +1093,13 @@ p:last-child { margin-bottom: 0; }
     "name": "Noctua",
     "tagline": "The Silence Underneath Everything",
     "joinOrder": 10,
-    "logoPath": "Media/Companies/noctua-logo.svg",
+    "logoPath": "Media/Companies/noctua-logo.png",
     "accentColor": "#8B5E3C",
     "accentColor2": "#E8DCC8",
     "motif": "matte",
     "ceoName": "Roland Mossig",
     "ceoTitle": "Founder & CEO, Rascom (Noctua's Austrian founding company)",
-    "ceoPortraitPath": "Media/Executives/roland-mossig.svg",
+    "ceoPortraitPath": "Media/Executives/roland-mossig.jpg",
     "bringsShort": "Thermal engineering for both the Duo 18's internal cooling (fanless below 8W) and the dock's 2000W thermal solution.",
     "founding": false
   },
@@ -1106,13 +1108,13 @@ p:last-child { margin-bottom: 0; }
     "name": "Hollyland",
     "tagline": "The Link in the Field (and now, on the Desk)",
     "joinOrder": 11,
-    "logoPath": "Media/Companies/hollyland-logo.svg",
+    "logoPath": "Media/Companies/hollyland-logo.png",
     "accentColor": "#FF6A00",
     "accentColor2": "#111111",
     "motif": "waveform",
     "ceoName": "Jeremy Huang",
     "ceoTitle": "CEO, Shenzhen Hollyland Technology Co., Ltd.",
-    "ceoPortraitPath": "Media/Executives/jeremy-huang.svg",
+    "ceoPortraitPath": "Media/Executives/jeremy-huang.jpg",
     "bringsShort": "Zero-latency wireless video/audio transmission for α0 Hexa RAW, plus the low-latency wireless protocol behind the Duo 18's magnetic keyboard.",
     "founding": false
   },
@@ -1121,13 +1123,13 @@ p:last-child { margin-bottom: 0; }
     "name": "Shimoda",
     "tagline": "The Carry",
     "joinOrder": 12,
-    "logoPath": "Media/Companies/shimoda-logo.svg",
+    "logoPath": "Media/Companies/shimoda-logo.png",
     "accentColor": "#8A9A7E",
     "accentColor2": "#C2A878",
     "motif": "topographic",
     "ceoName": "Ian Millar",
     "ceoTitle": "Founder, Shimoda Designs",
-    "ceoPortraitPath": "Media/Executives/ian-millar.svg",
+    "ceoPortraitPath": "Media/Executives/ian-millar.jpg",
     "bringsShort": "Adventure-grade carry systems built around exact NewGen product dimensions, including a purpose-fit case for the full Duo 18 system.",
     "founding": false
   }
@@ -1482,14 +1484,14 @@ p:last-child { margin-bottom: 0; }
       '<div class="company-bg motif-' + div.motif + '"></div>' +
       '<div class="wrap">' +
       '<div class="company-head fu">' +
-      '<img class="company-logo" src="' + div.logoPath + '" alt="' + escapeHtml(div.name) + ' placeholder logo" loading="lazy">' +
+      '<img class="company-logo' + ((div.slug === 'Intel' || div.slug === 'Sony') ? ' logo-chip' : '') + '" src="' + div.logoPath + '" alt="' + escapeHtml(div.name) + ' logo" loading="lazy">' +
       '<span class="company-order">#' + div.joinOrder + '</span>' + founding +
       '</div>' +
       '<div class="company-title-row fu"><h2 class="company-name">' + escapeHtml(div.name) + '</h2><span class="company-tagline">' + escapeHtml(div.tagline) + '</span></div>' +
       '<div class="company-meta fu">' +
       '<div class="portrait-frame" style="--port-size: 48px; --port-ring: 2px;">' +
       '<div class="portrait-ring"><div class="portrait-ring-inner">' +
-      '<img class="company-portrait" src="' + div.ceoPortraitPath + '" alt="Placeholder portrait" loading="lazy">' +
+      '<img class="company-portrait" src="' + div.ceoPortraitPath + '" alt="' + escapeHtml(div.ceoName) + ' portrait" loading="lazy">' +
       '<div class="portrait-duotone" aria-hidden="true"></div>' +
       '</div></div></div>' +
       '<div><div class="company-exec-name">' + escapeHtml(div.ceoName) + '</div><div class="company-exec-title">' + escapeHtml(div.ceoTitle) + '</div></div>' +
@@ -1540,7 +1542,7 @@ p:last-child { margin-bottom: 0; }
           '</div></a>';
       }).join('');
       return '<div class="division-group" style="--dg-accent:' + div.accentColor + '">' +
-        '<div class="division-group-head fu"><img src="' + div.logoPath + '" alt="' + escapeHtml(div.name) + ' logo" loading="lazy"><h3>' + escapeHtml(div.name) + '</h3></div>' +
+        '<div class="division-group-head fu"><img class="' + ((div.slug === 'Intel' || div.slug === 'Sony') ? 'logo-chip' : '') + '" src="' + div.logoPath + '" alt="' + escapeHtml(div.name) + ' logo" loading="lazy"><h3>' + escapeHtml(div.name) + '</h3></div>' +
         '<div class="card-grid">' + cardsHtml + '</div></div>';
     }).join('');
   }
@@ -2198,7 +2200,7 @@ p:last-child { margin-bottom: 0; }
     // the generic 1200x600 makeSvg() would crush everything into the
     // title band under xMidYMid slice. Every y below stays clear of 0–260
     // (portrait/title row) so nothing collides with the heading text.
-    var svg = svgEl('svg', { viewBox: '0 0 1200 1900', preserveAspectRatio: 'xMidYMid slice', 'aria-hidden': 'true' });
+    var svg = svgEl('svg', { viewBox: '0 0 1200 1900', preserveAspectRatio: 'xMidYMin slice', 'aria-hidden': 'true' });
     svg.setAttribute('class', 'bg-svg');
     layer.appendChild(svg);
 
@@ -2291,11 +2293,11 @@ p:last-child { margin-bottom: 0; }
     svg.appendChild(fanG);
 
     // Hollyland — the signal, still streaming
-    for (var hc = 0; hc < 3; hc++) {
-      var hg = svgEl('g', { transform: 'translate(' + (520 + hc * 56) + ',150)' });
-      var hch = svgEl('path', { d: 'M0,-10 L13,0 L0,10', fill: 'none', stroke: '#FF6A00', 'stroke-width': 1.4 });
+    for (var hc = 0; hc < 5; hc++) {
+      var hg = svgEl('g', { transform: 'translate(' + (470 + hc * 90) + ',150)' });
+      var hch = svgEl('path', { d: 'M0,-26 L34,0 L0,26', fill: 'none', stroke: '#FF6A00', 'stroke-width': 3.2, opacity: 0.85 });
       hch.setAttribute('class', 'anim-chevron');
-      hch.style.animationDelay = (-hc * 0.9) + 's';
+      hch.style.animationDelay = (-hc * 0.7) + 's';
       hg.appendChild(hch);
       svg.appendChild(hg);
     }
