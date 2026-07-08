@@ -11,6 +11,17 @@ const cards = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/cards.json'), 'ut
 
 function ensureDir(p) { fs.mkdirSync(p, { recursive: true }); }
 
+// SVG is XML — raw &, <, > (and " inside attribute values) are illegal and
+// make the whole file unparseable as an image (silent broken-image icon,
+// no console error). Every interpolated string must go through this.
+function esc(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 function initials(name) {
   return name
     .replace(/\(.*?\)/g, '')
@@ -35,9 +46,9 @@ function textColor(hex) {
 // ---- Company wordmark logos ----
 function companyLogo(div) {
   const fg = textColor(div.accentColor);
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" role="img" aria-label="${div.name} placeholder mark">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" role="img" aria-label="${esc(div.name)} placeholder mark">
   <rect width="240" height="60" rx="8" fill="${div.accentColor}"/>
-  <text x="20" y="38" font-family="'Space Grotesk', Arial, sans-serif" font-size="22" font-weight="700" fill="${fg}">${div.name}</text>
+  <text x="20" y="38" font-family="'Space Grotesk', Arial, sans-serif" font-size="22" font-weight="700" fill="${fg}">${esc(div.name)}</text>
 </svg>`;
 }
 
@@ -106,7 +117,7 @@ function portrait(name, accent) {
 function cardThumb(card, accent) {
   const fg = textColor(accent);
   const id = 'g' + (hash(card.title) % 100000).toString(36);
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="${card.title} placeholder thumbnail">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="${esc(card.title)} placeholder thumbnail">
   <defs>
     <linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="${accent}" stop-opacity="0.95"/>
@@ -115,8 +126,8 @@ function cardThumb(card, accent) {
   </defs>
   <rect width="800" height="450" fill="#05070F"/>
   <rect width="800" height="450" fill="url(#${id})"/>
-  <text x="40" y="400" font-family="'Space Grotesk', Arial, sans-serif" font-size="34" font-weight="700" fill="${fg}">${card.title}</text>
-  <text x="40" y="50" font-family="'JetBrains Mono', monospace" font-size="14" letter-spacing="2" fill="${fg}" opacity="0.75">${card.division.toUpperCase()}</text>
+  <text x="40" y="400" font-family="'Space Grotesk', Arial, sans-serif" font-size="34" font-weight="700" fill="${fg}">${esc(card.title)}</text>
+  <text x="40" y="50" font-family="'JetBrains Mono', monospace" font-size="14" letter-spacing="2" fill="${fg}" opacity="0.75">${esc(card.division.toUpperCase())}</text>
 </svg>`;
 }
 

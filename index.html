@@ -325,7 +325,7 @@ p:last-child { margin-bottom: 0; }
   place-items: center;
 }
 .spiral-panel svg { width: 100%; max-width: 340px; opacity: 0.85; }
-.spiral-panel .rotor { animation: orbit-spin 90s linear infinite; transform-origin: 50% 50%; }
+.spiral-panel .rotor { animation: orbit-spin 44s linear infinite; transform-origin: 50% 50%; }
 @media (prefers-reduced-motion: reduce) { .spiral-panel .rotor { animation: none; } }
 
 .pull-quote {
@@ -595,6 +595,17 @@ p:last-child { margin-bottom: 0; }
 .anim-breathe { transform-box: fill-box; transform-origin: center; animation: bgBreathe 9s ease-in-out infinite alternate; }
 @keyframes bgChevron { 0% { transform: translateX(0); opacity: 0; } 15% { opacity: 0.55; } 85% { opacity: 0.55; } 100% { transform: translateX(140px); opacity: 0; } }
 .anim-chevron { animation: bgChevron 3.4s linear infinite; }
+@keyframes bgSlash { from { transform: translate(-300px, 150px); } to { transform: translate(1500px, -150px); } }
+.anim-slash { animation: bgSlash 8s linear infinite; }
+@keyframes bgHue { to { filter: hue-rotate(360deg); } }
+.anim-hue { animation: bgHue 8s linear infinite; }
+@keyframes bgPiston { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(34px); } }
+.anim-piston { animation: bgPiston 1.4s ease-in-out infinite; }
+@keyframes bgEq { 0%, 100% { transform: scaleY(0.22); } 50% { transform: scaleY(1); } }
+.anim-eq { transform-box: fill-box; transform-origin: center; animation: bgEq 2.8s ease-in-out infinite; }
+@keyframes bgFlicker { 0%, 100% { opacity: 0.14; } 50% { opacity: 0.42; } }
+.anim-flicker { animation: bgFlicker 4s ease-in-out infinite; }
+.spearhead-tribute { position: absolute; inset: 0; pointer-events: none; opacity: 0.4; overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .bg-svg *, .bg-canvas { animation: none !important; }
 }
@@ -633,7 +644,7 @@ p:last-child { margin-bottom: 0; }
 .spearhead { position: relative; background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(224,184,74,0.08), transparent 70%), var(--bg); overflow: hidden; }
 .spearhead-spiral { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0.18; pointer-events: none; }
 .spearhead-spiral svg { width: min(90vw, 900px); }
-.spearhead-spiral .rotor { animation: orbit-spin 140s linear infinite; transform-origin: 50% 50%; }
+.spearhead-spiral .rotor { animation: orbit-spin 22s linear infinite; transform-origin: 50% 50%; }
 @media (prefers-reduced-motion: reduce) { .spearhead-spiral .rotor { animation: none; } }
 
 .spearhead-inner { position: relative; z-index: 1; }
@@ -1555,54 +1566,192 @@ p:last-child { margin-bottom: 0; }
   function rnd(min, max) { return min + Math.random() * (max - min); }
   function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-  // Intel: dense field of small Manhattan circuit traces that re-route
-  // themselves every few seconds — the structure is never the same twice.
+  // Intel: a living circuit board — traces snake across the canvas
+  // Manhattan-style, tails trailing off-screen while new ones enter from
+  // the edges; a shimmer pulse runs along every trace, and whenever a
+  // trace crosses another's path the intersection detonates a glow.
   function bgIntel(host, accent) {
-    var svg = makeSvg();
-    function traceD() {
-      var x = rnd(0, 1100), y = rnd(0, 560);
-      var d = 'M' + x.toFixed(0) + ',' + y.toFixed(0);
-      var horiz = Math.random() < 0.5;
-      for (var i = 0; i < 4; i++) {
-        var len = rnd(30, 120) * pick([1, -1]);
-        if (horiz) x += len; else y += len;
-        d += 'L' + x.toFixed(0) + ',' + y.toFixed(0);
-        horiz = !horiz;
-      }
-      return { d: d, x: x, y: y };
+    var W = 1200, H = 600, MARGIN = 30;
+    var canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    canvas.className = 'bg-canvas';
+    host.appendChild(canvas);
+    var ctx = canvas.getContext('2d');
+    var runners = [], glows = [], running = false, raf = null, frame = 0, nextId = 0;
+
+    function spawn(preRun) {
+      var side = Math.floor(rnd(0, 4)); // 0 left, 1 right, 2 top, 3 bottom
+      var r = {
+        pts: [],
+        dir: [0, 2, 1, 3][side],        // 0:+x 1:+y 2:-x 3:-y
+        run: rnd(50, 150),
+        speed: rnd(0.9, 2.2),
+        maxLen: rnd(200, 460),
+        curLen: 0,
+        dying: false,
+        pulseOff: rnd(0, 400),
+        cool: 0,
+        id: ++nextId
+      };
+      var x = side === 0 ? -MARGIN + 6 : side === 1 ? W + MARGIN - 6 : rnd(60, W - 60);
+      var y = side === 2 ? -MARGIN + 6 : side === 3 ? H + MARGIN - 6 : rnd(60, H - 60);
+      r.pts.push([x, y], [x, y]);
+      for (var s = 0; s < (preRun || 0); s++) advance(r);
+      return r;
     }
-    var traces = [];
-    for (var i = 0; i < 28; i++) {
-      var t = traceD();
-      var g = svgEl('g', {});
-      var p = svgEl('path', { d: t.d, fill: 'none', stroke: accent, 'stroke-width': 1.2, opacity: 0.32 });
-      var dot = svgEl('circle', { cx: t.x, cy: t.y, r: 2.4, fill: accent, opacity: 0.45 });
-      g.style.transition = 'opacity 0.9s ease';
-      g.appendChild(p);
-      g.appendChild(dot);
-      svg.appendChild(g);
-      traces.push({ g: g, p: p, dot: dot });
-    }
-    host.appendChild(svg);
-    if (REDUCED) return null;
-    var timer = null;
-    function tick() {
-      for (var i = 0; i < 6; i++) {
-        (function (tr) {
-          tr.g.style.opacity = '0';
-          setTimeout(function () {
-            var nt = traceD();
-            tr.p.setAttribute('d', nt.d);
-            tr.dot.setAttribute('cx', nt.x);
-            tr.dot.setAttribute('cy', nt.y);
-            tr.g.style.opacity = '1';
-          }, 950);
-        })(pick(traces));
+
+    function head(r) { return r.pts[r.pts.length - 1]; }
+
+    function advance(r) {
+      if (!r.dying) {
+        var h = head(r);
+        h[0] += (r.dir === 0 ? 1 : r.dir === 2 ? -1 : 0) * r.speed;
+        h[1] += (r.dir === 1 ? 1 : r.dir === 3 ? -1 : 0) * r.speed;
+        r.curLen += r.speed;
+        r.run -= r.speed;
+        if (r.run <= 0) {
+          r.dir = (r.dir + pick([1, 3])) % 4; // 90° turn, left or right
+          r.run = rnd(50, 160);
+          r.pts.push([h[0], h[1]]);
+        }
+        if (h[0] < -MARGIN || h[0] > W + MARGIN || h[1] < -MARGIN || h[1] > H + MARGIN) r.dying = true;
+      } else {
+        r.curLen -= r.speed * 1.7; // tail retreats off-screen
       }
+      // trim tail from the back so total length ≤ curLen (and ≤ maxLen)
+      var want = Math.max(0, Math.min(r.curLen, r.maxLen));
+      var total = 0;
+      for (var i = r.pts.length - 1; i > 0; i--) {
+        var a = r.pts[i], b = r.pts[i - 1];
+        var L = Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
+        if (total + L >= want) {
+          var keep = want - total;
+          var ux = a[0] === b[0] ? 0 : (b[0] > a[0] ? 1 : -1);
+          var uy = a[1] === b[1] ? 0 : (b[1] > a[1] ? 1 : -1);
+          r.pts.splice(0, i - 1);
+          r.pts[0] = [a[0] + ux * keep, a[1] + uy * keep];
+          total += keep;
+          break;
+        }
+        total += L;
+      }
+      r.curLen = Math.min(want, total);
+      if (r.cool > 0) r.cool--;
+    }
+
+    function pointAt(r, d) {
+      var rem = d;
+      for (var i = 1; i < r.pts.length; i++) {
+        var a = r.pts[i - 1], b = r.pts[i];
+        var L = Math.abs(b[0] - a[0]) + Math.abs(b[1] - a[1]);
+        if (L >= rem) {
+          var t = L === 0 ? 0 : rem / L;
+          return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+        }
+        rem -= L;
+      }
+      return null;
+    }
+
+    function detectCrossings() {
+      var grid = {};
+      runners.forEach(function (r) {
+        for (var i = 1; i < r.pts.length; i++) {
+          var a = r.pts[i - 1], b = r.pts[i];
+          var L = Math.abs(b[0] - a[0]) + Math.abs(b[1] - a[1]);
+          var steps = Math.max(1, (L / 12) | 0);
+          for (var s = 0; s <= steps; s++) {
+            var key = (((a[0] + (b[0] - a[0]) * (s / steps)) / 12) | 0) + '_' + (((a[1] + (b[1] - a[1]) * (s / steps)) / 12) | 0);
+            (grid[key] || (grid[key] = [])).push(r.id);
+          }
+        }
+      });
+      runners.forEach(function (r) {
+        if (r.dying || r.cool > 0) return;
+        var h = head(r);
+        var ids = grid[((h[0] / 12) | 0) + '_' + ((h[1] / 12) | 0)];
+        if (!ids) return;
+        for (var i = 0; i < ids.length; i++) {
+          if (ids[i] !== r.id) {
+            glows.push({ x: h[0], y: h[1], t: 0 });
+            r.cool = 90;
+            return;
+          }
+        }
+      });
+    }
+
+    function draw(withShimmer) {
+      ctx.clearRect(0, 0, W, H);
+      runners.forEach(function (r) {
+        if (r.pts.length < 2) return;
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 1.3;
+        ctx.globalAlpha = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(r.pts[0][0], r.pts[0][1]);
+        for (var i = 1; i < r.pts.length; i++) ctx.lineTo(r.pts[i][0], r.pts[i][1]);
+        ctx.stroke();
+        var h = head(r);
+        if (!r.dying) {
+          ctx.globalAlpha = 0.85;
+          ctx.fillStyle = accent;
+          ctx.fillRect(h[0] - 1.8, h[1] - 1.8, 3.6, 3.6);
+        }
+        if (withShimmer && r.curLen > 40) {
+          var pt = pointAt(r, (frame * 2.4 + r.pulseOff) % r.curLen);
+          if (pt) {
+            ctx.globalAlpha = 0.9;
+            ctx.shadowColor = '#9FD8FF';
+            ctx.shadowBlur = 9;
+            ctx.fillStyle = '#D6F0FF';
+            ctx.beginPath();
+            ctx.arc(pt[0], pt[1], 1.9, 0, 7);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+          }
+        }
+      });
+      for (var gi = glows.length - 1; gi >= 0; gi--) {
+        var g = glows[gi];
+        g.t++;
+        if (g.t > 50) { glows.splice(gi, 1); continue; }
+        var pr = g.t / 50;
+        var rad = 8 + pr * 36;
+        var grd = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, rad);
+        grd.addColorStop(0, 'rgba(180,228,255,' + (0.85 * (1 - pr)).toFixed(3) + ')');
+        grd.addColorStop(1, 'rgba(0,104,181,0)');
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.arc(g.x, g.y, rad, 0, 7);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    for (var i = 0; i < 14; i++) runners.push(spawn(Math.floor(rnd(60, 380))));
+
+    if (REDUCED) {
+      glows.push({ x: rnd(200, 1000), y: rnd(150, 450), t: 14 }, { x: rnd(200, 1000), y: rnd(150, 450), t: 22 });
+      draw(false);
+      return null;
+    }
+
+    function loop() {
+      if (!running) return;
+      frame++;
+      for (var i = 0; i < runners.length; i++) {
+        advance(runners[i]);
+        if (runners[i].dying && runners[i].curLen <= 6) runners[i] = spawn(0);
+      }
+      if (frame % 2 === 0) detectCrossings();
+      draw(true);
+      raf = requestAnimationFrame(loop);
     }
     return function (visible) {
-      if (visible && !timer) timer = setInterval(tick, 2600);
-      else if (!visible && timer) { clearInterval(timer); timer = null; }
+      if (visible && !running) { running = true; raf = requestAnimationFrame(loop); }
+      else if (!visible && running) { running = false; if (raf) cancelAnimationFrame(raf); }
     };
   }
 
@@ -1654,21 +1803,59 @@ p:last-child { margin-bottom: 0; }
     return null;
   }
 
-  // ASUS/ROG: open-laptop silhouettes (side profile: base wedge + tilted
-  // screen) continuously drawing themselves in and out, stroke by stroke.
+  // ASUS/ROG: a whole armory — open-laptop silhouettes (side-profile and
+  // front dual-screen ProArt DUO views) drawing themselves in and out,
+  // RGB underglow strips cycling hue, sweeping slash streaks, and a
+  // flickering hex cluster. Republic of Gamers energy, line-art register.
   function bgAsus(host, accent) {
     var svg = makeSvg();
-    var LAPTOP = 'M0 0h96l-7-8h-82zM86-8l16-52 6 3-15 49z';
-    for (var i = 0; i < 7; i++) {
+    var SIDE = 'M0 0h96l-7-8h-82zM86-8l16-52 6 3-15 49z';
+    // front view: screen shell + inner panel + secondary ProArt DUO screen + base wedge
+    var FRONT = 'M-60-78h120v70h-120zM-54-72h108v50h-108zM-50-18h100v8h-100zM-70 0h140l-12 12h-116z';
+    // sweeping slash streaks
+    for (var s = 0; s < 5; s++) {
+      var wrap = svgEl('g', { transform: 'translate(0,' + rnd(120, 580).toFixed(0) + ')' });
+      var sl = svgEl('path', { d: 'M0 0l36-15h240l-36 15z', fill: accent, opacity: 0.12 });
+      sl.setAttribute('class', 'anim-slash');
+      sl.style.animationDuration = rnd(6, 12).toFixed(1) + 's';
+      sl.style.animationDelay = (-rnd(0, 11)).toFixed(1) + 's';
+      wrap.appendChild(sl);
+      svg.appendChild(wrap);
+    }
+    // hex cluster, flickering like a status readout
+    var hexD = 'M0-22l19 11v22l-19 11-19-11v-22z';
+    [[1040, 120], [1085, 196], [995, 196], [1040, 272]].forEach(function (c, i) {
+      var h = svgEl('path', { d: hexD, fill: 'none', stroke: accent, 'stroke-width': 1.2, transform: 'translate(' + c[0] + ',' + c[1] + ')' });
+      h.setAttribute('class', 'anim-flicker');
+      h.style.animationDuration = rnd(3, 5).toFixed(1) + 's';
+      h.style.animationDelay = (-i * 1.1) + 's';
+      svg.appendChild(h);
+    });
+    // laptops — alternating front/side views, half with RGB underglow
+    for (var i = 0; i < 11; i++) {
+      var front = i % 2 === 0;
       var g = svgEl('g', {
-        transform: 'translate(' + rnd(40, 1050).toFixed(0) + ',' + rnd(110, 570).toFixed(0) + ')' +
-          ' rotate(' + rnd(-14, 10).toFixed(1) + ') scale(' + rnd(1, 2.4).toFixed(2) + ')'
+        transform: 'translate(' + (70 + (i % 4) * 300 + rnd(-50, 50)).toFixed(0) + ',' +
+          (150 + Math.floor(i / 4) * 190 + rnd(-35, 35)).toFixed(0) + ')' +
+          ' rotate(' + rnd(-12, 10).toFixed(1) + ') scale(' + rnd(0.7, 1.9).toFixed(2) + ')'
       });
-      var p = svgEl('path', { d: LAPTOP, fill: 'none', stroke: accent, 'stroke-width': 1.4, opacity: 0.38, 'stroke-linejoin': 'round' });
+      var p = svgEl('path', { d: front ? FRONT : SIDE, fill: 'none', stroke: accent, 'stroke-width': 1.4, opacity: 0.4, 'stroke-linejoin': 'round' });
       p.setAttribute('class', 'anim-draw');
-      p.style.animationDuration = rnd(5, 9).toFixed(1) + 's';
-      p.style.animationDelay = (-rnd(0, 6)).toFixed(1) + 's';
+      p.style.animationDuration = rnd(5, 10).toFixed(1) + 's';
+      p.style.animationDelay = (-rnd(0, 8)).toFixed(1) + 's';
       g.appendChild(p);
+      if (i % 2 === 1 || i % 3 === 0) {
+        var glow = svgEl('line', front
+          ? { x1: -58, y1: 16, x2: 58, y2: 16 }
+          : { x1: 4, y1: 5, x2: 92, y2: 5 });
+        glow.setAttribute('stroke', '#FF0040');
+        glow.setAttribute('stroke-width', '2.5');
+        glow.setAttribute('opacity', '0.5');
+        glow.setAttribute('stroke-linecap', 'round');
+        glow.setAttribute('class', 'anim-hue');
+        glow.style.animationDuration = rnd(5, 9).toFixed(1) + 's';
+        g.appendChild(glow);
+      }
       svg.appendChild(g);
     }
     host.appendChild(svg);
@@ -1693,37 +1880,125 @@ p:last-child { margin-bottom: 0; }
     return null;
   }
 
-  // Ford: highway at speed — lane markings streaming past.
+  // Ford: the machine room — a four-cylinder engine firing in sequence,
+  // meshing gears, spinning spoked wheels, lane markings streaming past.
   function bgFord(host, accent) {
     var svg = makeSvg();
-    for (var i = 0; i < 7; i++) {
-      var y = 70 + i * 80;
-      var wide = i % 3 === 1;
+    var ink = '#5B82BC'; // lifted accent so machinery reads on near-black
+    // lane markings
+    for (var i = 0; i < 4; i++) {
+      var y = 505 + i * 26;
       var l = svgEl('line', {
-        x1: 0, y1: y, x2: 1200, y2: y, stroke: accent,
-        'stroke-width': wide ? 2 : 1, opacity: 0.35,
-        'stroke-dasharray': wide ? '46 38' : '18 66'
+        x1: 0, y1: y, x2: 1200, y2: y, stroke: ink,
+        'stroke-width': i === 1 ? 2 : 1, opacity: 0.3,
+        'stroke-dasharray': i === 1 ? '46 38' : '18 66'
       });
       l.setAttribute('class', 'anim-dash');
-      l.style.animationDuration = (2.2 + (i % 4) * 1.1) + 's';
+      l.style.animationDuration = (2.0 + i * 0.9) + 's';
       svg.appendChild(l);
     }
+    // inline-four engine, staggered firing order 1-3-4-2
+    var eng = svgEl('g', { transform: 'translate(120,110)' });
+    var firing = [0, 2, 3, 1];
+    for (var c = 0; c < 4; c++) {
+      var cx = c * 72;
+      eng.appendChild(svgEl('rect', { x: cx, y: 0, width: 44, height: 150, rx: 5, fill: 'none', stroke: ink, 'stroke-width': 1.3, opacity: 0.4 }));
+      var pist = svgEl('g', {});
+      pist.appendChild(svgEl('rect', { x: cx + 7, y: 10, width: 30, height: 24, rx: 3, fill: ink, opacity: 0.35 }));
+      pist.appendChild(svgEl('line', { x1: cx + 22, y1: 34, x2: cx + 22, y2: 96, stroke: ink, 'stroke-width': 2.4, opacity: 0.4 }));
+      pist.appendChild(svgEl('circle', { cx: cx + 22, cy: 100, r: 5, fill: ink, opacity: 0.4 }));
+      pist.setAttribute('class', 'anim-piston');
+      pist.style.animationDelay = (-firing[c] * 0.35) + 's';
+      eng.appendChild(pist);
+      var crank = svgEl('circle', { cx: cx + 22, cy: 136, r: 14, fill: 'none', stroke: ink, 'stroke-width': 1.2, opacity: 0.3, 'stroke-dasharray': '6 8' });
+      crank.setAttribute('class', 'anim-spin');
+      crank.style.animationDuration = '1.4s';
+      eng.appendChild(crank);
+    }
+    // crankshaft line
+    eng.appendChild(svgEl('line', { x1: -14, y1: 136, x2: 254, y2: 136, stroke: ink, 'stroke-width': 1.4, opacity: 0.3 }));
+    svg.appendChild(eng);
+    // meshing gears (tooth counts 12:8, counter-rotating at matched surface speed)
+    function gearD(r, teeth) {
+      var d = '', steps = teeth * 4;
+      for (var gi = 0; gi <= steps; gi++) {
+        var ang = (gi / steps) * Math.PI * 2;
+        var rad = (gi % 4 < 2) ? r : r * 1.24;
+        d += (gi ? 'L' : 'M') + (rad * Math.cos(ang)).toFixed(1) + ',' + (rad * Math.sin(ang)).toFixed(1);
+      }
+      return d + 'Z';
+    }
+    [[860, 140, 52, 12, 18, 'normal'], [948, 190, 36, 8, 12, 'reverse']].forEach(function (spec) {
+      var g = svgEl('g', { transform: 'translate(' + spec[0] + ',' + spec[1] + ')' });
+      var gp = svgEl('path', { d: gearD(spec[2], spec[3]), fill: 'none', stroke: ink, 'stroke-width': 1.3, opacity: 0.4 });
+      gp.setAttribute('class', 'anim-spin');
+      gp.style.animationDuration = spec[4] + 's';
+      gp.style.animationDirection = spec[5];
+      g.appendChild(gp);
+      g.appendChild(svgEl('circle', { cx: 0, cy: 0, r: spec[2] * 0.3, fill: 'none', stroke: ink, 'stroke-width': 1, opacity: 0.35 }));
+      svg.appendChild(g);
+    });
+    // spinning spoked wheels riding the lane lines
+    function wheel(x, y, r, dur) {
+      var g = svgEl('g', { transform: 'translate(' + x + ',' + y + ')' });
+      var w = svgEl('g', {});
+      w.setAttribute('class', 'anim-spin');
+      w.style.animationDuration = dur + 's';
+      w.appendChild(svgEl('circle', { cx: 0, cy: 0, r: r, fill: 'none', stroke: ink, 'stroke-width': 2, opacity: 0.4 }));
+      w.appendChild(svgEl('circle', { cx: 0, cy: 0, r: r * 0.38, fill: 'none', stroke: ink, 'stroke-width': 1.2, opacity: 0.35 }));
+      for (var k = 0; k < 5; k++) {
+        var a = (k / 5) * Math.PI * 2;
+        w.appendChild(svgEl('line', {
+          x1: (Math.cos(a) * r * 0.38).toFixed(1), y1: (Math.sin(a) * r * 0.38).toFixed(1),
+          x2: (Math.cos(a) * r).toFixed(1), y2: (Math.sin(a) * r).toFixed(1),
+          stroke: ink, 'stroke-width': 1.5, opacity: 0.4
+        }));
+      }
+      g.appendChild(w);
+      return g;
+    }
+    svg.appendChild(wheel(660, 428, 72, 4));
+    svg.appendChild(wheel(1010, 428, 72, 4));
+    // axle between the wheels
+    svg.appendChild(svgEl('line', { x1: 660, y1: 428, x2: 1010, y2: 428, stroke: ink, 'stroke-width': 1, opacity: 0.2 }));
     host.appendChild(svg);
     return null;
   }
 
-  // B&O: the quietest one — a single brass waveform breathing across the
-  // section, barely there, on purpose.
+  // B&O: still the quietest — but now it's a whole recording. Three brass
+  // harmonics traveling at different speeds, and an audio-file waveform of
+  // mirrored bars breathing through the middle.
   function bgBo(host, accent, accent2) {
     var svg = makeSvg();
-    var d = 'M0,300';
-    for (var x = 0; x <= 2400; x += 24) {
-      d += 'L' + x + ',' + (300 + 26 * Math.sin((x / 240) * Math.PI * 2)).toFixed(1);
+    // layered traveling harmonics (periods divide 1200 so the loop is seamless)
+    var waves = [
+      { amp: 22, period: 300, dur: 26, op: 0.3, w: 1, col: accent2 },
+      { amp: 44, period: 600, dur: 46, op: 0.16, w: 1, col: accent2 },
+      { amp: 10, period: 150, dur: 15, op: 0.24, w: 0.8, col: accent },
+      { amp: 66, period: 1200, dur: 70, op: 0.1, w: 1.2, col: accent2 }
+    ];
+    waves.forEach(function (wv) {
+      var d = 'M0,300';
+      for (var x = 0; x <= 2400; x += 12) {
+        d += 'L' + x + ',' + (300 + wv.amp * Math.sin((x / wv.period) * Math.PI * 2)).toFixed(1);
+      }
+      var p = svgEl('path', { d: d, fill: 'none', stroke: wv.col, 'stroke-width': wv.w, opacity: wv.op });
+      p.setAttribute('class', 'anim-wave');
+      p.style.animationDuration = wv.dur + 's';
+      svg.appendChild(p);
+    });
+    // audio-track waveform: mirrored bars, deterministic pseudo-random
+    // heights, each one gently breathing out of phase with its neighbors
+    for (var i = 0; i < 64; i++) {
+      var x = 42 + i * 17.5;
+      var hgt = 12 + 48 * Math.abs(Math.sin(i * 0.55) * Math.sin(i * 0.13) + 0.25 * Math.sin(i * 1.9));
+      var l = svgEl('line', { x1: x, y1: 300 - hgt, x2: x, y2: 300 + hgt, stroke: accent2, 'stroke-width': 2.4, opacity: 0.17, 'stroke-linecap': 'round' });
+      l.setAttribute('class', 'anim-eq');
+      l.style.animationDuration = (2.4 + (i % 5) * 0.5) + 's';
+      l.style.animationDelay = (-(i * 0.14)) + 's';
+      svg.appendChild(l);
     }
-    var p = svgEl('path', { d: d, fill: 'none', stroke: accent2, 'stroke-width': 1, opacity: 0.3 });
-    p.setAttribute('class', 'anim-wave');
-    svg.appendChild(p);
-    var base = svgEl('line', { x1: 0, y1: 300, x2: 1200, y2: 300, stroke: accent2, 'stroke-width': 0.5, opacity: 0.12 });
+    var base = svgEl('line', { x1: 0, y1: 300, x2: 1200, y2: 300, stroke: accent2, 'stroke-width': 0.5, opacity: 0.14 });
     svg.appendChild(base);
     host.appendChild(svg);
     return null;
@@ -1909,6 +2184,139 @@ p:last-child { margin-bottom: 0; }
     PlayForDream: bgPfd, Noctua: bgNoctua, Hollyland: bgHollyland, Shimoda: bgShimoda
   };
 
+  // The Spearhead's background carries one element from each of the
+  // twelve divisions, each in its own accent color — the whole
+  // conglomerate orbiting the spiral. The spec answers to the Spearhead.
+  function renderSpearheadTribute() {
+    var section = document.getElementById('spearhead');
+    if (!section) return;
+    var layer = document.createElement('div');
+    layer.className = 'spearhead-tribute';
+    layer.setAttribute('aria-hidden', 'true');
+    // Bespoke tall viewBox matching the section's actual proportions (wide
+    // but very tall, once the two quote cards and stat strip stack up) —
+    // the generic 1200x600 makeSvg() would crush everything into the
+    // title band under xMidYMid slice. Every y below stays clear of 0–260
+    // (portrait/title row) so nothing collides with the heading text.
+    var svg = svgEl('svg', { viewBox: '0 0 1200 1900', preserveAspectRatio: 'xMidYMid slice', 'aria-hidden': 'true' });
+    svg.setAttribute('class', 'bg-svg');
+    layer.appendChild(svg);
+
+    // Intel — a circuit trace with current flowing through it
+    var tr = svgEl('path', { d: 'M40,330 h90 v60 h70 v-40 h110', fill: 'none', stroke: '#3D8FD1', 'stroke-width': 1.4, opacity: 0.55, 'stroke-dasharray': '18 66' });
+    tr.setAttribute('class', 'anim-dash');
+    tr.style.animationDuration = '5s';
+    svg.appendChild(tr);
+    svg.appendChild(svgEl('circle', { cx: 310, cy: 350, r: 3, fill: '#3D8FD1', opacity: 0.55 }));
+
+    // Lightmatter — a waveguide with a photon in transit
+    var wgD = 'M1160,300 h-180 l-40,40 h-260';
+    svg.appendChild(svgEl('path', { d: wgD, fill: 'none', stroke: '#00E5CF', 'stroke-width': 1, opacity: 0.45 }));
+    if (!REDUCED) {
+      var pu = svgEl('circle', { r: 2.6, fill: '#00E5CF', opacity: 0.9 });
+      pu.appendChild(svgEl('animateMotion', { dur: '6s', repeatCount: 'indefinite', path: wgD }));
+      svg.appendChild(pu);
+    }
+
+    // Sony — the six primaries
+    ['#FF4B4B', '#4BFF7E', '#4B7EFF', '#FF4BE1', '#4BFFE1', '#FFE14B'].forEach(function (c, i) {
+      svg.appendChild(svgEl('line', { x1: 860 + i * 10, y1: 520, x2: 860 + i * 10, y2: 608, stroke: c, 'stroke-width': 1, opacity: 0.4 }));
+    });
+
+    // ASUS — a laptop drawing itself
+    var lg = svgEl('g', { transform: 'translate(70,860) scale(1.3)' });
+    var lp = svgEl('path', { d: 'M0 0h96l-7-8h-82zM86-8l16-52 6 3-15 49z', fill: 'none', stroke: '#FF0029', 'stroke-width': 1.3, opacity: 0.5, 'stroke-linejoin': 'round' });
+    lp.setAttribute('class', 'anim-draw');
+    lp.style.animationDuration = '8s';
+    lg.appendChild(lp);
+    svg.appendChild(lg);
+
+    // OPPO — a charge ripple
+    for (var oi = 0; oi < 3; oi++) {
+      var rp = svgEl('circle', { cx: 300, cy: 720, r: 24, fill: 'none', stroke: '#0FA35B', 'stroke-width': 1.2, opacity: 0 });
+      rp.setAttribute('class', 'anim-ripple');
+      rp.style.animationDuration = '6s';
+      rp.style.animationDelay = (-oi * 2) + 's';
+      svg.appendChild(rp);
+    }
+
+    // Ford — a turning gear
+    var gearG = svgEl('g', { transform: 'translate(1090,700)' });
+    var gd = '';
+    for (var gi = 0; gi <= 48; gi++) {
+      var gang = (gi / 48) * Math.PI * 2;
+      var grad = gi % 4 < 2 ? 30 : 37;
+      gd += (gi ? 'L' : 'M') + (grad * Math.cos(gang)).toFixed(1) + ',' + (grad * Math.sin(gang)).toFixed(1);
+    }
+    var gp = svgEl('path', { d: gd + 'Z', fill: 'none', stroke: '#6E8CB5', 'stroke-width': 1.2, opacity: 0.45 });
+    gp.setAttribute('class', 'anim-spin');
+    gp.style.animationDuration = '20s';
+    gearG.appendChild(gp);
+    gearG.appendChild(svgEl('circle', { cx: 0, cy: 0, r: 8, fill: 'none', stroke: '#6E8CB5', 'stroke-width': 1, opacity: 0.4 }));
+    svg.appendChild(gearG);
+
+    // B&O — a short brass waveform
+    var bod = 'M470,1020';
+    for (var bx = 8; bx <= 260; bx += 8) {
+      bod += 'L' + (470 + bx) + ',' + (1020 + 10 * Math.sin(bx / 24)).toFixed(1);
+    }
+    svg.appendChild(svgEl('path', { d: bod, fill: 'none', stroke: '#B08D57', 'stroke-width': 1, opacity: 0.5 }));
+
+    // ShallXR — a gimbal ring
+    var se = svgEl('ellipse', { cx: 150, cy: 1080, rx: 72, ry: 26, fill: 'none', stroke: '#BFBFBF', 'stroke-width': 1, opacity: 0.35, 'stroke-dasharray': '8 10' });
+    se.setAttribute('class', 'anim-spin');
+    se.style.animationDuration = '26s';
+    svg.appendChild(se);
+
+    // Play For Dream — a Lissajous figure, flickering like phosphor
+    var ld = '';
+    for (var li = 0; li <= 200; li++) {
+      var lt = li * 0.045;
+      ld += (li ? 'L' : 'M') + (1000 + 96 * Math.sin(3 * lt + 1.3)).toFixed(1) + ',' + (900 + 54 * Math.sin(2 * lt)).toFixed(1);
+    }
+    var lpth = svgEl('path', { d: ld, fill: 'none', stroke: '#FF7A1A', 'stroke-width': 1, opacity: 0.4 });
+    lpth.setAttribute('class', 'anim-flicker');
+    svg.appendChild(lpth);
+
+    // Noctua — fan blades, patient as ever
+    var fanG = svgEl('g', { transform: 'translate(150,1400)' });
+    var blades = svgEl('g', {});
+    blades.setAttribute('class', 'anim-spin');
+    blades.style.animationDuration = '40s';
+    for (var fk = 0; fk < 7; fk++) {
+      blades.appendChild(svgEl('path', { d: 'M0,0 q14,-24 32,-20 q-14,19 -32,20z', fill: '#8B5E3C', opacity: 0.45, transform: 'rotate(' + (fk * 51.4).toFixed(1) + ')' }));
+    }
+    fanG.appendChild(blades);
+    fanG.appendChild(svgEl('circle', { cx: 0, cy: 0, r: 40, fill: 'none', stroke: '#8B5E3C', 'stroke-width': 1, opacity: 0.35 }));
+    svg.appendChild(fanG);
+
+    // Hollyland — the signal, still streaming
+    for (var hc = 0; hc < 3; hc++) {
+      var hg = svgEl('g', { transform: 'translate(' + (520 + hc * 56) + ',150)' });
+      var hch = svgEl('path', { d: 'M0,-10 L13,0 L0,10', fill: 'none', stroke: '#FF6A00', 'stroke-width': 1.4 });
+      hch.setAttribute('class', 'anim-chevron');
+      hch.style.animationDelay = (-hc * 0.9) + 's';
+      hg.appendChild(hch);
+      svg.appendChild(hg);
+    }
+
+    // Shimoda — terrain to carry it all across
+    for (var sr = 1; sr <= 3; sr++) {
+      var sd = '';
+      for (var sa = 0; sa <= 20; sa++) {
+        var sang = (sa / 20) * Math.PI * 2;
+        var srad = sr * 24 + 8 * Math.sin(sang * 3 + sr);
+        sd += (sa ? 'L' : 'M') + (1030 + srad * Math.cos(sang)).toFixed(1) + ',' + (1700 + srad * 0.6 * Math.sin(sang)).toFixed(1);
+      }
+      var sp = svgEl('path', { d: sd + 'Z', fill: 'none', stroke: '#8A9A7E', 'stroke-width': 1, opacity: 0.4 });
+      sp.setAttribute('class', 'anim-breathe');
+      sp.style.animationDuration = (7 + sr * 2) + 's';
+      svg.appendChild(sp);
+    }
+
+    section.insertBefore(layer, section.querySelector('.spearhead-inner'));
+  }
+
   function renderCompanyBackgrounds() {
     var io = ('IntersectionObserver' in window)
       ? new IntersectionObserver(function (entries) {
@@ -1977,6 +2385,7 @@ p:last-child { margin-bottom: 0; }
     renderOrbitMarks();
     renderTwelve();
     renderCompanyBackgrounds();
+    renderSpearheadTribute();
     renderProductIndex();
     requestAnimationFrame(wireReveal);
   }
