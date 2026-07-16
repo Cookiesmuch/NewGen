@@ -650,10 +650,182 @@
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════
+         XE5 RASTER — new technologies behind the 5×/tile figure
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="rv-subsection" id="xe5-raster-block" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:64px; position:relative;">
+        <style>#xe5-raster-block > *:not(.xe5-tech-num){position:relative;z-index:1;}</style>
+        <div class="xe5-tech-num" style="top:150px; transform:none;">02</div>
+        <div class="rv-eyebrow">Xe5 Raster &middot; The Architecture Behind The Number</div>
+        <div class="rv-h2">5&times; per tile is no longer an assertion.</div>
+        <p class="rv-lede">
+            The raster specs were always here; the technology that earns them was not. Xe5 fills that gap with a
+            tile-based binning front-end, Nanite-class virtualized geometry, variable-rate shading driven by the
+            scheduler's own predictive model, feedback-streamed textures, and a wide low-precision shader ISA
+            &mdash; each contributing a measured multiplier that compounds to the published <strong>~5&times;/tile
+            &rarr; 20&times; across &times;4</strong>.
+        </p>
+
+        <!-- Kachelraster Engine + before/after -->
+        <div style="margin-top:40px;">
+            <div class="rv-eyebrow gold">Tile-Based Binning Rasterizer</div>
+            <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">Kachelraster Engine</div>
+            <p class="rv-lede">
+                Geometry is binned into 64&times;64px tiles and overdraw-culled <strong>before shading</strong>, using
+                a 2&nbsp;MB on-die bin buffer per raster cluster (shared with L2). Fragments that would be occluded
+                never enter the shader array &mdash; roughly <strong>40% less overdraw</strong> and
+                <strong>35% bandwidth saved</strong> versus immediate-mode rendering.
+            </p>
+            <div class="rv-fu-row">
+                <div class="rv-fu-stat"><div class="n">64&times;64px</div><div class="l">bin size</div></div>
+                <div class="rv-fu-stat"><div class="n">2 MB</div><div class="l">bin buffer / raster cluster (shared w/ L2)</div></div>
+                <div class="rv-fu-stat"><div class="n">~40%</div><div class="l">overdraw reduction</div></div>
+                <div class="rv-fu-stat"><div class="n">~35%</div><div class="l">bandwidth savings</div></div>
+            </div>
+
+            <div class="kach">
+                <div class="kach-panel before">
+                    <div class="kach-head">Immediate-mode &middot; shade-then-discard</div>
+                    <div class="kach-canvas">
+                        <div class="kach-layer" style="left:8%;top:14%;width:52%;height:60%;background:#38bdf8;"></div>
+                        <div class="kach-layer" style="left:26%;top:26%;width:52%;height:58%;background:#a78bfa;"></div>
+                        <div class="kach-layer" style="left:40%;top:10%;width:46%;height:66%;background:#f0b848;"></div>
+                        <div class="kach-layer" style="left:18%;top:40%;width:60%;height:44%;background:#f472b6;"></div>
+                    </div>
+                    <div class="kach-foot"><b>4 shaded layers</b> per pixel in the overlap &mdash; three are thrown away after shading.</div>
+                </div>
+                <div class="kach-panel after">
+                    <div class="kach-head">Kachelraster &middot; cull-then-shade</div>
+                    <div class="kach-canvas">
+                        <div class="kach-grid"></div>
+                        <div class="kach-layer" style="left:40%;top:10%;width:46%;height:66%;background:#f0b848;opacity:.8;"></div>
+                        <div class="kach-layer" style="left:8%;top:14%;width:32%;height:60%;background:#38bdf8;opacity:.8;"></div>
+                        <div class="kach-layer" style="left:18%;top:56%;width:22%;height:28%;background:#f472b6;opacity:.8;"></div>
+                    </div>
+                    <div class="kach-foot"><b>1 shaded layer</b> per pixel &mdash; occluded fragments are discarded per 64&times;64 bin, before the shader runs.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feingeometrie Engine -->
+        <div style="margin-top:48px;">
+            <div class="rv-eyebrow gold">Mesh / Task Shaders &middot; Virtualized Geometry</div>
+            <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">Feingeometrie Engine</div>
+            <p class="rv-lede">
+                Micro-triangle clustering at roughly <strong>128 triangles per cluster</strong> delivers Nanite-class
+                geometry virtualization &mdash; practical only because Kache Kore's 4&nbsp;GB bLLC can hold the cluster
+                hierarchy on-package. Feingeometrie shares <strong>PHR's residency mechanism</strong> with RT's BVH
+                caching: one cache infrastructure, two consumers.
+            </p>
+            <div class="rv-fu-row">
+                <div class="rv-fu-stat"><div class="n">~128 tris</div><div class="l">per micro-cluster</div></div>
+                <div class="rv-fu-stat"><div class="n">on-package</div><div class="l">cluster hierarchy in 4 GB bLLC</div></div>
+                <div class="rv-fu-stat"><div class="n">shared PHR</div><div class="l">residency reused from RT BVH caching</div></div>
+            </div>
+        </div>
+
+        <!-- VRS 3.0 / SFS / XeAVX-2048 / XeAPO cards -->
+        <div style="margin-top:48px;">
+            <div class="rv-eyebrow gold">Shading, Texture &amp; Dispatch Efficiency</div>
+            <div class="rv-h2" style="font-size:clamp(24px,3vw,34px);">Four more multipliers.</div>
+            <div class="mech-grid">
+                <div class="mech-card">
+                    <div class="mech-tag">Variable-Rate Shading</div>
+                    <div class="mech-name">VRS 3.0</div>
+                    <div class="mech-desc">
+                        1&times;1 to 4&times;4 coarse shading tiers, with rate selected per Kachelraster tile from the
+                        <strong>LPNPU co-pilot's existing predictive model</strong> &mdash; the same silicon already
+                        driving Thread Director's predictive dispatch. Saliency- and motion-based, reused hardware,
+                        not new.
+                    </div>
+                    <span class="mech-chip">1&times;1 &rarr; 4&times;4</span>
+                </div>
+                <div class="mech-card">
+                    <div class="mech-tag">Texture Streaming</div>
+                    <div class="mech-name">Sampler Feedback Streaming</div>
+                    <div class="mech-desc">
+                        Only the mip levels and texture regions actually sampled stream into Kache Kore &mdash;
+                        <strong>cutting effective VRAM pressure</strong> and the wasted ZAM bandwidth of speculative
+                        residency.
+                    </div>
+                    <span class="mech-chip">SFS</span>
+                </div>
+                <div class="mech-card">
+                    <div class="mech-tag">Wide Shader ISA &middot; distinct from XMX5</div>
+                    <div class="mech-name">XeAVX-2048</div>
+                    <div class="mech-desc">
+                        A general shader-ALU wide-ISA extension &mdash; <strong>not</strong> the matrix/AI-only XMX5.
+                        Packed sub-word execution (INT8 / FP8 / FP16 packed ops, 2&times;/4&times; rate per lane) for
+                        lower-precision raster work: shadows, particles, post-process.
+                    </div>
+                    <span class="mech-chip">2&times;/4&times; per lane</span>
+                </div>
+                <div class="mech-card">
+                    <div class="mech-tag">Per-Title GPU Tuning</div>
+                    <div class="mech-name">XeAPO</div>
+                    <div class="mech-desc">
+                        A GPU extension of Intel Application Optimization (part of Dynamic Tuning, working with Thread
+                        Director). Where APO tunes only CPU thread scheduling, XeAPO extends the same per-title profile
+                        system to GPU dispatch &mdash; <strong>Kachelraster bin size, VRS 3.0 aggressiveness, SBP/KPA
+                        cache residency policy, wavefront occupancy targets</strong> &mdash; run through the same LPNPU
+                        predictive co-pilot, not a separate system.
+                    </div>
+                    <span class="mech-chip">XeAPO</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Raster compounding table + 2DKR note -->
+        <div style="margin-top:52px;">
+            <div class="rv-eyebrow gold">Raster Compounding</div>
+            <div class="rv-h2" style="font-size:clamp(24px,3vw,34px);">Where the 5&times; comes from.</div>
+            <p class="rv-lede">
+                Each contributor is a measured multiplier, not a headline. They compound &mdash; and the product lands
+                on the same <strong>~4.8&ndash;5&times;/tile</strong> the platform already publishes, which becomes
+                <strong>20&times; across &times;4 tiles</strong>.
+            </p>
+            <div class="rcmp">
+                <div class="rcmp-row">
+                    <div class="rcmp-name">Raw shader / ROP / clock scale <span style="color:rgba(255,255,255,0.35);">(Xe5 core width, Intel 04A headroom)</span></div>
+                    <div class="rcmp-mult">2.1&times;</div>
+                </div>
+                <div class="rcmp-row">
+                    <div class="rcmp-name">Kachelraster Engine <span style="color:rgba(255,255,255,0.35);">(overdraw elimination)</span></div>
+                    <div class="rcmp-mult">1.35&times;</div>
+                </div>
+                <div class="rcmp-row">
+                    <div class="rcmp-name">Kache Kore bandwidth absorption</div>
+                    <div class="rcmp-mult">1.25&times;</div>
+                </div>
+                <div class="rcmp-row">
+                    <div class="rcmp-name">VRS 3.0 + Sampler Feedback Streaming</div>
+                    <div class="rcmp-mult">1.3&times;</div>
+                </div>
+                <div class="rcmp-row">
+                    <div class="rcmp-name">2DKR offload</div>
+                    <div class="rcmp-mult">1.04&times;</div>
+                </div>
+                <div class="rcmp-row total">
+                    <div class="rcmp-name">Compounded</div>
+                    <div class="rcmp-mult">~4.8&ndash;5&times;</div>
+                </div>
+            </div>
+            <div class="rv-cnote">
+                <h5>2DKR Contribution &middot; Minor, Honest Multiplier</h5>
+                <p>
+                    The 2D Kanvas Renderer pulls UI, HUD and overlay compositing out of the 3D pipeline entirely.
+                    That is worth a real but small <strong>+3&ndash;5% effective 3D throughput</strong> &mdash; the
+                    1.04&times; term above. It is listed as its own line precisely because it should not be folded
+                    into the larger multipliers to inflate them.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
          BLOCK 02 — XMX5
          ═══════════════════════════════════════════════════════════ -->
     <div class="xe5-tech-block" style="flex-wrap:wrap;">
-        <div class="xe5-tech-num">02</div>
+        <div class="xe5-tech-num">03</div>
 
         <div style="flex:1; min-width:0;">
             <div class="xe5-tech-label">AI MATRIX ACCELERATION &middot; GENERATION 5</div>
@@ -733,7 +905,7 @@
          BLOCK 03 — RTU5 (expanded capability set — same unit number)
          ═══════════════════════════════════════════════════════════ -->
     <div class="xe5-tech-block" style="flex-wrap:wrap;">
-        <div class="xe5-tech-num">03</div>
+        <div class="xe5-tech-num">04</div>
 
         <div style="flex:1; min-width:0;">
             <div class="xe5-tech-label">RAY TRACING &middot; GENERATION 5</div>
@@ -1047,83 +1219,6 @@
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════
-         BLOCK 04 — Intel 04A + FOveros 2.0
-         ═══════════════════════════════════════════════════════════ -->
-    <div class="xe5-tech-block" style="flex-wrap:wrap;">
-        <div class="xe5-tech-num">04</div>
-
-        <div style="flex:1; min-width:0;">
-            <div class="xe5-tech-label">PROCESS NODE &middot; MULTI-TILE PHOTONIC FABRIC</div>
-            <div class="xe5-tech-name">Intel 04A + FOveros 2.0</div>
-            <p class="xe5-tech-body">
-                The Xe5 GPU tiles are manufactured on Intel 04A &mdash; the same world-leading process
-                node used by the Eventide Compute Tile. But what makes the E1080 unprecedented is
-                FOveros&nbsp;2.0: Intel's second-generation photonic interconnect fabric that binds up to
-                four GPU tiles into a single coherent device. Unlike organic substrate interconnects that
-                measure latency in nanoseconds and bandwidth in hundreds of GB/s, FOveros&nbsp;2.0 uses
-                on-package silicon photonic waveguides to deliver sub-2-nanosecond tile-to-tile latency
-                at over 3.2&nbsp;TB/s aggregate bisection bandwidth. The operating system and application
-                see one GPU, one memory space, one command queue. Shader work distribution across tiles,
-                cross-tile L2 cache coherency, and synchronized display output are all handled in hardware
-                by the FOveros tile controller &mdash; with zero driver overhead. This is not SLI. This is
-                not CrossFire. This is one GPU, built from four tiles, with single-GPU programming semantics.
-            </p>
-
-            <div class="xe5-tech-stats xe5-dd-stat-gold">
-                <div class="xe5-tech-stat">
-                    <div class="xe5-tech-stat-val" style="color:var(--eventide-gold-light);">&times;4 tiles</div>
-                    <div class="xe5-tech-stat-key">single coherent device</div>
-                </div>
-                <div class="xe5-tech-stat">
-                    <div class="xe5-tech-stat-val" style="color:var(--eventide-gold-light);">&lt;2 ns</div>
-                    <div class="xe5-tech-stat-key">tile-to-tile latency</div>
-                </div>
-                <div class="xe5-tech-stat">
-                    <div class="xe5-tech-stat-val" style="color:var(--eventide-gold-light);">3.2 TB/s</div>
-                    <div class="xe5-tech-stat-key">bisection bandwidth</div>
-                </div>
-            </div>
-
-            <!-- GOG bar — gold variant -->
-            <div class="xe5-dd-gog xe5-dd-gog-gold">
-                <div class="gog-bar">
-                    <div class="gog-label">GEN-ON-GEN vs EMIB (PRIOR GEN)</div>
-                    <div class="gog-row">
-                        <div class="gog-metric">Tile-to-tile latency</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:75%; background:var(--eventide-gold-light);"></div></div>
-                        <div class="gog-num" style="color:var(--eventide-gold-light);">&minus;65%</div>
-                    </div>
-                    <div class="gog-row">
-                        <div class="gog-metric">Bisection bandwidth</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:90%; background:var(--eventide-gold-light);"></div></div>
-                        <div class="gog-num" style="color:var(--eventide-gold-light);">+4&times;</div>
-                    </div>
-                    <div class="gog-row">
-                        <div class="gog-metric">Max tile count</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:65%; background:var(--eventide-gold-light);"></div></div>
-                        <div class="gog-num" style="color:var(--eventide-gold-light);">+2&times;</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="xe5-tech-aside">
-            <div class="xe5-aside-box">
-                <div class="xe5-aside-title">FOVEROS 2.0 SPECIFICATIONS</div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">Interconnect</div><div class="xe5-aside-v">silicon photonic</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">Tiles per device</div><div class="xe5-aside-v">up to 4</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">Tile-to-tile latency</div><div class="xe5-aside-v">&lt;2 ns</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">Bisection BW</div><div class="xe5-aside-v">3.2 TB/s</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">Cache coherency</div><div class="xe5-aside-v">hardware</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">Work distribution</div><div class="xe5-aside-v">hardware</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">PCIe presentation</div><div class="xe5-aside-v">single device</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">Driver overhead</div><div class="xe5-aside-v">zero</div></div>
-                <div class="xe5-aside-row" style="border-bottom:none;"><div class="xe5-aside-k">Compatible tiles</div><div class="xe5-aside-v">Xe5 GPU only</div></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ═══════════════════════════════════════════════════════════
          BLOCK 05 — Unified Memory Architecture
          ═══════════════════════════════════════════════════════════ -->
     <div class="xe5-tech-block" style="flex-wrap:wrap; border-bottom:none;">
@@ -1212,129 +1307,6 @@
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════════
-         XE5 RASTER — new technologies behind the 5×/tile figure
-         ═══════════════════════════════════════════════════════════ -->
-    <div class="rv-subsection" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:64px;">
-        <div class="rv-eyebrow">Xe5 Raster &middot; The Architecture Behind The Number</div>
-        <div class="rv-h2">5&times; per tile is no longer an assertion.</div>
-        <p class="rv-lede">
-            The raster specs were always here; the technology that earns them was not. Xe5 fills that gap with a
-            tile-based binning front-end, Nanite-class virtualized geometry, variable-rate shading driven by the
-            scheduler's own predictive model, feedback-streamed textures, and a wide low-precision shader ISA
-            &mdash; each contributing a measured multiplier that compounds to the published <strong>~5&times;/tile
-            &rarr; 20&times; across &times;4</strong>.
-        </p>
-
-        <!-- Kachelraster Engine + before/after -->
-        <div style="margin-top:40px;">
-            <div class="rv-eyebrow gold">Tile-Based Binning Rasterizer</div>
-            <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">Kachelraster Engine</div>
-            <p class="rv-lede">
-                Geometry is binned into 64&times;64px tiles and overdraw-culled <strong>before shading</strong>, using
-                a 2&nbsp;MB on-die bin buffer per raster cluster (shared with L2). Fragments that would be occluded
-                never enter the shader array &mdash; roughly <strong>40% less overdraw</strong> and
-                <strong>35% bandwidth saved</strong> versus immediate-mode rendering.
-            </p>
-            <div class="rv-fu-row">
-                <div class="rv-fu-stat"><div class="n">64&times;64px</div><div class="l">bin size</div></div>
-                <div class="rv-fu-stat"><div class="n">2 MB</div><div class="l">bin buffer / raster cluster (shared w/ L2)</div></div>
-                <div class="rv-fu-stat"><div class="n">~40%</div><div class="l">overdraw reduction</div></div>
-                <div class="rv-fu-stat"><div class="n">~35%</div><div class="l">bandwidth savings</div></div>
-            </div>
-
-            <div class="kach">
-                <div class="kach-panel before">
-                    <div class="kach-head">Immediate-mode &middot; shade-then-discard</div>
-                    <div class="kach-canvas">
-                        <div class="kach-layer" style="left:8%;top:14%;width:52%;height:60%;background:#38bdf8;"></div>
-                        <div class="kach-layer" style="left:26%;top:26%;width:52%;height:58%;background:#a78bfa;"></div>
-                        <div class="kach-layer" style="left:40%;top:10%;width:46%;height:66%;background:#f0b848;"></div>
-                        <div class="kach-layer" style="left:18%;top:40%;width:60%;height:44%;background:#f472b6;"></div>
-                    </div>
-                    <div class="kach-foot"><b>4 shaded layers</b> per pixel in the overlap &mdash; three are thrown away after shading.</div>
-                </div>
-                <div class="kach-panel after">
-                    <div class="kach-head">Kachelraster &middot; cull-then-shade</div>
-                    <div class="kach-canvas">
-                        <div class="kach-grid"></div>
-                        <div class="kach-layer" style="left:40%;top:10%;width:46%;height:66%;background:#f0b848;opacity:.8;"></div>
-                        <div class="kach-layer" style="left:8%;top:14%;width:32%;height:60%;background:#38bdf8;opacity:.8;"></div>
-                        <div class="kach-layer" style="left:18%;top:56%;width:22%;height:28%;background:#f472b6;opacity:.8;"></div>
-                    </div>
-                    <div class="kach-foot"><b>1 shaded layer</b> per pixel &mdash; occluded fragments are discarded per 64&times;64 bin, before the shader runs.</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Feingeometrie Engine -->
-        <div style="margin-top:48px;">
-            <div class="rv-eyebrow gold">Mesh / Task Shaders &middot; Virtualized Geometry</div>
-            <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">Feingeometrie Engine</div>
-            <p class="rv-lede">
-                Micro-triangle clustering at roughly <strong>128 triangles per cluster</strong> delivers Nanite-class
-                geometry virtualization &mdash; practical only because Kache Kore's 4&nbsp;GB bLLC can hold the cluster
-                hierarchy on-package. Feingeometrie shares <strong>PHR's residency mechanism</strong> with RT's BVH
-                caching: one cache infrastructure, two consumers.
-            </p>
-            <div class="rv-fu-row">
-                <div class="rv-fu-stat"><div class="n">~128 tris</div><div class="l">per micro-cluster</div></div>
-                <div class="rv-fu-stat"><div class="n">on-package</div><div class="l">cluster hierarchy in 4 GB bLLC</div></div>
-                <div class="rv-fu-stat"><div class="n">shared PHR</div><div class="l">residency reused from RT BVH caching</div></div>
-            </div>
-        </div>
-
-        <!-- VRS 3.0 / SFS / XeAVX-2048 / XeAPO cards -->
-        <div style="margin-top:48px;">
-            <div class="rv-eyebrow gold">Shading, Texture &amp; Dispatch Efficiency</div>
-            <div class="rv-h2" style="font-size:clamp(24px,3vw,34px);">Four more multipliers.</div>
-            <div class="mech-grid">
-                <div class="mech-card">
-                    <div class="mech-tag">Variable-Rate Shading</div>
-                    <div class="mech-name">VRS 3.0</div>
-                    <div class="mech-desc">
-                        1&times;1 to 4&times;4 coarse shading tiers, with rate selected per Kachelraster tile from the
-                        <strong>LPNPU co-pilot's existing predictive model</strong> &mdash; the same silicon already
-                        driving Thread Director's predictive dispatch. Saliency- and motion-based, reused hardware,
-                        not new.
-                    </div>
-                    <span class="mech-chip">1&times;1 &rarr; 4&times;4</span>
-                </div>
-                <div class="mech-card">
-                    <div class="mech-tag">Texture Streaming</div>
-                    <div class="mech-name">Sampler Feedback Streaming</div>
-                    <div class="mech-desc">
-                        Only the mip levels and texture regions actually sampled stream into Kache Kore &mdash;
-                        <strong>cutting effective VRAM pressure</strong> and the wasted ZAM bandwidth of speculative
-                        residency.
-                    </div>
-                    <span class="mech-chip">SFS</span>
-                </div>
-                <div class="mech-card">
-                    <div class="mech-tag">Wide Shader ISA &middot; distinct from XMX5</div>
-                    <div class="mech-name">XeAVX-2048</div>
-                    <div class="mech-desc">
-                        A general shader-ALU wide-ISA extension &mdash; <strong>not</strong> the matrix/AI-only XMX5.
-                        Packed sub-word execution (INT8 / FP8 / FP16 packed ops, 2&times;/4&times; rate per lane) for
-                        lower-precision raster work: shadows, particles, post-process.
-                    </div>
-                    <span class="mech-chip">2&times;/4&times; per lane</span>
-                </div>
-                <div class="mech-card">
-                    <div class="mech-tag">Per-Title GPU Tuning</div>
-                    <div class="mech-name">XeAPO</div>
-                    <div class="mech-desc">
-                        A GPU extension of Intel Application Optimization (part of Dynamic Tuning, working with Thread
-                        Director). Where APO tunes only CPU thread scheduling, XeAPO extends the same per-title profile
-                        system to GPU dispatch &mdash; <strong>Kachelraster bin size, VRS 3.0 aggressiveness, SBP/KPA
-                        cache residency policy, wavefront occupancy targets</strong> &mdash; run through the same LPNPU
-                        predictive co-pilot, not a separate system.
-                    </div>
-                    <span class="mech-chip">XeAPO</span>
-                </div>
-            </div>
-        </div>
-
         <!-- Cache hierarchy interactive diagram -->
         <div style="margin-top:52px;">
             <div class="rv-eyebrow gold">GPU Cache Hierarchy</div>
@@ -1413,49 +1385,79 @@
             </div>
         </div>
 
-        <!-- Raster compounding table + 2DKR note -->
-        <div style="margin-top:52px;">
-            <div class="rv-eyebrow gold">Raster Compounding</div>
-            <div class="rv-h2" style="font-size:clamp(24px,3vw,34px);">Where the 5&times; comes from.</div>
-            <p class="rv-lede">
-                Each contributor is a measured multiplier, not a headline. They compound &mdash; and the product lands
-                on the same <strong>~4.8&ndash;5&times;/tile</strong> the platform already publishes, which becomes
-                <strong>20&times; across &times;4 tiles</strong>.
+    <!-- ═══════════════════════════════════════════════════════════
+         BLOCK 04 — Intel 04A + FOveros 2.0
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="xe5-tech-block" style="flex-wrap:wrap;">
+        <div class="xe5-tech-num">06</div>
+
+        <div style="flex:1; min-width:0;">
+            <div class="xe5-tech-label">PROCESS NODE &middot; MULTI-TILE PHOTONIC FABRIC</div>
+            <div class="xe5-tech-name">Intel 04A + FOveros 2.0</div>
+            <p class="xe5-tech-body">
+                The Xe5 GPU tiles are manufactured on Intel 04A &mdash; the same world-leading process
+                node used by the Eventide Compute Tile. But what makes the E1080 unprecedented is
+                FOveros&nbsp;2.0: Intel's second-generation photonic interconnect fabric that binds up to
+                four GPU tiles into a single coherent device. Unlike organic substrate interconnects that
+                measure latency in nanoseconds and bandwidth in hundreds of GB/s, FOveros&nbsp;2.0 uses
+                on-package silicon photonic waveguides to deliver sub-2-nanosecond tile-to-tile latency
+                at over 3.2&nbsp;TB/s aggregate bisection bandwidth. The operating system and application
+                see one GPU, one memory space, one command queue. Shader work distribution across tiles,
+                cross-tile L2 cache coherency, and synchronized display output are all handled in hardware
+                by the FOveros tile controller &mdash; with zero driver overhead. This is not SLI. This is
+                not CrossFire. This is one GPU, built from four tiles, with single-GPU programming semantics.
             </p>
-            <div class="rcmp">
-                <div class="rcmp-row">
-                    <div class="rcmp-name">Raw shader / ROP / clock scale <span style="color:rgba(255,255,255,0.35);">(Xe5 core width, Intel 04A headroom)</span></div>
-                    <div class="rcmp-mult">2.1&times;</div>
+
+            <div class="xe5-tech-stats xe5-dd-stat-gold">
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val" style="color:var(--eventide-gold-light);">&times;4 tiles</div>
+                    <div class="xe5-tech-stat-key">single coherent device</div>
                 </div>
-                <div class="rcmp-row">
-                    <div class="rcmp-name">Kachelraster Engine <span style="color:rgba(255,255,255,0.35);">(overdraw elimination)</span></div>
-                    <div class="rcmp-mult">1.35&times;</div>
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val" style="color:var(--eventide-gold-light);">&lt;2 ns</div>
+                    <div class="xe5-tech-stat-key">tile-to-tile latency</div>
                 </div>
-                <div class="rcmp-row">
-                    <div class="rcmp-name">Kache Kore bandwidth absorption</div>
-                    <div class="rcmp-mult">1.25&times;</div>
-                </div>
-                <div class="rcmp-row">
-                    <div class="rcmp-name">VRS 3.0 + Sampler Feedback Streaming</div>
-                    <div class="rcmp-mult">1.3&times;</div>
-                </div>
-                <div class="rcmp-row">
-                    <div class="rcmp-name">2DKR offload</div>
-                    <div class="rcmp-mult">1.04&times;</div>
-                </div>
-                <div class="rcmp-row total">
-                    <div class="rcmp-name">Compounded</div>
-                    <div class="rcmp-mult">~4.8&ndash;5&times;</div>
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val" style="color:var(--eventide-gold-light);">3.2 TB/s</div>
+                    <div class="xe5-tech-stat-key">bisection bandwidth</div>
                 </div>
             </div>
-            <div class="rv-cnote">
-                <h5>2DKR Contribution &middot; Minor, Honest Multiplier</h5>
-                <p>
-                    The 2D Kanvas Renderer pulls UI, HUD and overlay compositing out of the 3D pipeline entirely.
-                    That is worth a real but small <strong>+3&ndash;5% effective 3D throughput</strong> &mdash; the
-                    1.04&times; term above. It is listed as its own line precisely because it should not be folded
-                    into the larger multipliers to inflate them.
-                </p>
+
+            <!-- GOG bar — gold variant -->
+            <div class="xe5-dd-gog xe5-dd-gog-gold">
+                <div class="gog-bar">
+                    <div class="gog-label">GEN-ON-GEN vs EMIB (PRIOR GEN)</div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Tile-to-tile latency</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:75%; background:var(--eventide-gold-light);"></div></div>
+                        <div class="gog-num" style="color:var(--eventide-gold-light);">&minus;65%</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Bisection bandwidth</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:90%; background:var(--eventide-gold-light);"></div></div>
+                        <div class="gog-num" style="color:var(--eventide-gold-light);">+4&times;</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Max tile count</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:65%; background:var(--eventide-gold-light);"></div></div>
+                        <div class="gog-num" style="color:var(--eventide-gold-light);">+2&times;</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="xe5-tech-aside">
+            <div class="xe5-aside-box">
+                <div class="xe5-aside-title">FOVEROS 2.0 SPECIFICATIONS</div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Interconnect</div><div class="xe5-aside-v">silicon photonic</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Tiles per device</div><div class="xe5-aside-v">up to 4</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Tile-to-tile latency</div><div class="xe5-aside-v">&lt;2 ns</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Bisection BW</div><div class="xe5-aside-v">3.2 TB/s</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Cache coherency</div><div class="xe5-aside-v">hardware</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Work distribution</div><div class="xe5-aside-v">hardware</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">PCIe presentation</div><div class="xe5-aside-v">single device</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Driver overhead</div><div class="xe5-aside-v">zero</div></div>
+                <div class="xe5-aside-row" style="border-bottom:none;"><div class="xe5-aside-k">Compatible tiles</div><div class="xe5-aside-v">Xe5 GPU only</div></div>
             </div>
         </div>
     </div>
