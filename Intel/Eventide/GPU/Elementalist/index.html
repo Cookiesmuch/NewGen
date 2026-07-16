@@ -1450,155 +1450,312 @@
          ═══════════════════════════════════════════════════════════ -->
     <div class="rv-subsection" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:64px;">
         <div class="rv-eyebrow">Elementalist &middot; Cross-Reference</div>
-        <div class="rv-h2">E1080 &times;4 tile, in context.</div>
+        <div class="rv-h2">E1080 &times;4, to scale.</div>
         <p class="rv-lede">
-            Where a number is derived from another (an RTX 5090 tier gap carried onto a second part), the derivation
-            is shown on the number itself &mdash; not buried in a footnote. Raw and effective RT figures stay labeled
-            separately, exactly as on the RTU5 chart above.
+            The E1080 is the hero of its own chart: switch the metric, scale the tile count from &times;1 to &times;4,
+            and watch it lead the field on a log axis that keeps every competitor visible instead of flattening them.
+            Raw and effective RT figures stay labeled separately, exactly as on the RTU5 chart above, and any
+            transitively-derived number carries its derivation on the number itself &mdash; never a footnote.
         </p>
 
-        <!-- Grouped bar chart: E1080 ×4 advantage multiple per competitor -->
-        <div class="gbar">
-            <div class="gbar-legend">
-                <div class="gbar-leg"><span class="gbar-swatch" style="background:#76B900;"></span>vs RTX 5090</div>
-                <div class="gbar-leg"><span class="gbar-swatch" style="background:#E4544E;"></span>vs RX 9070 XT <span style="color:rgba(255,255,255,0.35);">(derived)</span></div>
-                <div class="gbar-leg"><span class="gbar-swatch" style="background:#5B8DEF;"></span>Adreno X2-90</div>
-            </div>
+<style>
+/* ── Hero-first log-scale comparison chart (interactive, JS-rendered) ── */
+.hc, .ptc { margin-top: 26px; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; padding: 22px 24px; background: rgba(255,255,255,0.02); max-width: 880px; }
+.hc-controls { display: flex; flex-wrap: wrap; gap: 14px 24px; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.hc-ctl-group { display: flex; align-items: center; gap: 10px; }
+.hc-ctl-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+.hc-tabs { display: inline-flex; border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; overflow: hidden; flex-wrap: wrap; }
+.hc-tabs button { font-family: var(--font-mono); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; padding: 7px 12px; color: rgba(255,255,255,0.5); background: transparent; border: none; border-right: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: background .15s, color .15s; }
+.hc-tabs button:last-child { border-right: none; }
+.hc-tabs button:hover { color: #fff; }
+.hc-tabs button.active { background: var(--eventide-gold); color: #1a1206; font-weight: 700; }
+.hc-plot svg, .ptc-plot svg { width: 100%; height: auto; display: block; overflow: visible; }
+.hc-foot, .ptc-foot { font-size: 11.5px; color: rgba(255,255,255,0.5); line-height: 1.7; margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.07); }
+.hc-foot b, .ptc-foot b { color: var(--eventide-gold-light); font-weight: 700; }
+.hc-nojs { font-size: 12px; color: rgba(255,255,255,0.5); padding: 20px 0; }
+.hc-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+.hc-leg { display: flex; align-items: center; gap: 7px; font-size: 10.5px; color: rgba(255,255,255,0.55); font-family: var(--font-mono); }
+.hc-leg span { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+/* Bolt "where it leads" stat strip */
+.bl-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 24px; max-width: 880px; }
+.bl-card { border: 1px solid rgba(192,132,252,0.25); background: rgba(192,132,252,0.05); border-radius: 10px; padding: 18px 20px; }
+.bl-card .k { font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: #c084fc; margin-bottom: 8px; }
+.bl-card .big { font-family: var(--font-mono); font-size: 22px; font-weight: 700; color: #d8b4fe; line-height: 1; }
+.bl-card .sub { font-size: 11.5px; color: rgba(255,255,255,0.5); margin-top: 8px; line-height: 1.6; }
+.rv-inline-callout.bolt { border-color: rgba(192,132,252,0.28); background: rgba(192,132,252,0.05); }
+.rv-inline-callout.bolt .ic { color: #c084fc; }
+</style>
 
-            <div class="gbar-group">
-                <div class="gbar-glabel">Raster <span class="unit">E1080 &times;4 advantage multiple &middot; raw</span></div>
-                <div class="gbar-row">
-                    <div class="gbar-name">RTX 5090</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:33.9%;background:#76B900;"></div></div>
-                    <div class="gbar-val">20&times;</div>
-                </div>
-                <div class="gbar-row">
-                    <div class="gbar-name">RX 9070 XT</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:74.6%;background:#E4544E;"></div></div>
-                    <div class="gbar-val"><span class="drv">~44&times;</span>
-                        <details class="deriv"><summary>derived</summary>
-                            <div class="deriv-body">E1080 &times;4 = <code>20&times;</code> the RTX 5090 in raster. The RX 9070 XT sits <strong>~2.2&times; below</strong> the 5090, so <code>20 &times; 2.2 = ~44&times;</code> vs the E1080 &times;4 tile.</div>
-                        </details>
+        <!-- ── Interactive hero chart: E1080 to scale (metric tabs + tile scaler) ── -->
+        <div class="hc" id="el-hero">
+            <div class="hc-legend">
+                <div class="hc-leg"><span style="background:#F0B848;"></span>Arc E1080 (hero)</div>
+                <div class="hc-leg"><span style="background:#76B900;"></span>RTX 5090 · baseline 1&times;</div>
+                <div class="hc-leg"><span style="background:#E4544E;"></span>RX 9070 XT · derived</div>
+            </div>
+            <div class="hc-controls">
+                <div class="hc-ctl-group">
+                    <span class="hc-ctl-label">Metric</span>
+                    <div class="hc-tabs" id="hc-metric">
+                        <button type="button" data-m="raster" class="active">Raster</button>
+                        <button type="button" data-m="rtraw">RT · raw</button>
+                        <button type="button" data-m="rteff">RT · effective</button>
                     </div>
                 </div>
-                <div class="gbar-row">
-                    <div class="gbar-name">Adreno X2-90</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:0;"></div></div>
-                    <div class="gbar-val" style="color:rgba(255,255,255,0.35);">n/a</div>
-                </div>
-            </div>
-
-            <div class="gbar-group">
-                <div class="gbar-glabel">Ray tracing &middot; raw <span class="unit">E1080 &times;4 advantage multiple</span></div>
-                <div class="gbar-row">
-                    <div class="gbar-name">RTX 5090</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:28.5%;background:#76B900;"></div></div>
-                    <div class="gbar-val">16.8&times;</div>
-                </div>
-                <div class="gbar-row">
-                    <div class="gbar-name">RX 9070 XT</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:62.7%;background:#E4544E;"></div></div>
-                    <div class="gbar-val"><span class="drv">~37&times;</span>
-                        <details class="deriv"><summary>derived</summary>
-                            <div class="deriv-body">E1080 &times;4 raw RT = <code>16.8&times;</code> the RTX 5090. Carrying the same <strong>~2.2&times;</strong> tier gap: <code>16.8 &times; 2.2 = ~37&times;</code>.</div>
-                        </details>
+                <div class="hc-ctl-group">
+                    <span class="hc-ctl-label">E1080 tiles</span>
+                    <div class="hc-tabs" id="hc-tiles">
+                        <button type="button" data-t="1">&times;1</button>
+                        <button type="button" data-t="2">&times;2</button>
+                        <button type="button" data-t="3">&times;3</button>
+                        <button type="button" data-t="4" class="active">&times;4</button>
                     </div>
                 </div>
-                <div class="gbar-row">
-                    <div class="gbar-name">Adreno X2-90</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:0;"></div></div>
-                    <div class="gbar-val" style="color:rgba(255,255,255,0.35);">n/a</div>
-                </div>
             </div>
-
-            <div class="gbar-group">
-                <div class="gbar-glabel">Ray tracing &middot; effective <span class="unit">E1080 &times;4 advantage multiple &middot; + SBP/KPA/PHR</span></div>
-                <div class="gbar-row">
-                    <div class="gbar-name">RTX 5090</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:45.8%;background:#76B900;"></div></div>
-                    <div class="gbar-val">~27&times;</div>
-                </div>
-                <div class="gbar-row">
-                    <div class="gbar-name">RX 9070 XT</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:100%;background:#E4544E;"></div></div>
-                    <div class="gbar-val"><span class="drv">~59&times;</span>
-                        <details class="deriv"><summary>derived</summary>
-                            <div class="deriv-body">E1080 &times;4 effective RT = <code>~27&times;</code> the RTX 5090. Same <strong>~2.2&times;</strong> tier gap: <code>27 &times; 2.2 = ~59&times;</code>.</div>
-                        </details>
-                    </div>
-                </div>
-                <div class="gbar-row">
-                    <div class="gbar-name">Adreno X2-90</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:0;"></div></div>
-                    <div class="gbar-val" style="color:rgba(255,255,255,0.35);">n/a</div>
-                </div>
-            </div>
+            <div class="hc-plot" id="hc-plot"><div class="hc-nojs">Interactive performance chart — enable JavaScript to scale it. Every figure is also in the table below.</div></div>
+            <div class="hc-foot" id="hc-foot"></div>
         </div>
 
         <!-- AMD tier-gap contextual note (inline, not a footnote) -->
         <div class="rv-inline-callout">
             <div class="ic">▲</div>
             <div class="tx">
-                <strong>Why RX 9070 XT figures are derived, not measured.</strong> There is no flagship-tier RX part
-                to benchmark directly this generation &mdash; AMD has not fielded one, by choice. The RX 9070 XT
-                numbers above are transitively derived from its ~2.2&times; standing below the RTX 5090, which is why
-                each carries its derivation inline. Adreno X2-90 is a different product category entirely (an SoC
-                iGPU) and is cross-referenced on efficiency/TOPS only, never placed on this discrete-tier scale.
+                <strong>Log scale, and why RX 9070 XT is derived.</strong> The E1080 &times;4 leads by so much that a
+                linear axis would flatten every competitor to a sliver — so the bars use a log scale, and the E1080's
+                real multiple is printed on its bar. There is no flagship-tier RX part to benchmark this generation
+                &mdash; AMD has not fielded one, by choice &mdash; so the RX 9070 XT figure is transitively derived from
+                its ~2.2&times; standing below the RTX 5090. Adreno X2-90 (an SoC iGPU) is a different category and is
+                cross-referenced on efficiency/TOPS only, never on this discrete-tier scale.
+            </div>
+        </div>
+
+        <!-- ═══ Bolt Zeus cross-reference — different workload ═══ -->
+        <div style="margin-top:52px;">
+            <div class="rv-eyebrow" style="color:#c084fc;">Different Problem &middot; Cross-Reference</div>
+            <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">Bolt Zeus plays a different game.</div>
+            <p class="rv-lede">
+                Bolt's Zeus is not a real-time gaming GPU &mdash; it is a rendering and simulation accelerator, and its
+                headline figure is <strong>offline path tracing</strong>, not the real-time hardware RT the E1080 runs
+                inside a frame budget. Put on the same axis they look adjacent; they are solving different problems.
+                Zeus's real advantages are elsewhere &mdash; enormous memory capacity and native FP64 &mdash; and those
+                are shown honestly below. All Zeus figures are Bolt's own published claims.
+            </p>
+
+            <div class="ptc" id="el-ptc">
+                <div class="hc-legend">
+                    <div class="hc-leg"><span style="background:#F0B848;"></span>Arc E1080 &times;4 · real-time RT</div>
+                    <div class="hc-leg"><span style="background:#c084fc;"></span>Bolt Zeus · offline path tracing (claim)</div>
+                    <div class="hc-leg"><span style="background:#76B900;"></span>RTX 5090 · baseline</div>
+                </div>
+                <div class="ptc-plot" id="ptc-plot"><div class="hc-nojs">Interactive chart — enable JavaScript.</div></div>
+                <div class="ptc-foot">
+                    Both bars read against the RTX 5090, but they measure different things: the E1080's
+                    <b>~27&times;</b> is real-time hardware ray tracing inside a game frame; Bolt's <b>~10&times;</b> is
+                    an offline path-tracing / rendering claim for a compute-class board. Not a like-for-like race.
+                </div>
+            </div>
+
+            <!-- Where Bolt genuinely leads -->
+            <div class="bl-strip">
+                <div class="bl-card">
+                    <div class="k">Where Zeus leads · Memory capacity</div>
+                    <div class="big">up to 2.25 TB</div>
+                    <div class="sub">Zeus's addressable pool (LPDDR5X, expandable) dwarfs any gaming GPU. The E1080 pairs a 4&nbsp;GB Kache Kore bLLC with system ZAM; it is not chasing a multi-terabyte local pool, and Zeus wins this outright.</div>
+                </div>
+                <div class="bl-card">
+                    <div class="k">Where Zeus leads · Precision</div>
+                    <div class="big">native FP64</div>
+                    <div class="sub">Zeus targets HPC / scientific compute with full-rate FP64. Gaming-class GPUs, E1080 included, are FP32/AI-first &mdash; a deliberate different focus, not a deficit Zeus is being credited around.</div>
+                </div>
+                <div class="bl-card">
+                    <div class="k">Where the E1080 leads · Real-time</div>
+                    <div class="big">real-time RT</div>
+                    <div class="sub">In-frame hardware ray tracing, XeSS 5.0, and unified-tile raster for interactive rendering &mdash; the workload Zeus's offline path-tracing figure does not speak to.</div>
+                </div>
+            </div>
+
+            <div class="ptc" id="el-mem" style="margin-top:24px;">
+                <div class="hc-legend" style="margin-bottom:6px;"><div class="hc-leg" style="color:rgba(255,255,255,0.4);">Dedicated / addressable memory capacity · log scale</div></div>
+                <div class="ptc-plot" id="mem-plot"><div class="hc-nojs">Interactive chart — enable JavaScript.</div></div>
+                <div class="ptc-foot">Local/addressable memory capacity, Bolt's published Zeus figure included. Capacity is not performance &mdash; but on raw pool size Zeus is in a class of its own, and it would be dishonest to hide that.</div>
+            </div>
+
+            <div class="rv-inline-callout bolt">
+                <div class="ic">◆</div>
+                <div class="tx">
+                    <strong>Zeus figures are Bolt's published claims.</strong> The ~10&times; path-tracing number and the
+                    2.25&nbsp;TB memory ceiling are vendor marketing figures, not independently benchmarked, and they
+                    describe an offline rendering / simulation accelerator &mdash; a different product category from a
+                    real-time gaming GPU. Shown for context, labeled as claims, never blended into the E1080's
+                    real-time multiples.
+                </div>
             </div>
         </div>
 
         <!-- Full spec comparison table -->
-        <div class="rv-table-wrap" style="max-width:920px;">
-            <table class="rv-table" style="min-width:640px;">
+        <div class="rv-table-wrap" style="max-width:1000px;">
+            <table class="rv-table" style="min-width:760px;">
                 <caption>Elementalist E1080 cross-reference &middot; competitor specs shown as fact, not callout</caption>
                 <thead>
                     <tr>
                         <th>Metric</th>
                         <th><span style="color:#8fce00;">RTX 5090</span></th>
                         <th><span style="color:#f08a86;">RX 9070 XT</span></th>
+                        <th><span style="color:#d8b4fe;">Bolt Zeus</span></th>
                         <th><span style="color:#8fb3f5;">Adreno X2-90</span></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <th>Raster &middot; vs E1080 &times;4</th>
-                        <td class="rv-mono">baseline &rarr; 20&times; raw</td>
+                        <td class="rv-mono">baseline &rarr; 20&times;</td>
                         <td class="rv-mono rv-eff">~44&times; <span style="font-weight:400;font-size:10px;color:rgba(255,255,255,0.4);">derived</span></td>
+                        <td style="color:rgba(255,255,255,0.45);">not a raster-first part</td>
                         <td style="color:rgba(255,255,255,0.4);">not comparable tier</td>
                     </tr>
                     <tr>
-                        <th>RT &middot; vs E1080 &times;4</th>
+                        <th>RT / path tracing &middot; vs RTX 5090</th>
+                        <td class="rv-mono">1&times; (RT baseline)</td>
+                        <td class="rv-mono rv-eff">~0.45&times; <span style="font-weight:400;font-size:10px;color:rgba(255,255,255,0.4);">derived</span></td>
+                        <td class="rv-mono" style="color:#d8b4fe;">~10&times; PT <span style="font-weight:400;font-size:10px;color:rgba(255,255,255,0.4);">offline · claim</span></td>
+                        <td style="color:rgba(255,255,255,0.4);">not comparable tier</td>
+                    </tr>
+                    <tr>
+                        <th>E1080 &times;4 RT vs part</th>
                         <td class="rv-mono">16.8&times; raw / ~27&times; eff</td>
                         <td class="rv-mono rv-eff">~37&times; raw / ~59&times; eff <span style="font-weight:400;font-size:10px;color:rgba(255,255,255,0.4);">derived</span></td>
+                        <td style="color:rgba(255,255,255,0.5);">different workload (offline PT)</td>
                         <td style="color:rgba(255,255,255,0.4);">not comparable tier</td>
                     </tr>
                     <tr>
                         <th>FP32 compute</th>
                         <td>~105 TFLOPS</td>
                         <td>mid-range tier</td>
+                        <td style="color:rgba(255,255,255,0.6);">rendering/HPC-class · native FP64</td>
                         <td>LP tier</td>
                     </tr>
                     <tr>
                         <th>Process node</th>
                         <td>TSMC 4N-class</td>
                         <td>TSMC N4</td>
+                        <td>TSMC (announced)</td>
                         <td>TSMC 3nm</td>
                     </tr>
                     <tr>
                         <th>Memory</th>
                         <td>32 GB GDDR7 · ~1.8 TB/s</td>
                         <td>16 GB GDDR6</td>
+                        <td style="color:#d8b4fe;">up to 2.25 TB (LPDDR5X, expandable)</td>
                         <td>228 GB/s LPDDR5X (SoC-shared)</td>
                     </tr>
                     <tr>
-                        <th>Context</th>
-                        <td style="color:rgba(255,255,255,0.4);">&mdash;</td>
-                        <td style="color:rgba(255,255,255,0.55);">No flagship-tier part fielded this generation, by choice</td>
-                        <td style="color:rgba(255,255,255,0.55);">Different product category (SoC iGPU) &mdash; TOPS/efficiency cross-reference only</td>
+                        <th>Category</th>
+                        <td style="color:rgba(255,255,255,0.55);">Real-time gaming flagship</td>
+                        <td style="color:rgba(255,255,255,0.55);">No flagship-tier part this gen, by choice</td>
+                        <td style="color:rgba(255,255,255,0.55);">Offline rendering / simulation accelerator (vendor claims)</td>
+                        <td style="color:rgba(255,255,255,0.55);">SoC iGPU &mdash; TOPS/efficiency cross-reference only</td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
+        <script>
+        (function () {
+            'use strict';
+            // Shared log-scale horizontal bar renderer (SVG). Pages are self-contained
+            // now, so this script executes normally (the old deep-dive loader is gone).
+            function renderChart(host, rows, axis) {
+                if (!host) return;
+                var min = axis.min, max = axis.max, ticks = axis.ticks, fmt = axis.fmt || function (v) { return v + '×'; };
+                var X0 = 152, X1 = 604, W = 700, top = 12, rowH = 48;
+                var H = top + rows.length * rowH + 30;
+                var lg = Math.log10;
+                function sx(v) { v = Math.max(min, Math.min(max, v)); return X0 + (lg(v) - lg(min)) / (lg(max) - lg(min)) * (X1 - X0); }
+                var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" font-family="\'IBM Plex Mono\', monospace">';
+                // gridlines + tick labels
+                ticks.forEach(function (t) {
+                    var x = sx(t).toFixed(1);
+                    var base = (t === 1);
+                    s += '<line x1="' + x + '" y1="' + (top - 2) + '" x2="' + x + '" y2="' + (top + rows.length * rowH - 8) + '" stroke="' + (base ? 'rgba(118,185,0,0.45)' : 'rgba(255,255,255,0.08)') + '" stroke-width="1"' + (base ? '' : ' stroke-dasharray="2 3"') + '/>';
+                    s += '<text x="' + x + '" y="' + (top + rows.length * rowH + 14) + '" text-anchor="middle" font-size="10" fill="' + (base ? 'rgba(143,206,0,0.8)' : 'rgba(255,255,255,0.32)') + '">' + fmt(t) + '</text>';
+                });
+                rows.forEach(function (d, i) {
+                    var y = top + i * rowH;
+                    var bh = d.hero ? 28 : 20;
+                    var by = y + (rowH - bh) / 2 - 4;
+                    var mid = by + bh / 2;
+                    s += '<text x="' + (X0 - 12) + '" y="' + (mid - (d.sub ? 5 : 0)) + '" text-anchor="end" dominant-baseline="middle" font-size="' + (d.hero ? 13 : 12) + '" font-weight="' + (d.hero ? 700 : 500) + '" fill="' + (d.hero ? '#fff' : 'rgba(255,255,255,0.75)') + '">' + d.name + '</text>';
+                    if (d.sub) s += '<text x="' + (X0 - 12) + '" y="' + (mid + 9) + '" text-anchor="end" dominant-baseline="middle" font-size="9" fill="rgba(255,255,255,0.4)">' + d.sub + '</text>';
+                    s += '<rect x="' + X0 + '" y="' + by + '" width="' + (X1 - X0) + '" height="' + bh + '" rx="5" fill="rgba(255,255,255,0.045)"/>';
+                    var w = Math.max(3, sx(d.val) - X0);
+                    s += '<rect x="' + X0 + '" y="' + by + '" width="' + w.toFixed(1) + '" height="' + bh + '" rx="5" fill="' + d.color + '"><title>' + d.name + ': ' + d.label + '</title></rect>';
+                    s += '<text x="' + (X1 + 10) + '" y="' + mid + '" dominant-baseline="middle" font-size="' + (d.hero ? 15 : 13) + '" font-weight="700" fill="' + d.color + '">' + d.label + '</text>';
+                });
+                s += '</svg>';
+                host.innerHTML = s;
+            }
+
+            function fx(v) {
+                if (Math.abs(v - Math.round(v)) < 0.05) return Math.round(v) + '×';
+                return v.toFixed(1) + '×';
+            }
+
+            // ── Interactive hero chart ──
+            var PER = { raster: 5.0, rtraw: 4.2, rteff: 6.7 };
+            var MNAME = { raster: 'raster', rtraw: 'raw ray tracing', rteff: 'effective ray tracing' };
+            var COMP9070 = 0.4545; // ~1 / 2.2 tier gap below the RTX 5090
+            var state = { metric: 'raster', tiles: 4 };
+            var axisPerf = { min: 0.35, max: 32, ticks: [1, 2, 5, 10, 20], fmt: function (v) { return v + '×'; } };
+
+            function heroRows() {
+                var e = PER[state.metric] * state.tiles;
+                var eLabel = (state.metric === 'rteff' && state.tiles === 4) ? '~27×' : fx(e);
+                return [
+                    { name: 'Arc E1080', sub: '×' + state.tiles + ' tile' + (state.tiles > 1 ? 's' : ''), val: e, color: '#F0B848', hero: true, label: eLabel, e: e },
+                    { name: 'RTX 5090', sub: 'baseline', val: 1, color: '#76B900', label: '1×' },
+                    { name: 'RX 9070 XT', sub: 'derived', val: COMP9070, color: '#E4544E', label: '~0.45×' }
+                ];
+            }
+            function renderHero() {
+                var rows = heroRows();
+                renderChart(document.getElementById('hc-plot'), rows, axisPerf);
+                var e = rows[0].e, n9070 = Math.round(e / COMP9070);
+                var foot = document.getElementById('hc-foot');
+                if (foot) foot.innerHTML = 'At ×' + state.tiles + ', the E1080 delivers <b>' + rows[0].label +
+                    '</b> the RTX 5090 in ' + MNAME[state.metric] + ' — and <b>~' + n9070 +
+                    '×</b> the RX 9070 XT (that part’s ~2.2× tier gap below the 5090, carried through). ' +
+                    'Photonic Ray Mesh is why tiles scale near-linearly: drag the tile control to watch it.';
+            }
+            function wire(id, key, cast) {
+                var box = document.getElementById(id);
+                if (!box) return;
+                box.addEventListener('click', function (ev) {
+                    var b = ev.target.closest('button'); if (!b) return;
+                    state[key] = cast(b.getAttribute(key === 'metric' ? 'data-m' : 'data-t'));
+                    Array.prototype.forEach.call(box.querySelectorAll('button'), function (x) { x.classList.remove('active'); });
+                    b.classList.add('active');
+                    renderHero();
+                });
+            }
+            wire('hc-metric', 'metric', String);
+            wire('hc-tiles', 'tiles', function (v) { return parseInt(v, 10); });
+            renderHero();
+
+            // ── Bolt Zeus path-tracing chart ──
+            renderChart(document.getElementById('ptc-plot'), [
+                { name: 'Arc E1080', sub: '×4 · real-time RT', val: 27, color: '#F0B848', hero: true, label: '~27×' },
+                { name: 'Bolt Zeus', sub: 'offline PT · claim', val: 10, color: '#c084fc', label: '~10×' },
+                { name: 'RTX 5090', sub: 'baseline', val: 1, color: '#76B900', label: '1×' }
+            ], axisPerf);
+
+            // ── Memory capacity chart (Bolt leads) ──
+            renderChart(document.getElementById('mem-plot'), [
+                { name: 'Bolt Zeus', sub: 'addressable · claim', val: 2304, color: '#c084fc', hero: true, label: '2.25 TB' },
+                { name: 'RTX 5090', sub: 'GDDR7', val: 32, color: '#76B900', label: '32 GB' },
+                { name: 'Arc E1080', sub: 'Kache Kore bLLC', val: 4, color: '#F0B848', label: '4 GB' }
+            ], { min: 2, max: 4096, ticks: [4, 32, 256, 2048], fmt: function (v) { return v >= 1024 ? (v / 1024) + ' TB' : v + ' GB'; } });
+        })();
+        </script>
     </div>
 
 </div>
