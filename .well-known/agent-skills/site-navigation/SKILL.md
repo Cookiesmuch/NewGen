@@ -26,21 +26,15 @@ Every page lives at a real file path; the URL is the file location:
 The complete canonical URL list is in `/sitemap.xml`. Unknown paths return a
 real HTTP 404.
 
-## Reading deep-dive pages without JavaScript
+## Reading deep-dive pages
 
-Eventide deep-dive routes are small stubs that assemble their content with
-client-side JavaScript from fragment files. If you cannot execute JavaScript,
-fetch the fragment directly — each stub's HTML contains the fragment path in
-`window.NG_DEEPDIVE_SRC`, and fragments live under:
+Every Eventide deep-dive route is a self-contained `index.html` — its full
+content (inline styles and markup) is served directly at the route URL, with no
+client-side assembly. Fetch the route path itself; no JavaScript is required.
 
-- `/Intel/Eventide/CPU.Architectures/` — CPU architecture pages
-- `/Intel/Eventide/CPU.SKU/` — SKU specification sheets
-- `/Intel/Eventide/GPU.architectures/` — GPU architecture pages
-- `/Intel/Eventide/Tiles/` — tile deep dives
-- `/Intel/Eventide/Technologies/` — technology deep dives (e.g. Thread Director)
-
-Example: `/Intel/Eventide/CPU/SolarEclipse/` loads
-`/Intel/Eventide/CPU.Architectures/eventide.CPU.solar_eclipse.html`.
+Example: `/Intel/Eventide/CPU/SolarEclipse/` returns the complete Solar Eclipse
+page. The same holds for every `/Intel/Eventide/{CPU,GPU,SKU,Tile,Technology}/<Name>/`
+route.
 
 ## In-browser tools (WebMCP)
 
