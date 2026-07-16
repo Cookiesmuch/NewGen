@@ -110,18 +110,12 @@ NewGen/
 ├── Intel/
 │   └── Eventide/
 │       ├── index.html          # Brochure page (/Intel/Eventide/)
-│       ├── deepdive.js         # Shared deep-dive content loader
-│       ├── deepdive.css
-│       ├── CPU/<Name>/index.html        # Deep-dive route stubs
+│       ├── deepdive.css         # Shared deep-dive page chrome (back button, body)
+│       ├── CPU/<Name>/index.html        # Self-contained deep-dive pages
 │       ├── SKU/<Id>/index.html
 │       ├── GPU/<Name>/index.html
 │       ├── Tile/<Name>/index.html
 │       ├── Technology/<Name>/index.html
-│       ├── CPU.Architectures/  # Deep-dive content fragments
-│       ├── CPU.SKU/
-│       ├── GPU.architectures/
-│       ├── Tiles/
-│       ├── Technologies/
 │       └── Media/
 ├── Sony/
 │   ├── ILCE-0/index.html
@@ -208,7 +202,7 @@ The batch launcher:
 2. Directory URLs (for example `/Intel/Eventide/`) serve that folder's `index.html`; URLs without a trailing slash are redirected first, matching GitHub Pages behavior.
 3. Every page includes `assets/nav.js`, which injects the global sidebar, marks the current page active, and expands its ancestor categories.
 4. Sidebar entries are ordinary links — each click is a normal page load to a real path.
-5. Eventide deep-dive pages are small stubs that declare their content fragment (`window.NG_DEEPDIVE_SRC`) and let the shared `Intel/Eventide/deepdive.js` fetch and inline it — this keeps multi-fragment pages assembled client-side where needed.
+5. Eventide deep-dive pages are self-contained `index.html` files — each bakes its own inline `<style>` and markup, sharing only `deepdive.css` for common page chrome (back button, body). No client-side content assembly.
 6. Unknown paths return `404.html` with a 404 status and preserve the typed path for `{PATH}` jokes.
 7. Static assets and brochure files are served directly from disk.
 
@@ -220,7 +214,7 @@ The site is deliberately friendly to AI crawlers and agents:
 
 - **`/robots.txt`** — allows all crawlers, with explicit entries for AI crawlers (GPTBot, ClaudeBot, Google-Extended, PerplexityBot, …), [Content Signals](https://contentsignals.org/) (`search=yes, ai-input=yes, ai-train=yes`), and a sitemap reference
 - **`/sitemap.xml`** — all canonical routes; regenerate with `node scripts/generate-sitemap.js` after adding pages (the test suite fails if it goes stale)
-- **`/.well-known/agent-skills/index.json`** — [Agent Skills Discovery](https://github.com/cloudflare/agent-skills-discovery-rfc) index pointing at a site-navigation SKILL.md that explains the route model and where to fetch deep-dive fragments without JavaScript
+- **`/.well-known/agent-skills/index.json`** — [Agent Skills Discovery](https://github.com/cloudflare/agent-skills-discovery-rfc) index pointing at a site-navigation SKILL.md that explains the route model — every page's content is served directly in its `index.html`, no JavaScript required
 - **WebMCP** — pages expose `list-site-pages` and `navigate-to-page` tools via the experimental `navigator.modelContext` API when available
 
 Not implemented because GitHub Pages cannot serve them: custom `Link` response headers, `Accept: text/markdown` content negotiation, and OAuth/API-catalog metadata (the site has no APIs). DNS-AID records would be configured at the DNS provider, not in this repo.
@@ -232,7 +226,7 @@ Not implemented because GitHub Pages cannot serve them: custom `Link` response h
 - `npm test` runs `scripts/test-debug.js`, a diagnostics test that:
   - verifies every route declared in `assets/nav.js` has a real `index.html` on disk
   - starts the local server and checks every route responds with HTTP 200
-  - verifies deep-dive stubs point at existing content fragments
+  - verifies no route still references the retired client-side deep-dive loader (pages are self-contained)
   - checks trailing-slash redirects and 404 behavior
   - validates watchdog endpoints (`/__launcher/status`, `/__launcher/heartbeat`, `/__launcher/ping`)
 - There is currently no configured linter/build pipeline in `package.json`.

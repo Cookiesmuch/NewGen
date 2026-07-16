@@ -13,7 +13,7 @@ On desktop the sidebar collapses to a compact rail (52px) and expands on hover/f
 1. **Real route folders**: every navigable page is a folder containing an `index.html`
 2. **Shared navigator** (`assets/nav.js`): builds the sidebar from `NAV_STRUCTURE`, injects it into the page, and derives the active item from `window.location`
 3. **Plain links**: every sidebar entry is an `<a href>` — each navigation is a normal page load
-4. **Deep-dive stubs** (Eventide only): tiny `index.html` files that declare a content fragment and let `Intel/Eventide/deepdive.js` fetch and inline it
+4. **Self-contained pages**: every route's `index.html` carries its own content inline (no build step, no client-side assembly)
 
 ### Routing
 
@@ -100,9 +100,9 @@ const PRODUCT_HIGHLIGHT_COLORS = {
 
 Page highlight backgrounds are applied only to the currently active page section; non-active sections stay neutral. Hover/selected states use a right-side blue motion indicator (dot on hover, line when selected).
 
-## Deep-Dive Pages (multi-fragment content)
+## Deep-Dive Pages (self-contained)
 
-Eventide deep dives assemble a page from content fragments buried in subfolders (`CPU.Architectures/`, `CPU.SKU/`, `GPU.architectures/`, `Tiles/`, `Technologies/`). Each route is a small stub:
+Every Eventide deep dive (`CPU/`, `SKU/`, `GPU/`, `Tile/`, `Technology/`) is a self-contained `index.html` — its inline `<style>` and markup are served directly at the route URL, with no client-side assembly. Each page loads the global navigator plus `deepdive.css` for shared page chrome (the back button and body styling):
 
 ```html
 <!-- Intel/Eventide/CPU/SolarEclipse/index.html -->
@@ -110,11 +110,17 @@ Eventide deep dives assemble a page from content fragments buried in subfolders 
 <script src="../../../../assets/nav.js" defer></script>
 <link rel="stylesheet" href="../../deepdive.css">
 ...
-<script>window.NG_DEEPDIVE_SRC = "../../CPU.Architectures/eventide.CPU.solar_eclipse.html";</script>
-<script src="../../deepdive.js" defer></script>
+<body>
+  <a class="back-button" href="../../">← Back to Overview</a>
+  <div id="deepdive-container" class="deepdive-container">
+    <!-- the page's own inline <style> + content -->
+  </div>
+</body>
 ```
 
-`deepdive.js` fetches the fragment, inlines its styles and body, and fixes relative media paths. To add a new deep dive, copy an existing stub into a new route folder and point `NG_DEEPDIVE_SRC` at the new fragment. This pattern can be reused for any future product that assembles pages from multiple source files.
+To add a new deep dive, copy an existing page into a new route folder and replace the content inside `#deepdive-container`. Media referenced from a page resolves against the route folder (e.g. `../../Media/…` reaches `Intel/Eventide/Media/`).
+
+> **History:** these pages were previously 24-line stubs that fetched a content fragment from a parallel `*.Architectures/` / `Technologies/` folder via a shared `deepdive.js` loader. That mechanism has been retired — the fragment folders and `deepdive.js` are gone, and each route now holds its content directly.
 
 ## Navigation Features
 
@@ -148,7 +154,7 @@ Eventide deep dives assemble a page from content fragments buried in subfolders 
 
 **Naming Convention:**
 - Route folders: exactly as they should appear in the URL (case-sensitive on GitHub Pages)
-- Content fragment folders keep their historical names (`CPU.Architectures/`, `CPU.SKU/`, ...) and never collide with route folders (`CPU/`, `SKU/`, ...)
+- Each route folder holds its content directly in `index.html` (no separate content-fragment folders — those were retired when the deep-dive loader was removed)
 
 ## CSS Variables
 

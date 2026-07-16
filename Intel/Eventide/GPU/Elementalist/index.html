@@ -11,14 +11,1598 @@
 <body>
   <a class="back-button" href="../../">← Back to Overview</a>
   <div id="deepdive-container" class="deepdive-container">
-    <noscript>
-      <p style="padding: 96px 24px; text-align: center;">
-        This page assembles its content with JavaScript.
-        <a href="../../GPU.architectures/eventide.GPU.elementalist.html">View the raw Elementalist content directly</a>.
-      </p>
-    </noscript>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --intel-blue: #0068B5;
+  --intel-blue-dark: #004A86;
+  --eventide-gold: #C8922A;
+  --eventide-gold-light: #F0B848;
+  --eventide-dusk: #1A0A2E;
+  --text-primary: #0F0F0F;
+  --text-muted: #7A7A7A;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+.section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 64px 48px;
+}
+
+.section-divider {
+  height: 3px;
+  background: linear-gradient(90deg, var(--intel-blue), #6B21A8, var(--eventide-gold));
+}
+
+.arc-gpu-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: #38bdf8;
+  margin-bottom: 10px;
+}
+
+.arc-gpu-heading {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 60px);
+  color: white;
+  line-height: .95;
+  letter-spacing: .03em;
+}
+
+.arc-gpu-intro {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.75;
+  max-width: 640px;
+  margin-top: 12px;
+}
+
+.xe5-tech-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 56px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  position: relative;
+  overflow: hidden;
+}
+
+.xe5-tech-block:last-child {
+  border-bottom: none;
+  padding-bottom: 24px;
+}
+
+.xe5-tech-num {
+  font-family: var(--font-display);
+  font-size: clamp(320px,50vw,520px);
+  color: rgba(255,255,255,0.025);
+  line-height: .75;
+  position: absolute;
+  left: -120px;
+  top: 50%;
+  transform: translateY(-50%);
+  user-select: none;
+  pointer-events: none;
+  z-index: 0;
+  letter-spacing: -.05em;
+}
+
+.xe5-tech-block > div:not(.xe5-tech-num) { position: relative; z-index: 1; }
+
+.xe5-tech-label,
+.xe4e-tech-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.xe5-tech-label { color: #F0B848; }
+.xe4e-tech-label { color: #34d399; }
+
+.xe5-tech-name,
+.xe4e-tech-name {
+  font-family: var(--font-display);
+  font-size: clamp(40px,5vw,70px);
+  color: white;
+  line-height: .92;
+  letter-spacing: .02em;
+  margin-bottom: 20px;
+}
+
+.xe5-tech-body {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.8;
+  max-width: 540px;
+}
+
+.xe5-tech-stats {
+  display: flex;
+  gap: 14px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.xe5-tech-stat {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 8px;
+  padding: 14px 18px;
+  flex-shrink: 0;
+}
+
+.xe5-tech-stat-val,
+.xe4e-stat-val {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.xe5-tech-stat-val { color: #F0B848; }
+.xe4e-stat-val { color: #34d399; }
+
+.xe5-tech-stat-key {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  margin-top: 3px;
+}
+
+.xe5-tech-aside { width: 272px; flex-shrink: 0; }
+
+.xe5-aside-box,
+.xe4e-aside-box {
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.xe5-aside-box {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+}
+
+.xe4e-aside-box {
+  background: rgba(15,118,110,0.08);
+  border: 1px solid rgba(52,211,153,0.2);
+}
+
+.xe5-aside-title,
+.xe4e-aside-title {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.xe5-aside-title { color: rgba(255,255,255,0.25); }
+.xe4e-aside-title { color: rgba(52,211,153,0.4); }
+
+.xe5-aside-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  gap: 10px;
+}
+
+.xe5-aside-row:last-child { border-bottom: none; }
+.xe5-aside-k { font-size: 11px; color: rgba(255,255,255,0.3); }
+.xe5-aside-v { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.75); text-align: right; }
+
+.gog-bar { margin-top: 20px; }
+.gog-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 6px;
+  letter-spacing: .05em;
+}
+.gog-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.gog-metric { font-size: 10px; color: rgba(255,255,255,0.35); width: 110px; flex-shrink: 0; }
+.gog-track { flex: 1; height: 5px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+.gog-fill { height: 100%; border-radius: 2px; background: #F0B848; }
+.gog-num { font-family: var(--font-mono); font-size: 10px; font-weight: 600; color: #F0B848; width: 55px; text-align: right; }
+
+@media (max-width: 900px) {
+  .section { padding: 40px 24px; }
+  .xe5-tech-block { flex-direction: column; gap: 24px; }
+  .xe5-tech-num { font-size: clamp(200px,40vw,300px); left: -80px; top: 50%; transform: translateY(-50%); }
+  .xe5-tech-aside { width: 100%; }
+}
+</style>
+
+<style>
+/* ============================================================
+   Xe5 Deep-Dive — New classes only (xe5-dd- prefix)
+   Existing .arc-gpu-*, .xe5-tech-*, .gog-* classes are
+   inherited from the main brochure stylesheet.
+   ============================================================ */
+
+.xe5-dd-wrap {
+    background:
+        radial-gradient(ellipse 60% 40% at 20% 10%, rgba(240,184,72,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 50% at 80% 80%, rgba(107,33,168,0.03) 0%, transparent 50%),
+        #070b16;
+    position: relative;
+    overflow: hidden;
+}
+
+.xe5-dd-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(240,184,72,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(240,184,72,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+}
+
+/* GOG bar placement inside tech blocks */
+.xe5-dd-gog {
+    margin-top: 32px;
+    flex-basis: 100%;
+}
+
+/* Stat value override for gold-accented blocks */
+.xe5-dd-stat-gold .xe5-tech-stat-val {
+    color: var(--eventide-gold-light);
+}
+
+/* GOG gold variant — fill bars and numbers */
+.xe5-dd-gog-gold .gog-fill {
+    background: var(--eventide-gold-light) !important;
+}
+.xe5-dd-gog-gold .gog-num {
+    color: var(--eventide-gold-light) !important;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .xe5-tech-block { flex-direction: column; gap: 24px; }
+    .xe5-tech-num   { font-size: clamp(200px, 40vw, 300px); left: -80px; top: 50%; transform: translateY(-50%); }
+    .xe5-tech-aside { width: 100%; }
+}
+</style>
+
+<style>
+/* ============================================================
+   Xe5 Revamp — RTU5 mechanisms, Xe5 raster, cache, comparison,
+   and interactive visuals. All new classes are prefixed so they
+   never collide with the inherited brochure stylesheet. Every
+   interaction here is CSS-only (radio/checkbox hacks, :hover,
+   <details>) or an inline handler — the deep-dive loader inlines
+   styles and markup but does NOT execute fragment <script> tags.
+   ============================================================ */
+
+/* ── Section eyebrow / sub-heads reused across new blocks ── */
+.rv-subsection { padding: 56px 0 8px; }
+.rv-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+    color: #38bdf8; margin-bottom: 12px;
+}
+.rv-eyebrow.gold { color: var(--eventide-gold-light); }
+.rv-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(30px, 4vw, 48px);
+    color: white; line-height: .95; letter-spacing: .02em; margin-bottom: 14px;
+}
+.rv-lede {
+    font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.8;
+    max-width: 720px; margin-bottom: 8px;
+}
+.rv-lede strong { color: rgba(255,255,255,0.82); font-weight: 600; }
+
+/* ── Sonoral-style plainly-stated design constraint note ── */
+.rv-cnote {
+    border-left: 3px solid var(--eventide-gold);
+    background: rgba(240,184,72,0.05);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px; margin-top: 22px; max-width: 760px;
+}
+.rv-cnote h5 {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--eventide-gold-light); margin-bottom: 8px;
+}
+.rv-cnote p { font-size: 12.5px; line-height: 1.75; color: rgba(255,255,255,0.6); }
+.rv-cnote p strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+.rv-cnote.mandatory { border-left-color: #38bdf8; background: rgba(56,189,248,0.05); }
+.rv-cnote.mandatory h5 { color: #7dd3fc; }
+
+/* ── Raw / Effective toggle + paired bars ─────────────────── */
+.ret {
+    margin-top: 28px; border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 12px; padding: 22px 24px; background: rgba(255,255,255,0.02);
+    max-width: 760px;
+}
+.ret-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.ret-title { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,0.55); }
+.ret-toggle { display: inline-flex; border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; overflow: hidden; }
+.ret-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.ret-toggle label {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+    padding: 7px 13px; color: rgba(255,255,255,0.45); cursor: pointer; user-select: none;
+    border-right: 1px solid rgba(255,255,255,0.1); transition: background .15s, color .15s;
+}
+.ret-toggle label:last-of-type { border-right: none; }
+.ret-toggle label:hover { color: rgba(255,255,255,0.8); }
+/* Selected-state highlight driven by the hidden radios */
+.ret:has(#ret-both:checked)  label[for="ret-both"],
+.ret:has(#ret-raw:checked)   label[for="ret-raw"],
+.ret:has(#ret-eff:checked)   label[for="ret-eff"] { background: var(--eventide-gold); color: #1a1206; font-weight: 600; }
+
+.ret-grouprow { margin-bottom: 18px; }
+.ret-grouplabel { font-size: 11px; color: rgba(255,255,255,0.4); margin-bottom: 9px; font-family: var(--font-mono); letter-spacing: .04em; }
+.ret-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; transition: opacity .2s; }
+.ret-bar-k { width: 78px; flex-shrink: 0; font-size: 10px; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .06em; }
+.ret-bar.raw .ret-bar-k { color: rgba(255,255,255,0.4); }
+.ret-bar.eff .ret-bar-k { color: var(--eventide-gold-light); }
+.ret-track { flex: 1; height: 20px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+.ret-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; justify-content: flex-end; }
+.ret-bar.raw .ret-fill { background: linear-gradient(90deg, rgba(56,189,248,0.35), rgba(56,189,248,0.75)); }
+.ret-bar.eff .ret-fill { background: linear-gradient(90deg, rgba(240,184,72,0.4), var(--eventide-gold-light)); }
+.ret-num { font-family: var(--font-mono); font-size: 12px; font-weight: 700; width: 62px; text-align: right; flex-shrink: 0; }
+.ret-bar.raw .ret-num { color: #7dd3fc; }
+.ret-bar.eff .ret-num { color: var(--eventide-gold-light); }
+/* Filter which bars show, based on toggle */
+.ret:has(#ret-raw:checked) .ret-bar.eff { opacity: .18; }
+.ret:has(#ret-eff:checked) .ret-bar.raw { opacity: .18; }
+.ret-foot { font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.65; margin-top: 12px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.07); }
+
+/* ── RT raw/effective data table ──────────────────────────── */
+.rv-table-wrap { overflow-x: auto; margin-top: 26px; max-width: 760px; }
+.rv-table { width: 100%; border-collapse: collapse; min-width: 480px; }
+.rv-table caption { text-align: left; font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,0.4); padding-bottom: 12px; }
+.rv-table th, .rv-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.07); font-size: 13px; }
+.rv-table thead th { font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,0.45); font-weight: 500; }
+.rv-table tbody th { font-weight: 500; color: rgba(255,255,255,0.65); font-size: 12px; }
+.rv-table td.rv-mono { font-family: var(--font-mono); font-weight: 700; }
+.rv-table td.rv-raw { color: #7dd3fc; }
+.rv-table td.rv-eff { color: var(--eventide-gold-light); }
+.rv-table td.rv-big { font-size: 15px; }
+.rv-table tr.rv-eff-row { background: rgba(240,184,72,0.04); }
+
+/* ── Mechanism card grid (KPA / PHR / fixed-resolvers …) ──── */
+.mech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 28px; }
+.mech-card {
+    border: 1px solid rgba(255,255,255,0.09); border-radius: 10px; padding: 20px;
+    background: rgba(255,255,255,0.025); position: relative; overflow: hidden;
+}
+.mech-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--eventide-gold); opacity: .5; }
+.mech-tag { font-family: var(--font-mono); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--eventide-gold-light); margin-bottom: 8px; }
+.mech-name { font-family: var(--font-display); font-size: 24px; letter-spacing: .02em; color: white; line-height: 1; margin-bottom: 10px; }
+.mech-desc { font-size: 12.5px; line-height: 1.7; color: rgba(255,255,255,0.55); }
+.mech-desc strong { color: rgba(255,255,255,0.82); font-weight: 600; }
+.mech-chip { display: inline-block; margin-top: 12px; font-family: var(--font-mono); font-size: 10px; padding: 4px 9px; border-radius: 5px; background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.25); color: #7dd3fc; }
+
+/* ── SBP two-stage pipeline animation (CSS-only) ──────────── */
+.sbp {
+    margin-top: 30px; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px;
+    padding: 26px 24px 22px; background: rgba(7,11,22,0.6); max-width: 900px;
+}
+.sbp-title { font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 22px; }
+.sbp-flow { display: grid; grid-template-columns: 150px 1fr 150px 130px; gap: 14px; align-items: stretch; }
+.sbp-col { display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+.sbp-node {
+    border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; padding: 12px 13px;
+    background: rgba(255,255,255,0.03); position: relative;
+}
+.sbp-node .k { font-family: var(--font-mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 4px; }
+.sbp-node .v { font-size: 12px; color: rgba(255,255,255,0.85); font-weight: 600; line-height: 1.3; }
+.sbp-node .sub { font-size: 10px; color: rgba(255,255,255,0.45); margin-top: 3px; }
+.sbp-node.crit { border-color: rgba(56,189,248,0.45); background: rgba(56,189,248,0.06); }
+.sbp-node.crit .k { color: #7dd3fc; }
+.sbp-node.bulk { border-color: rgba(52,211,153,0.4); background: rgba(52,211,153,0.05); }
+.sbp-node.bulk .k { color: #6ee7b7; }
+.sbp-node.gold { border-color: rgba(240,184,72,0.45); background: rgba(240,184,72,0.06); }
+.sbp-node.gold .k { color: var(--eventide-gold-light); }
+.sbp-stagelabel { font-family: var(--font-mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 6px; }
+.sbp-stagelabel.s1 { color: #7dd3fc; }
+.sbp-stagelabel.s2 { color: #6ee7b7; }
+/* animated pulse traveling the fabric */
+.sbp-fabric { position: relative; display: flex; align-items: center; justify-content: center; }
+.sbp-fabric .rail { position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: rgba(240,184,72,0.18); }
+.sbp-fabric .pulse {
+    position: absolute; top: 50%; width: 40px; height: 4px; margin-top: -2px; border-radius: 3px;
+    background: linear-gradient(90deg, transparent, var(--eventide-gold-light), transparent);
+    animation: sbp-travel 2.6s linear infinite;
+}
+.sbp-fabric .label { font-family: var(--font-mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: rgba(240,184,72,0.7); background: rgba(7,11,22,0.9); padding: 3px 8px; z-index: 1; text-align: center; }
+@keyframes sbp-travel { 0% { left: -8%; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { left: 100%; opacity: 0; } }
+/* KPA hit/miss branch */
+.sbp-kpa { margin-top: 18px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.07); }
+.sbp-kpa-badge { font-family: var(--font-mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; padding: 5px 10px; border-radius: 5px; }
+.sbp-kpa-badge.miss { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #fca5a5; }
+.sbp-kpa-badge.hit { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); color: #6ee7b7; }
+.sbp-kpa-text { font-size: 11.5px; color: rgba(255,255,255,0.5); line-height: 1.6; flex: 1; min-width: 220px; }
+@media (prefers-reduced-motion: reduce) { .sbp-fabric .pulse { animation: none; left: 45%; opacity: 1; } }
+
+/* ── Xe5 raster: tier-scalable / feature-uniform badge row ── */
+.rv-fu-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+.rv-fu-stat { border: 1px solid rgba(255,255,255,0.09); background: rgba(255,255,255,0.03); border-radius: 8px; padding: 12px 16px; }
+.rv-fu-stat .n { font-family: var(--font-mono); font-size: 18px; font-weight: 700; color: var(--eventide-gold-light); }
+.rv-fu-stat .l { font-size: 10.5px; color: rgba(255,255,255,0.4); margin-top: 3px; }
+
+/* ── Cache hierarchy interactive diagram (radio-hack) ─────── */
+.cache { margin-top: 30px; max-width: 900px; }
+.cache-tiers { display: flex; flex-direction: column; gap: 8px; }
+.cache input { position: absolute; opacity: 0; pointer-events: none; }
+.cache-tier {
+    display: grid; grid-template-columns: 64px 1fr auto; align-items: center; gap: 16px;
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 9px; padding: 14px 18px;
+    cursor: pointer; transition: border-color .18s, background .18s, transform .12s;
+    background: rgba(255,255,255,0.02);
+}
+.cache-tier:hover { border-color: rgba(240,184,72,0.4); transform: translateX(3px); }
+.cache-tier .tier-id { font-family: var(--font-display); font-size: 30px; color: white; line-height: 1; letter-spacing: .02em; }
+.cache-tier .tier-mid .nm { font-size: 13px; color: rgba(255,255,255,0.85); font-weight: 600; }
+.cache-tier .tier-mid .role { font-size: 11px; color: rgba(255,255,255,0.42); margin-top: 2px; }
+.cache-tier .tier-spec { font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.6); text-align: right; }
+.cache-tier .tier-badge { display: inline-block; margin-left: 8px; font-family: var(--font-mono); font-size: 8px; letter-spacing: .1em; padding: 2px 6px; border-radius: 4px; vertical-align: middle; }
+.cache-tier .tier-badge.new { background: rgba(52,211,153,0.15); border: 1px solid rgba(52,211,153,0.35); color: #6ee7b7; }
+.cache-tier .tier-badge.bump { background: rgba(56,189,248,0.13); border: 1px solid rgba(56,189,248,0.3); color: #7dd3fc; }
+/* selected tier highlight + reveal its detail panel */
+.cache-detail { display: none; margin-top: 12px; border: 1px solid rgba(240,184,72,0.3); background: rgba(240,184,72,0.04); border-radius: 9px; padding: 18px 20px; font-size: 12.5px; line-height: 1.7; color: rgba(255,255,255,0.6); }
+.cache-detail strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+.cache:has(#c-l0d:checked) .cache-detail.d-l0d,
+.cache:has(#c-l1:checked)  .cache-detail.d-l1,
+.cache:has(#c-l2:checked)  .cache-detail.d-l2,
+.cache:has(#c-l3:checked)  .cache-detail.d-l3,
+.cache:has(#c-l4:checked)  .cache-detail.d-l4 { display: block; }
+.cache:has(#c-l0d:checked) label[for="c-l0d"],
+.cache:has(#c-l1:checked)  label[for="c-l1"],
+.cache:has(#c-l2:checked)  label[for="c-l2"],
+.cache:has(#c-l3:checked)  label[for="c-l3"],
+.cache:has(#c-l4:checked)  label[for="c-l4"] { border-color: var(--eventide-gold); background: rgba(240,184,72,0.08); }
+.cache-hint { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 10px; font-style: italic; }
+
+/* ── Grouped bar chart (multi-brand, reused §3 / §4) ──────── */
+.gbar { margin-top: 26px; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; padding: 24px; background: rgba(255,255,255,0.02); max-width: 820px; }
+.gbar-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+.gbar-leg { display: flex; align-items: center; gap: 7px; font-size: 11px; color: rgba(255,255,255,0.6); font-family: var(--font-mono); }
+.gbar-swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+.gbar-group { margin-bottom: 22px; }
+.gbar-group:last-child { margin-bottom: 0; }
+.gbar-glabel { font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 600; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.gbar-glabel .unit { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.35); font-weight: 400; }
+.gbar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+.gbar-name { width: 118px; flex-shrink: 0; font-size: 10.5px; font-family: var(--font-mono); color: rgba(255,255,255,0.5); }
+.gbar-track { flex: 1; height: 18px; background: rgba(255,255,255,0.045); border-radius: 4px; overflow: hidden; min-width: 60px; }
+.gbar-fill { height: 100%; border-radius: 4px; }
+.gbar-val { width: 90px; flex-shrink: 0; text-align: right; font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.85); }
+.gbar-val .drv { color: var(--eventide-gold-light); }
+
+/* ── Derivation expandable (<details>) ────────────────────── */
+.deriv { display: inline-block; margin-left: 6px; vertical-align: middle; }
+.deriv summary {
+    list-style: none; cursor: pointer; font-family: var(--font-mono); font-size: 8.5px;
+    letter-spacing: .08em; text-transform: uppercase; color: #7dd3fc;
+    border: 1px solid rgba(56,189,248,0.35); border-radius: 4px; padding: 2px 6px; display: inline-block;
+    transition: background .15s;
+}
+.deriv summary::-webkit-details-marker { display: none; }
+.deriv summary:hover { background: rgba(56,189,248,0.12); }
+.deriv[open] summary { background: rgba(56,189,248,0.15); }
+.deriv .deriv-body {
+    position: relative; margin-top: 8px; border: 1px solid rgba(56,189,248,0.3);
+    background: #0a1220; border-radius: 8px; padding: 13px 15px; font-size: 11.5px;
+    line-height: 1.7; color: rgba(255,255,255,0.65); width: 300px; max-width: 82vw;
+    font-family: var(--font-body); text-transform: none; letter-spacing: normal;
+}
+.deriv .deriv-body code { font-family: var(--font-mono); color: var(--eventide-gold-light); background: rgba(240,184,72,0.08); padding: 1px 5px; border-radius: 3px; font-size: 11px; }
+.deriv .deriv-body strong { color: rgba(255,255,255,0.88); }
+
+/* inline caveat callout (TOPS-category, tier-gap) — not a footnote */
+.rv-inline-callout {
+    margin-top: 22px; display: flex; gap: 14px; align-items: flex-start;
+    border: 1px solid rgba(56,189,248,0.28); background: rgba(56,189,248,0.05);
+    border-radius: 10px; padding: 16px 18px; max-width: 820px;
+}
+.rv-inline-callout .ic { font-size: 18px; line-height: 1; flex-shrink: 0; }
+.rv-inline-callout .tx { font-size: 12.5px; line-height: 1.72; color: rgba(255,255,255,0.62); }
+.rv-inline-callout .tx strong { color: rgba(255,255,255,0.88); font-weight: 600; }
+
+/* ── Kachelraster before/after overdraw ───────────────────── */
+.kach { margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 820px; }
+.kach-panel { border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+.kach-panel .kach-head { padding: 12px 16px; font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+.kach-panel.before .kach-head { background: rgba(248,113,113,0.1); color: #fca5a5; }
+.kach-panel.after .kach-head { background: rgba(52,211,153,0.1); color: #6ee7b7; }
+.kach-canvas { position: relative; aspect-ratio: 16/10; background: #0a0f1c; overflow: hidden; }
+.kach-layer { position: absolute; border-radius: 6px; opacity: .55; }
+.kach-panel.after .kach-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(240,184,72,0.14) 1px, transparent 1px), linear-gradient(90deg, rgba(240,184,72,0.14) 1px, transparent 1px); background-size: 16px 16px; pointer-events: none; }
+.kach-foot { padding: 11px 16px; font-size: 11px; color: rgba(255,255,255,0.5); border-top: 1px solid rgba(255,255,255,0.07); }
+.kach-foot b { color: rgba(255,255,255,0.82); }
+
+/* ── Raster compounding table ─────────────────────────────── */
+.rcmp { margin-top: 24px; max-width: 640px; }
+.rcmp-row { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.rcmp-row:last-of-type { border-bottom: none; }
+.rcmp-row.total { border-top: 2px solid rgba(240,184,72,0.4); margin-top: 6px; padding-top: 14px; }
+.rcmp-name { flex: 1; font-size: 12.5px; color: rgba(255,255,255,0.6); }
+.rcmp-row.total .rcmp-name { color: white; font-weight: 600; }
+.rcmp-mult { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--eventide-gold-light); width: 74px; text-align: right; }
+.rcmp-row.total .rcmp-mult { font-size: 16px; }
+
+@media (max-width: 720px) {
+    .sbp-flow { grid-template-columns: 1fr; }
+    .sbp-fabric .rail { display: none; }
+    .kach { grid-template-columns: 1fr; }
+    .cache-tier { grid-template-columns: 48px 1fr; }
+    .cache-tier .tier-spec { grid-column: 1 / -1; text-align: left; }
+}
+</style>
+
+<div class="xe5-dd-wrap">
+<div class="section" style="position:relative; z-index:1;">
+
+    <!-- ── Section Header ── -->
+    <div class="arc-gpu-label">Arc Elementalist &middot; Xe5 Technology Showcase</div>
+    <div class="arc-gpu-heading" style="line-height:0.88;">ELEMENTALIST<br><span style="color:#F0B848;">Xe5</span></div>
+    <p class="arc-gpu-intro">
+        The fifth-generation Xe architecture represents a complete reimagining of Intel's GPU silicon.
+        Wider shader cores. Deeper wave dispatch. Native FP64. A next-generation matrix engine that
+        makes dedicated AI accelerators unnecessary. And a ray tracing unit that handles BVH4 traversal,
+        ReSTIR, and VR stereo rendering in hardware. Built on Intel 04A and connected over FOveros 2.0
+        photonic fabric &mdash; up to four tiles operating as one.
+    </p>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         BLOCK 01 — Xe5 Core
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="xe5-tech-block" style="flex-wrap:wrap;">
+        <div class="xe5-tech-num">01</div>
+
+        <div style="flex:1; min-width:0;">
+            <div class="xe5-tech-label">SHADER ARCHITECTURE &middot; GENERATION 5</div>
+            <div class="xe5-tech-name">Xe5 Core</div>
+            <p class="xe5-tech-body">
+                The Xe5 shader core is the widest, deepest execution unit Intel has ever built for graphics.
+                Each Xe5-core contains 512 unified shaders &mdash; double the 256-shader Xe4E &mdash; organised
+                into 32-wide wavefronts with out-of-order wave dispatch. The front-end decodes up to
+                4&nbsp;instructions per clock per wavefront, feeding a 512-entry reorder buffer that allows
+                waves to execute non-sequentially based on data readiness. This is a technique borrowed from
+                CPU microarchitecture: waves that hit cache misses yield to waves with data ready, eliminating
+                pipeline bubbles that plague in-order GPU schedulers. The L0 instruction cache per 16-core
+                cluster eliminates instruction fetch bottlenecks for shader-heavy workloads. Native FP64
+                support &mdash; not emulated through FP32 pairs &mdash; delivers double-precision compute
+                performance at 1/2&nbsp;FP32 rate, making the E1080 viable for scientific workstation use
+                without a discrete GPU. Compared to the Xe2 generation in Battlemage, the Xe5 core delivers
+                a 2.2&times; improvement in instructions retired per clock.
+            </p>
+
+            <div class="xe5-tech-stats">
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val">2.2&times; IPC</div>
+                    <div class="xe5-tech-stat-key">vs Xe2 generation</div>
+                </div>
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val">512 shaders/core</div>
+                    <div class="xe5-tech-stat-key">vs 256 in Xe2/Xe4E</div>
+                </div>
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val">native FP64</div>
+                    <div class="xe5-tech-stat-key">1/2 FP32 rate</div>
+                </div>
+            </div>
+
+            <!-- GOG bar -->
+            <div class="xe5-dd-gog">
+                <div class="gog-bar">
+                    <div class="gog-label">GEN-ON-GEN vs XE2 (BATTLEMAGE)</div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Shader IPC</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:88%; background:#F0B848;"></div></div>
+                        <div class="gog-num" style="color:#F0B848;">+120%</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Shaders per core</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:80%; background:#F0B848;"></div></div>
+                        <div class="gog-num" style="color:#F0B848;">+100%</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">FP32 throughput/W</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:72%; background:#F0B848;"></div></div>
+                        <div class="gog-num" style="color:#F0B848;">+85%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="xe5-tech-aside">
+            <div class="xe5-aside-box">
+                <div class="xe5-aside-title">XE5 CORE SPECIFICATIONS</div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Execution width</div><div class="xe5-aside-v">32-wide wavefronts</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Wave dispatch</div><div class="xe5-aside-v">Out-of-order</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">ROB depth</div><div class="xe5-aside-v">512 entries</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">L0 I-cache</div><div class="xe5-aside-v">per 16-core cluster</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">FP64 rate</div><div class="xe5-aside-v">1/2 FP32 native</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">ISA compat</div><div class="xe5-aside-v">Xe4E backwards</div></div>
+                <div class="xe5-aside-row" style="border-bottom:none;"><div class="xe5-aside-k">Process</div><div class="xe5-aside-v">Intel 04A</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         BLOCK 02 — XMX5
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="xe5-tech-block" style="flex-wrap:wrap;">
+        <div class="xe5-tech-num">02</div>
+
+        <div style="flex:1; min-width:0;">
+            <div class="xe5-tech-label">AI MATRIX ACCELERATION &middot; GENERATION 5</div>
+            <div class="xe5-tech-name">XMX5</div>
+            <p class="xe5-tech-body">
+                XMX5 is the most significant generational leap in Intel's matrix acceleration history.
+                Each XMX5 unit delivers 2&times; the throughput-per-clock of XMX4E at equivalent precision,
+                but the real story is precision expansion. XMX5 introduces native INT2 and FP4 execution
+                &mdash; sub-byte precisions that quadruple effective throughput for quantized AI models.
+                For XeSS&nbsp;5.0 frame generation, the XMX5 units generate entire intermediate frames using
+                a temporal neural network that runs at native resolution, eliminating the artifact-prone
+                upscaling step used by competing solutions. The dedicated 512&nbsp;KB L1 AI SRAM per XMX5
+                cluster holds model weights locally, avoiding the memory bandwidth wall that limits matrix
+                throughput on traditional architectures. Sparse activation skipping &mdash; where zero-valued
+                matrix elements are detected and bypassed in hardware &mdash; delivers up to 1.8&times;
+                effective throughput on real-world models with typical 40&ndash;60% sparsity.
+            </p>
+
+            <div class="xe5-tech-stats">
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val">2&times; TOPS/unit</div>
+                    <div class="xe5-tech-stat-key">vs XMX2 per clock</div>
+                </div>
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val">INT2 / FP4</div>
+                    <div class="xe5-tech-stat-key">native sub-byte precision</div>
+                </div>
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val">512 KB</div>
+                    <div class="xe5-tech-stat-key">L1 AI SRAM per cluster</div>
+                </div>
+            </div>
+
+            <!-- GOG bar -->
+            <div class="xe5-dd-gog">
+                <div class="gog-bar">
+                    <div class="gog-label">GEN-ON-GEN vs XMX2 (BATTLEMAGE)</div>
+                    <div class="gog-row">
+                        <div class="gog-metric">AI TOPS per unit</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:95%; background:#F0B848;"></div></div>
+                        <div class="gog-num" style="color:#F0B848;">+340%</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">New precision fmts</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:55%; background:#F0B848;"></div></div>
+                        <div class="gog-num" style="color:#F0B848;">+3</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">AI SRAM</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:65%; background:#F0B848;"></div></div>
+                        <div class="gog-num" style="color:#F0B848;">512KB</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="xe5-tech-aside">
+            <div class="xe5-aside-box">
+                <div class="xe5-aside-title">XMX5 PRECISION SUPPORT</div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">INT2</div><div class="xe5-aside-v">native</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">FP4</div><div class="xe5-aside-v">native</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">INT4</div><div class="xe5-aside-v">native</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">INT8</div><div class="xe5-aside-v">native</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">FP8 (E4M3/E5M2)</div><div class="xe5-aside-v">native</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">BF16</div><div class="xe5-aside-v">native</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">TF32</div><div class="xe5-aside-v">native</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">FP16</div><div class="xe5-aside-v">native</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">FP32</div><div class="xe5-aside-v">accumulate</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Sparse activation</div><div class="xe5-aside-v">1.8&times; effective</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">L1 AI SRAM</div><div class="xe5-aside-v">512KB/cluster</div></div>
+                <div class="xe5-aside-row" style="border-bottom:none;"><div class="xe5-aside-k">Framework</div><div class="xe5-aside-v">DirectML, OneAPI, ONNX</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         BLOCK 03 — RTU5 (expanded capability set — same unit number)
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="xe5-tech-block" style="flex-wrap:wrap;">
+        <div class="xe5-tech-num">03</div>
+
+        <div style="flex:1; min-width:0;">
+            <div class="xe5-tech-label">RAY TRACING &middot; GENERATION 5</div>
+            <div class="xe5-tech-name">RTU5</div>
+            <p class="xe5-tech-body">
+                RTU5 is not a new ray tracing unit &mdash; it is the same generation-5 traversal silicon
+                with a substantially expanded capability set. At its core it still implements fourth-order
+                bounding volume hierarchy (BVH4) traversal, where each node carries four children instead
+                of the industry-standard two, halving tree depth for equivalent scene complexity. Hardware
+                ReSTIR resamples hundreds of candidate light paths for converged global illumination at a
+                fraction of a brute-force ray budget, and stereo BVH caching re-traverses one acceleration
+                structure for both eyes in VR. What changes this generation is everything around traversal:
+                RTU5 now performs <strong>only</strong> ray&ndash;AABB and ray&ndash;triangle intersection.
+                It never builds trees. BVH construction, refit, pruning and residency are lifted off the
+                traversal units entirely &mdash; split across the Symbiotic BVH Pipeline, the Kache Kore
+                Prune Array, Persistent Hierarchy Residency, and the Photonic Ray Mesh &mdash; so the
+                intersection hardware runs closer to its theoretical peak instead of stalling on structure
+                maintenance. Motion vectors, GI probe evaluation, contact shadows and multi-bounce proxy
+                rays each get their own fixed-resolver, moving closed-form math out of shader code and into
+                dedicated silicon.
+            </p>
+
+            <div class="xe5-tech-stats">
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val">4.2&times; / 6.7&times;</div>
+                    <div class="xe5-tech-stat-key">raw / effective, single tile vs RTX 5090</div>
+                </div>
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val">BVH4</div>
+                    <div class="xe5-tech-stat-key">intersection only &mdash; never builds trees</div>
+                </div>
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val">Stereo BVH</div>
+                    <div class="xe5-tech-stat-key">VR-native caching</div>
+                </div>
+            </div>
+
+            <!-- ── Raw / Effective RT performance (replaces gen-on-gen chart) ── -->
+            <div class="ret">
+                <div class="ret-head">
+                    <div class="ret-title">RT Performance vs RTX 5090 &middot; DXR 1.2 / Vulkan RT 1.4</div>
+                    <div class="ret-toggle">
+                        <input type="radio" name="ret-view" id="ret-both" checked>
+                        <label for="ret-both">Both</label>
+                        <input type="radio" name="ret-view" id="ret-raw">
+                        <label for="ret-raw">Raw</label>
+                        <input type="radio" name="ret-view" id="ret-eff">
+                        <label for="ret-eff">Effective</label>
+                    </div>
+                </div>
+
+                <div class="ret-grouprow">
+                    <div class="ret-grouplabel">SINGLE TILE</div>
+                    <div class="ret-bar raw">
+                        <div class="ret-bar-k">Raw</div>
+                        <div class="ret-track"><div class="ret-fill" style="width:15.6%;"></div></div>
+                        <div class="ret-num">4.2&times;</div>
+                    </div>
+                    <div class="ret-bar eff">
+                        <div class="ret-bar-k">Effective</div>
+                        <div class="ret-track"><div class="ret-fill" style="width:24.8%;"></div></div>
+                        <div class="ret-num">6.7&times;</div>
+                    </div>
+                </div>
+
+                <div class="ret-grouprow">
+                    <div class="ret-grouplabel">&times;4 TILES &middot; PHOTONIC RAY MESH</div>
+                    <div class="ret-bar raw">
+                        <div class="ret-bar-k">Raw</div>
+                        <div class="ret-track"><div class="ret-fill" style="width:62.2%;"></div></div>
+                        <div class="ret-num">16.8&times;</div>
+                    </div>
+                    <div class="ret-bar eff">
+                        <div class="ret-bar-k">Effective</div>
+                        <div class="ret-track"><div class="ret-fill" style="width:100%;"></div></div>
+                        <div class="ret-num">~27&times;</div>
+                    </div>
+                </div>
+
+                <div class="ret-foot">
+                    <strong style="color:#7dd3fc;">Raw</strong> is RTU5 silicon only &mdash; driver/API-measurable
+                    intersection throughput. <strong style="color:var(--eventide-gold-light);">Effective</strong>
+                    adds SBP / KPA / PHR eliminating BVH build and refit overhead from the frame. Both figures are
+                    labeled permanently; neither collapses into a single headline number.
+                </div>
+            </div>
+
+            <!-- ── Raw / Effective data table (single source of truth) ── -->
+            <div class="rv-table-wrap">
+                <table class="rv-table">
+                    <caption>RTU5 RT performance &mdash; anchored to RTX 5090</caption>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Single tile</th>
+                            <th>&times;4 tiles &middot; Photonic Ray Mesh</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>Raw hardware<br><span style="font-weight:400;color:rgba(255,255,255,0.4);font-size:11px;">RTU5 silicon only &middot; DXR 1.2 / Vulkan RT 1.4</span></th>
+                            <td class="rv-mono rv-raw">4.2&times;</td>
+                            <td class="rv-mono rv-raw rv-big">16.8&times;</td>
+                        </tr>
+                        <tr class="rv-eff-row">
+                            <th>Effective<br><span style="font-weight:400;color:rgba(255,255,255,0.4);font-size:11px;">+ SBP / KPA / PHR eliminating build &amp; refit overhead</span></th>
+                            <td class="rv-mono rv-eff">6.7&times;</td>
+                            <td class="rv-mono rv-eff rv-big">~27&times;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="xe5-tech-aside">
+            <div class="xe5-aside-box">
+                <div class="xe5-aside-title">RTU5 SPECIFICATIONS</div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">BVH structure</div><div class="xe5-aside-v">4-wide (BVH4)</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">RTU5 role</div><div class="xe5-aside-v">ray&ndash;AABB / ray&ndash;triangle only</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Tree build / refit</div><div class="xe5-aside-v">offloaded to SBP</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Ray culling</div><div class="xe5-aside-v">KPA (near-memory)</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Static BVH residency</div><div class="xe5-aside-v">PHR (Kache Kore 4 GB)</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Multi-tile RT</div><div class="xe5-aside-v">Photonic Ray Mesh</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">ReSTIR</div><div class="xe5-aside-v">hardware</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Fixed resolvers</div><div class="xe5-aside-v">motion / SH-GI / silhouette / proxy</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">VR ray dispatch</div><div class="xe5-aside-v">stereo BVH</div></div>
+                <div class="xe5-aside-row" style="border-bottom:none;"><div class="xe5-aside-k">API</div><div class="xe5-aside-v">DXR 1.2, Vulkan RT 1.4</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         RTU5 MECHANISMS — SBP, KPA, PHR, Photonic Ray Mesh
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="rv-subsection">
+        <div class="rv-eyebrow gold">RTU5 &middot; Expanded Capability Set</div>
+        <div class="rv-h2">Traversal intersects. Everything else moved.</div>
+        <p class="rv-lede">
+            BVH work is two problems with different latency profiles, and RTU5 stops pretending they are one.
+            The Symbiotic BVH Pipeline splits the tree-critical path from the bulk leaf refit and routes each to
+            the core class physics favors. Rays that will miss are killed inside the cache before they ever reach
+            an execution unit. Static world geometry is pinned across frames. And four tiles trade ray and node
+            work as one engine over the existing photonic fabric.
+        </p>
+
+        <!-- SBP two-stage pipeline animation -->
+        <div class="sbp">
+            <div class="sbp-title">Symbiotic BVH Pipeline &middot; Two-Stage, Profile-Aware Routing</div>
+            <div class="sbp-flow">
+                <div class="sbp-col">
+                    <div class="sbp-stagelabel s1">Stage 1 &middot; Critical path</div>
+                    <div class="sbp-node crit">
+                        <div class="k">Top-tree rebuild / resort</div>
+                        <div class="v">DP &middot; Sunset Cove</div>
+                        <div class="sub">Performance / Unleashed AFFINITY &mdash; wants IPC + clock</div>
+                    </div>
+                    <div class="sbp-node crit">
+                        <div class="k">Fallback when DP/UHP gated</div>
+                        <div class="v">UHE &middot; Lunar Eclipse</div>
+                        <div class="sub">Balanced / Efficiency AFFINITY</div>
+                    </div>
+                    <div style="height:14px;"></div>
+                    <div class="sbp-stagelabel s2">Stage 2 &middot; Bulk parallel</div>
+                    <div class="sbp-node bulk">
+                        <div class="k">Leaf-level bbox refit</div>
+                        <div class="v">SPE &middot; Venusmont</div>
+                        <div class="sub">Thousands of independent per-object updates</div>
+                    </div>
+                    <div class="sbp-node bulk">
+                        <div class="k">Fallback on tiers w/o SPE</div>
+                        <div class="v">LPE &middot; Darkmont</div>
+                        <div class="sub">Feature-uniform, quantity-scaled</div>
+                    </div>
+                </div>
+
+                <div class="sbp-fabric">
+                    <div class="rail"></div>
+                    <div class="pulse"></div>
+                    <div class="label">FOveros 2.0<br>zero-copy &middot; &lt;8 ns</div>
+                </div>
+
+                <div class="sbp-col">
+                    <div class="sbp-node gold">
+                        <div class="k">Completed nodes stream to</div>
+                        <div class="v">Kache Kore</div>
+                        <div class="sub">4 GB bLLC &middot; no PCIe round trip</div>
+                    </div>
+                </div>
+
+                <div class="sbp-col">
+                    <div class="sbp-node">
+                        <div class="k">Intersection only</div>
+                        <div class="v">RTU5</div>
+                        <div class="sub">ray&ndash;AABB / ray&ndash;triangle</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sbp-kpa">
+                <span class="sbp-kpa-badge miss">Ray misses AABB</span>
+                <span class="sbp-kpa-badge hit">Ray hits AABB</span>
+                <div class="sbp-kpa-text">
+                    Before dispatch, the <strong style="color:#fca5a5;">KPA</strong> pruning ALUs test each ray
+                    against bounding boxes inside Kache Kore's SRAM bitlines. Misses are discarded in-cache;
+                    only survivors reach RTU5 traversal &mdash; the visible hit/miss branch of the pipeline.
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier-scalability constraint note (mandatory requirement, Sonoral-style plain statement) -->
+        <div class="rv-cnote mandatory">
+            <h5>Tier-Scalability &middot; Feature-Uniform, Quantity-Scaled</h5>
+            <p>
+                Per the Eventide family table, Core 500 has no Compute Tile, Core i500 has a Compute Tile but no
+                SPE cores, and Core Ultra 500 carries only limited SPE. SBP Stage 2 is therefore
+                <strong>not SPE-exclusive</strong>: on tiers without SPE it falls back to idle
+                <strong>LPE (Darkmont)</strong> cores. Every tier runs the same SBP behavior &mdash; same two-stage
+                split, same profile-aware routing &mdash; with less parallel throughput lower down the stack, never
+                a different or absent feature. Stage 1's target likewise follows the active AFFINITY profile
+                (DP under Performance/Unleashed, UHE under Balanced/Efficiency), an extension of Thread Director's
+                existing profile-aware dispatch rather than a new mechanism.
+            </p>
+        </div>
+
+        <!-- Mechanism cards: KPA, PHR, Photonic Ray Mesh -->
+        <div class="mech-grid">
+            <div class="mech-card">
+                <div class="mech-tag">Near-Memory Compute</div>
+                <div class="mech-name">Kache Kore Prune Array</div>
+                <div class="mech-desc">
+                    Low-precision ray&ndash;AABB pruning ALUs embedded directly in Kache Kore's SRAM bitlines. Rays
+                    that miss a bounding box are <strong>discarded inside the cache</strong>, before ever reaching an
+                    RTU5 execution unit. The pruning logic physically sits in the tile-level L3, ahead of an L4 miss.
+                </div>
+                <span class="mech-chip">KPA</span>
+            </div>
+            <div class="mech-card">
+                <div class="mech-tag">Cross-Frame Residency</div>
+                <div class="mech-name">Persistent Hierarchy Residency</div>
+                <div class="mech-desc">
+                    Static world-geometry BVH stays pinned in Kache Kore's 4 GB across frames; only dynamic subtrees
+                    get refit by SBP each frame. The <strong>same residency mechanism</strong> is reused by
+                    Feingeometrie's geometry-cluster caching and by the GI-proxy BLAS &mdash; one cache infrastructure,
+                    several pipelines.
+                </div>
+                <span class="mech-chip">PHR</span>
+            </div>
+            <div class="mech-card">
+                <div class="mech-tag">Multi-Tile Coherence</div>
+                <div class="mech-name">Photonic Ray Mesh</div>
+                <div class="mech-desc">
+                    Extends Foveros 2.0's existing tile arbitration &mdash; already unifying the raster framebuffer and
+                    command queue across &times;4 E1080 tiles &mdash; to ray and BVH-node dispatch. All four tiles trade
+                    work as <strong>one coherent RT engine</strong>. Uses established Foveros 2.0 numbers: 448 Tbps,
+                    &minus;70% latency vs copper, 0.08 pJ/bit. No new interconnect physics.
+                </div>
+                <span class="mech-chip">Photonic Ray Mesh</span>
+            </div>
+        </div>
+
+        <!-- Fixed-resolver additions -->
+        <div style="margin-top:40px;">
+            <div class="rv-eyebrow gold">Fixed-Resolver Additions</div>
+            <div class="rv-h2" style="font-size:clamp(24px,3vw,34px);">Closed-form math, moved to dedicated silicon.</div>
+            <p class="rv-lede">
+                The same design principle the platform already applies to fixed-function acoustic compute &mdash;
+                closed-form geometric terms evaluated in dedicated silicon rather than shader code &mdash; applied here
+                to graphics. Each resolver replaces a screen-space approximation or a redundant pass with an exact,
+                near-free evaluation.
+            </p>
+            <div class="mech-grid">
+                <div class="mech-card">
+                    <div class="mech-tag">Motion &middot; from path length</div>
+                    <div class="mech-name">Free Motion Vectors</div>
+                    <div class="mech-desc">
+                        RTU5 traversal already computes high-precision hit distance per ray for BVH4. Retaining that
+                        value's frame-to-frame derivative hands XeFG 3.0 / XeSS 5.0 a motion-vector source with
+                        <strong>no separate G-buffer motion pass</strong> &mdash; nearly free, because the traversal
+                        payload already carries it.
+                    </div>
+                </div>
+                <div class="mech-card">
+                    <div class="mech-tag">Indirect lighting</div>
+                    <div class="mech-name">SH Probe Resolver</div>
+                    <div class="mech-desc">
+                        Fixed-function spherical-harmonic matrix multiply for irradiance-probe evaluation &mdash; a
+                        direction-to-SH-weights operation evaluated in <strong>dedicated silicon</strong> rather than
+                        shader code, for indirect-lighting probes.
+                    </div>
+                </div>
+                <div class="mech-card">
+                    <div class="mech-tag">Contact / silhouette</div>
+                    <div class="mech-name">Silhouette Fixed Resolver</div>
+                    <div class="mech-desc">
+                        Closed-form geometric term for contact shadows and silhouette softening at flagged edges
+                        &mdash; <strong>flagged at bake time, evaluated only where flagged</strong> &mdash; replacing
+                        the screen-space multi-sample approximations (PCF-style hacks, SSAO) most engines use here.
+                    </div>
+                </div>
+                <div class="mech-card">
+                    <div class="mech-tag">Multi-bounce indirect</div>
+                    <div class="mech-name">GI-Proxy Decimated BLAS</div>
+                    <div class="mech-desc">
+                        A coarse, decimated proxy tree for multi-bounce indirect rays &mdash; which don't need
+                        triangle-level fidelity &mdash; <strong>cached via PHR</strong> alongside the full-fidelity
+                        primary-ray BVH.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         BLOCK 04 — Intel 04A + FOveros 2.0
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="xe5-tech-block" style="flex-wrap:wrap;">
+        <div class="xe5-tech-num">04</div>
+
+        <div style="flex:1; min-width:0;">
+            <div class="xe5-tech-label">PROCESS NODE &middot; MULTI-TILE PHOTONIC FABRIC</div>
+            <div class="xe5-tech-name">Intel 04A + FOveros 2.0</div>
+            <p class="xe5-tech-body">
+                The Xe5 GPU tiles are manufactured on Intel 04A &mdash; the same world-leading process
+                node used by the Eventide Compute Tile. But what makes the E1080 unprecedented is
+                FOveros&nbsp;2.0: Intel's second-generation photonic interconnect fabric that binds up to
+                four GPU tiles into a single coherent device. Unlike organic substrate interconnects that
+                measure latency in nanoseconds and bandwidth in hundreds of GB/s, FOveros&nbsp;2.0 uses
+                on-package silicon photonic waveguides to deliver sub-2-nanosecond tile-to-tile latency
+                at over 3.2&nbsp;TB/s aggregate bisection bandwidth. The operating system and application
+                see one GPU, one memory space, one command queue. Shader work distribution across tiles,
+                cross-tile L2 cache coherency, and synchronized display output are all handled in hardware
+                by the FOveros tile controller &mdash; with zero driver overhead. This is not SLI. This is
+                not CrossFire. This is one GPU, built from four tiles, with single-GPU programming semantics.
+            </p>
+
+            <div class="xe5-tech-stats xe5-dd-stat-gold">
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val" style="color:var(--eventide-gold-light);">&times;4 tiles</div>
+                    <div class="xe5-tech-stat-key">single coherent device</div>
+                </div>
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val" style="color:var(--eventide-gold-light);">&lt;2 ns</div>
+                    <div class="xe5-tech-stat-key">tile-to-tile latency</div>
+                </div>
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val" style="color:var(--eventide-gold-light);">3.2 TB/s</div>
+                    <div class="xe5-tech-stat-key">bisection bandwidth</div>
+                </div>
+            </div>
+
+            <!-- GOG bar — gold variant -->
+            <div class="xe5-dd-gog xe5-dd-gog-gold">
+                <div class="gog-bar">
+                    <div class="gog-label">GEN-ON-GEN vs EMIB (PRIOR GEN)</div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Tile-to-tile latency</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:75%; background:var(--eventide-gold-light);"></div></div>
+                        <div class="gog-num" style="color:var(--eventide-gold-light);">&minus;65%</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Bisection bandwidth</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:90%; background:var(--eventide-gold-light);"></div></div>
+                        <div class="gog-num" style="color:var(--eventide-gold-light);">+4&times;</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Max tile count</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:65%; background:var(--eventide-gold-light);"></div></div>
+                        <div class="gog-num" style="color:var(--eventide-gold-light);">+2&times;</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="xe5-tech-aside">
+            <div class="xe5-aside-box">
+                <div class="xe5-aside-title">FOVEROS 2.0 SPECIFICATIONS</div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Interconnect</div><div class="xe5-aside-v">silicon photonic</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Tiles per device</div><div class="xe5-aside-v">up to 4</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Tile-to-tile latency</div><div class="xe5-aside-v">&lt;2 ns</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Bisection BW</div><div class="xe5-aside-v">3.2 TB/s</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Cache coherency</div><div class="xe5-aside-v">hardware</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Work distribution</div><div class="xe5-aside-v">hardware</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">PCIe presentation</div><div class="xe5-aside-v">single device</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Driver overhead</div><div class="xe5-aside-v">zero</div></div>
+                <div class="xe5-aside-row" style="border-bottom:none;"><div class="xe5-aside-k">Compatible tiles</div><div class="xe5-aside-v">Xe5 GPU only</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         BLOCK 05 — Unified Memory Architecture
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="xe5-tech-block" style="flex-wrap:wrap; border-bottom:none;">
+        <div class="xe5-tech-num">05</div>
+
+        <div style="flex:1; min-width:0;">
+            <div class="xe5-tech-label">MEMORY ARCHITECTURE &middot; KACHE KORE + ZAM</div>
+            <div class="xe5-tech-name">Unified Memory</div>
+            <p class="xe5-tech-body">
+                The Xe5 tiles share a unified memory architecture that bridges on-die cache, on-package
+                bLLC, and system DRAM into a coherent hierarchy. The centerpiece is Kache Kore &mdash;
+                a 4&nbsp;GB bLLC (bandwidthLLC) fabricated on Intel 04A alongside the compute tiles. For
+                the GPU, Kache Kore acts as an enormous L4 cache that absorbs the working set of most
+                1440p and many 4K game frames entirely on-package, eliminating the latency penalty of DRAM
+                round-trips. Each Xe5 tile maintains its own L2 cache (12&nbsp;MB/tile, 48&nbsp;MB total
+                across &times;4 E1080) plus a new 24&nbsp;MB tile-level L3 shared across the Xe5-core clusters,
+                RTU5 and XMX5 &mdash; where the KPA pruning logic sits before a miss falls through to Kache Kore
+                &mdash; with hardware cache coherency across tiles via FOveros&nbsp;2.0.
+                When a tile's L2 misses, the request hits Kache Kore at ~8&nbsp;ns latency &mdash;
+                comparable to dedicated GDDR7 on discrete GPUs &mdash; before falling through to Intel Z-Angle
+                Memory (ZAM) mounted directly on the FOveros 2.0 photonic substrate. Unlike conventional
+                DDR6/LPDDR6, ZAM is bandwidth and density-optimized for sustained high-throughput workloads,
+                delivering 2&ndash;3&nbsp;TB/s per controller and an effective 5&ndash;6&nbsp;TB/s across
+                both dual-channel ZAM controllers &mdash; dwarfing the bandwidth envelope of any discrete GDDR7 stack.
+                Smart Memory Tiling automatically pins frequently-accessed texture mipmap levels and shader
+                constants in Kache Kore, ensuring that bandwidth-critical data stays on-package.
+            </p>
+
+            <div class="xe5-tech-stats">
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val">4 GB bLLC</div>
+                    <div class="xe5-tech-stat-key">Kache Kore L4</div>
+                </div>
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val">48 MB</div>
+                    <div class="xe5-tech-stat-key">L2 across &times;4 tiles</div>
+                </div>
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val">~8 ns</div>
+                    <div class="xe5-tech-stat-key">Kache Kore latency</div>
+                </div>
+            </div>
+
+            <!-- GOG bar -->
+            <div class="xe5-dd-gog">
+                <div class="gog-bar">
+                    <div class="gog-label">ZAM vs DEDICATED GDDR7 (DISCRETE GPU)</div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Peak bandwidth vs GDDR7</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:95%; background:#F0B848;"></div></div>
+                        <div class="gog-num" style="color:#F0B848;">+~3&times;</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Cache-miss latency (raw ZAM)</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:45%; background:#F87171;"></div></div>
+                        <div class="gog-num" style="color:#F87171;">+~40%</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Memory power draw</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:82%; background:#F0B848;"></div></div>
+                        <div class="gog-num" style="color:#F0B848;">&minus;75%</div>
+                    </div>
+                </div>
+                <div style="font-size:10px; color:rgba(255,255,255,0.35); margin-top:8px; line-height:1.5;">
+                    ZAM trades raw latency for exceptional bandwidth and power efficiency. Cache-miss latency disadvantage is largely masked by Kache Kore&apos;s 4&nbsp;GB bLLC for hot working sets.
+                </div>
+            </div>
+        </div>
+
+        <div class="xe5-tech-aside">
+            <div class="xe5-aside-box">
+                <div class="xe5-aside-title">MEMORY HIERARCHY</div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">L0d per Xe5-core</div><div class="xe5-aside-v">16 KB (new)</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">L1 per Xe5-core</div><div class="xe5-aside-v">192 KB</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">L2 per tile</div><div class="xe5-aside-v">12 MB</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">L3 per tile</div><div class="xe5-aside-v">24 MB (new)</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">L3 total (&times;4)</div><div class="xe5-aside-v">96 MB</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Kache Kore bLLC (L4)</div><div class="xe5-aside-v">4 GB</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Kache Kore latency</div><div class="xe5-aside-v">~8 ns</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">ZAM controllers</div><div class="xe5-aside-v">2× dual-channel</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">ZAM bandwidth</div><div class="xe5-aside-v">2–3 TB/s/ctrl · 5–6 TB/s total</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Smart Memory Tiling</div><div class="xe5-aside-v">automatic</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Coherency</div><div class="xe5-aside-v">HW via FOveros</div></div>
+                <div class="xe5-aside-row" style="border-bottom:none;"><div class="xe5-aside-k">Address space</div><div class="xe5-aside-v">unified CPU+GPU</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         XE5 RASTER — new technologies behind the 5×/tile figure
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="rv-subsection" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:64px;">
+        <div class="rv-eyebrow">Xe5 Raster &middot; The Architecture Behind The Number</div>
+        <div class="rv-h2">5&times; per tile is no longer an assertion.</div>
+        <p class="rv-lede">
+            The raster specs were always here; the technology that earns them was not. Xe5 fills that gap with a
+            tile-based binning front-end, Nanite-class virtualized geometry, variable-rate shading driven by the
+            scheduler's own predictive model, feedback-streamed textures, and a wide low-precision shader ISA
+            &mdash; each contributing a measured multiplier that compounds to the published <strong>~5&times;/tile
+            &rarr; 20&times; across &times;4</strong>.
+        </p>
+
+        <!-- Kachelraster Engine + before/after -->
+        <div style="margin-top:40px;">
+            <div class="rv-eyebrow gold">Tile-Based Binning Rasterizer</div>
+            <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">Kachelraster Engine</div>
+            <p class="rv-lede">
+                Geometry is binned into 64&times;64px tiles and overdraw-culled <strong>before shading</strong>, using
+                a 2&nbsp;MB on-die bin buffer per raster cluster (shared with L2). Fragments that would be occluded
+                never enter the shader array &mdash; roughly <strong>40% less overdraw</strong> and
+                <strong>35% bandwidth saved</strong> versus immediate-mode rendering.
+            </p>
+            <div class="rv-fu-row">
+                <div class="rv-fu-stat"><div class="n">64&times;64px</div><div class="l">bin size</div></div>
+                <div class="rv-fu-stat"><div class="n">2 MB</div><div class="l">bin buffer / raster cluster (shared w/ L2)</div></div>
+                <div class="rv-fu-stat"><div class="n">~40%</div><div class="l">overdraw reduction</div></div>
+                <div class="rv-fu-stat"><div class="n">~35%</div><div class="l">bandwidth savings</div></div>
+            </div>
+
+            <div class="kach">
+                <div class="kach-panel before">
+                    <div class="kach-head">Immediate-mode &middot; shade-then-discard</div>
+                    <div class="kach-canvas">
+                        <div class="kach-layer" style="left:8%;top:14%;width:52%;height:60%;background:#38bdf8;"></div>
+                        <div class="kach-layer" style="left:26%;top:26%;width:52%;height:58%;background:#a78bfa;"></div>
+                        <div class="kach-layer" style="left:40%;top:10%;width:46%;height:66%;background:#f0b848;"></div>
+                        <div class="kach-layer" style="left:18%;top:40%;width:60%;height:44%;background:#f472b6;"></div>
+                    </div>
+                    <div class="kach-foot"><b>4 shaded layers</b> per pixel in the overlap &mdash; three are thrown away after shading.</div>
+                </div>
+                <div class="kach-panel after">
+                    <div class="kach-head">Kachelraster &middot; cull-then-shade</div>
+                    <div class="kach-canvas">
+                        <div class="kach-grid"></div>
+                        <div class="kach-layer" style="left:40%;top:10%;width:46%;height:66%;background:#f0b848;opacity:.8;"></div>
+                        <div class="kach-layer" style="left:8%;top:14%;width:32%;height:60%;background:#38bdf8;opacity:.8;"></div>
+                        <div class="kach-layer" style="left:18%;top:56%;width:22%;height:28%;background:#f472b6;opacity:.8;"></div>
+                    </div>
+                    <div class="kach-foot"><b>1 shaded layer</b> per pixel &mdash; occluded fragments are discarded per 64&times;64 bin, before the shader runs.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feingeometrie Engine -->
+        <div style="margin-top:48px;">
+            <div class="rv-eyebrow gold">Mesh / Task Shaders &middot; Virtualized Geometry</div>
+            <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">Feingeometrie Engine</div>
+            <p class="rv-lede">
+                Micro-triangle clustering at roughly <strong>128 triangles per cluster</strong> delivers Nanite-class
+                geometry virtualization &mdash; practical only because Kache Kore's 4&nbsp;GB bLLC can hold the cluster
+                hierarchy on-package. Feingeometrie shares <strong>PHR's residency mechanism</strong> with RT's BVH
+                caching: one cache infrastructure, two consumers.
+            </p>
+            <div class="rv-fu-row">
+                <div class="rv-fu-stat"><div class="n">~128 tris</div><div class="l">per micro-cluster</div></div>
+                <div class="rv-fu-stat"><div class="n">on-package</div><div class="l">cluster hierarchy in 4 GB bLLC</div></div>
+                <div class="rv-fu-stat"><div class="n">shared PHR</div><div class="l">residency reused from RT BVH caching</div></div>
+            </div>
+        </div>
+
+        <!-- VRS 3.0 / SFS / XeAVX-2048 / XeAPO cards -->
+        <div style="margin-top:48px;">
+            <div class="rv-eyebrow gold">Shading, Texture &amp; Dispatch Efficiency</div>
+            <div class="rv-h2" style="font-size:clamp(24px,3vw,34px);">Four more multipliers.</div>
+            <div class="mech-grid">
+                <div class="mech-card">
+                    <div class="mech-tag">Variable-Rate Shading</div>
+                    <div class="mech-name">VRS 3.0</div>
+                    <div class="mech-desc">
+                        1&times;1 to 4&times;4 coarse shading tiers, with rate selected per Kachelraster tile from the
+                        <strong>LPNPU co-pilot's existing predictive model</strong> &mdash; the same silicon already
+                        driving Thread Director's predictive dispatch. Saliency- and motion-based, reused hardware,
+                        not new.
+                    </div>
+                    <span class="mech-chip">1&times;1 &rarr; 4&times;4</span>
+                </div>
+                <div class="mech-card">
+                    <div class="mech-tag">Texture Streaming</div>
+                    <div class="mech-name">Sampler Feedback Streaming</div>
+                    <div class="mech-desc">
+                        Only the mip levels and texture regions actually sampled stream into Kache Kore &mdash;
+                        <strong>cutting effective VRAM pressure</strong> and the wasted ZAM bandwidth of speculative
+                        residency.
+                    </div>
+                    <span class="mech-chip">SFS</span>
+                </div>
+                <div class="mech-card">
+                    <div class="mech-tag">Wide Shader ISA &middot; distinct from XMX5</div>
+                    <div class="mech-name">XeAVX-2048</div>
+                    <div class="mech-desc">
+                        A general shader-ALU wide-ISA extension &mdash; <strong>not</strong> the matrix/AI-only XMX5.
+                        Packed sub-word execution (INT8 / FP8 / FP16 packed ops, 2&times;/4&times; rate per lane) for
+                        lower-precision raster work: shadows, particles, post-process.
+                    </div>
+                    <span class="mech-chip">2&times;/4&times; per lane</span>
+                </div>
+                <div class="mech-card">
+                    <div class="mech-tag">Per-Title GPU Tuning</div>
+                    <div class="mech-name">XeAPO</div>
+                    <div class="mech-desc">
+                        A GPU extension of Intel Application Optimization (part of Dynamic Tuning, working with Thread
+                        Director). Where APO tunes only CPU thread scheduling, XeAPO extends the same per-title profile
+                        system to GPU dispatch &mdash; <strong>Kachelraster bin size, VRS 3.0 aggressiveness, SBP/KPA
+                        cache residency policy, wavefront occupancy targets</strong> &mdash; run through the same LPNPU
+                        predictive co-pilot, not a separate system.
+                    </div>
+                    <span class="mech-chip">XeAPO</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cache hierarchy interactive diagram -->
+        <div style="margin-top:52px;">
+            <div class="rv-eyebrow gold">GPU Cache Hierarchy</div>
+            <div class="rv-h2" style="font-size:clamp(24px,3vw,34px);">Two new tiers. Two bumps.</div>
+            <p class="rv-lede">
+                Click a tier to see what it holds and why it was added. The prior hierarchy was L0-instruction only,
+                128&nbsp;KB L1, 8&nbsp;MB L2 and the Kache Kore L4 &mdash; with no L0-data and no tile-level L3.
+            </p>
+            <div class="cache">
+                <input type="radio" name="cache-tier" id="c-l0d">
+                <input type="radio" name="cache-tier" id="c-l1">
+                <input type="radio" name="cache-tier" id="c-l2">
+                <input type="radio" name="cache-tier" id="c-l3" checked>
+                <input type="radio" name="cache-tier" id="c-l4">
+                <div class="cache-tiers">
+                    <div class="cache-tier" style="opacity:.7;cursor:default;">
+                        <div class="tier-id">L0i</div>
+                        <div class="tier-mid"><div class="nm">Instruction cache</div><div class="role">per 16-core cluster &middot; unchanged this generation</div></div>
+                        <div class="tier-spec">existing</div>
+                    </div>
+                    <label class="cache-tier" for="c-l0d">
+                        <div class="tier-id">L0d</div>
+                        <div class="tier-mid"><div class="nm">Data cache <span class="tier-badge new">NEW</span></div><div class="role">private, feeds 32-wide wavefront ports directly</div></div>
+                        <div class="tier-spec">16 KB / core</div>
+                    </label>
+                    <label class="cache-tier" for="c-l1">
+                        <div class="tier-id">L1</div>
+                        <div class="tier-mid"><div class="nm">Per-core L1 <span class="tier-badge bump">BUMP</span></div><div class="role">128 KB &rarr; 192 KB per core</div></div>
+                        <div class="tier-spec">192 KB / core</div>
+                    </label>
+                    <label class="cache-tier" for="c-l2">
+                        <div class="tier-id">L2</div>
+                        <div class="tier-mid"><div class="nm">Per-tile L2 <span class="tier-badge bump">BUMP</span></div><div class="role">8 MB &rarr; 12 MB per tile</div></div>
+                        <div class="tier-spec">12 MB / tile &middot; 48 MB &times;4</div>
+                    </label>
+                    <label class="cache-tier" for="c-l3">
+                        <div class="tier-id">L3</div>
+                        <div class="tier-mid"><div class="nm">Tile-level L3 <span class="tier-badge new">NEW</span></div><div class="role">shared across Xe5 clusters + RTU5 + XMX5</div></div>
+                        <div class="tier-spec">24 MB / tile &middot; 96 MB &times;4</div>
+                    </label>
+                    <label class="cache-tier" for="c-l4">
+                        <div class="tier-id">L4</div>
+                        <div class="tier-mid"><div class="nm">Kache Kore bLLC</div><div class="role">4 GB on-package &middot; unchanged this generation</div></div>
+                        <div class="tier-spec">4 GB &middot; ~8 ns</div>
+                    </label>
+                </div>
+
+                <div class="cache-detail d-l0d">
+                    <strong>L0d &middot; 16 KB/core, private (NEW).</strong> A dedicated data cache that feeds the
+                    32-wide wavefront ports directly. Previously the hierarchy had no L0-data tier at all &mdash; the
+                    nearest data lived in L1. L0d shortens the path from cache to lane, keeping the wide shader
+                    front-end fed without an L1 round trip on every access.
+                </div>
+                <div class="cache-detail d-l1">
+                    <strong>L1 &middot; 192 KB/core (bumped from 128 KB).</strong> Per-core private cache, grown 50% to
+                    match the wider Xe5 core (512 shaders/core) and the deeper wave dispatch. More resident working set
+                    per core means fewer spills to L2 under the wide-wavefront workloads Xe5 is built for.
+                </div>
+                <div class="cache-detail d-l2">
+                    <strong>L2 &middot; 12 MB/tile, 48 MB across &times;4 (bumped from 8 MB / 32 MB).</strong> Per-tile
+                    shared cache, coherent across tiles via Foveros 2.0. Also backs the Kachelraster Engine's 2 MB bin
+                    buffer per raster cluster.
+                </div>
+                <div class="cache-detail d-l3">
+                    <strong>L3 &middot; 24 MB/tile, 96 MB across &times;4 (NEW).</strong> A new tile-level tier shared
+                    across the Xe5-core clusters, RTU5, and XMX5 within the tile. <strong>This is where the KPA pruning
+                    logic sits</strong> &mdash; rays are tested against bounding boxes here, before a miss ever falls
+                    through to Kache Kore L4. It is the seam between the compute tiers and the on-package bLLC.
+                </div>
+                <div class="cache-detail d-l4">
+                    <strong>L4 &middot; Kache Kore, 4 GB bLLC (unchanged).</strong> The on-package bandwidth LLC at
+                    ~8 ns. It absorbs whole 1440p and many 4K frame working sets, holds PHR's pinned static BVH and
+                    Feingeometrie's cluster hierarchy, and is the destination SBP streams completed nodes into.
+                </div>
+                <div class="cache-hint">Showing L3 &mdash; select any tier above.</div>
+            </div>
+        </div>
+
+        <!-- Raster compounding table + 2DKR note -->
+        <div style="margin-top:52px;">
+            <div class="rv-eyebrow gold">Raster Compounding</div>
+            <div class="rv-h2" style="font-size:clamp(24px,3vw,34px);">Where the 5&times; comes from.</div>
+            <p class="rv-lede">
+                Each contributor is a measured multiplier, not a headline. They compound &mdash; and the product lands
+                on the same <strong>~4.8&ndash;5&times;/tile</strong> the platform already publishes, which becomes
+                <strong>20&times; across &times;4 tiles</strong>.
+            </p>
+            <div class="rcmp">
+                <div class="rcmp-row">
+                    <div class="rcmp-name">Raw shader / ROP / clock scale <span style="color:rgba(255,255,255,0.35);">(Xe5 core width, Intel 04A headroom)</span></div>
+                    <div class="rcmp-mult">2.1&times;</div>
+                </div>
+                <div class="rcmp-row">
+                    <div class="rcmp-name">Kachelraster Engine <span style="color:rgba(255,255,255,0.35);">(overdraw elimination)</span></div>
+                    <div class="rcmp-mult">1.35&times;</div>
+                </div>
+                <div class="rcmp-row">
+                    <div class="rcmp-name">Kache Kore bandwidth absorption</div>
+                    <div class="rcmp-mult">1.25&times;</div>
+                </div>
+                <div class="rcmp-row">
+                    <div class="rcmp-name">VRS 3.0 + Sampler Feedback Streaming</div>
+                    <div class="rcmp-mult">1.3&times;</div>
+                </div>
+                <div class="rcmp-row">
+                    <div class="rcmp-name">2DKR offload</div>
+                    <div class="rcmp-mult">1.04&times;</div>
+                </div>
+                <div class="rcmp-row total">
+                    <div class="rcmp-name">Compounded</div>
+                    <div class="rcmp-mult">~4.8&ndash;5&times;</div>
+                </div>
+            </div>
+            <div class="rv-cnote">
+                <h5>2DKR Contribution &middot; Minor, Honest Multiplier</h5>
+                <p>
+                    The 2D Kanvas Renderer pulls UI, HUD and overlay compositing out of the 3D pipeline entirely.
+                    That is worth a real but small <strong>+3&ndash;5% effective 3D throughput</strong> &mdash; the
+                    1.04&times; term above. It is listed as its own line precisely because it should not be folded
+                    into the larger multipliers to inflate them.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         COMPARISON DATA — Elementalist (multi-brand)
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="rv-subsection" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:64px;">
+        <div class="rv-eyebrow">Elementalist &middot; Cross-Reference</div>
+        <div class="rv-h2">E1080 &times;4 tile, in context.</div>
+        <p class="rv-lede">
+            Where a number is derived from another (an RTX 5090 tier gap carried onto a second part), the derivation
+            is shown on the number itself &mdash; not buried in a footnote. Raw and effective RT figures stay labeled
+            separately, exactly as on the RTU5 chart above.
+        </p>
+
+        <!-- Grouped bar chart: E1080 ×4 advantage multiple per competitor -->
+        <div class="gbar">
+            <div class="gbar-legend">
+                <div class="gbar-leg"><span class="gbar-swatch" style="background:#76B900;"></span>vs RTX 5090</div>
+                <div class="gbar-leg"><span class="gbar-swatch" style="background:#E4544E;"></span>vs RX 9070 XT <span style="color:rgba(255,255,255,0.35);">(derived)</span></div>
+                <div class="gbar-leg"><span class="gbar-swatch" style="background:#5B8DEF;"></span>Adreno X2-90</div>
+            </div>
+
+            <div class="gbar-group">
+                <div class="gbar-glabel">Raster <span class="unit">E1080 &times;4 advantage multiple &middot; raw</span></div>
+                <div class="gbar-row">
+                    <div class="gbar-name">RTX 5090</div>
+                    <div class="gbar-track"><div class="gbar-fill" style="width:33.9%;background:#76B900;"></div></div>
+                    <div class="gbar-val">20&times;</div>
+                </div>
+                <div class="gbar-row">
+                    <div class="gbar-name">RX 9070 XT</div>
+                    <div class="gbar-track"><div class="gbar-fill" style="width:74.6%;background:#E4544E;"></div></div>
+                    <div class="gbar-val"><span class="drv">~44&times;</span>
+                        <details class="deriv"><summary>derived</summary>
+                            <div class="deriv-body">E1080 &times;4 = <code>20&times;</code> the RTX 5090 in raster. The RX 9070 XT sits <strong>~2.2&times; below</strong> the 5090, so <code>20 &times; 2.2 = ~44&times;</code> vs the E1080 &times;4 tile.</div>
+                        </details>
+                    </div>
+                </div>
+                <div class="gbar-row">
+                    <div class="gbar-name">Adreno X2-90</div>
+                    <div class="gbar-track"><div class="gbar-fill" style="width:0;"></div></div>
+                    <div class="gbar-val" style="color:rgba(255,255,255,0.35);">n/a</div>
+                </div>
+            </div>
+
+            <div class="gbar-group">
+                <div class="gbar-glabel">Ray tracing &middot; raw <span class="unit">E1080 &times;4 advantage multiple</span></div>
+                <div class="gbar-row">
+                    <div class="gbar-name">RTX 5090</div>
+                    <div class="gbar-track"><div class="gbar-fill" style="width:28.5%;background:#76B900;"></div></div>
+                    <div class="gbar-val">16.8&times;</div>
+                </div>
+                <div class="gbar-row">
+                    <div class="gbar-name">RX 9070 XT</div>
+                    <div class="gbar-track"><div class="gbar-fill" style="width:62.7%;background:#E4544E;"></div></div>
+                    <div class="gbar-val"><span class="drv">~37&times;</span>
+                        <details class="deriv"><summary>derived</summary>
+                            <div class="deriv-body">E1080 &times;4 raw RT = <code>16.8&times;</code> the RTX 5090. Carrying the same <strong>~2.2&times;</strong> tier gap: <code>16.8 &times; 2.2 = ~37&times;</code>.</div>
+                        </details>
+                    </div>
+                </div>
+                <div class="gbar-row">
+                    <div class="gbar-name">Adreno X2-90</div>
+                    <div class="gbar-track"><div class="gbar-fill" style="width:0;"></div></div>
+                    <div class="gbar-val" style="color:rgba(255,255,255,0.35);">n/a</div>
+                </div>
+            </div>
+
+            <div class="gbar-group">
+                <div class="gbar-glabel">Ray tracing &middot; effective <span class="unit">E1080 &times;4 advantage multiple &middot; + SBP/KPA/PHR</span></div>
+                <div class="gbar-row">
+                    <div class="gbar-name">RTX 5090</div>
+                    <div class="gbar-track"><div class="gbar-fill" style="width:45.8%;background:#76B900;"></div></div>
+                    <div class="gbar-val">~27&times;</div>
+                </div>
+                <div class="gbar-row">
+                    <div class="gbar-name">RX 9070 XT</div>
+                    <div class="gbar-track"><div class="gbar-fill" style="width:100%;background:#E4544E;"></div></div>
+                    <div class="gbar-val"><span class="drv">~59&times;</span>
+                        <details class="deriv"><summary>derived</summary>
+                            <div class="deriv-body">E1080 &times;4 effective RT = <code>~27&times;</code> the RTX 5090. Same <strong>~2.2&times;</strong> tier gap: <code>27 &times; 2.2 = ~59&times;</code>.</div>
+                        </details>
+                    </div>
+                </div>
+                <div class="gbar-row">
+                    <div class="gbar-name">Adreno X2-90</div>
+                    <div class="gbar-track"><div class="gbar-fill" style="width:0;"></div></div>
+                    <div class="gbar-val" style="color:rgba(255,255,255,0.35);">n/a</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AMD tier-gap contextual note (inline, not a footnote) -->
+        <div class="rv-inline-callout">
+            <div class="ic">▲</div>
+            <div class="tx">
+                <strong>Why RX 9070 XT figures are derived, not measured.</strong> There is no flagship-tier RX part
+                to benchmark directly this generation &mdash; AMD has not fielded one, by choice. The RX 9070 XT
+                numbers above are transitively derived from its ~2.2&times; standing below the RTX 5090, which is why
+                each carries its derivation inline. Adreno X2-90 is a different product category entirely (an SoC
+                iGPU) and is cross-referenced on efficiency/TOPS only, never placed on this discrete-tier scale.
+            </div>
+        </div>
+
+        <!-- Full spec comparison table -->
+        <div class="rv-table-wrap" style="max-width:920px;">
+            <table class="rv-table" style="min-width:640px;">
+                <caption>Elementalist E1080 cross-reference &middot; competitor specs shown as fact, not callout</caption>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th><span style="color:#8fce00;">RTX 5090</span></th>
+                        <th><span style="color:#f08a86;">RX 9070 XT</span></th>
+                        <th><span style="color:#8fb3f5;">Adreno X2-90</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Raster &middot; vs E1080 &times;4</th>
+                        <td class="rv-mono">baseline &rarr; 20&times; raw</td>
+                        <td class="rv-mono rv-eff">~44&times; <span style="font-weight:400;font-size:10px;color:rgba(255,255,255,0.4);">derived</span></td>
+                        <td style="color:rgba(255,255,255,0.4);">not comparable tier</td>
+                    </tr>
+                    <tr>
+                        <th>RT &middot; vs E1080 &times;4</th>
+                        <td class="rv-mono">16.8&times; raw / ~27&times; eff</td>
+                        <td class="rv-mono rv-eff">~37&times; raw / ~59&times; eff <span style="font-weight:400;font-size:10px;color:rgba(255,255,255,0.4);">derived</span></td>
+                        <td style="color:rgba(255,255,255,0.4);">not comparable tier</td>
+                    </tr>
+                    <tr>
+                        <th>FP32 compute</th>
+                        <td>~105 TFLOPS</td>
+                        <td>mid-range tier</td>
+                        <td>LP tier</td>
+                    </tr>
+                    <tr>
+                        <th>Process node</th>
+                        <td>TSMC 4N-class</td>
+                        <td>TSMC N4</td>
+                        <td>TSMC 3nm</td>
+                    </tr>
+                    <tr>
+                        <th>Memory</th>
+                        <td>32 GB GDDR7 · ~1.8 TB/s</td>
+                        <td>16 GB GDDR6</td>
+                        <td>228 GB/s LPDDR5X (SoC-shared)</td>
+                    </tr>
+                    <tr>
+                        <th>Context</th>
+                        <td style="color:rgba(255,255,255,0.4);">&mdash;</td>
+                        <td style="color:rgba(255,255,255,0.55);">No flagship-tier part fielded this generation, by choice</td>
+                        <td style="color:rgba(255,255,255,0.55);">Different product category (SoC iGPU) &mdash; TOPS/efficiency cross-reference only</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</div>
   </div>
-  <script>window.NG_DEEPDIVE_SRC = "../../GPU.architectures/eventide.GPU.elementalist.html";</script>
-  <script src="../../deepdive.js" defer></script>
 </body>
 </html>
