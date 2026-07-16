@@ -548,14 +548,18 @@
 <div class="section" style="position:relative; z-index:1;">
 
     <!-- ── Section Header ── -->
-    <div class="arc-gpu-label">Arc Elementalist &middot; Xe5 Technology Showcase</div>
+    <div class="arc-gpu-label">Arc Elementalist &middot; Xe5 &middot; RTU5</div>
     <div class="arc-gpu-heading" style="line-height:0.88;">ELEMENTALIST<br><span style="color:#F0B848;">Xe5</span></div>
     <p class="arc-gpu-intro">
-        The fifth-generation Xe architecture represents a complete reimagining of Intel's GPU silicon.
-        Wider shader cores. Deeper wave dispatch. Native FP64. A next-generation matrix engine that
-        makes dedicated AI accelerators unnecessary. And a ray tracing unit that handles BVH4 traversal,
-        ReSTIR, and VR stereo rendering in hardware. Built on Intel 04A and connected over FOveros 2.0
-        photonic fabric &mdash; up to four tiles operating as one.
+        Every dedicated flagship shipped so far is a card you add to a machine. Elementalist is the
+        machine's GPU &mdash; and it does not iterate on the last generation, it redraws the line.
+        A photonic network of Xe5 tiles that presents to the operating system as one coherent device:
+        a single fanless tile in a thin-and-light, four tiles fused over FOveros&nbsp;2.0 in a
+        2,000&nbsp;W workstation, the same architecture at both ends. Wider cores with out-of-order
+        wave dispatch and FP8-through-FP64 vector width. A matrix engine that retires the add-in AI
+        accelerator. And a ray tracing unit that stopped building trees &mdash; it only intersects them
+        now, and everything else moved to silicon built for it. One architecture, the whole GPU segment,
+        on Intel 04A. Unified as one.
     </p>
 
     <!-- ═══════════════════════════════════════════════════════════
@@ -1228,9 +1232,10 @@
             <div class="xe5-tech-label">MEMORY ARCHITECTURE &middot; KACHE KORE + ZAM</div>
             <div class="xe5-tech-name">Unified Memory</div>
             <p class="xe5-tech-body">
-                The Xe5 tiles share a unified memory architecture that bridges on-die cache, on-package
-                bLLC, and system DRAM into a coherent hierarchy. The centerpiece is Kache Kore &mdash;
-                a 4&nbsp;GB bLLC (bandwidthLLC) fabricated on Intel 04A alongside the compute tiles. For
+                A discrete GPU carries its memory. Elementalist inherits the platform's. Six tiers &mdash;
+                L0 through the Kache Kore L4 and out to terabyte-class ZAM &mdash; collapse into one coherent
+                hierarchy with no PCIe wall anywhere in it. The centerpiece is Kache Kore: a 4&nbsp;GB bLLC
+                (bandwidthLLC) fabricated on Intel 04A alongside the compute tiles. For
                 the GPU, Kache Kore acts as an enormous L4 cache that absorbs the working set of most
                 1440p and many 4K game frames entirely on-package, eliminating the latency penalty of DRAM
                 round-trips. Each Xe5 tile maintains its own L2 cache (12&nbsp;MB/tile, 48&nbsp;MB total
@@ -1395,10 +1400,11 @@
             <div class="xe5-tech-label">PROCESS NODE &middot; MULTI-TILE PHOTONIC FABRIC</div>
             <div class="xe5-tech-name">Intel 04A + FOveros 2.0</div>
             <p class="xe5-tech-body">
-                The Xe5 GPU tiles are manufactured on Intel 04A &mdash; the same world-leading process
-                node used by the Eventide Compute Tile. But what makes the E1080 unprecedented is
-                FOveros&nbsp;2.0: Intel's second-generation photonic interconnect fabric that binds up to
-                four GPU tiles into a single coherent device. Unlike organic substrate interconnects that
+                This is the seam where four tiles stop being four. The Xe5 GPU tiles are built on
+                Intel 04A &mdash; the same world-leading node as the Eventide Compute Tile &mdash; but the
+                part that has no precedent is FOveros&nbsp;2.0: a second-generation photonic interconnect
+                that binds up to four GPU tiles into a single coherent device, and means it &mdash; one
+                memory space, one command queue, assembled from four dies over light. Unlike organic substrate interconnects that
                 measure latency in nanoseconds and bandwidth in hundreds of GB/s, FOveros&nbsp;2.0 uses
                 on-package silicon photonic waveguides to deliver sub-2-nanosecond tile-to-tile latency
                 at over 3.2&nbsp;TB/s aggregate bisection bandwidth. The operating system and application
