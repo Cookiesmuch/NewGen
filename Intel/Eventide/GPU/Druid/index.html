@@ -11,14 +11,992 @@
 <body>
   <a class="back-button" href="../../">← Back to Overview</a>
   <div id="deepdive-container" class="deepdive-container">
-    <noscript>
-      <p style="padding: 96px 24px; text-align: center;">
-        This page assembles its content with JavaScript.
-        <a href="../../GPU.architectures/eventide.GPU.druid.html">View the raw Druid content directly</a>.
-      </p>
-    </noscript>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --intel-blue: #0068B5;
+  --intel-blue-dark: #004A86;
+  --eventide-gold: #C8922A;
+  --eventide-gold-light: #F0B848;
+  --eventide-dusk: #1A0A2E;
+  --text-primary: #0F0F0F;
+  --text-muted: #7A7A7A;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+.section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 64px 48px;
+}
+
+.section-divider {
+  height: 3px;
+  background: linear-gradient(90deg, var(--intel-blue), #6B21A8, var(--eventide-gold));
+}
+
+.arc-gpu-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: #38bdf8;
+  margin-bottom: 10px;
+}
+
+.arc-gpu-heading {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 60px);
+  color: white;
+  line-height: .95;
+  letter-spacing: .03em;
+}
+
+.arc-gpu-intro {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.75;
+  max-width: 640px;
+  margin-top: 12px;
+}
+
+.xe5-tech-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 56px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  position: relative;
+  overflow: hidden;
+}
+
+.xe5-tech-block:last-child {
+  border-bottom: none;
+  padding-bottom: 24px;
+}
+
+.xe5-tech-num {
+  font-family: var(--font-display);
+  font-size: clamp(320px,50vw,520px);
+  color: rgba(255,255,255,0.025);
+  line-height: .75;
+  position: absolute;
+  left: -120px;
+  top: 50%;
+  transform: translateY(-50%);
+  user-select: none;
+  pointer-events: none;
+  z-index: 0;
+  letter-spacing: -.05em;
+}
+
+.xe5-tech-block > div:not(.xe5-tech-num) { position: relative; z-index: 1; }
+
+.xe5-tech-label,
+.xe4e-tech-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.xe5-tech-label { color: #F0B848; }
+.xe4e-tech-label { color: #34d399; }
+
+.xe5-tech-name,
+.xe4e-tech-name {
+  font-family: var(--font-display);
+  font-size: clamp(40px,5vw,70px);
+  color: white;
+  line-height: .92;
+  letter-spacing: .02em;
+  margin-bottom: 20px;
+}
+
+.xe5-tech-body {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.8;
+  max-width: 540px;
+}
+
+.xe5-tech-stats {
+  display: flex;
+  gap: 14px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.xe5-tech-stat {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 8px;
+  padding: 14px 18px;
+  flex-shrink: 0;
+}
+
+.xe5-tech-stat-val,
+.xe4e-stat-val {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.xe5-tech-stat-val { color: #F0B848; }
+.xe4e-stat-val { color: #34d399; }
+
+.xe5-tech-stat-key {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  margin-top: 3px;
+}
+
+.xe5-tech-aside { width: 272px; flex-shrink: 0; }
+
+.xe5-aside-box,
+.xe4e-aside-box {
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.xe5-aside-box {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+}
+
+.xe4e-aside-box {
+  background: rgba(15,118,110,0.08);
+  border: 1px solid rgba(52,211,153,0.2);
+}
+
+.xe5-aside-title,
+.xe4e-aside-title {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.xe5-aside-title { color: rgba(255,255,255,0.25); }
+.xe4e-aside-title { color: rgba(52,211,153,0.4); }
+
+.xe5-aside-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  gap: 10px;
+}
+
+.xe5-aside-row:last-child { border-bottom: none; }
+.xe5-aside-k { font-size: 11px; color: rgba(255,255,255,0.3); }
+.xe5-aside-v { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.75); text-align: right; }
+
+.gog-bar { margin-top: 20px; }
+.gog-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 6px;
+  letter-spacing: .05em;
+}
+.gog-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.gog-metric { font-size: 10px; color: rgba(255,255,255,0.35); width: 110px; flex-shrink: 0; }
+.gog-track { flex: 1; height: 5px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+.gog-fill { height: 100%; border-radius: 2px; background: #F0B848; }
+.gog-num { font-family: var(--font-mono); font-size: 10px; font-weight: 600; color: #F0B848; width: 55px; text-align: right; }
+
+@media (max-width: 900px) {
+  .section { padding: 40px 24px; }
+  .xe5-tech-block { flex-direction: column; gap: 24px; }
+  .xe5-tech-num { font-size: clamp(200px,40vw,300px); left: -80px; top: 50%; transform: translateY(-50%); }
+  .xe5-tech-aside { width: 100%; }
+}
+</style>
+
+<style>
+/* ── Xe4E Showcase Wrapper — Deep Forest Theme ──────────────── */
+.xe4e-showcase-wrap {
+  background:
+    radial-gradient(ellipse 70% 50% at 20% 20%, rgba(5,150,105,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 80% 80%, rgba(52,211,153,0.06) 0%, transparent 55%),
+    linear-gradient(180deg, #030E0A 0%, #020A07 60%, #030E0A 100%);
+  position: relative;
+  overflow: hidden;
+}
+.xe4e-showcase-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(52,211,153,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(52,211,153,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+/* ── Enhanced Section Header ────────────────────────────────── */
+.xe4e-section-heading {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 7vw, 88px);
+  line-height: 0.92;
+  color: white;
+  letter-spacing: 0.02em;
+  margin-bottom: 10px;
+}
+.xe4e-section-heading span { color: #34D399; }
+.xe4e-section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: rgba(52,211,153,0.55);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.xe4e-section-intro {
+  font-size: 15px;
+  color: rgba(255,255,255,0.48);
+  margin-bottom: 42px;
+  font-style: italic;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+/* ── Inner Divider ──────────────────────────────────────────── */
+.xe4e-inner-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(52,211,153,0.18) 20%, rgba(52,211,153,0.18) 80%, transparent);
+  margin: 52px 0;
+}
+
+/* ── GOG Bars (Gen-on-Gen) for Xe4E ─────────────────────────── */
+.xe4e-gog-bar { margin-top: 20px; }
+.xe4e-gog-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(52,211,153,0.4);
+  margin-bottom: 6px;
+  letter-spacing: 0.05em;
+}
+.xe4e-gog-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.xe4e-gog-metric {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  width: 110px;
+  flex-shrink: 0;
+}
+.xe4e-gog-track {
+  flex: 1;
+  height: 5px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.xe4e-gog-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: #34D399;
+}
+.xe4e-gog-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: #34D399;
+  width: 55px;
+  text-align: right;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media(max-width:900px) {
+  .xe5-tech-block { flex-direction: column; gap: 24px; }
+  .xe5-tech-num { font-size: clamp(200px, 40vw, 300px); left: -80px; top: 50%; transform: translateY(-50%); }
+  .xe5-tech-aside { width: 100%; }
+}
+</style>
+
+<style>
+/* ============================================================
+   Druid Revamp — efficiency-tier comparison + perf/watt curve.
+   Same component classes used on the Elementalist fragment
+   (the two fragments never share a DOM — each deep-dive route
+   loads exactly one). Green accent for the Druid theme.
+   Interaction is CSS-only / <details> — fragment <script> tags
+   are not executed by the deep-dive loader.
+   ============================================================ */
+.rv-subsection { padding: 40px 0 8px; }
+.rv-eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: rgba(52,211,153,0.7); margin-bottom: 12px; }
+.rv-h2 { font-family: var(--font-display); font-size: clamp(30px, 4vw, 48px); color: white; line-height: .95; letter-spacing: .02em; margin-bottom: 14px; }
+.rv-lede { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.8; max-width: 720px; margin-bottom: 8px; }
+.rv-lede strong { color: rgba(255,255,255,0.82); font-weight: 600; }
+
+.rv-cnote { border-left: 3px solid #34D399; background: rgba(52,211,153,0.05); border-radius: 0 8px 8px 0; padding: 16px 20px; margin-top: 22px; max-width: 760px; }
+.rv-cnote h5 { font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #6ee7b7; margin-bottom: 8px; }
+.rv-cnote p { font-size: 12.5px; line-height: 1.75; color: rgba(255,255,255,0.6); }
+.rv-cnote p strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+
+.rv-table-wrap { overflow-x: auto; margin-top: 26px; max-width: 920px; }
+.rv-table { width: 100%; border-collapse: collapse; min-width: 620px; }
+.rv-table caption { text-align: left; font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,0.4); padding-bottom: 12px; }
+.rv-table th, .rv-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.07); font-size: 13px; }
+.rv-table thead th { font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,0.45); font-weight: 500; }
+.rv-table tbody th { font-weight: 500; color: rgba(255,255,255,0.65); font-size: 12px; }
+.rv-table td.rv-mono { font-family: var(--font-mono); font-weight: 700; color: #6ee7b7; }
+
+.gbar { margin-top: 26px; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; padding: 24px; background: rgba(255,255,255,0.02); max-width: 820px; }
+.gbar-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.gbar-leg { display: flex; align-items: center; gap: 7px; font-size: 11px; color: rgba(255,255,255,0.6); font-family: var(--font-mono); }
+.gbar-swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+.gbar-group { margin-bottom: 22px; }
+.gbar-group:last-child { margin-bottom: 0; }
+.gbar-glabel { font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 600; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.gbar-glabel .unit { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.35); font-weight: 400; }
+.gbar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+.gbar-name { width: 150px; flex-shrink: 0; font-size: 10.5px; font-family: var(--font-mono); color: rgba(255,255,255,0.5); }
+.gbar-track { flex: 1; height: 18px; background: rgba(255,255,255,0.045); border-radius: 4px; overflow: hidden; min-width: 50px; }
+.gbar-fill { height: 100%; border-radius: 4px; }
+.gbar-val { width: 128px; flex-shrink: 0; text-align: right; font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.85); }
+.gbar-cat { display: block; font-weight: 400; font-size: 9px; color: rgba(255,255,255,0.4); letter-spacing: .02em; }
+
+.deriv { display: inline-block; margin-left: 6px; vertical-align: middle; }
+.deriv summary { list-style: none; cursor: pointer; font-family: var(--font-mono); font-size: 8.5px; letter-spacing: .08em; text-transform: uppercase; color: #6ee7b7; border: 1px solid rgba(52,211,153,0.35); border-radius: 4px; padding: 2px 6px; display: inline-block; }
+.deriv summary::-webkit-details-marker { display: none; }
+.deriv summary:hover { background: rgba(52,211,153,0.12); }
+.deriv[open] summary { background: rgba(52,211,153,0.15); }
+.deriv .deriv-body { margin-top: 8px; border: 1px solid rgba(52,211,153,0.3); background: #04140e; border-radius: 8px; padding: 13px 15px; font-size: 11.5px; line-height: 1.7; color: rgba(255,255,255,0.65); width: 300px; max-width: 82vw; font-family: var(--font-body); text-transform: none; letter-spacing: normal; }
+.deriv .deriv-body code { font-family: var(--font-mono); color: #6ee7b7; background: rgba(52,211,153,0.08); padding: 1px 5px; border-radius: 3px; font-size: 11px; }
+.deriv .deriv-body strong { color: rgba(255,255,255,0.88); }
+
+.rv-inline-callout { margin-top: 22px; display: flex; gap: 14px; align-items: flex-start; border: 1px solid rgba(52,211,153,0.28); background: rgba(52,211,153,0.05); border-radius: 10px; padding: 16px 18px; max-width: 820px; }
+.rv-inline-callout .ic { font-size: 18px; line-height: 1; flex-shrink: 0; color: #6ee7b7; }
+.rv-inline-callout .tx { font-size: 12.5px; line-height: 1.72; color: rgba(255,255,255,0.62); }
+.rv-inline-callout .tx strong { color: rgba(255,255,255,0.88); font-weight: 600; }
+
+/* ── Perf/Watt efficiency curve (radio-hack competitor toggle) ── */
+.effc { margin-top: 26px; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; padding: 24px; background: rgba(4,20,14,0.5); max-width: 820px; position: relative; }
+.effc input { position: absolute; opacity: 0; pointer-events: none; }
+.effc-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 6px; }
+.effc-title { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,0.55); }
+.effc-toggle { display: inline-flex; border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; overflow: hidden; flex-wrap: wrap; }
+.effc-toggle label { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .04em; text-transform: uppercase; padding: 7px 11px; color: rgba(255,255,255,0.45); cursor: pointer; user-select: none; border-right: 1px solid rgba(255,255,255,0.1); transition: background .15s, color .15s; }
+.effc-toggle label:last-of-type { border-right: none; }
+.effc-toggle label:hover { color: rgba(255,255,255,0.85); }
+.effc:has(#ef-all:checked) label[for="ef-all"],
+.effc:has(#ef-d390:checked) label[for="ef-d390"],
+.effc:has(#ef-snap:checked) label[for="ef-snap"],
+.effc:has(#ef-strix:checked) label[for="ef-strix"] { background: #34D399; color: #04140e; font-weight: 700; }
+.effc-plot { margin-top: 14px; }
+.effc-curve { transition: opacity .2s, stroke-width .2s; }
+/* dim non-selected curves */
+.effc:has(#ef-d390:checked) .effc-curve:not(.c-d390),
+.effc:has(#ef-snap:checked) .effc-curve:not(.c-snap),
+.effc:has(#ef-strix:checked) .effc-curve:not(.c-strix) { opacity: .12; stroke-width: 1.5; }
+.effc-caption { font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.6; margin-top: 10px; }
+.effc-persist { display: inline-block; margin-top: 12px; font-family: var(--font-mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: #fbbf24; border: 1px solid rgba(251,191,36,0.35); background: rgba(251,191,36,0.06); border-radius: 5px; padding: 4px 9px; }
+
+@media (max-width: 720px) {
+  .gbar-name { width: 108px; }
+  .gbar-val { width: 96px; }
+}
+</style>
+
+<div class="xe4e-showcase-wrap">
+<div class="section" style="position:relative; z-index:1;">
+
+  <!-- ════════════════════════════════════════════════════════════════
+       SECTION HEADER
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="xe4e-section-label">Arc Druid &middot; Xe4E Technology Showcase</div>
+  <div class="xe4e-section-heading">Efficiency,<br><span>redefined.</span></div>
+  <p class="xe4e-section-intro">
+    Xe4E is not a cut-down Xe5. It is a purpose-built efficiency variant of the Xe4 desktop
+    architecture, re-engineered from the transistor level for Intel 06E &mdash; the most
+    power-efficient process node Intel has ever built. Where Xe5 pursues peak throughput
+    without regard for power, Xe4E pursues the maximum useful work per milliwatt. Every
+    shader, every matrix unit, every ray tracing core is individually power-gated and
+    clock-scaled for the workload at hand.
+  </p>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       BLOCK 01 — Xe4E Core
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="xe4e-inner-divider"></div>
+
+  <div class="xe5-tech-block">
+    <!-- Number -->
+    <div class="xe5-tech-num" style="color:rgba(52,211,153,0.05)">01</div>
+
+    <!-- Content -->
+    <div style="flex:1;min-width:0;">
+      <div class="xe4e-tech-label">Shader Architecture &middot; Xe4 Efficiency Variant</div>
+      <div class="xe4e-tech-name">Xe4E Core</div>
+      <div class="xe5-tech-body">
+        <p>
+          Per-shader power gating is the defining microarchitectural innovation of the Xe4E
+          core &mdash; a technique borrowed from CPU design and applied to GPU execution units
+          for the first time in a production graphics processor. In traditional GPU
+          architectures, the entire shader array must be powered on whenever any workload is
+          active; individual execution units cannot be selectively shut down based on demand.
+          Xe4E breaks this constraint. Each EU (execution unit) within the Xe4E core has
+          independent power-gate transistors that allow it to enter a deep sleep state within a
+          single clock cycle, and wake within two cycles. The granularity is per-shader, not
+          per-core &mdash; meaning that in a 14-core D390, the active shader count continuously
+          adjusts to match the instantaneous workload, from a single EU to all 3,584.
+        </p>
+        <p>
+          Adaptive clock stepping complements per-shader gating with per-core frequency scaling
+          at sub-millisecond granularity. Rather than operating at a single boost clock until
+          thermal limits are hit, each Xe4E core independently selects from a 32-step frequency
+          ladder based on real-time ALU utilization feedback. A core running at 15% occupancy
+          drops to 800&nbsp;MHz; the same core at 95% occupancy scales to 2.4&nbsp;GHz &mdash;
+          all within the same frame, with no driver intervention.
+        </p>
+        <p>
+          The result is a GPU that sustains a 3W active power floor for lightweight 3D
+          workloads &mdash; UI compositing in light games, hardware video decode overlay,
+          Windows animation effects &mdash; while scaling to 22W only when the workload
+          genuinely demands it. The +58% performance-per-watt improvement over the prior
+          Panther Lake Arc B390 is not achieved by clock speed or shader count increases, but by
+          eliminating the wasted power that traditional GPU architectures burn on idle execution
+          resources.
+        </p>
+      </div>
+
+      <!-- Stats -->
+      <div class="xe5-tech-stats">
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">+58% PPW</div>
+          <div class="xe5-tech-stat-key">vs B390 (Panther Lake)</div>
+        </div>
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">3W</div>
+          <div class="xe5-tech-stat-key">sustained active floor</div>
+        </div>
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">per-shader</div>
+          <div class="xe5-tech-stat-key">power gating</div>
+        </div>
+      </div>
+
+      <!-- GOG Bar -->
+      <div class="xe4e-gog-bar">
+        <div class="xe4e-gog-label">GEN-ON-GEN vs PANTHER LAKE ARC B390</div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">Perf-per-watt</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:58%;"></div></div>
+          <div class="xe4e-gog-num">+58%</div>
+        </div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">Active power floor</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:62%;"></div></div>
+          <div class="xe4e-gog-num">&minus;62%</div>
+        </div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">Shader utilization</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:40%;"></div></div>
+          <div class="xe4e-gog-num">+40%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aside -->
+    <div class="xe5-tech-aside">
+      <div class="xe4e-aside-box">
+        <div class="xe4e-aside-title">Xe4E Core &mdash; Key Parameters</div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Base architecture</span><span class="xe5-aside-v">Xe4 (desktop variant)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Process</span><span class="xe5-aside-v">Intel 06E</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Power gating</span><span class="xe5-aside-v">Per-shader EU (not per-core)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Clock stepping</span><span class="xe5-aside-v">32-step adaptive ladder</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Min active</span><span class="xe5-aside-v">3W (single EU)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Max active</span><span class="xe5-aside-v">22W (D390, full load)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">GPU-switch</span><span class="xe5-aside-v">Safe (instant on/off)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">ISA compat</span><span class="xe5-aside-v">Xe4 full backward compat</span></div>
+      </div>
+    </div>
   </div>
-  <script>window.NG_DEEPDIVE_SRC = "../../GPU.architectures/eventide.GPU.druid.html";</script>
-  <script src="../../deepdive.js" defer></script>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       BLOCK 02 — XMX4E AI Acceleration
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="xe4e-inner-divider"></div>
+
+  <div class="xe5-tech-block">
+    <!-- Number -->
+    <div class="xe5-tech-num" style="color:rgba(52,211,153,0.05)">02</div>
+
+    <!-- Content -->
+    <div style="flex:1;min-width:0;">
+      <div class="xe4e-tech-label">AI Matrix Acceleration &middot; Generation 4E</div>
+      <div class="xe4e-tech-name">XMX4E</div>
+      <div class="xe5-tech-body">
+        <p>
+          XMX4E is the dedicated AI matrix accelerator embedded within the Xe4E GPU architecture
+          &mdash; purpose-built for the high-throughput, burst-mode AI workloads that demand
+          GPU-class compute. Real-time image upscaling, AI-driven video enhancement, diffusion
+          model inference, frame generation, and per-pixel super-resolution all require sustained
+          matrix throughput that only a tightly coupled GPU accelerator can deliver. XMX4E
+          provides that capability directly inside the LP GPU tile, eliminating the latency and
+          bandwidth overhead of offloading to a discrete compute block.
+        </p>
+        <p>
+          Native support for INT4, INT8, FP8, and BF16 precision formats covers the full
+          spectrum of modern inference models. INT4 quantized models &mdash; the dominant format
+          for efficient edge AI in 2027 &mdash; run at peak efficiency on XMX4E, delivering
+          ~553&nbsp;TOPS at the D390&rsquo;s 14-core configuration. This is not a theoretical
+          peak calculated from matrix unit count; it is a sustained throughput figure measured
+          under continuous inference load with thermal steady-state power consumption.
+        </p>
+        <p>
+          On fully configured Eventide APUs, AI workloads are segmented across four
+          purpose-built engines. The LPNPU handles always-on ambient AI &mdash; lightweight
+          neural networks that run continuously at near-zero power even with every other block
+          powered down. The HNPU handles batch-mode and dedicated NPU inference: large model pipelines, XeSS
+          acceleration, and sustained throughput workloads that leverage its 256 TOPS and
+          32&nbsp;MB scratchpad. XMX4E fills the LP GPU tier &mdash; GPU-coupled inference that
+          runs on the Druid tile alongside rendering and media decode, with direct access to
+          on-die frame buffers. On configurations that pair Druid with an Elementalist iGPU,
+          XMX5 operates in parallel as the high-throughput matrix engine &mdash; handling heavy
+          diffusion, frame generation, and large-model inference at full GPU-class bandwidth.
+          All four engines activate independently and can run simultaneously without contention.
+        </p>
+      </div>
+
+      <!-- Stats -->
+      <div class="xe5-tech-stats">
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">~553 TOPS</div>
+          <div class="xe5-tech-stat-key">at D390 (INT4)</div>
+        </div>
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">GPU-coupled</div>
+          <div class="xe5-tech-stat-key">burst AI</div>
+        </div>
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">3-5W</div>
+          <div class="xe5-tech-stat-key">during inference</div>
+        </div>
+      </div>
+
+      <!-- GOG Bar -->
+      <div class="xe4e-gog-bar">
+        <div class="xe4e-gog-label">GEN-ON-GEN vs PANTHER LAKE LP iGPU AI</div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">AI TOPS (sustained)</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:100%;"></div></div>
+          <div class="xe4e-gog-num">+280%</div>
+        </div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">Power during inference</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:55%;"></div></div>
+          <div class="xe4e-gog-num">&minus;45%</div>
+        </div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">GPU AI throughput</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:100%;"></div></div>
+          <div class="xe4e-gog-num">New</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aside -->
+    <div class="xe5-tech-aside">
+      <div class="xe4e-aside-box">
+        <div class="xe4e-aside-title">XMX4E &mdash; Precision &amp; Capabilities</div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">INT4</span><span class="xe5-aside-v">Native (primary inference format)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">INT8</span><span class="xe5-aside-v">Native (quantized models)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">FP8</span><span class="xe5-aside-v">E4M3 / E5M2</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">BF16</span><span class="xe5-aside-v">Native (fine-tuning support)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Peak throughput</span><span class="xe5-aside-v">~553 TOPS (D390, INT4)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Sustained power</span><span class="xe5-aside-v">3-5W during inference</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Activation</span><span class="xe5-aside-v">On-demand (with LP GPU tile)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Workload split</span><span class="xe5-aside-v">Background AI &rarr; LPNPU, GPU inference &rarr; XMX4E, Batch AI &rarr; HNPU, Heavy GPU AI &rarr; XMX5 (Elementalist configs)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Framework</span><span class="xe5-aside-v">DirectML / oneAPI / ONNX RT</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       BLOCK 03 — RTU4 Ray Tracing
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="xe4e-inner-divider"></div>
+
+  <div class="xe5-tech-block">
+    <!-- Number -->
+    <div class="xe5-tech-num" style="color:rgba(52,211,153,0.05)">03</div>
+
+    <!-- Content -->
+    <div style="flex:1;min-width:0;">
+      <div class="xe4e-tech-label">Ray Tracing &middot; Generation 4</div>
+      <div class="xe4e-tech-name">RTU4</div>
+      <div class="xe5-tech-body">
+        <p>
+          RTU4 brings hardware-accelerated ray tracing to efficiency-class GPUs for the first
+          time in Intel&rsquo;s lineup. Previous LP iGPUs relied on shader-based (software) ray
+          tracing, which consumed 5&ndash;10&times; the power of dedicated RT hardware for
+          equivalent visual quality. RTU4&rsquo;s fixed-function BVH traversal unit handles the
+          computationally expensive acceleration structure traversal in dedicated silicon,
+          freeing the Xe4E shader cores to focus exclusively on shading and lighting
+          calculations.
+        </p>
+        <p>
+          The RTU4 design prioritizes quality-per-watt over raw throughput. It is not intended
+          to compete with RTU5&rsquo;s multi-level BVH4 traversal for heavy RT workloads
+          &mdash; that is Xe5&rsquo;s domain. Instead, RTU4 targets a specific class of ray
+          tracing use cases: ambient occlusion, soft shadows, single-bounce reflections, and
+          area-light sampling for indoor scenes. These are the RT effects that transform a game
+          from &ldquo;flat and game-like&rdquo; to &ldquo;believable&rdquo; &mdash; and RTU4
+          can render them at mobile TDPs (10&ndash;15W) where software RT would be
+          prohibitively expensive.
+        </p>
+        <p>
+          Area-light sampling is RTU4&rsquo;s standout feature for visual quality-per-ray.
+          Traditional point-light ray tracing requires many rays to approximate the soft shadow
+          falloff of real-world area lights (windows, panels, lamps). RTU4 implements
+          hardware-level area light importance sampling that produces equivalent shadow softness
+          with 3&ndash;4&times; fewer rays per light, enabling realistic indoor lighting at the
+          limited ray budgets appropriate for an efficiency-class GPU.
+        </p>
+      </div>
+
+      <!-- Stats -->
+      <div class="xe5-tech-stats">
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">HW BVH</div>
+          <div class="xe5-tech-stat-key">traversal (dedicated silicon)</div>
+        </div>
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">56 RTU4</div>
+          <div class="xe5-tech-stat-key">units (D390)</div>
+        </div>
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">Area-light</div>
+          <div class="xe5-tech-stat-key">native sampling</div>
+        </div>
+      </div>
+
+      <!-- GOG Bar -->
+      <div class="xe4e-gog-bar">
+        <div class="xe4e-gog-label">VS SOFTWARE RT ON PRIOR LP iGPUs</div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">RT rays/s at 10W</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:100%;"></div></div>
+          <div class="xe4e-gog-num">+500%</div>
+        </div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">RT-enabled titles at LP</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:100%;"></div></div>
+          <div class="xe4e-gog-num">1st gen</div>
+        </div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">Shadow quality/ray</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:75%;"></div></div>
+          <div class="xe4e-gog-num">+300%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aside -->
+    <div class="xe5-tech-aside">
+      <div class="xe4e-aside-box">
+        <div class="xe4e-aside-title">RTU4 &mdash; Ray Tracing Architecture</div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">BVH structure</span><span class="xe5-aside-v">BVH2 (binary traversal)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Fixed-function</span><span class="xe5-aside-v">Full HW BVH traversal</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Target effects</span><span class="xe5-aside-v">AO, soft shadows, reflections</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Light sampling</span><span class="xe5-aside-v">Area-light importance (hardware)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Power budget</span><span class="xe5-aside-v">10-15W RT active</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">RT + raster fallback</span><span class="xe5-aside-v">Hybrid pipeline</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">API support</span><span class="xe5-aside-v">DXR 1.2 / Vulkan RT 1.4</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">vs software RT</span><span class="xe5-aside-v">~5-10&times; perf/W improvement</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       BLOCK 04 — Intel 06E Process Node
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="xe4e-inner-divider"></div>
+
+  <div class="xe5-tech-block">
+    <!-- Number -->
+    <div class="xe5-tech-num" style="color:rgba(52,211,153,0.05)">04</div>
+
+    <!-- Content -->
+    <div style="flex:1;min-width:0;">
+      <div class="xe4e-tech-label">Process Node &middot; Efficiency Breakthrough</div>
+      <div class="xe4e-tech-name">Intel 06E</div>
+      <div class="xe5-tech-body">
+        <p>
+          Intel 06E is not a derivative of Intel 04A &mdash; it is a purpose-designed efficiency
+          process node developed in parallel. Where 04A optimizes for peak transistor performance
+          (highest drive current, fastest switching speed, maximum frequency ceiling), 06E
+          optimizes for the opposite end of the design space: minimum leakage current, lowest
+          operating voltage, and smallest power-per-transistor at moderate frequencies. The Xe4E
+          core, the UHE Lunar Eclipse CPU core, the LPNPU, and the LP Island&rsquo;s supporting
+          logic are all fabricated on 06E, forming Eventide&rsquo;s always-on efficiency
+          substrate.
+        </p>
+        <p>
+          The headline metric is &minus;35% power per transistor compared to Intel 04A at
+          equivalent logic density. This is achieved through a combination of
+          high-threshold-voltage (high-Vt) transistor variants, longer gate lengths where timing
+          closure permits, and Intel&rsquo;s Adaptive Body Bias (ABB) technique that dynamically
+          adjusts the transistor substrate voltage to minimize leakage during low-activity
+          periods. At standby, the 06E die achieves leakage current below TSMC N5 &mdash; a node
+          two full generations older &mdash; while delivering higher performance density when
+          active.
+        </p>
+        <p>
+          The co-design between 06E and 04A is a critical but invisible aspect of
+          Eventide&rsquo;s architecture. Both nodes share the same metallization pitch in their
+          upper interconnect layers, enabling the LP Island (06E) to bond directly to the Compute
+          Tile (04A) through FOveros 2.0 without impedance-matching bridge logic. Data flows
+          between the 04A and 06E dies at full fabric speed, with no protocol translation or
+          bandwidth penalty &mdash; a level of cross-node integration that is only possible when
+          both process nodes are designed within the same foundry ecosystem.
+        </p>
+      </div>
+
+      <!-- Stats -->
+      <div class="xe5-tech-stats">
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">&minus;35%</div>
+          <div class="xe5-tech-stat-key">power vs 04A</div>
+        </div>
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">Always-on</div>
+          <div class="xe5-tech-stat-key">GPU-switch safe</div>
+        </div>
+        <div class="xe5-tech-stat" style="border-color:rgba(52,211,153,0.2);background:rgba(52,211,153,0.05);">
+          <div class="xe4e-stat-val">&lt; N5</div>
+          <div class="xe5-tech-stat-key">standby leakage</div>
+        </div>
+      </div>
+
+      <!-- GOG Bar -->
+      <div class="xe4e-gog-bar">
+        <div class="xe4e-gog-label">GEN-ON-GEN vs INTEL 04A (COMPUTE NODE)</div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">Power per transistor</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:35%;"></div></div>
+          <div class="xe4e-gog-num">&minus;35%</div>
+        </div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">Standby leakage</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:65%;"></div></div>
+          <div class="xe4e-gog-num">&lt; N5</div>
+        </div>
+        <div class="xe4e-gog-row">
+          <div class="xe4e-gog-metric">Die area efficiency</div>
+          <div class="xe4e-gog-track"><div class="xe4e-gog-fill" style="width:20%;"></div></div>
+          <div class="xe4e-gog-num">+20%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aside -->
+    <div class="xe5-tech-aside">
+      <div class="xe4e-aside-box">
+        <div class="xe4e-aside-title">Intel 06E &mdash; Process Parameters</div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Node class</span><span class="xe5-aside-v">Efficiency-optimized</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Power vs 04A</span><span class="xe5-aside-v">&minus;35% per transistor</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Leakage</span><span class="xe5-aside-v">Below TSMC N5 at standby</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Vt variants</span><span class="xe5-aside-v">Multi-Vt (high-Vt dominant)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">ABB</span><span class="xe5-aside-v">Adaptive Body Bias</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Uses</span><span class="xe5-aside-v">LP Island, Xe4E, LPNPU, UHE, LPE</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Metallization</span><span class="xe5-aside-v">Shared upper pitch with 04A</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Cross-die bond</span><span class="xe5-aside-v">FOveros 2.0 (no bridge chip)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Standby draw</span><span class="xe5-aside-v">&lt;50mW (full Xe4E die)</span></div>
+        <div class="xe5-aside-row"><span class="xe5-aside-k">Co-designed with</span><span class="xe5-aside-v">Intel 04A team</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       COMPARISON DATA — Druid (efficiency tier)
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="xe4e-inner-divider"></div>
+
+  <div class="rv-subsection">
+    <div class="rv-eyebrow">Druid D390 &middot; Efficiency-Tier Cross-Reference</div>
+    <div class="rv-h2">Same tier. <span style="color:#34D399;">Different silicon categories.</span></div>
+    <p class="rv-lede">
+      D390 competes in the thin-and-light efficiency tier, but the parts it sits beside solve the AI and RT problems
+      with different silicon. The comparison below labels those category differences explicitly rather than flattening
+      them into one number &mdash; and every efficiency percentage stays tagged as its own vendor's within-family claim.
+    </p>
+
+    <!-- Category caveat — must lead the TOPS chart -->
+    <div class="rv-inline-callout">
+      <div class="ic">◆</div>
+      <div class="tx">
+        <strong>These TOPS are not the same silicon category.</strong> D390's ~553 TOPS come from
+        <strong>XMX4E &mdash; a GPU-coupled matrix engine</strong> that runs inference on the Druid tile alongside
+        rendering. The Snapdragon and Strix figures come from <strong>dedicated NPU dies</strong> (Hexagon, XDNA2)
+        that do nothing else. Read the bars as "what runs where," not as a like-for-like throughput race.
+      </div>
+    </div>
+
+    <!-- Grouped bar chart: AI compute, silicon category labeled per bar -->
+    <div class="gbar">
+      <div class="gbar-legend">
+        <div class="gbar-leg"><span class="gbar-swatch" style="background:#34D399;"></span>D390 · XMX4E (GPU-coupled)</div>
+        <div class="gbar-leg"><span class="gbar-swatch" style="background:#5B8DEF;"></span>Snapdragon X2 · Hexagon NPU</div>
+        <div class="gbar-leg"><span class="gbar-swatch" style="background:#E4544E;"></span>Strix Point/Halo · XDNA2 NPU</div>
+      </div>
+      <div class="gbar-group">
+        <div class="gbar-glabel">AI compute <span class="unit">peak TOPS · category noted per bar</span></div>
+        <div class="gbar-row">
+          <div class="gbar-name">D390 (Druid)</div>
+          <div class="gbar-track"><div class="gbar-fill" style="width:100%;background:#34D399;"></div></div>
+          <div class="gbar-val">~553 TOPS<span class="gbar-cat">XMX4E · GPU-coupled matrix</span></div>
+        </div>
+        <div class="gbar-row">
+          <div class="gbar-name">Snapdragon X2 Elite Extreme</div>
+          <div class="gbar-track"><div class="gbar-fill" style="width:14.5%;background:#5B8DEF;"></div></div>
+          <div class="gbar-val">80 TOPS<span class="gbar-cat">Hexagon · dedicated NPU die</span></div>
+        </div>
+        <div class="gbar-row">
+          <div class="gbar-name">Strix Point/Halo</div>
+          <div class="gbar-track"><div class="gbar-fill" style="width:9%;background:#E4544E;"></div></div>
+          <div class="gbar-val">~50 TOPS<span class="gbar-cat">XDNA2 · dedicated NPU (approx.)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full spec comparison table -->
+    <div class="rv-table-wrap">
+      <table class="rv-table">
+        <caption>Druid D390 efficiency-tier cross-reference</caption>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th><span style="color:#6ee7b7;">D390 (Druid)</span></th>
+            <th><span style="color:#8fb3f5;">Snapdragon X2 Elite Extreme</span></th>
+            <th><span style="color:#f08a86;">Strix Point/Halo-class</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>AI compute</th>
+            <td class="rv-mono">~553 TOPS <span style="font-weight:400;font-size:10px;color:rgba(255,255,255,0.4);">XMX4E, GPU-coupled</span></td>
+            <td>80 TOPS <span style="font-size:10px;color:rgba(255,255,255,0.4);">Hexagon NPU die</span></td>
+            <td>~50 TOPS <span style="font-size:10px;color:rgba(255,255,255,0.4);">XDNA2 NPU, approx.</span></td>
+          </tr>
+          <tr>
+            <th>Hardware RT</th>
+            <td>RTU4 · dedicated HW BVH + area-light sampling</td>
+            <td style="color:rgba(255,255,255,0.4);">none at this tier</td>
+            <td style="color:rgba(255,255,255,0.4);">none at this tier</td>
+          </tr>
+          <tr>
+            <th>Raster target</th>
+            <td>RTX 5060M-class</td>
+            <td style="color:rgba(255,255,255,0.55);">Integrated — not a discrete-GPU-class target</td>
+            <td style="color:rgba(255,255,255,0.55);">RDNA 3.5 iGPU · up to ~40 CUs (top config)</td>
+          </tr>
+          <tr>
+            <th>Efficiency claim basis</th>
+            <td>+58% PPW vs prior-gen B390
+              <details class="deriv"><summary>within-family</summary>
+                <div class="deriv-body">Intel's own generational claim: D390 delivers <code>+58%</code> performance-per-watt over the <strong>Panther Lake Arc B390</strong>. A within-family figure — not a cross-vendor PPW measurement.</div>
+              </details>
+            </td>
+            <td>2.3× PPW vs prior-gen X1 Elite Adreno
+              <details class="deriv"><summary>within-family</summary>
+                <div class="deriv-body">Qualcomm's own generational claim: <code>2.3×</code> the perf-per-watt of the <strong>X1 Elite</strong> Adreno. Also within-family — not comparable head-to-head with Intel's +58%.</div>
+              </details>
+            </td>
+            <td style="color:rgba(255,255,255,0.55);">Vendor-specific · not directly comparable</td>
+          </tr>
+          <tr>
+            <th>Process</th>
+            <td>Intel 06E</td>
+            <td>TSMC 3nm</td>
+            <td>TSMC N4</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rv-cnote">
+      <h5>Reading The Efficiency Claims</h5>
+      <p>
+        <strong>+58%</strong> (D390) and <strong>2.3×</strong> (Snapdragon) are each measured against that vendor's
+        <strong>own prior generation</strong> — Intel vs B390, Qualcomm vs X1 Elite. They are not a shared axis, and
+        nothing here implies a direct D390-vs-Snapdragon perf/watt race. Strix's efficiency is vendor-specific and not
+        expressed on a comparable basis at all.
+      </p>
+    </div>
+
+    <!-- Efficiency curve (perf/watt), togglable, persistent disclaimer -->
+    <div style="margin-top:44px;">
+      <div class="rv-eyebrow">Perf-Per-Watt Curve</div>
+      <div class="rv-h2" style="font-size:clamp(24px,3vw,34px);">Where each part spends its watts.</div>
+      <p class="rv-lede">
+        Illustrative perf/watt shape across the power envelope — where a part peaks and how long it holds efficiency
+        as it scales up. Toggle a device to isolate its curve. Because each vendor publishes only within-family
+        claims, these curves are shape-illustrative and share no measured axis.
+      </p>
+      <div class="effc">
+        <input type="radio" name="ef" id="ef-all" checked>
+        <input type="radio" name="ef" id="ef-d390">
+        <input type="radio" name="ef" id="ef-snap">
+        <input type="radio" name="ef" id="ef-strix">
+        <div class="effc-head">
+          <div class="effc-title">Relative perf-per-watt vs power draw</div>
+          <div class="effc-toggle">
+            <label for="ef-all">All</label>
+            <label for="ef-d390">D390</label>
+            <label for="ef-snap">Snapdragon</label>
+            <label for="ef-strix">Strix</label>
+          </div>
+        </div>
+        <div class="effc-plot">
+          <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;" role="img" aria-label="Illustrative perf-per-watt curves for D390, Snapdragon X2, and Strix Point/Halo across their power envelopes">
+            <!-- axes -->
+            <line x1="60" y1="255" x2="670" y2="255" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+            <line x1="60" y1="30" x2="60" y2="255" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+            <text x="365" y="285" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="rgba(255,255,255,0.4)">Power draw →</text>
+            <text x="20" y="145" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" fill="rgba(255,255,255,0.4)" transform="rotate(-90 20 145)">Relative perf/watt →</text>
+            <!-- power tick hints -->
+            <text x="150" y="270" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="rgba(255,255,255,0.28)">low</text>
+            <text x="365" y="270" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="rgba(255,255,255,0.28)">mid</text>
+            <text x="600" y="270" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="8" fill="rgba(255,255,255,0.28)">high</text>
+            <!-- Strix -->
+            <path class="effc-curve c-strix" d="M70,240 C200,190 320,140 430,132 C530,125 610,158 660,196" fill="none" stroke="#E4544E" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- Snapdragon -->
+            <path class="effc-curve c-snap" d="M70,175 C110,85 152,74 196,92 C270,122 400,196 660,238" fill="none" stroke="#5B8DEF" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- D390 -->
+            <path class="effc-curve c-d390" d="M70,222 C150,92 205,72 305,74 C425,77 525,112 660,178" fill="none" stroke="#34D399" stroke-width="3" stroke-linecap="round"/>
+            <!-- peak markers -->
+            <circle class="effc-curve c-d390" cx="305" cy="74" r="4" fill="#34D399"/>
+            <circle class="effc-curve c-snap" cx="196" cy="92" r="4" fill="#5B8DEF"/>
+            <circle class="effc-curve c-strix" cx="430" cy="132" r="4" fill="#E4544E"/>
+          </svg>
+        </div>
+        <div class="effc-caption">
+          D390 holds peak efficiency across a broad mid-power band before declining; the Snapdragon SoC peaks earlier
+          and narrower at very low power; Strix's envelope sits further right at a lower relative peak. Shapes are
+          illustrative of each part's design intent, not a measured overlay.
+        </div>
+        <div class="effc-persist">Not independently cross-benchmarked · shapes illustrative</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+  </div>
 </body>
 </html>

@@ -2,7 +2,8 @@
 // Validates the true-filepath site structure:
 //   1. every route in assets/nav.js has a real <route>/index.html on disk
 //   2. every page is reachable through Server/server.js with HTTP 200
-//   3. every deep-dive stub points at an existing content fragment
+//   3. no route still references the retired client-side deep-dive loader
+//      (Eventide pages are self-contained index.html files)
 //   4. unknown routes return HTTP 404
 //   5. launcher watchdog endpoints respond
 const fs = require('fs');
@@ -44,8 +45,10 @@ function extractNavRoutes() {
   return Array.from(routes);
 }
 
-function extractDeepdiveStubs() {
-  const stubs = [];
+// The client-side deep-dive loader was retired: every Eventide route is now a
+// self-contained index.html. Flag any page still wired to the old mechanism.
+function findLegacyDeepdiveRefs() {
+  const offenders = [];
   const eventideDir = path.join(ROOT, 'Intel', 'Eventide');
   const walk = (dir) => {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -54,15 +57,14 @@ function extractDeepdiveStubs() {
         walk(absolute);
       } else if (entry.name === 'index.html') {
         const html = fs.readFileSync(absolute, 'utf8');
-        const match = html.match(/window\.NG_DEEPDIVE_SRC\s*=\s*"([^"]+)"/);
-        if (match) {
-          stubs.push({ stub: absolute, contentRel: match[1] });
+        if (/NG_DEEPDIVE_SRC/.test(html) || /src="[^"]*deepdive\.js"/.test(html)) {
+          offenders.push(absolute);
         }
       }
     }
   };
   walk(eventideDir);
-  return stubs;
+  return offenders;
 }
 
 async function fetchStatus(url, options = {}) {
@@ -113,15 +115,18 @@ async function main() {
     }
   }
 
-  const stubs = extractDeepdiveStubs();
-  info('Deep-dive stubs discovered', `(total=${stubs.length})`);
-  for (const { stub, contentRel } of stubs) {
-    const contentAbs = path.resolve(path.dirname(stub), contentRel);
-    if (fs.existsSync(contentAbs)) {
-      ok('Deep-dive content exists', `(stub=${path.relative(ROOT, stub)})`);
-    } else {
-      fail('Deep-dive content missing', `(stub=${path.relative(ROOT, stub)}, content=${contentRel})`);
+  const legacyRefs = findLegacyDeepdiveRefs();
+  if (legacyRefs.length === 0) {
+    ok('No route references the retired deep-dive loader (pages are self-contained)');
+  } else {
+    for (const ref of legacyRefs) {
+      fail('Route still wired to retired deep-dive loader', `(page=${path.relative(ROOT, ref)})`);
     }
+  }
+  if (!fs.existsSync(path.join(ROOT, 'Intel', 'Eventide', 'deepdive.js'))) {
+    ok('Retired deepdive.js loader is absent');
+  } else {
+    fail('Intel/Eventide/deepdive.js still present — loader was meant to be retired');
   }
 
   info('Starting local server for HTTP checks');
