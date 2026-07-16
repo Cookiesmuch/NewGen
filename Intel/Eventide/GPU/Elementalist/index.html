@@ -571,15 +571,23 @@
                 The Xe5 shader core is the widest, deepest execution unit Intel has ever built for graphics.
                 Each Xe5-core contains 512 unified shaders &mdash; double the 256-shader Xe4E &mdash; organised
                 into 32-wide wavefronts with out-of-order wave dispatch. The front-end decodes up to
-                4&nbsp;instructions per clock per wavefront, feeding a 512-entry reorder buffer that allows
-                waves to execute non-sequentially based on data readiness. This is a technique borrowed from
-                CPU microarchitecture: waves that hit cache misses yield to waves with data ready, eliminating
-                pipeline bubbles that plague in-order GPU schedulers. The L0 instruction cache per 16-core
-                cluster eliminates instruction fetch bottlenecks for shader-heavy workloads. Native FP64
-                support &mdash; not emulated through FP32 pairs &mdash; delivers double-precision compute
-                performance at 1/2&nbsp;FP32 rate, making the E1080 viable for scientific workstation use
-                without a discrete GPU. Compared to the Xe2 generation in Battlemage, the Xe5 core delivers
-                a 2.2&times; improvement in instructions retired per clock.
+                4&nbsp;instructions per clock per wavefront, feeding a 512-entry reorder buffer so waves execute
+                non-sequentially by data readiness &mdash; a CPU-microarchitecture technique that lets a wave
+                stalled on a cache miss yield to a wave with data ready, eliminating the pipeline bubbles that
+                plague in-order GPU schedulers. Feeding those lanes is a new <strong>16&nbsp;KB private L0-data
+                cache</strong> per core, straight into the 32-wide wavefront ports, backed by a
+                <strong>192&nbsp;KB L1</strong> (up from 128&nbsp;KB) and the per-16-core-cluster L0 instruction
+                cache.
+            </p>
+            <p class="xe5-tech-body" style="margin-top:16px;">
+                Riding those same ALUs is <strong>XeAVX-2048</strong> &mdash; a 2048-bit-wide vector ISA extension,
+                distinct from the matrix-only XMX5, that spans the entire precision range in one unit. At the low
+                end it packs FP8 / INT8 / FP16 at 2&times;/4&times; rate per lane for shadows, particles and
+                post-process; at the high end it runs <strong>native FP64 at 1/2&nbsp;FP32 rate</strong>, not
+                emulated through FP32 pairs. That width is what makes the E1080's double-precision throughput
+                workstation-real rather than a checkbox: the same silicon that shades a game frame runs HPC-class
+                FP64 vector math, no discrete compute card required. Against the Xe2 generation in Battlemage, the
+                Xe5 core retires 2.2&times; the instructions per clock.
             </p>
 
             <div class="xe5-tech-stats">
@@ -592,8 +600,12 @@
                     <div class="xe5-tech-stat-key">vs 256 in Xe2/Xe4E</div>
                 </div>
                 <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val">XeAVX-2048</div>
+                    <div class="xe5-tech-stat-key">2048-bit vector ISA · FP8→FP64</div>
+                </div>
+                <div class="xe5-tech-stat">
                     <div class="xe5-tech-stat-val">native FP64</div>
-                    <div class="xe5-tech-stat-key">1/2 FP32 rate</div>
+                    <div class="xe5-tech-stat-key">1/2 FP32 rate · via XeAVX-2048</div>
                 </div>
             </div>
 
@@ -626,8 +638,11 @@
                 <div class="xe5-aside-row"><div class="xe5-aside-k">Execution width</div><div class="xe5-aside-v">32-wide wavefronts</div></div>
                 <div class="xe5-aside-row"><div class="xe5-aside-k">Wave dispatch</div><div class="xe5-aside-v">Out-of-order</div></div>
                 <div class="xe5-aside-row"><div class="xe5-aside-k">ROB depth</div><div class="xe5-aside-v">512 entries</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">L0 I-cache</div><div class="xe5-aside-v">per 16-core cluster</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">FP64 rate</div><div class="xe5-aside-v">1/2 FP32 native</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Vector ISA</div><div class="xe5-aside-v">XeAVX-2048 (2048-bit)</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">XeAVX precisions</div><div class="xe5-aside-v">FP8/INT8/FP16 packed → FP64</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">FP64 rate</div><div class="xe5-aside-v">1/2 FP32 native (via XeAVX)</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">L0 data / L0 instr</div><div class="xe5-aside-v">16 KB private / per cluster</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">L1 per core</div><div class="xe5-aside-v">192 KB</div></div>
                 <div class="xe5-aside-row"><div class="xe5-aside-k">ISA compat</div><div class="xe5-aside-v">Xe4E backwards</div></div>
                 <div class="xe5-aside-row" style="border-bottom:none;"><div class="xe5-aside-k">Process</div><div class="xe5-aside-v">Intel 04A</div></div>
             </div>
@@ -1535,16 +1550,179 @@
 
         <!-- ═══ Bolt Zeus cross-reference — different workload ═══ -->
         <div style="margin-top:52px;">
-            <div class="rv-eyebrow" style="color:#c084fc;">Different Problem &middot; Cross-Reference</div>
-            <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">Bolt Zeus plays a different game.</div>
+            <div class="rv-eyebrow" style="color:#c084fc;">The Elementalist Idea · A GPU That Is A Network</div>
+            <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">Bolt grows a card.<br>Elementalist grows a network.</div>
             <p class="rv-lede">
-                Bolt's Zeus is not a real-time gaming GPU &mdash; it is an offline rendering and simulation accelerator,
-                and its headline figure is <strong>offline path tracing</strong>, not the real-time hardware RT the
-                E1080 runs inside a frame budget. Put on the same axis they look adjacent; they are solving different
-                problems. Zeus markets hardest on two claims &mdash; a huge memory ceiling and FP64 &mdash; so both are
-                checked below against the top Eventide platform, where <strong>neither actually clears it</strong>. All
-                Zeus figures are Bolt's own published claims.
+                This is the GPU expression of the Eventide idea. Eventide is one vertically integrated package that
+                spans 0.5&nbsp;W to 2,000&nbsp;W &mdash; a phone's efficiency and a server rack's power on the same
+                silicon &mdash; and the Elementalist makes that move for graphics: a photonic network of Xe5 tiles that
+                presents to the OS as <strong>one coherent GPU</strong>, from a single fanless tile in a thin-and-light
+                up to four tiles fused over Foveros&nbsp;2.0 in a 2,000&nbsp;W workstation. It does not hang off the
+                PCIe bus as an add-in board &mdash; it is part of the machine, drawing the platform's unified
+                terabyte-class ZAM straight as VRAM.
             </p>
+            <p class="rv-lede" style="margin-top:14px;">
+                Bolt's Zeus scales the other direction: a discrete accelerator that grows by making one card bigger and
+                bolting on more LPDDR5X, for one job &mdash; <strong>offline path tracing</strong>. That is a genuine
+                strength in its lane, and it is a point solution where the Elementalist is a whole segment. On the two
+                axes Zeus markets hardest &mdash; the memory ceiling and FP64 &mdash; the top Eventide platform meets or
+                beats it (FP64 is <strong>XeAVX-2048</strong>'s fight, and it is 2048&nbsp;bits wide); on real-time ray
+                tracing, the workload the Elementalist is built for, it is not close. Every Zeus figure below is Bolt's
+                own published claim.
+            </p>
+
+            <!-- ── Interactive: Photonic Ray Mesh tile-network simulator (canvas) ── -->
+            <style>
+            .esim { margin-top: 28px; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; background: #070b16; max-width: 900px; }
+            .esim-head { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+            .esim-title { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--eventide-gold-light); }
+            .esim-controls { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+            .esim-slider { display: flex; align-items: center; gap: 10px; }
+            .esim-slider label { font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,0.45); }
+            .esim-slider input[type=range] { width: 116px; accent-color: var(--eventide-gold); }
+            .esim-slider .tv { font-family: var(--font-mono); color: var(--eventide-gold-light); font-size: 13px; font-weight: 700; width: 26px; }
+            .esim-toggle { display: inline-flex; border: 1px solid rgba(255,255,255,0.14); border-radius: 7px; overflow: hidden; }
+            .esim-toggle button { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: .05em; padding: 6px 11px; background: transparent; border: none; border-right: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); cursor: pointer; }
+            .esim-toggle button:last-child { border-right: none; }
+            .esim-toggle button.active { background: var(--eventide-gold); color: #1a1206; font-weight: 700; }
+            .esim-body { display: grid; grid-template-columns: 1fr 250px; }
+            .esim-canvas-wrap { position: relative; border-right: 1px solid rgba(255,255,255,0.08); }
+            .esim-canvas-wrap canvas { display: block; width: 100%; height: auto; }
+            .esim-hint { position: absolute; left: 12px; bottom: 9px; font-family: var(--font-mono); font-size: 9px; color: rgba(255,255,255,0.3); pointer-events: none; }
+            .esim-readout { padding: 15px 18px; display: flex; flex-direction: column; gap: 13px; }
+            .esim-ri .k { font-family: var(--font-mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+            .esim-ri .v { font-family: var(--font-mono); font-size: 17px; font-weight: 700; color: #fff; margin-top: 3px; }
+            .esim-ri .v.gold { color: var(--eventide-gold-light); }
+            .esim-ri .v.warn { color: #fca5a5; }
+            .esim-ri .n { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 3px; line-height: 1.5; }
+            @media (max-width: 720px) { .esim-body { grid-template-columns: 1fr; } .esim-canvas-wrap { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); } }
+            </style>
+            <div class="esim" id="prm-sim">
+                <div class="esim-head">
+                    <div class="esim-title">Interactive · Photonic Ray Mesh · Tile Network</div>
+                    <div class="esim-controls">
+                        <div class="esim-slider"><label for="prm-tiles">Tiles</label><input type="range" id="prm-tiles" min="1" max="4" step="1" value="4"><span class="tv" id="prm-tiles-v">×4</span></div>
+                        <div class="esim-toggle" id="prm-mode">
+                            <button type="button" data-mode="mesh" class="active">Ray Mesh</button>
+                            <button type="button" data-mode="silo">Siloed</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="esim-body">
+                    <div class="esim-canvas-wrap">
+                        <canvas id="prm-canvas" width="760" height="440"></canvas>
+                        <div class="esim-hint">Illustration of tile-level work distribution — not a cycle-accurate model</div>
+                    </div>
+                    <div class="esim-readout">
+                        <div class="esim-ri"><div class="k">Presents to the OS as</div><div class="v gold" id="prm-present">1 device</div><div class="n" id="prm-present-n">Four tiles, one coherent RT engine.</div></div>
+                        <div class="esim-ri"><div class="k">Effective RT vs RTX 5090</div><div class="v" id="prm-tput">~27×</div><div class="n" id="prm-tput-n">6.7× per tile, near-linear over the fabric</div></div>
+                        <div class="esim-ri"><div class="k">Photonic fabric</div><div class="v" id="prm-fabric">448 Tbps</div><div class="n">−70% latency vs copper · 0.08 pJ/bit</div></div>
+                        <div class="esim-ri"><div class="k">Cross-tile work trading</div><div class="v" id="prm-trade">yes</div><div class="n" id="prm-trade-n">Idle tiles absorb neighbours’ overflow.</div></div>
+                    </div>
+                </div>
+            </div>
+            <script>
+            (function () {
+                'use strict';
+                var cv = document.getElementById('prm-canvas');
+                if (!cv || !cv.getContext) return;
+                var ctx = cv.getContext('2d'), W = cv.width, H = cv.height;
+                var state = { tiles: 4, mode: 'mesh' };
+                var disp = { x: 74, y: H / 2 };
+                var tw = 150, th = 132, gx = 372, gy = 60, gap = 34;
+                var tiles = [
+                    { x: gx, y: gy }, { x: gx + tw + gap, y: gy },
+                    { x: gx, y: gy + th + gap }, { x: gx + tw + gap, y: gy + th + gap }
+                ].map(function (t) { t.w = tw; t.h = th; t.cx = t.x + tw / 2; t.cy = t.y + th / 2; t.load = 0; return t; });
+                var packets = [], t0 = 0, pulse = 0;
+                function on(i) { return i < state.tiles; }
+                function ease(t) { t = t < 0 ? 0 : t > 1 ? 1 : t; return t * t * (3 - 2 * t); }
+                function rr(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+                function step(ts) {
+                    if (!t0) t0 = ts; var dt = Math.min(40, ts - t0); t0 = ts;
+                    ctx.clearRect(0, 0, W, H);
+                    ctx.strokeStyle = 'rgba(240,184,72,0.035)'; ctx.lineWidth = 1;
+                    for (var gxx = 0; gxx < W; gxx += 40) { ctx.beginPath(); ctx.moveTo(gxx, 0); ctx.lineTo(gxx, H); ctx.stroke(); }
+                    for (var gyy = 0; gyy < H; gyy += 40) { ctx.beginPath(); ctx.moveTo(0, gyy); ctx.lineTo(W, gyy); ctx.stroke(); }
+                    var mesh = state.mode === 'mesh';
+                    pulse = (pulse + dt * 0.0018) % 1;
+                    // inter-tile fabric links
+                    for (var a = 0; a < 4; a++) for (var b = a + 1; b < 4; b++) {
+                        if (!on(a) || !on(b)) continue;
+                        ctx.strokeStyle = mesh ? 'rgba(240,184,72,0.38)' : 'rgba(255,255,255,0.05)';
+                        ctx.lineWidth = mesh ? 2 : 1;
+                        ctx.beginPath(); ctx.moveTo(tiles[a].cx, tiles[a].cy); ctx.lineTo(tiles[b].cx, tiles[b].cy); ctx.stroke();
+                        if (mesh) {
+                            var pp = (pulse + a * 0.17 + b * 0.11) % 1;
+                            var px = tiles[a].cx + (tiles[b].cx - tiles[a].cx) * pp, py = tiles[a].cy + (tiles[b].cy - tiles[a].cy) * pp;
+                            ctx.fillStyle = 'rgba(255,222,150,0.95)'; ctx.beginPath(); ctx.arc(px, py, 3, 0, 6.29); ctx.fill();
+                        }
+                    }
+                    // dispatcher
+                    ctx.fillStyle = 'rgba(56,189,248,0.92)'; rr(disp.x - 34, disp.y - 28, 60, 56, 8); ctx.fill();
+                    ctx.fillStyle = '#04121f'; ctx.textAlign = 'center'; ctx.font = 'bold 11px "IBM Plex Mono",monospace';
+                    ctx.fillText('RTU5', disp.x - 4, disp.y - 4); ctx.fillText('DISP', disp.x - 4, disp.y + 10);
+                    // tiles
+                    tiles.forEach(function (t, i) {
+                        t.load *= 0.93;
+                        if (on(i)) {
+                            var g = Math.min(1, t.load);
+                            ctx.fillStyle = 'rgba(240,184,72,' + (0.07 + g * 0.34) + ')';
+                            ctx.strokeStyle = 'rgba(240,184,72,' + (0.5 + g * 0.4) + ')'; ctx.lineWidth = 1.5; ctx.setLineDash([]);
+                        } else {
+                            ctx.fillStyle = 'rgba(255,255,255,0.015)'; ctx.strokeStyle = 'rgba(255,255,255,0.13)'; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+                        }
+                        rr(t.x, t.y, t.w, t.h, 10); ctx.fill(); ctx.stroke(); ctx.setLineDash([]);
+                        ctx.textAlign = 'center';
+                        ctx.fillStyle = on(i) ? 'rgba(255,255,255,0.88)' : 'rgba(255,255,255,0.28)'; ctx.font = 'bold 12px "IBM Plex Mono",monospace';
+                        ctx.fillText('TILE ' + (i + 1), t.cx, t.y + 24);
+                        ctx.fillStyle = on(i) ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.22)'; ctx.font = '9px "IBM Plex Mono",monospace';
+                        ctx.fillText(on(i) ? 'Xe5 · RTU5' : 'power-gated', t.cx, t.y + 40);
+                        if (on(i) && !mesh && state.tiles > 1) {
+                            ctx.fillStyle = 'rgba(248,113,113,0.6)'; ctx.font = '8px "IBM Plex Mono",monospace';
+                            ctx.fillText('own BVH copy', t.cx, t.cy + 34);
+                        }
+                    });
+                    // spawn + move ray packets
+                    if (Math.random() < 0.05 * state.tiles) {
+                        var idx = Math.floor(Math.random() * state.tiles);
+                        packets.push({ tile: idx, p: 0, y0: disp.y + (Math.random() * 44 - 22), x: disp.x, y: disp.y });
+                    }
+                    ctx.fillStyle = 'rgba(125,211,252,0.9)';
+                    packets.forEach(function (pk) {
+                        var t = tiles[pk.tile]; pk.p += dt * 0.0016;
+                        pk.x = disp.x + (t.cx - disp.x) * ease(pk.p);
+                        pk.y = pk.y0 + (t.cy - pk.y0) * ease(pk.p);
+                        if (pk.p >= 1) { t.load = Math.min(1.3, t.load + 0.28); pk.dead = true; }
+                        ctx.beginPath(); ctx.arc(pk.x, pk.y, 2.3, 0, 6.29); ctx.fill();
+                    });
+                    packets = packets.filter(function (p) { return !p.dead; });
+                    if (packets.length > 150) packets.splice(0, packets.length - 150);
+                    requestAnimationFrame(step);
+                }
+                requestAnimationFrame(step);
+                // readouts
+                var PEN = [1, 0.78, 0.75, 0.72];
+                function update() {
+                    var n = state.tiles, mesh = state.mode === 'mesh';
+                    document.getElementById('prm-tiles-v').textContent = '×' + n;
+                    var eff = 6.7 * n * (mesh ? 1 : PEN[n - 1]);
+                    document.getElementById('prm-tput').textContent = (mesh && n === 4) ? '~27×' : '~' + Math.round(eff) + '×';
+                    document.getElementById('prm-tput-n').textContent = mesh ? '6.7× per tile, near-linear over the fabric' : 'siloed — duplicated BVH, no cross-tile balancing';
+                    var pres = document.getElementById('prm-present');
+                    pres.textContent = mesh ? '1 device' : (n + ' device' + (n > 1 ? 's' : ''));
+                    pres.className = 'v ' + (mesh ? 'gold' : 'warn');
+                    document.getElementById('prm-present-n').textContent = mesh ? (n > 1 ? 'Tiles unified as one coherent RT engine.' : 'A single tile — the same engine, one node.') : (n > 1 ? 'Four separate GPUs — SLI-style, not one engine.' : 'A single tile.');
+                    document.getElementById('prm-trade').textContent = (mesh && n > 1) ? 'yes' : (n > 1 ? 'no' : 'n/a');
+                    document.getElementById('prm-trade-n').textContent = (mesh && n > 1) ? 'Idle tiles absorb neighbours’ overflow over the photonic fabric.' : (n > 1 ? 'Each tile on its own; overflow stalls its own queue.' : 'Nothing to trade with one tile.');
+                }
+                var sl = document.getElementById('prm-tiles');
+                sl.addEventListener('input', function () { state.tiles = parseInt(sl.value, 10); update(); });
+                var mode = document.getElementById('prm-mode');
+                mode.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; state.mode = b.getAttribute('data-mode'); Array.prototype.forEach.call(mode.querySelectorAll('button'), function (x) { x.classList.remove('active'); }); b.classList.add('active'); update(); });
+                update();
+            })();
+            </script>
 
             <div class="ptc" id="el-ptc">
                 <div class="hc-legend">
@@ -1573,9 +1751,9 @@
                     <div class="sub">ZAM is FOveros-mounted on-package memory at <strong>5&ndash;6&nbsp;TB/s</strong> &mdash; a faster class than Zeus's <strong>LPDDR5X</strong>. Capacity Zeus can match on paper; on-package bandwidth is not a fight it set up to win.</div>
                 </div>
                 <div class="bl-card e">
-                    <div class="k">FP64 · not a Zeus-only capability</div>
-                    <div class="big">native FP64</div>
-                    <div class="sub">The E1080 has <strong>native FP64 at ½ FP32 rate</strong> &mdash; not emulated through FP32 pairs. Zeus weights FP64 more heavily as an HPC part, but it is a difference of degree, not a capability the E1080 lacks.</div>
+                    <div class="k">FP64 · XeAVX-2048 answers it</div>
+                    <div class="big">2048-bit vector</div>
+                    <div class="sub">Zeus leans on FP64 as an HPC part &mdash; but the E1080 fights that on the shader ALUs with <strong>XeAVX-2048</strong>, a 2048-bit-wide vector ISA running <strong>native FP64 at ½ FP32 rate</strong>, not emulated through FP32 pairs. FP64 isn't a capability the E1080 lacks; it's a lane it runs wide.</div>
                 </div>
             </div>
 
