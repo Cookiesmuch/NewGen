@@ -1482,6 +1482,10 @@
 .bl-card .k { font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: #c084fc; margin-bottom: 8px; }
 .bl-card .big { font-family: var(--font-mono); font-size: 22px; font-weight: 700; color: #d8b4fe; line-height: 1; }
 .bl-card .sub { font-size: 11.5px; color: rgba(255,255,255,0.5); margin-top: 8px; line-height: 1.6; }
+.bl-card .sub strong { color: rgba(255,255,255,0.82); font-weight: 600; }
+.bl-card.e { border-color: rgba(240,184,72,0.28); background: rgba(240,184,72,0.05); }
+.bl-card.e .k { color: var(--eventide-gold-light); }
+.bl-card.e .big { color: var(--eventide-gold-light); }
 .rv-inline-callout.bolt { border-color: rgba(192,132,252,0.28); background: rgba(192,132,252,0.05); }
 .rv-inline-callout.bolt .ic { color: #c084fc; }
 </style>
@@ -1534,11 +1538,12 @@
             <div class="rv-eyebrow" style="color:#c084fc;">Different Problem &middot; Cross-Reference</div>
             <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">Bolt Zeus plays a different game.</div>
             <p class="rv-lede">
-                Bolt's Zeus is not a real-time gaming GPU &mdash; it is a rendering and simulation accelerator, and its
-                headline figure is <strong>offline path tracing</strong>, not the real-time hardware RT the E1080 runs
-                inside a frame budget. Put on the same axis they look adjacent; they are solving different problems.
-                Zeus's real advantages are elsewhere &mdash; enormous memory capacity and native FP64 &mdash; and those
-                are shown honestly below. All Zeus figures are Bolt's own published claims.
+                Bolt's Zeus is not a real-time gaming GPU &mdash; it is an offline rendering and simulation accelerator,
+                and its headline figure is <strong>offline path tracing</strong>, not the real-time hardware RT the
+                E1080 runs inside a frame budget. Put on the same axis they look adjacent; they are solving different
+                problems. Zeus markets hardest on two claims &mdash; a huge memory ceiling and FP64 &mdash; so both are
+                checked below against the top Eventide platform, where <strong>neither actually clears it</strong>. All
+                Zeus figures are Bolt's own published claims.
             </p>
 
             <div class="ptc" id="el-ptc">
@@ -1555,39 +1560,39 @@
                 </div>
             </div>
 
-            <!-- Where Bolt genuinely leads -->
+            <!-- The two Zeus claims, checked against the top Eventide platform -->
             <div class="bl-strip">
-                <div class="bl-card">
-                    <div class="k">Where Zeus leads · Memory capacity</div>
-                    <div class="big">up to 2.25 TB</div>
-                    <div class="sub">Zeus's addressable pool (LPDDR5X, expandable) dwarfs any gaming GPU. The E1080 pairs a 4&nbsp;GB Kache Kore bLLC with system ZAM; it is not chasing a multi-terabyte local pool, and Zeus wins this outright.</div>
+                <div class="bl-card e">
+                    <div class="k">Memory capacity · E1080 platform leads</div>
+                    <div class="big">up to 4 TB</div>
+                    <div class="sub">Zeus's 2.25&nbsp;TB is its whole memory pool. The E1080's 4&nbsp;GB is <strong>cache</strong> (Kache Kore bLLC). Its actual VRAM is the top X9 platform's unified memory: up to 2&nbsp;TB on-package ZAM <strong>plus up to 2&nbsp;TB DDR6</strong> = up to 4&nbsp;TB, addressed by the 4&times; E1080 as VRAM. More pool than Zeus, before the cache.</div>
                 </div>
-                <div class="bl-card">
-                    <div class="k">Where Zeus leads · Precision</div>
+                <div class="bl-card e">
+                    <div class="k">Memory bandwidth · E1080 platform leads</div>
+                    <div class="big">5&ndash;6 TB/s</div>
+                    <div class="sub">ZAM is FOveros-mounted on-package memory at <strong>5&ndash;6&nbsp;TB/s</strong> &mdash; a faster class than Zeus's <strong>LPDDR5X</strong>. Capacity Zeus can match on paper; on-package bandwidth is not a fight it set up to win.</div>
+                </div>
+                <div class="bl-card e">
+                    <div class="k">FP64 · not a Zeus-only capability</div>
                     <div class="big">native FP64</div>
-                    <div class="sub">Zeus targets HPC / scientific compute with full-rate FP64. Gaming-class GPUs, E1080 included, are FP32/AI-first &mdash; a deliberate different focus, not a deficit Zeus is being credited around.</div>
-                </div>
-                <div class="bl-card">
-                    <div class="k">Where the E1080 leads · Real-time</div>
-                    <div class="big">real-time RT</div>
-                    <div class="sub">In-frame hardware ray tracing, XeSS 5.0, and unified-tile raster for interactive rendering &mdash; the workload Zeus's offline path-tracing figure does not speak to.</div>
+                    <div class="sub">The E1080 has <strong>native FP64 at ½ FP32 rate</strong> &mdash; not emulated through FP32 pairs. Zeus weights FP64 more heavily as an HPC part, but it is a difference of degree, not a capability the E1080 lacks.</div>
                 </div>
             </div>
 
             <div class="ptc" id="el-mem" style="margin-top:24px;">
-                <div class="hc-legend" style="margin-bottom:6px;"><div class="hc-leg" style="color:rgba(255,255,255,0.4);">Dedicated / addressable memory capacity · log scale</div></div>
+                <div class="hc-legend" style="margin-bottom:6px;"><div class="hc-leg" style="color:rgba(255,255,255,0.4);">Addressable memory pool (VRAM) · log scale</div></div>
                 <div class="ptc-plot" id="mem-plot"><div class="hc-nojs">Interactive chart — enable JavaScript.</div></div>
-                <div class="ptc-foot">Local/addressable memory capacity, Bolt's published Zeus figure included. Capacity is not performance &mdash; but on raw pool size Zeus is in a class of its own, and it would be dishonest to hide that.</div>
+                <div class="ptc-foot">The E1080's 4&nbsp;GB is <b>cache</b> (Kache Kore bLLC), not its memory ceiling. Its VRAM is the top X9 platform's unified pool: up to <b>2&nbsp;TB on-package ZAM (5&ndash;6&nbsp;TB/s)</b> plus up to <b>2&nbsp;TB DDR6</b> &mdash; up to 4&nbsp;TB, addressed by the 4&times; E1080. More capacity than Zeus's 2.25&nbsp;TB, on a faster memory class (ZAM vs LPDDR5X), with the 4&nbsp;GB bLLC on top.</div>
             </div>
 
             <div class="rv-inline-callout bolt">
                 <div class="ic">◆</div>
                 <div class="tx">
                     <strong>Zeus figures are Bolt's published claims.</strong> The ~10&times; path-tracing number and the
-                    2.25&nbsp;TB memory ceiling are vendor marketing figures, not independently benchmarked, and they
-                    describe an offline rendering / simulation accelerator &mdash; a different product category from a
-                    real-time gaming GPU. Shown for context, labeled as claims, never blended into the E1080's
-                    real-time multiples.
+                    2.25&nbsp;TB LPDDR5X ceiling are vendor marketing figures, not independently benchmarked, for an
+                    offline rendering / simulation accelerator &mdash; a different product category from a real-time
+                    gaming GPU. Shown for context and labeled as claims; the top Eventide platform meets or beats both,
+                    and neither is blended into the E1080's real-time multiples.
                 </div>
             </div>
         </div>
@@ -1645,7 +1650,7 @@
                         <th>Memory</th>
                         <td>32 GB GDDR7 · ~1.8 TB/s</td>
                         <td>16 GB GDDR6</td>
-                        <td style="color:#d8b4fe;">up to 2.25 TB (LPDDR5X, expandable)</td>
+                        <td style="color:#d8b4fe;">up to 2.25 TB LPDDR5X <span style="font-size:10px;color:rgba(255,255,255,0.4);">claim · below the X9 platform's up-to-4 TB unified ZAM+DDR6</span></td>
                         <td>228 GB/s LPDDR5X (SoC-shared)</td>
                     </tr>
                     <tr>
@@ -1748,12 +1753,12 @@
                 { name: 'RTX 5090', sub: 'baseline', val: 1, color: '#76B900', label: '1×' }
             ], axisPerf);
 
-            // ── Memory capacity chart (Bolt leads) ──
+            // ── Memory capacity chart — E1080 platform (unified ZAM + DDR6) leads ──
             renderChart(document.getElementById('mem-plot'), [
-                { name: 'Bolt Zeus', sub: 'addressable · claim', val: 2304, color: '#c084fc', hero: true, label: '2.25 TB' },
-                { name: 'RTX 5090', sub: 'GDDR7', val: 32, color: '#76B900', label: '32 GB' },
-                { name: 'Arc E1080', sub: 'Kache Kore bLLC', val: 4, color: '#F0B848', label: '4 GB' }
-            ], { min: 2, max: 4096, ticks: [4, 32, 256, 2048], fmt: function (v) { return v >= 1024 ? (v / 1024) + ' TB' : v + ' GB'; } });
+                { name: 'Arc E1080 ×4', sub: 'unified ZAM + DDR6 · X9', val: 4096, color: '#F0B848', hero: true, label: 'up to 4 TB' },
+                { name: 'Bolt Zeus', sub: 'LPDDR5X · claim', val: 2304, color: '#c084fc', label: '2.25 TB' },
+                { name: 'RTX 5090', sub: 'GDDR7', val: 32, color: '#76B900', label: '32 GB' }
+            ], { min: 16, max: 6144, ticks: [32, 256, 1024, 4096], fmt: function (v) { return v >= 1024 ? (v / 1024) + ' TB' : v + ' GB'; } });
         })();
         </script>
     </div>
