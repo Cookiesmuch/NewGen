@@ -551,15 +551,12 @@
     <div class="arc-gpu-label">Arc Elementalist &middot; Xe5 &middot; RTU5</div>
     <div class="arc-gpu-heading" style="line-height:0.88;">ELEMENTALIST<br><span style="color:#F0B848;">Xe5</span></div>
     <p class="arc-gpu-intro">
-        Every dedicated flagship shipped so far is a card you add to a machine. Elementalist is the
-        machine's GPU &mdash; and it does not iterate on the last generation, it redraws the line.
-        A photonic network of Xe5 tiles that presents to the operating system as one coherent device:
-        a single fanless tile in a thin-and-light, four tiles fused over FOveros&nbsp;2.0 in a
-        2,000&nbsp;W workstation, the same architecture at both ends. Wider cores with out-of-order
-        wave dispatch and FP8-through-FP64 vector width. A matrix engine that retires the add-in AI
-        accelerator. And a ray tracing unit that stopped building trees &mdash; it only intersects them
-        now, and everything else moved to silicon built for it. One architecture, the whole GPU segment,
-        on Intel 04A. Unified as one.
+        Arc Elementalist is Intel's Xe5 flagship GPU architecture. It scales as a single coherent render
+        device &mdash; from one tile in a thin-and-light to four E1080 tiles in a 2,000&nbsp;W workstation
+        &mdash; joined over FOveros&nbsp;2.0 photonic fabric and built on Intel 04A. 512-shader Xe5 cores
+        with out-of-order wave dispatch and the XeAVX-2048 vector ISA. XMX5 matrix acceleration with native
+        FP64. RTU5 hardware ray tracing. Across four tiles it delivers up to <strong>20&times; the raster
+        performance of the RTX 5090</strong> and <strong>~27&times; the ray tracing</strong>.
     </p>
 
     <!-- ═══════════════════════════════════════════════════════════
@@ -662,11 +659,10 @@
         <div class="rv-eyebrow">Xe5 Raster &middot; The Architecture Behind The Number</div>
         <div class="rv-h2">5&times; per tile is no longer an assertion.</div>
         <p class="rv-lede">
-            The raster numbers were always printed on the box; the architecture that earns them wasn't. Xe5
-            closes that gap five ways &mdash; a tile-based binning front-end, Nanite-class virtualized geometry,
-            variable-rate shading driven by the scheduler's own predictive model, feedback-streamed textures, and
-            a wide shader vector ISA &mdash; and each one is a measured multiplier, not a slogan. They compound to
-            the published <strong>~5&times;/tile &rarr; 20&times; across &times;4</strong>.
+            Xe5 raster delivers <strong>~5&times; per tile &mdash; 20&times; across four</strong> through five
+            compounding engines: a tile-based binning rasterizer, Nanite-class virtualized geometry, predictive
+            variable-rate shading, feedback-streamed textures, and a wide shader vector ISA. Each contributes a
+            measured multiplier.
         </p>
 
         <!-- Kachelraster Engine + before/after -->
@@ -674,12 +670,10 @@
             <div class="rv-eyebrow gold">Tile-Based Binning Rasterizer</div>
             <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">Kachelraster Engine</div>
             <p class="rv-lede">
-                Most GPUs shade a pixel, then throw the answer away the moment something closer covers it.
-                Kachelraster refuses the waste: geometry is binned into 64&times;64px tiles and overdraw-culled
-                <strong>before shading</strong> against a 2&nbsp;MB on-die bin buffer per raster cluster (shared
-                with L2), so occluded fragments never reach the shader array at all. Roughly <strong>40% less
-                overdraw</strong> and <strong>35% less bandwidth</strong> than immediate-mode rendering &mdash;
-                every frame, for free.
+                The Kachelraster Engine bins geometry into 64&times;64px tiles and culls overdraw
+                <strong>before shading</strong>, against a 2&nbsp;MB on-die bin buffer per raster cluster
+                (shared with L2). Occluded fragments never reach the shader array &mdash; <strong>~40% less
+                overdraw</strong> and <strong>~35% less bandwidth</strong> than immediate-mode rendering.
             </p>
             <div class="rv-fu-row">
                 <div class="rv-fu-stat"><div class="n">64&times;64px</div><div class="l">bin size</div></div>
@@ -717,11 +711,10 @@
             <div class="rv-eyebrow gold">Mesh / Task Shaders &middot; Virtualized Geometry</div>
             <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">Feingeometrie Engine</div>
             <p class="rv-lede">
-                Film-grade geometry stops being a bandwidth problem the moment the cluster hierarchy lives
-                on-package. Feingeometrie groups micro-triangles roughly <strong>128 to a cluster</strong> for
-                Nanite-class virtualization &mdash; practical only because Kache Kore's 4&nbsp;GB bLLC holds the
-                whole hierarchy on the package &mdash; and it reuses <strong>PHR's residency mechanism</strong>
-                wholesale from RT's BVH caching: one cache infrastructure, two consumers, no duplication.
+                The Feingeometrie Engine clusters micro-triangles roughly <strong>128 to a group</strong> for
+                Nanite-class geometry virtualization, with the full cluster hierarchy resident on-package in Kache
+                Kore's 4&nbsp;GB bLLC. It shares <strong>PHR's residency mechanism</strong> with RT's BVH caching
+                &mdash; one cache infrastructure, two consumers.
             </p>
             <div class="rv-fu-row">
                 <div class="rv-fu-stat"><div class="n">~128 tris</div><div class="l">per micro-cluster</div></div>
@@ -739,10 +732,9 @@
                     <div class="mech-tag">Variable-Rate Shading</div>
                     <div class="mech-name">VRS 3.0</div>
                     <div class="mech-desc">
-                        Not every pixel deserves a full shade, and the chip already knows which ones don't. VRS 3.0
-                        drops shading rate from 1&times;1 to 4&times;4 per Kachelraster tile, chosen by the
-                        <strong>LPNPU co-pilot's existing predictive model</strong> &mdash; the same silicon driving
-                        Thread Director's dispatch. Saliency- and motion-aware, on hardware that was already there.
+                        VRS 3.0 varies shading rate from 1&times;1 to 4&times;4 per Kachelraster tile, selected by the
+                        <strong>LPNPU co-pilot's predictive model</strong> &mdash; the same silicon that drives Thread
+                        Director's dispatch. Saliency- and motion-aware, on existing hardware.
                     </div>
                     <span class="mech-chip">1&times;1 &rarr; 4&times;4</span>
                 </div>
@@ -750,9 +742,9 @@
                     <div class="mech-tag">Texture Streaming</div>
                     <div class="mech-name">Sampler Feedback Streaming</div>
                     <div class="mech-desc">
-                        A texture you never sample is bandwidth you never should have spent. SFS streams only the mip
-                        levels and regions the frame actually touches into Kache Kore &mdash; <strong>collapsing
-                        effective VRAM pressure</strong> and the wasted ZAM traffic of speculative residency.
+                        Sampler Feedback Streaming loads only the mip levels and texture regions the frame actually
+                        samples into Kache Kore, <strong>cutting effective VRAM pressure</strong> and the ZAM
+                        bandwidth spent on speculative residency.
                     </div>
                     <span class="mech-chip">SFS</span>
                 </div>
@@ -760,10 +752,9 @@
                     <div class="mech-tag">The raster end of Xe5 Core's XeAVX-2048</div>
                     <div class="mech-name">XeAVX-2048 · Raster Path</div>
                     <div class="mech-desc">
-                        The same 2048-bit vector ISA that gives the Xe5 Core its FP64 reach works the opposite end of
-                        the range here: packed INT8 / FP8 / FP16 at <strong>2&times;/4&times; rate per lane</strong>
-                        for the low-precision raster work &mdash; shadows, particles, post-process &mdash; where full
-                        FP32 is money burned. One vector unit, both ends of the frame.
+                        XeAVX-2048 &mdash; the Xe5 Core vector ISA &mdash; runs packed INT8 / FP8 / FP16 at
+                        <strong>2&times;/4&times; rate per lane</strong> for low-precision raster work: shadows,
+                        particles, post-process. The same 2048-bit unit that delivers native FP64.
                     </div>
                     <span class="mech-chip">2&times;/4&times; per lane</span>
                 </div>
@@ -839,16 +830,13 @@
             <div class="xe5-tech-label">AI MATRIX ACCELERATION &middot; GENERATION 5</div>
             <div class="xe5-tech-name">XMX5</div>
             <p class="xe5-tech-body">
-                XMX5 ends the argument for a discrete AI accelerator. Each unit delivers 2&times; the
-                per-clock throughput of XMX4E at equal precision &mdash; but throughput was never the
-                headline; precision is. XMX5 runs native INT2 and FP4, sub-byte formats that quadruple
-                effective throughput on quantized models, and for XeSS&nbsp;5.0 it generates whole
-                intermediate frames from a temporal neural network at native resolution, skipping the
-                artifact-prone upscale step competitors lean on. A dedicated 512&nbsp;KB L1 AI SRAM per
-                cluster keeps model weights on the unit, never touching the bandwidth wall that throttles
-                matrix throughput elsewhere; and hardware sparse-activation skipping &mdash; zero-valued
-                elements detected and bypassed in silicon &mdash; adds up to 1.8&times; on the
-                40&ndash;60% sparsity real models actually carry.
+                XMX5 makes a discrete AI accelerator unnecessary. Each unit delivers 2&times; the per-clock
+                throughput of XMX4E at equal precision, and adds native INT2 and FP4 &mdash; sub-byte formats
+                that quadruple effective throughput on quantized models. For XeSS&nbsp;5.0 it generates whole
+                intermediate frames from a temporal neural network at native resolution. A dedicated
+                512&nbsp;KB L1 AI SRAM per cluster keeps model weights local, off the memory-bandwidth wall,
+                and hardware sparse-activation skipping detects and bypasses zero-valued elements for up to
+                1.8&times; on the 40&ndash;60% sparsity real models carry.
             </p>
 
             <div class="xe5-tech-stats">
@@ -918,20 +906,16 @@
             <div class="xe5-tech-label">RAY TRACING &middot; GENERATION 5</div>
             <div class="xe5-tech-name">RTU5</div>
             <p class="xe5-tech-body">
-                RTU5 keeps its name and rewrites its job description. Same generation-5 traversal silicon
-                &mdash; but this generation it does one thing and does it flat out: intersect rays. At its
-                core it still runs fourth-order bounding volume hierarchy (BVH4) traversal, four children
-                per node instead of the industry-standard two, halving tree depth for the same scene, with
-                hardware ReSTIR resampling hundreds of candidate light paths into converged global
-                illumination on a fraction of a brute-force budget and stereo BVH caching re-traversing one
-                structure for both eyes in VR. What changed is everything around traversal. RTU5 now
-                performs <strong>only</strong> ray&ndash;AABB and ray&ndash;triangle intersection. It never
-                builds trees. Construction, refit, pruning and residency are lifted off the traversal units
-                and split across the Symbiotic BVH Pipeline, the Kache Kore Prune Array, Persistent
-                Hierarchy Residency and the Photonic Ray Mesh &mdash; so the intersection hardware runs
-                against its theoretical peak instead of stalling on housekeeping. Motion vectors, GI probe
-                evaluation, contact shadows and multi-bounce proxy rays each get a dedicated fixed-resolver:
-                closed-form math pulled out of shader code and into silicon built for exactly that term.
+                RTU5 performs only ray&ndash;AABB and ray&ndash;triangle intersection &mdash; it never builds
+                trees. It runs fourth-order bounding volume hierarchy (BVH4) traversal, four children per node
+                instead of the industry-standard two, halving tree depth for the same scene, with hardware
+                ReSTIR resampling hundreds of candidate light paths into converged global illumination on a
+                fraction of a brute-force budget, and stereo BVH caching that re-traverses one structure for
+                both eyes in VR. BVH construction, refit, pruning and residency run on dedicated silicon
+                instead &mdash; the Symbiotic BVH Pipeline, the Kache Kore Prune Array, Persistent Hierarchy
+                Residency and the Photonic Ray Mesh &mdash; keeping the intersection hardware at peak. Motion
+                vectors, GI probe evaluation, contact shadows and multi-bounce proxy rays each run on a
+                dedicated fixed-resolver, moving closed-form math out of shader code and into silicon.
             </p>
             </p>
 
@@ -1048,14 +1032,13 @@
          RTU5 MECHANISMS — SBP, KPA, PHR, Photonic Ray Mesh
          ═══════════════════════════════════════════════════════════ -->
     <div class="rv-subsection">
-        <div class="rv-eyebrow gold">RTU5 &middot; Expanded Capability Set</div>
-        <div class="rv-h2">Traversal intersects. Everything else moved.</div>
+        <div class="rv-eyebrow gold">RTU5 &middot; BVH Offload Pipeline</div>
+        <div class="rv-h2">Traversal stays on RTU5.<br>The rest runs on dedicated silicon.</div>
         <p class="rv-lede">
-            BVH work is two problems with different latency profiles, and RTU5 stops pretending they are one.
-            The Symbiotic BVH Pipeline splits the tree-critical path from the bulk leaf refit and routes each to
-            the core class physics favors. Rays that will miss are killed inside the cache before they ever reach
-            an execution unit. Static world geometry is pinned across frames. And four tiles trade ray and node
-            work as one engine over the existing photonic fabric.
+            BVH work splits into two problems with different latency profiles. The Symbiotic BVH Pipeline routes
+            the tree-critical path and the bulk leaf refit to separate core classes. The Kache Kore Prune Array
+            discards missing rays in-cache. Persistent Hierarchy Residency pins static geometry across frames. And
+            the Photonic Ray Mesh lets four tiles trade ray and node work as one engine over the photonic fabric.
         </p>
 
         <!-- SBP two-stage pipeline animation -->
@@ -1143,10 +1126,9 @@
                 <div class="mech-tag">Near-Memory Compute</div>
                 <div class="mech-name">Kache Kore Prune Array</div>
                 <div class="mech-desc">
-                    The fastest ray is the one you never trace. KPA embeds low-precision ray&ndash;AABB pruning ALUs
-                    directly in Kache Kore's SRAM bitlines, so a ray that misses its bounding box is <strong>killed
-                    inside the cache</strong> &mdash; at the tile-level L3, ahead of an L4 miss &mdash; before an RTU5
-                    execution unit ever sees it.
+                    The Kache Kore Prune Array embeds low-precision ray&ndash;AABB pruning ALUs directly in Kache
+                    Kore's SRAM bitlines. Rays that miss their bounding box are <strong>discarded in-cache</strong> at
+                    the tile-level L3, ahead of an L4 miss, before reaching an RTU5 execution unit.
                 </div>
                 <span class="mech-chip">KPA</span>
             </div>
@@ -1154,10 +1136,10 @@
                 <div class="mech-tag">Cross-Frame Residency</div>
                 <div class="mech-name">Persistent Hierarchy Residency</div>
                 <div class="mech-desc">
-                    Why rebuild the world every frame when it didn't move? PHR pins the static world-geometry BVH in
-                    Kache Kore's 4 GB across frames; only dynamic subtrees get refit by SBP. The <strong>same
-                    residency mechanism</strong> backs Feingeometrie's cluster caching and the GI-proxy BLAS &mdash;
-                    one cache infrastructure, several pipelines.
+                    Persistent Hierarchy Residency pins the static world-geometry BVH in Kache Kore's 4 GB across
+                    frames; only dynamic subtrees are refit by SBP each frame. The <strong>same residency
+                    mechanism</strong> backs Feingeometrie's cluster caching and the GI-proxy BLAS &mdash; one cache
+                    infrastructure, several pipelines.
                 </div>
                 <span class="mech-chip">PHR</span>
             </div>
@@ -1165,11 +1147,10 @@
                 <div class="mech-tag">Multi-Tile Coherence</div>
                 <div class="mech-name">Photonic Ray Mesh</div>
                 <div class="mech-desc">
-                    Four tiles, or one? Photonic Ray Mesh makes it a trick question. It extends Foveros 2.0's tile
-                    arbitration &mdash; already unifying the raster framebuffer and command queue across &times;4 E1080
-                    tiles &mdash; to ray and BVH-node dispatch, so all four trade work as <strong>one coherent RT
-                    engine</strong>. On the fabric that's already there: 448 Tbps, &minus;70% latency vs copper,
-                    0.08 pJ/bit. No new interconnect physics.
+                    Photonic Ray Mesh extends Foveros 2.0's tile arbitration &mdash; already unifying the raster
+                    framebuffer and command queue across &times;4 E1080 tiles &mdash; to ray and BVH-node dispatch, so
+                    all four tiles trade work as <strong>one coherent RT engine</strong>. On the existing fabric:
+                    448 Tbps, &minus;70% latency vs copper, 0.08 pJ/bit.
                 </div>
                 <span class="mech-chip">Photonic Ray Mesh</span>
             </div>
@@ -1190,10 +1171,9 @@
                     <div class="mech-tag">Motion &middot; from path length</div>
                     <div class="mech-name">Free Motion Vectors</div>
                     <div class="mech-desc">
-                        The traversal already did the work &mdash; XeFG just keeps the receipt. RTU5 computes
-                        high-precision hit distance per ray for BVH4; retaining that value's frame-to-frame derivative
-                        hands XeFG 3.0 / XeSS 5.0 a motion-vector source with <strong>no separate G-buffer motion
-                        pass</strong>, because the payload already carries it.
+                        RTU5 traversal already computes high-precision hit distance per ray for BVH4. Retaining that
+                        value's frame-to-frame derivative gives XeFG 3.0 / XeSS 5.0 a motion-vector source with
+                        <strong>no separate G-buffer motion pass</strong>.
                     </div>
                 </div>
                 <div class="mech-card">
@@ -1237,10 +1217,10 @@
             <div class="xe5-tech-label">MEMORY ARCHITECTURE &middot; KACHE KORE + ZAM</div>
             <div class="xe5-tech-name">Unified Memory</div>
             <p class="xe5-tech-body">
-                A discrete GPU carries its memory. Elementalist inherits the platform's. Six tiers &mdash;
-                L0 through the Kache Kore L4 and out to terabyte-class ZAM &mdash; collapse into one coherent
-                hierarchy with no PCIe wall anywhere in it. The centerpiece is Kache Kore: a 4&nbsp;GB bLLC
-                (bandwidthLLC) fabricated on Intel 04A alongside the compute tiles. For
+                Elementalist addresses the platform's unified memory as VRAM. Six tiers &mdash; L0 through the
+                Kache Kore L4 and out to terabyte-class ZAM &mdash; form one coherent hierarchy with no PCIe wall.
+                The centerpiece is Kache Kore: a 4&nbsp;GB bLLC (bandwidthLLC) fabricated on Intel 04A alongside
+                the compute tiles. For
                 the GPU, Kache Kore acts as an enormous L4 cache that absorbs the working set of most
                 1440p and many 4K game frames entirely on-package, eliminating the latency penalty of DRAM
                 round-trips. Each Xe5 tile maintains its own L2 cache (12&nbsp;MB/tile, 48&nbsp;MB total
@@ -1405,11 +1385,10 @@
             <div class="xe5-tech-label">PROCESS NODE &middot; MULTI-TILE PHOTONIC FABRIC</div>
             <div class="xe5-tech-name">Intel 04A + FOveros 2.0</div>
             <p class="xe5-tech-body">
-                This is the seam where four tiles stop being four. The Xe5 GPU tiles are built on
-                Intel 04A &mdash; the same world-leading node as the Eventide Compute Tile &mdash; but the
-                part that has no precedent is FOveros&nbsp;2.0: a second-generation photonic interconnect
-                that binds up to four GPU tiles into a single coherent device, and means it &mdash; one
-                memory space, one command queue, assembled from four dies over light. Unlike organic substrate interconnects that
+                The Xe5 GPU tiles are built on Intel 04A, the same node as the Eventide Compute Tile, and
+                joined by FOveros&nbsp;2.0 &mdash; a second-generation photonic interconnect that binds up to
+                four GPU tiles into a single coherent device: one memory space, one command queue, over
+                on-package silicon photonic waveguides. Unlike organic substrate interconnects that
                 measure latency in nanoseconds and bandwidth in hundreds of GB/s, FOveros&nbsp;2.0 uses
                 on-package silicon photonic waveguides to deliver sub-2-nanosecond tile-to-tile latency
                 at over 3.2&nbsp;TB/s aggregate bisection bandwidth. The operating system and application
@@ -1563,25 +1542,20 @@
 
         <!-- ═══ Bolt Zeus cross-reference — different workload ═══ -->
         <div style="margin-top:52px;">
-            <div class="rv-eyebrow" style="color:#c084fc;">The Elementalist Idea · A GPU That Is A Network</div>
-            <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">Bolt grows a card.<br>Elementalist grows a network.</div>
+            <div class="rv-eyebrow" style="color:#c084fc;">Cross-Reference &middot; Bolt Zeus</div>
+            <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">A real-time GPU, next to an offline accelerator.</div>
             <p class="rv-lede">
-                This is the GPU expression of the Eventide idea. Eventide is one vertically integrated package that
-                spans 0.5&nbsp;W to 2,000&nbsp;W &mdash; a phone's efficiency and a server rack's power on the same
-                silicon &mdash; and the Elementalist makes that move for graphics: a photonic network of Xe5 tiles that
-                presents to the OS as <strong>one coherent GPU</strong>, from a single fanless tile in a thin-and-light
-                up to four tiles fused over Foveros&nbsp;2.0 in a 2,000&nbsp;W workstation. It does not hang off the
-                PCIe bus as an add-in board &mdash; it is part of the machine, drawing the platform's unified
-                terabyte-class ZAM straight as VRAM.
+                Bolt's Zeus is an offline rendering and simulation accelerator: a discrete card built to path-trace
+                scenes and hold very large datasets, not to drive frames in real time. Elementalist is built for the
+                frame &mdash; real-time hardware ray tracing, XeSS&nbsp;5.0, and unified-tile raster for games and
+                creation. Two different products for two different jobs, shown here on the same axes for reference.
             </p>
             <p class="rv-lede" style="margin-top:14px;">
-                Bolt's Zeus scales the other direction: a discrete accelerator that grows by making one card bigger and
-                bolting on more LPDDR5X, for one job &mdash; <strong>offline path tracing</strong>. That is a genuine
-                strength in its lane, and it is a point solution where the Elementalist is a whole segment. On the two
-                axes Zeus markets hardest &mdash; the memory ceiling and FP64 &mdash; the top Eventide platform meets or
-                beats it (FP64 is <strong>XeAVX-2048</strong>'s fight, and it is 2048&nbsp;bits wide); on real-time ray
-                tracing, the workload the Elementalist is built for, it is not close. Every Zeus figure below is Bolt's
-                own published claim.
+                On the two specifications Zeus markets hardest, the top Eventide platform holds the line: its unified
+                memory reaches up to <strong>4&nbsp;TB</strong> (2&nbsp;TB on-package ZAM plus up to 2&nbsp;TB DDR6)
+                against Zeus's 2.25&nbsp;TB LPDDR5X, and <strong>XeAVX-2048</strong> delivers native FP64 on the
+                shader ALUs. On real-time ray tracing &mdash; the E1080's purpose &mdash; it leads decisively. Every
+                Zeus figure below is Bolt's own published claim.
             </p>
 
             <!-- ── Interactive: Photonic Ray Mesh tile-network simulator (canvas) ── -->
@@ -1612,7 +1586,7 @@
             </style>
             <div class="esim" id="prm-sim">
                 <div class="esim-head">
-                    <div class="esim-title">Interactive · Photonic Ray Mesh · Tile Network</div>
+                    <div class="esim-title">Interactive · Photonic Ray Mesh · Multi-Tile Scaling</div>
                     <div class="esim-controls">
                         <div class="esim-slider"><label for="prm-tiles">Tiles</label><input type="range" id="prm-tiles" min="1" max="4" step="1" value="4"><span class="tv" id="prm-tiles-v">×4</span></div>
                         <div class="esim-toggle" id="prm-mode">
