@@ -548,14 +548,15 @@
 <div class="section" style="position:relative; z-index:1;">
 
     <!-- ── Section Header ── -->
-    <div class="arc-gpu-label">Arc Elementalist &middot; Xe5 Technology Showcase</div>
+    <div class="arc-gpu-label">Arc Elementalist &middot; Xe5 &middot; RTU5</div>
     <div class="arc-gpu-heading" style="line-height:0.88;">ELEMENTALIST<br><span style="color:#F0B848;">Xe5</span></div>
     <p class="arc-gpu-intro">
-        The fifth-generation Xe architecture represents a complete reimagining of Intel's GPU silicon.
-        Wider shader cores. Deeper wave dispatch. Native FP64. A next-generation matrix engine that
-        makes dedicated AI accelerators unnecessary. And a ray tracing unit that handles BVH4 traversal,
-        ReSTIR, and VR stereo rendering in hardware. Built on Intel 04A and connected over FOveros 2.0
-        photonic fabric &mdash; up to four tiles operating as one.
+        Arc Elementalist is Intel's Xe5 flagship GPU architecture. It scales as a single coherent render
+        device &mdash; from one tile in a thin-and-light to four E1080 tiles in a 2,000&nbsp;W workstation
+        &mdash; joined over FOveros&nbsp;2.0 photonic fabric and built on Intel 04A. 512-shader Xe5 cores
+        with out-of-order wave dispatch and the XeAVX-2048 vector ISA. XMX5 matrix acceleration with native
+        FP64. RTU5 hardware ray tracing. Across four tiles it delivers up to <strong>20&times; the raster
+        performance of the RTX 5090</strong> and <strong>~27&times; the ray tracing</strong>.
     </p>
 
     <!-- ═══════════════════════════════════════════════════════════
@@ -571,15 +572,23 @@
                 The Xe5 shader core is the widest, deepest execution unit Intel has ever built for graphics.
                 Each Xe5-core contains 512 unified shaders &mdash; double the 256-shader Xe4E &mdash; organised
                 into 32-wide wavefronts with out-of-order wave dispatch. The front-end decodes up to
-                4&nbsp;instructions per clock per wavefront, feeding a 512-entry reorder buffer that allows
-                waves to execute non-sequentially based on data readiness. This is a technique borrowed from
-                CPU microarchitecture: waves that hit cache misses yield to waves with data ready, eliminating
-                pipeline bubbles that plague in-order GPU schedulers. The L0 instruction cache per 16-core
-                cluster eliminates instruction fetch bottlenecks for shader-heavy workloads. Native FP64
-                support &mdash; not emulated through FP32 pairs &mdash; delivers double-precision compute
-                performance at 1/2&nbsp;FP32 rate, making the E1080 viable for scientific workstation use
-                without a discrete GPU. Compared to the Xe2 generation in Battlemage, the Xe5 core delivers
-                a 2.2&times; improvement in instructions retired per clock.
+                4&nbsp;instructions per clock per wavefront, feeding a 512-entry reorder buffer so waves execute
+                non-sequentially by data readiness &mdash; a CPU-microarchitecture technique that lets a wave
+                stalled on a cache miss yield to a wave with data ready, eliminating the pipeline bubbles that
+                plague in-order GPU schedulers. Feeding those lanes is a new <strong>16&nbsp;KB private L0-data
+                cache</strong> per core, straight into the 32-wide wavefront ports, backed by a
+                <strong>192&nbsp;KB L1</strong> (up from 128&nbsp;KB) and the per-16-core-cluster L0 instruction
+                cache.
+            </p>
+            <p class="xe5-tech-body" style="margin-top:16px;">
+                Riding those same ALUs is <strong>XeAVX-2048</strong> &mdash; a 2048-bit-wide vector ISA extension,
+                distinct from the matrix-only XMX5, that spans the entire precision range in one unit. At the low
+                end it packs FP8 / INT8 / FP16 at 2&times;/4&times; rate per lane for shadows, particles and
+                post-process; at the high end it runs <strong>native FP64 at 1/2&nbsp;FP32 rate</strong>, not
+                emulated through FP32 pairs. That width is what makes the E1080's double-precision throughput
+                workstation-real rather than a checkbox: the same silicon that shades a game frame runs HPC-class
+                FP64 vector math, no discrete compute card required. Against the Xe2 generation in Battlemage, the
+                Xe5 core retires 2.2&times; the instructions per clock.
             </p>
 
             <div class="xe5-tech-stats">
@@ -592,8 +601,12 @@
                     <div class="xe5-tech-stat-key">vs 256 in Xe2/Xe4E</div>
                 </div>
                 <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val">XeAVX-2048</div>
+                    <div class="xe5-tech-stat-key">2048-bit vector ISA · FP8→FP64</div>
+                </div>
+                <div class="xe5-tech-stat">
                     <div class="xe5-tech-stat-val">native FP64</div>
-                    <div class="xe5-tech-stat-key">1/2 FP32 rate</div>
+                    <div class="xe5-tech-stat-key">1/2 FP32 rate · via XeAVX-2048</div>
                 </div>
             </div>
 
@@ -626,10 +639,183 @@
                 <div class="xe5-aside-row"><div class="xe5-aside-k">Execution width</div><div class="xe5-aside-v">32-wide wavefronts</div></div>
                 <div class="xe5-aside-row"><div class="xe5-aside-k">Wave dispatch</div><div class="xe5-aside-v">Out-of-order</div></div>
                 <div class="xe5-aside-row"><div class="xe5-aside-k">ROB depth</div><div class="xe5-aside-v">512 entries</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">L0 I-cache</div><div class="xe5-aside-v">per 16-core cluster</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">FP64 rate</div><div class="xe5-aside-v">1/2 FP32 native</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Vector ISA</div><div class="xe5-aside-v">XeAVX-2048 (2048-bit)</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">XeAVX precisions</div><div class="xe5-aside-v">FP8/INT8/FP16 packed → FP64</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">FP64 rate</div><div class="xe5-aside-v">1/2 FP32 native (via XeAVX)</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">L0 data / L0 instr</div><div class="xe5-aside-v">16 KB private / per cluster</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">L1 per core</div><div class="xe5-aside-v">192 KB</div></div>
                 <div class="xe5-aside-row"><div class="xe5-aside-k">ISA compat</div><div class="xe5-aside-v">Xe4E backwards</div></div>
                 <div class="xe5-aside-row" style="border-bottom:none;"><div class="xe5-aside-k">Process</div><div class="xe5-aside-v">Intel 04A</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         XE5 RASTER — new technologies behind the 5×/tile figure
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="rv-subsection" id="xe5-raster-block" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:64px; position:relative;">
+        <style>#xe5-raster-block > *:not(.xe5-tech-num){position:relative;z-index:1;}</style>
+        <div class="xe5-tech-num" style="top:150px; transform:none;">02</div>
+        <div class="rv-eyebrow">Xe5 Raster &middot; The Architecture Behind The Number</div>
+        <div class="rv-h2">5&times; per tile is no longer an assertion.</div>
+        <p class="rv-lede">
+            Xe5 raster delivers <strong>~5&times; per tile &mdash; 20&times; across four</strong> through five
+            compounding engines: a tile-based binning rasterizer, Nanite-class virtualized geometry, predictive
+            variable-rate shading, feedback-streamed textures, and a wide shader vector ISA. Each contributes a
+            measured multiplier.
+        </p>
+
+        <!-- Kachelraster Engine + before/after -->
+        <div style="margin-top:40px;">
+            <div class="rv-eyebrow gold">Tile-Based Binning Rasterizer</div>
+            <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">Kachelraster Engine</div>
+            <p class="rv-lede">
+                The Kachelraster Engine bins geometry into 64&times;64px tiles and culls overdraw
+                <strong>before shading</strong>, against a 2&nbsp;MB on-die bin buffer per raster cluster
+                (shared with L2). Occluded fragments never reach the shader array &mdash; <strong>~40% less
+                overdraw</strong> and <strong>~35% less bandwidth</strong> than immediate-mode rendering.
+            </p>
+            <div class="rv-fu-row">
+                <div class="rv-fu-stat"><div class="n">64&times;64px</div><div class="l">bin size</div></div>
+                <div class="rv-fu-stat"><div class="n">2 MB</div><div class="l">bin buffer / raster cluster (shared w/ L2)</div></div>
+                <div class="rv-fu-stat"><div class="n">~40%</div><div class="l">overdraw reduction</div></div>
+                <div class="rv-fu-stat"><div class="n">~35%</div><div class="l">bandwidth savings</div></div>
+            </div>
+
+            <div class="kach">
+                <div class="kach-panel before">
+                    <div class="kach-head">Immediate-mode &middot; shade-then-discard</div>
+                    <div class="kach-canvas">
+                        <div class="kach-layer" style="left:8%;top:14%;width:52%;height:60%;background:#38bdf8;"></div>
+                        <div class="kach-layer" style="left:26%;top:26%;width:52%;height:58%;background:#a78bfa;"></div>
+                        <div class="kach-layer" style="left:40%;top:10%;width:46%;height:66%;background:#f0b848;"></div>
+                        <div class="kach-layer" style="left:18%;top:40%;width:60%;height:44%;background:#f472b6;"></div>
+                    </div>
+                    <div class="kach-foot"><b>4 shaded layers</b> per pixel in the overlap &mdash; three are thrown away after shading.</div>
+                </div>
+                <div class="kach-panel after">
+                    <div class="kach-head">Kachelraster &middot; cull-then-shade</div>
+                    <div class="kach-canvas">
+                        <div class="kach-grid"></div>
+                        <div class="kach-layer" style="left:40%;top:10%;width:46%;height:66%;background:#f0b848;opacity:.8;"></div>
+                        <div class="kach-layer" style="left:8%;top:14%;width:32%;height:60%;background:#38bdf8;opacity:.8;"></div>
+                        <div class="kach-layer" style="left:18%;top:56%;width:22%;height:28%;background:#f472b6;opacity:.8;"></div>
+                    </div>
+                    <div class="kach-foot"><b>1 shaded layer</b> per pixel &mdash; occluded fragments are discarded per 64&times;64 bin, before the shader runs.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feingeometrie Engine -->
+        <div style="margin-top:48px;">
+            <div class="rv-eyebrow gold">Mesh / Task Shaders &middot; Virtualized Geometry</div>
+            <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">Feingeometrie Engine</div>
+            <p class="rv-lede">
+                The Feingeometrie Engine clusters micro-triangles roughly <strong>128 to a group</strong> for
+                Nanite-class geometry virtualization, with the full cluster hierarchy resident on-package in Kache
+                Kore's 4&nbsp;GB bLLC. It shares <strong>PHR's residency mechanism</strong> with RT's BVH caching
+                &mdash; one cache infrastructure, two consumers.
+            </p>
+            <div class="rv-fu-row">
+                <div class="rv-fu-stat"><div class="n">~128 tris</div><div class="l">per micro-cluster</div></div>
+                <div class="rv-fu-stat"><div class="n">on-package</div><div class="l">cluster hierarchy in 4 GB bLLC</div></div>
+                <div class="rv-fu-stat"><div class="n">shared PHR</div><div class="l">residency reused from RT BVH caching</div></div>
+            </div>
+        </div>
+
+        <!-- VRS 3.0 / SFS / XeAVX-2048 / XeAPO cards -->
+        <div style="margin-top:48px;">
+            <div class="rv-eyebrow gold">Shading, Texture &amp; Dispatch Efficiency</div>
+            <div class="rv-h2" style="font-size:clamp(24px,3vw,34px);">Four more multipliers.</div>
+            <div class="mech-grid">
+                <div class="mech-card">
+                    <div class="mech-tag">Variable-Rate Shading</div>
+                    <div class="mech-name">VRS 3.0</div>
+                    <div class="mech-desc">
+                        VRS 3.0 varies shading rate from 1&times;1 to 4&times;4 per Kachelraster tile, selected by the
+                        <strong>LPNPU co-pilot's predictive model</strong> &mdash; the same silicon that drives Thread
+                        Director's dispatch. Saliency- and motion-aware, on existing hardware.
+                    </div>
+                    <span class="mech-chip">1&times;1 &rarr; 4&times;4</span>
+                </div>
+                <div class="mech-card">
+                    <div class="mech-tag">Texture Streaming</div>
+                    <div class="mech-name">Sampler Feedback Streaming</div>
+                    <div class="mech-desc">
+                        Sampler Feedback Streaming loads only the mip levels and texture regions the frame actually
+                        samples into Kache Kore, <strong>cutting effective VRAM pressure</strong> and the ZAM
+                        bandwidth spent on speculative residency.
+                    </div>
+                    <span class="mech-chip">SFS</span>
+                </div>
+                <div class="mech-card">
+                    <div class="mech-tag">The raster end of Xe5 Core's XeAVX-2048</div>
+                    <div class="mech-name">XeAVX-2048 · Raster Path</div>
+                    <div class="mech-desc">
+                        XeAVX-2048 &mdash; the Xe5 Core vector ISA &mdash; runs packed INT8 / FP8 / FP16 at
+                        <strong>2&times;/4&times; rate per lane</strong> for low-precision raster work: shadows,
+                        particles, post-process. The same 2048-bit unit that delivers native FP64.
+                    </div>
+                    <span class="mech-chip">2&times;/4&times; per lane</span>
+                </div>
+                <div class="mech-card">
+                    <div class="mech-tag">Per-Title GPU Tuning</div>
+                    <div class="mech-name">XeAPO</div>
+                    <div class="mech-desc">
+                        A GPU extension of Intel Application Optimization (part of Dynamic Tuning, working with Thread
+                        Director). Where APO tunes only CPU thread scheduling, XeAPO extends the same per-title profile
+                        system to GPU dispatch &mdash; <strong>Kachelraster bin size, VRS 3.0 aggressiveness, SBP/KPA
+                        cache residency policy, wavefront occupancy targets</strong> &mdash; run through the same LPNPU
+                        predictive co-pilot, not a separate system.
+                    </div>
+                    <span class="mech-chip">XeAPO</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Raster compounding table + 2DKR note -->
+        <div style="margin-top:52px;">
+            <div class="rv-eyebrow gold">Raster Compounding</div>
+            <div class="rv-h2" style="font-size:clamp(24px,3vw,34px);">Where the 5&times; comes from.</div>
+            <p class="rv-lede">
+                Each contributor is a measured multiplier, not a headline. They compound &mdash; and the product lands
+                on the same <strong>~4.8&ndash;5&times;/tile</strong> the platform already publishes, which becomes
+                <strong>20&times; across &times;4 tiles</strong>.
+            </p>
+            <div class="rcmp">
+                <div class="rcmp-row">
+                    <div class="rcmp-name">Raw shader / ROP / clock scale <span style="color:rgba(255,255,255,0.35);">(Xe5 core width, Intel 04A headroom)</span></div>
+                    <div class="rcmp-mult">2.1&times;</div>
+                </div>
+                <div class="rcmp-row">
+                    <div class="rcmp-name">Kachelraster Engine <span style="color:rgba(255,255,255,0.35);">(overdraw elimination)</span></div>
+                    <div class="rcmp-mult">1.35&times;</div>
+                </div>
+                <div class="rcmp-row">
+                    <div class="rcmp-name">Kache Kore bandwidth absorption</div>
+                    <div class="rcmp-mult">1.25&times;</div>
+                </div>
+                <div class="rcmp-row">
+                    <div class="rcmp-name">VRS 3.0 + Sampler Feedback Streaming</div>
+                    <div class="rcmp-mult">1.3&times;</div>
+                </div>
+                <div class="rcmp-row">
+                    <div class="rcmp-name">2DKR offload</div>
+                    <div class="rcmp-mult">1.04&times;</div>
+                </div>
+                <div class="rcmp-row total">
+                    <div class="rcmp-name">Compounded</div>
+                    <div class="rcmp-mult">~4.8&ndash;5&times;</div>
+                </div>
+            </div>
+            <div class="rv-cnote">
+                <h5>2DKR Contribution &middot; Minor, Honest Multiplier</h5>
+                <p>
+                    The 2D Kanvas Renderer pulls UI, HUD and overlay compositing out of the 3D pipeline entirely.
+                    That is worth a real but small <strong>+3&ndash;5% effective 3D throughput</strong> &mdash; the
+                    1.04&times; term above. It is listed as its own line precisely because it should not be folded
+                    into the larger multipliers to inflate them.
+                </p>
             </div>
         </div>
     </div>
@@ -638,23 +824,19 @@
          BLOCK 02 — XMX5
          ═══════════════════════════════════════════════════════════ -->
     <div class="xe5-tech-block" style="flex-wrap:wrap;">
-        <div class="xe5-tech-num">02</div>
+        <div class="xe5-tech-num">03</div>
 
         <div style="flex:1; min-width:0;">
             <div class="xe5-tech-label">AI MATRIX ACCELERATION &middot; GENERATION 5</div>
             <div class="xe5-tech-name">XMX5</div>
             <p class="xe5-tech-body">
-                XMX5 is the most significant generational leap in Intel's matrix acceleration history.
-                Each XMX5 unit delivers 2&times; the throughput-per-clock of XMX4E at equivalent precision,
-                but the real story is precision expansion. XMX5 introduces native INT2 and FP4 execution
-                &mdash; sub-byte precisions that quadruple effective throughput for quantized AI models.
-                For XeSS&nbsp;5.0 frame generation, the XMX5 units generate entire intermediate frames using
-                a temporal neural network that runs at native resolution, eliminating the artifact-prone
-                upscaling step used by competing solutions. The dedicated 512&nbsp;KB L1 AI SRAM per XMX5
-                cluster holds model weights locally, avoiding the memory bandwidth wall that limits matrix
-                throughput on traditional architectures. Sparse activation skipping &mdash; where zero-valued
-                matrix elements are detected and bypassed in hardware &mdash; delivers up to 1.8&times;
-                effective throughput on real-world models with typical 40&ndash;60% sparsity.
+                XMX5 makes a discrete AI accelerator unnecessary. Each unit delivers 2&times; the per-clock
+                throughput of XMX4E at equal precision, and adds native INT2 and FP4 &mdash; sub-byte formats
+                that quadruple effective throughput on quantized models. For XeSS&nbsp;5.0 it generates whole
+                intermediate frames from a temporal neural network at native resolution. A dedicated
+                512&nbsp;KB L1 AI SRAM per cluster keeps model weights local, off the memory-bandwidth wall,
+                and hardware sparse-activation skipping detects and bypasses zero-valued elements for up to
+                1.8&times; on the 40&ndash;60% sparsity real models carry.
             </p>
 
             <div class="xe5-tech-stats">
@@ -718,27 +900,23 @@
          BLOCK 03 — RTU5 (expanded capability set — same unit number)
          ═══════════════════════════════════════════════════════════ -->
     <div class="xe5-tech-block" style="flex-wrap:wrap;">
-        <div class="xe5-tech-num">03</div>
+        <div class="xe5-tech-num">04</div>
 
         <div style="flex:1; min-width:0;">
             <div class="xe5-tech-label">RAY TRACING &middot; GENERATION 5</div>
             <div class="xe5-tech-name">RTU5</div>
             <p class="xe5-tech-body">
-                RTU5 is not a new ray tracing unit &mdash; it is the same generation-5 traversal silicon
-                with a substantially expanded capability set. At its core it still implements fourth-order
-                bounding volume hierarchy (BVH4) traversal, where each node carries four children instead
-                of the industry-standard two, halving tree depth for equivalent scene complexity. Hardware
-                ReSTIR resamples hundreds of candidate light paths for converged global illumination at a
-                fraction of a brute-force ray budget, and stereo BVH caching re-traverses one acceleration
-                structure for both eyes in VR. What changes this generation is everything around traversal:
-                RTU5 now performs <strong>only</strong> ray&ndash;AABB and ray&ndash;triangle intersection.
-                It never builds trees. BVH construction, refit, pruning and residency are lifted off the
-                traversal units entirely &mdash; split across the Symbiotic BVH Pipeline, the Kache Kore
-                Prune Array, Persistent Hierarchy Residency, and the Photonic Ray Mesh &mdash; so the
-                intersection hardware runs closer to its theoretical peak instead of stalling on structure
-                maintenance. Motion vectors, GI probe evaluation, contact shadows and multi-bounce proxy
-                rays each get their own fixed-resolver, moving closed-form math out of shader code and into
-                dedicated silicon.
+                RTU5 performs only ray&ndash;AABB and ray&ndash;triangle intersection &mdash; it never builds
+                trees. It runs fourth-order bounding volume hierarchy (BVH4) traversal, four children per node
+                instead of the industry-standard two, halving tree depth for the same scene, with hardware
+                ReSTIR resampling hundreds of candidate light paths into converged global illumination on a
+                fraction of a brute-force budget, and stereo BVH caching that re-traverses one structure for
+                both eyes in VR. BVH construction, refit, pruning and residency run on dedicated silicon
+                instead &mdash; the Symbiotic BVH Pipeline, the Kache Kore Prune Array, Persistent Hierarchy
+                Residency and the Photonic Ray Mesh &mdash; keeping the intersection hardware at peak. Motion
+                vectors, GI probe evaluation, contact shadows and multi-bounce proxy rays each run on a
+                dedicated fixed-resolver, moving closed-form math out of shader code and into silicon.
+            </p>
             </p>
 
             <div class="xe5-tech-stats">
@@ -854,14 +1032,13 @@
          RTU5 MECHANISMS — SBP, KPA, PHR, Photonic Ray Mesh
          ═══════════════════════════════════════════════════════════ -->
     <div class="rv-subsection">
-        <div class="rv-eyebrow gold">RTU5 &middot; Expanded Capability Set</div>
-        <div class="rv-h2">Traversal intersects. Everything else moved.</div>
+        <div class="rv-eyebrow gold">RTU5 &middot; BVH Offload Pipeline</div>
+        <div class="rv-h2">Traversal stays on RTU5.<br>The rest runs on dedicated silicon.</div>
         <p class="rv-lede">
-            BVH work is two problems with different latency profiles, and RTU5 stops pretending they are one.
-            The Symbiotic BVH Pipeline splits the tree-critical path from the bulk leaf refit and routes each to
-            the core class physics favors. Rays that will miss are killed inside the cache before they ever reach
-            an execution unit. Static world geometry is pinned across frames. And four tiles trade ray and node
-            work as one engine over the existing photonic fabric.
+            BVH work splits into two problems with different latency profiles. The Symbiotic BVH Pipeline routes
+            the tree-critical path and the bulk leaf refit to separate core classes. The Kache Kore Prune Array
+            discards missing rays in-cache. Persistent Hierarchy Residency pins static geometry across frames. And
+            the Photonic Ray Mesh lets four tiles trade ray and node work as one engine over the photonic fabric.
         </p>
 
         <!-- SBP two-stage pipeline animation -->
@@ -949,9 +1126,9 @@
                 <div class="mech-tag">Near-Memory Compute</div>
                 <div class="mech-name">Kache Kore Prune Array</div>
                 <div class="mech-desc">
-                    Low-precision ray&ndash;AABB pruning ALUs embedded directly in Kache Kore's SRAM bitlines. Rays
-                    that miss a bounding box are <strong>discarded inside the cache</strong>, before ever reaching an
-                    RTU5 execution unit. The pruning logic physically sits in the tile-level L3, ahead of an L4 miss.
+                    The Kache Kore Prune Array embeds low-precision ray&ndash;AABB pruning ALUs directly in Kache
+                    Kore's SRAM bitlines. Rays that miss their bounding box are <strong>discarded in-cache</strong> at
+                    the tile-level L3, ahead of an L4 miss, before reaching an RTU5 execution unit.
                 </div>
                 <span class="mech-chip">KPA</span>
             </div>
@@ -959,10 +1136,10 @@
                 <div class="mech-tag">Cross-Frame Residency</div>
                 <div class="mech-name">Persistent Hierarchy Residency</div>
                 <div class="mech-desc">
-                    Static world-geometry BVH stays pinned in Kache Kore's 4 GB across frames; only dynamic subtrees
-                    get refit by SBP each frame. The <strong>same residency mechanism</strong> is reused by
-                    Feingeometrie's geometry-cluster caching and by the GI-proxy BLAS &mdash; one cache infrastructure,
-                    several pipelines.
+                    Persistent Hierarchy Residency pins the static world-geometry BVH in Kache Kore's 4 GB across
+                    frames; only dynamic subtrees are refit by SBP each frame. The <strong>same residency
+                    mechanism</strong> backs Feingeometrie's cluster caching and the GI-proxy BLAS &mdash; one cache
+                    infrastructure, several pipelines.
                 </div>
                 <span class="mech-chip">PHR</span>
             </div>
@@ -970,10 +1147,10 @@
                 <div class="mech-tag">Multi-Tile Coherence</div>
                 <div class="mech-name">Photonic Ray Mesh</div>
                 <div class="mech-desc">
-                    Extends Foveros 2.0's existing tile arbitration &mdash; already unifying the raster framebuffer and
-                    command queue across &times;4 E1080 tiles &mdash; to ray and BVH-node dispatch. All four tiles trade
-                    work as <strong>one coherent RT engine</strong>. Uses established Foveros 2.0 numbers: 448 Tbps,
-                    &minus;70% latency vs copper, 0.08 pJ/bit. No new interconnect physics.
+                    Photonic Ray Mesh extends Foveros 2.0's tile arbitration &mdash; already unifying the raster
+                    framebuffer and command queue across &times;4 E1080 tiles &mdash; to ray and BVH-node dispatch, so
+                    all four tiles trade work as <strong>one coherent RT engine</strong>. On the existing fabric:
+                    448 Tbps, &minus;70% latency vs copper, 0.08 pJ/bit.
                 </div>
                 <span class="mech-chip">Photonic Ray Mesh</span>
             </div>
@@ -995,9 +1172,8 @@
                     <div class="mech-name">Free Motion Vectors</div>
                     <div class="mech-desc">
                         RTU5 traversal already computes high-precision hit distance per ray for BVH4. Retaining that
-                        value's frame-to-frame derivative hands XeFG 3.0 / XeSS 5.0 a motion-vector source with
-                        <strong>no separate G-buffer motion pass</strong> &mdash; nearly free, because the traversal
-                        payload already carries it.
+                        value's frame-to-frame derivative gives XeFG 3.0 / XeSS 5.0 a motion-vector source with
+                        <strong>no separate G-buffer motion pass</strong>.
                     </div>
                 </div>
                 <div class="mech-card">
@@ -1032,83 +1208,6 @@
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════
-         BLOCK 04 — Intel 04A + FOveros 2.0
-         ═══════════════════════════════════════════════════════════ -->
-    <div class="xe5-tech-block" style="flex-wrap:wrap;">
-        <div class="xe5-tech-num">04</div>
-
-        <div style="flex:1; min-width:0;">
-            <div class="xe5-tech-label">PROCESS NODE &middot; MULTI-TILE PHOTONIC FABRIC</div>
-            <div class="xe5-tech-name">Intel 04A + FOveros 2.0</div>
-            <p class="xe5-tech-body">
-                The Xe5 GPU tiles are manufactured on Intel 04A &mdash; the same world-leading process
-                node used by the Eventide Compute Tile. But what makes the E1080 unprecedented is
-                FOveros&nbsp;2.0: Intel's second-generation photonic interconnect fabric that binds up to
-                four GPU tiles into a single coherent device. Unlike organic substrate interconnects that
-                measure latency in nanoseconds and bandwidth in hundreds of GB/s, FOveros&nbsp;2.0 uses
-                on-package silicon photonic waveguides to deliver sub-2-nanosecond tile-to-tile latency
-                at over 3.2&nbsp;TB/s aggregate bisection bandwidth. The operating system and application
-                see one GPU, one memory space, one command queue. Shader work distribution across tiles,
-                cross-tile L2 cache coherency, and synchronized display output are all handled in hardware
-                by the FOveros tile controller &mdash; with zero driver overhead. This is not SLI. This is
-                not CrossFire. This is one GPU, built from four tiles, with single-GPU programming semantics.
-            </p>
-
-            <div class="xe5-tech-stats xe5-dd-stat-gold">
-                <div class="xe5-tech-stat">
-                    <div class="xe5-tech-stat-val" style="color:var(--eventide-gold-light);">&times;4 tiles</div>
-                    <div class="xe5-tech-stat-key">single coherent device</div>
-                </div>
-                <div class="xe5-tech-stat">
-                    <div class="xe5-tech-stat-val" style="color:var(--eventide-gold-light);">&lt;2 ns</div>
-                    <div class="xe5-tech-stat-key">tile-to-tile latency</div>
-                </div>
-                <div class="xe5-tech-stat">
-                    <div class="xe5-tech-stat-val" style="color:var(--eventide-gold-light);">3.2 TB/s</div>
-                    <div class="xe5-tech-stat-key">bisection bandwidth</div>
-                </div>
-            </div>
-
-            <!-- GOG bar — gold variant -->
-            <div class="xe5-dd-gog xe5-dd-gog-gold">
-                <div class="gog-bar">
-                    <div class="gog-label">GEN-ON-GEN vs EMIB (PRIOR GEN)</div>
-                    <div class="gog-row">
-                        <div class="gog-metric">Tile-to-tile latency</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:75%; background:var(--eventide-gold-light);"></div></div>
-                        <div class="gog-num" style="color:var(--eventide-gold-light);">&minus;65%</div>
-                    </div>
-                    <div class="gog-row">
-                        <div class="gog-metric">Bisection bandwidth</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:90%; background:var(--eventide-gold-light);"></div></div>
-                        <div class="gog-num" style="color:var(--eventide-gold-light);">+4&times;</div>
-                    </div>
-                    <div class="gog-row">
-                        <div class="gog-metric">Max tile count</div>
-                        <div class="gog-track"><div class="gog-fill" style="width:65%; background:var(--eventide-gold-light);"></div></div>
-                        <div class="gog-num" style="color:var(--eventide-gold-light);">+2&times;</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="xe5-tech-aside">
-            <div class="xe5-aside-box">
-                <div class="xe5-aside-title">FOVEROS 2.0 SPECIFICATIONS</div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">Interconnect</div><div class="xe5-aside-v">silicon photonic</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">Tiles per device</div><div class="xe5-aside-v">up to 4</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">Tile-to-tile latency</div><div class="xe5-aside-v">&lt;2 ns</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">Bisection BW</div><div class="xe5-aside-v">3.2 TB/s</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">Cache coherency</div><div class="xe5-aside-v">hardware</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">Work distribution</div><div class="xe5-aside-v">hardware</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">PCIe presentation</div><div class="xe5-aside-v">single device</div></div>
-                <div class="xe5-aside-row"><div class="xe5-aside-k">Driver overhead</div><div class="xe5-aside-v">zero</div></div>
-                <div class="xe5-aside-row" style="border-bottom:none;"><div class="xe5-aside-k">Compatible tiles</div><div class="xe5-aside-v">Xe5 GPU only</div></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ═══════════════════════════════════════════════════════════
          BLOCK 05 — Unified Memory Architecture
          ═══════════════════════════════════════════════════════════ -->
     <div class="xe5-tech-block" style="flex-wrap:wrap; border-bottom:none;">
@@ -1118,9 +1217,10 @@
             <div class="xe5-tech-label">MEMORY ARCHITECTURE &middot; KACHE KORE + ZAM</div>
             <div class="xe5-tech-name">Unified Memory</div>
             <p class="xe5-tech-body">
-                The Xe5 tiles share a unified memory architecture that bridges on-die cache, on-package
-                bLLC, and system DRAM into a coherent hierarchy. The centerpiece is Kache Kore &mdash;
-                a 4&nbsp;GB bLLC (bandwidthLLC) fabricated on Intel 04A alongside the compute tiles. For
+                Elementalist addresses the platform's unified memory as VRAM. Six tiers &mdash; L0 through the
+                Kache Kore L4 and out to terabyte-class ZAM &mdash; form one coherent hierarchy with no PCIe wall.
+                The centerpiece is Kache Kore: a 4&nbsp;GB bLLC (bandwidthLLC) fabricated on Intel 04A alongside
+                the compute tiles. For
                 the GPU, Kache Kore acts as an enormous L4 cache that absorbs the working set of most
                 1440p and many 4K game frames entirely on-package, eliminating the latency penalty of DRAM
                 round-trips. Each Xe5 tile maintains its own L2 cache (12&nbsp;MB/tile, 48&nbsp;MB total
@@ -1196,129 +1296,6 @@
             </div>
         </div>
     </div>
-
-    <!-- ═══════════════════════════════════════════════════════════
-         XE5 RASTER — new technologies behind the 5×/tile figure
-         ═══════════════════════════════════════════════════════════ -->
-    <div class="rv-subsection" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:64px;">
-        <div class="rv-eyebrow">Xe5 Raster &middot; The Architecture Behind The Number</div>
-        <div class="rv-h2">5&times; per tile is no longer an assertion.</div>
-        <p class="rv-lede">
-            The raster specs were always here; the technology that earns them was not. Xe5 fills that gap with a
-            tile-based binning front-end, Nanite-class virtualized geometry, variable-rate shading driven by the
-            scheduler's own predictive model, feedback-streamed textures, and a wide low-precision shader ISA
-            &mdash; each contributing a measured multiplier that compounds to the published <strong>~5&times;/tile
-            &rarr; 20&times; across &times;4</strong>.
-        </p>
-
-        <!-- Kachelraster Engine + before/after -->
-        <div style="margin-top:40px;">
-            <div class="rv-eyebrow gold">Tile-Based Binning Rasterizer</div>
-            <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">Kachelraster Engine</div>
-            <p class="rv-lede">
-                Geometry is binned into 64&times;64px tiles and overdraw-culled <strong>before shading</strong>, using
-                a 2&nbsp;MB on-die bin buffer per raster cluster (shared with L2). Fragments that would be occluded
-                never enter the shader array &mdash; roughly <strong>40% less overdraw</strong> and
-                <strong>35% bandwidth saved</strong> versus immediate-mode rendering.
-            </p>
-            <div class="rv-fu-row">
-                <div class="rv-fu-stat"><div class="n">64&times;64px</div><div class="l">bin size</div></div>
-                <div class="rv-fu-stat"><div class="n">2 MB</div><div class="l">bin buffer / raster cluster (shared w/ L2)</div></div>
-                <div class="rv-fu-stat"><div class="n">~40%</div><div class="l">overdraw reduction</div></div>
-                <div class="rv-fu-stat"><div class="n">~35%</div><div class="l">bandwidth savings</div></div>
-            </div>
-
-            <div class="kach">
-                <div class="kach-panel before">
-                    <div class="kach-head">Immediate-mode &middot; shade-then-discard</div>
-                    <div class="kach-canvas">
-                        <div class="kach-layer" style="left:8%;top:14%;width:52%;height:60%;background:#38bdf8;"></div>
-                        <div class="kach-layer" style="left:26%;top:26%;width:52%;height:58%;background:#a78bfa;"></div>
-                        <div class="kach-layer" style="left:40%;top:10%;width:46%;height:66%;background:#f0b848;"></div>
-                        <div class="kach-layer" style="left:18%;top:40%;width:60%;height:44%;background:#f472b6;"></div>
-                    </div>
-                    <div class="kach-foot"><b>4 shaded layers</b> per pixel in the overlap &mdash; three are thrown away after shading.</div>
-                </div>
-                <div class="kach-panel after">
-                    <div class="kach-head">Kachelraster &middot; cull-then-shade</div>
-                    <div class="kach-canvas">
-                        <div class="kach-grid"></div>
-                        <div class="kach-layer" style="left:40%;top:10%;width:46%;height:66%;background:#f0b848;opacity:.8;"></div>
-                        <div class="kach-layer" style="left:8%;top:14%;width:32%;height:60%;background:#38bdf8;opacity:.8;"></div>
-                        <div class="kach-layer" style="left:18%;top:56%;width:22%;height:28%;background:#f472b6;opacity:.8;"></div>
-                    </div>
-                    <div class="kach-foot"><b>1 shaded layer</b> per pixel &mdash; occluded fragments are discarded per 64&times;64 bin, before the shader runs.</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Feingeometrie Engine -->
-        <div style="margin-top:48px;">
-            <div class="rv-eyebrow gold">Mesh / Task Shaders &middot; Virtualized Geometry</div>
-            <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">Feingeometrie Engine</div>
-            <p class="rv-lede">
-                Micro-triangle clustering at roughly <strong>128 triangles per cluster</strong> delivers Nanite-class
-                geometry virtualization &mdash; practical only because Kache Kore's 4&nbsp;GB bLLC can hold the cluster
-                hierarchy on-package. Feingeometrie shares <strong>PHR's residency mechanism</strong> with RT's BVH
-                caching: one cache infrastructure, two consumers.
-            </p>
-            <div class="rv-fu-row">
-                <div class="rv-fu-stat"><div class="n">~128 tris</div><div class="l">per micro-cluster</div></div>
-                <div class="rv-fu-stat"><div class="n">on-package</div><div class="l">cluster hierarchy in 4 GB bLLC</div></div>
-                <div class="rv-fu-stat"><div class="n">shared PHR</div><div class="l">residency reused from RT BVH caching</div></div>
-            </div>
-        </div>
-
-        <!-- VRS 3.0 / SFS / XeAVX-2048 / XeAPO cards -->
-        <div style="margin-top:48px;">
-            <div class="rv-eyebrow gold">Shading, Texture &amp; Dispatch Efficiency</div>
-            <div class="rv-h2" style="font-size:clamp(24px,3vw,34px);">Four more multipliers.</div>
-            <div class="mech-grid">
-                <div class="mech-card">
-                    <div class="mech-tag">Variable-Rate Shading</div>
-                    <div class="mech-name">VRS 3.0</div>
-                    <div class="mech-desc">
-                        1&times;1 to 4&times;4 coarse shading tiers, with rate selected per Kachelraster tile from the
-                        <strong>LPNPU co-pilot's existing predictive model</strong> &mdash; the same silicon already
-                        driving Thread Director's predictive dispatch. Saliency- and motion-based, reused hardware,
-                        not new.
-                    </div>
-                    <span class="mech-chip">1&times;1 &rarr; 4&times;4</span>
-                </div>
-                <div class="mech-card">
-                    <div class="mech-tag">Texture Streaming</div>
-                    <div class="mech-name">Sampler Feedback Streaming</div>
-                    <div class="mech-desc">
-                        Only the mip levels and texture regions actually sampled stream into Kache Kore &mdash;
-                        <strong>cutting effective VRAM pressure</strong> and the wasted ZAM bandwidth of speculative
-                        residency.
-                    </div>
-                    <span class="mech-chip">SFS</span>
-                </div>
-                <div class="mech-card">
-                    <div class="mech-tag">Wide Shader ISA &middot; distinct from XMX5</div>
-                    <div class="mech-name">XeAVX-2048</div>
-                    <div class="mech-desc">
-                        A general shader-ALU wide-ISA extension &mdash; <strong>not</strong> the matrix/AI-only XMX5.
-                        Packed sub-word execution (INT8 / FP8 / FP16 packed ops, 2&times;/4&times; rate per lane) for
-                        lower-precision raster work: shadows, particles, post-process.
-                    </div>
-                    <span class="mech-chip">2&times;/4&times; per lane</span>
-                </div>
-                <div class="mech-card">
-                    <div class="mech-tag">Per-Title GPU Tuning</div>
-                    <div class="mech-name">XeAPO</div>
-                    <div class="mech-desc">
-                        A GPU extension of Intel Application Optimization (part of Dynamic Tuning, working with Thread
-                        Director). Where APO tunes only CPU thread scheduling, XeAPO extends the same per-title profile
-                        system to GPU dispatch &mdash; <strong>Kachelraster bin size, VRS 3.0 aggressiveness, SBP/KPA
-                        cache residency policy, wavefront occupancy targets</strong> &mdash; run through the same LPNPU
-                        predictive co-pilot, not a separate system.
-                    </div>
-                    <span class="mech-chip">XeAPO</span>
-                </div>
-            </div>
-        </div>
 
         <!-- Cache hierarchy interactive diagram -->
         <div style="margin-top:52px;">
@@ -1398,49 +1375,79 @@
             </div>
         </div>
 
-        <!-- Raster compounding table + 2DKR note -->
-        <div style="margin-top:52px;">
-            <div class="rv-eyebrow gold">Raster Compounding</div>
-            <div class="rv-h2" style="font-size:clamp(24px,3vw,34px);">Where the 5&times; comes from.</div>
-            <p class="rv-lede">
-                Each contributor is a measured multiplier, not a headline. They compound &mdash; and the product lands
-                on the same <strong>~4.8&ndash;5&times;/tile</strong> the platform already publishes, which becomes
-                <strong>20&times; across &times;4 tiles</strong>.
+    <!-- ═══════════════════════════════════════════════════════════
+         BLOCK 04 — Intel 04A + FOveros 2.0
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="xe5-tech-block" style="flex-wrap:wrap;">
+        <div class="xe5-tech-num">06</div>
+
+        <div style="flex:1; min-width:0;">
+            <div class="xe5-tech-label">PROCESS NODE &middot; MULTI-TILE PHOTONIC FABRIC</div>
+            <div class="xe5-tech-name">Intel 04A + FOveros 2.0</div>
+            <p class="xe5-tech-body">
+                The Xe5 GPU tiles are built on Intel 04A, the same node as the Eventide Compute Tile, and
+                joined by FOveros&nbsp;2.0 &mdash; a second-generation photonic interconnect that binds up to
+                four GPU tiles into a single coherent device: one memory space, one command queue, over
+                on-package silicon photonic waveguides. Unlike organic substrate interconnects that
+                measure latency in nanoseconds and bandwidth in hundreds of GB/s, FOveros&nbsp;2.0 uses
+                on-package silicon photonic waveguides to deliver sub-2-nanosecond tile-to-tile latency
+                at over 3.2&nbsp;TB/s aggregate bisection bandwidth. The operating system and application
+                see one GPU, one memory space, one command queue. Shader work distribution across tiles,
+                cross-tile L2 cache coherency, and synchronized display output are all handled in hardware
+                by the FOveros tile controller &mdash; with zero driver overhead. This is not SLI. This is
+                not CrossFire. This is one GPU, built from four tiles, with single-GPU programming semantics.
             </p>
-            <div class="rcmp">
-                <div class="rcmp-row">
-                    <div class="rcmp-name">Raw shader / ROP / clock scale <span style="color:rgba(255,255,255,0.35);">(Xe5 core width, Intel 04A headroom)</span></div>
-                    <div class="rcmp-mult">2.1&times;</div>
+
+            <div class="xe5-tech-stats xe5-dd-stat-gold">
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val" style="color:var(--eventide-gold-light);">&times;4 tiles</div>
+                    <div class="xe5-tech-stat-key">single coherent device</div>
                 </div>
-                <div class="rcmp-row">
-                    <div class="rcmp-name">Kachelraster Engine <span style="color:rgba(255,255,255,0.35);">(overdraw elimination)</span></div>
-                    <div class="rcmp-mult">1.35&times;</div>
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val" style="color:var(--eventide-gold-light);">&lt;2 ns</div>
+                    <div class="xe5-tech-stat-key">tile-to-tile latency</div>
                 </div>
-                <div class="rcmp-row">
-                    <div class="rcmp-name">Kache Kore bandwidth absorption</div>
-                    <div class="rcmp-mult">1.25&times;</div>
-                </div>
-                <div class="rcmp-row">
-                    <div class="rcmp-name">VRS 3.0 + Sampler Feedback Streaming</div>
-                    <div class="rcmp-mult">1.3&times;</div>
-                </div>
-                <div class="rcmp-row">
-                    <div class="rcmp-name">2DKR offload</div>
-                    <div class="rcmp-mult">1.04&times;</div>
-                </div>
-                <div class="rcmp-row total">
-                    <div class="rcmp-name">Compounded</div>
-                    <div class="rcmp-mult">~4.8&ndash;5&times;</div>
+                <div class="xe5-tech-stat">
+                    <div class="xe5-tech-stat-val" style="color:var(--eventide-gold-light);">3.2 TB/s</div>
+                    <div class="xe5-tech-stat-key">bisection bandwidth</div>
                 </div>
             </div>
-            <div class="rv-cnote">
-                <h5>2DKR Contribution &middot; Minor, Honest Multiplier</h5>
-                <p>
-                    The 2D Kanvas Renderer pulls UI, HUD and overlay compositing out of the 3D pipeline entirely.
-                    That is worth a real but small <strong>+3&ndash;5% effective 3D throughput</strong> &mdash; the
-                    1.04&times; term above. It is listed as its own line precisely because it should not be folded
-                    into the larger multipliers to inflate them.
-                </p>
+
+            <!-- GOG bar — gold variant -->
+            <div class="xe5-dd-gog xe5-dd-gog-gold">
+                <div class="gog-bar">
+                    <div class="gog-label">GEN-ON-GEN vs EMIB (PRIOR GEN)</div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Tile-to-tile latency</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:75%; background:var(--eventide-gold-light);"></div></div>
+                        <div class="gog-num" style="color:var(--eventide-gold-light);">&minus;65%</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Bisection bandwidth</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:90%; background:var(--eventide-gold-light);"></div></div>
+                        <div class="gog-num" style="color:var(--eventide-gold-light);">+4&times;</div>
+                    </div>
+                    <div class="gog-row">
+                        <div class="gog-metric">Max tile count</div>
+                        <div class="gog-track"><div class="gog-fill" style="width:65%; background:var(--eventide-gold-light);"></div></div>
+                        <div class="gog-num" style="color:var(--eventide-gold-light);">+2&times;</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="xe5-tech-aside">
+            <div class="xe5-aside-box">
+                <div class="xe5-aside-title">FOVEROS 2.0 SPECIFICATIONS</div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Interconnect</div><div class="xe5-aside-v">silicon photonic</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Tiles per device</div><div class="xe5-aside-v">up to 4</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Tile-to-tile latency</div><div class="xe5-aside-v">&lt;2 ns</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Bisection BW</div><div class="xe5-aside-v">3.2 TB/s</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Cache coherency</div><div class="xe5-aside-v">hardware</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Work distribution</div><div class="xe5-aside-v">hardware</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">PCIe presentation</div><div class="xe5-aside-v">single device</div></div>
+                <div class="xe5-aside-row"><div class="xe5-aside-k">Driver overhead</div><div class="xe5-aside-v">zero</div></div>
+                <div class="xe5-aside-row" style="border-bottom:none;"><div class="xe5-aside-k">Compatible tiles</div><div class="xe5-aside-v">Xe5 GPU only</div></div>
             </div>
         </div>
     </div>
@@ -1450,155 +1457,475 @@
          ═══════════════════════════════════════════════════════════ -->
     <div class="rv-subsection" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:64px;">
         <div class="rv-eyebrow">Elementalist &middot; Cross-Reference</div>
-        <div class="rv-h2">E1080 &times;4 tile, in context.</div>
+        <div class="rv-h2">E1080 &times;4, to scale.</div>
         <p class="rv-lede">
-            Where a number is derived from another (an RTX 5090 tier gap carried onto a second part), the derivation
-            is shown on the number itself &mdash; not buried in a footnote. Raw and effective RT figures stay labeled
-            separately, exactly as on the RTU5 chart above.
+            The E1080 is the hero of its own chart: switch the metric, scale the tile count from &times;1 to &times;4,
+            and watch it lead the field on a log axis that keeps every competitor visible instead of flattening them.
+            Raw and effective RT figures stay labeled separately, exactly as on the RTU5 chart above, and any
+            transitively-derived number carries its derivation on the number itself &mdash; never a footnote.
         </p>
 
-        <!-- Grouped bar chart: E1080 ×4 advantage multiple per competitor -->
-        <div class="gbar">
-            <div class="gbar-legend">
-                <div class="gbar-leg"><span class="gbar-swatch" style="background:#76B900;"></span>vs RTX 5090</div>
-                <div class="gbar-leg"><span class="gbar-swatch" style="background:#E4544E;"></span>vs RX 9070 XT <span style="color:rgba(255,255,255,0.35);">(derived)</span></div>
-                <div class="gbar-leg"><span class="gbar-swatch" style="background:#5B8DEF;"></span>Adreno X2-90</div>
-            </div>
+<style>
+/* ── Hero-first log-scale comparison chart (interactive, JS-rendered) ── */
+.hc, .ptc { margin-top: 26px; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; padding: 22px 24px; background: rgba(255,255,255,0.02); max-width: 880px; }
+.hc-controls { display: flex; flex-wrap: wrap; gap: 14px 24px; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.hc-ctl-group { display: flex; align-items: center; gap: 10px; }
+.hc-ctl-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+.hc-tabs { display: inline-flex; border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; overflow: hidden; flex-wrap: wrap; }
+.hc-tabs button { font-family: var(--font-mono); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; padding: 7px 12px; color: rgba(255,255,255,0.5); background: transparent; border: none; border-right: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: background .15s, color .15s; }
+.hc-tabs button:last-child { border-right: none; }
+.hc-tabs button:hover { color: #fff; }
+.hc-tabs button.active { background: var(--eventide-gold); color: #1a1206; font-weight: 700; }
+.hc-plot svg, .ptc-plot svg { width: 100%; height: auto; display: block; overflow: visible; }
+.hc-foot, .ptc-foot { font-size: 11.5px; color: rgba(255,255,255,0.5); line-height: 1.7; margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.07); }
+.hc-foot b, .ptc-foot b { color: var(--eventide-gold-light); font-weight: 700; }
+.hc-nojs { font-size: 12px; color: rgba(255,255,255,0.5); padding: 20px 0; }
+.hc-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+.hc-leg { display: flex; align-items: center; gap: 7px; font-size: 10.5px; color: rgba(255,255,255,0.55); font-family: var(--font-mono); }
+.hc-leg span { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+/* Bolt "where it leads" stat strip */
+.bl-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 24px; max-width: 880px; }
+.bl-card { border: 1px solid rgba(192,132,252,0.25); background: rgba(192,132,252,0.05); border-radius: 10px; padding: 18px 20px; }
+.bl-card .k { font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: #c084fc; margin-bottom: 8px; }
+.bl-card .big { font-family: var(--font-mono); font-size: 22px; font-weight: 700; color: #d8b4fe; line-height: 1; }
+.bl-card .sub { font-size: 11.5px; color: rgba(255,255,255,0.5); margin-top: 8px; line-height: 1.6; }
+.bl-card .sub strong { color: rgba(255,255,255,0.82); font-weight: 600; }
+.bl-card.e { border-color: rgba(240,184,72,0.28); background: rgba(240,184,72,0.05); }
+.bl-card.e .k { color: var(--eventide-gold-light); }
+.bl-card.e .big { color: var(--eventide-gold-light); }
+.rv-inline-callout.bolt { border-color: rgba(192,132,252,0.28); background: rgba(192,132,252,0.05); }
+.rv-inline-callout.bolt .ic { color: #c084fc; }
+</style>
 
-            <div class="gbar-group">
-                <div class="gbar-glabel">Raster <span class="unit">E1080 &times;4 advantage multiple &middot; raw</span></div>
-                <div class="gbar-row">
-                    <div class="gbar-name">RTX 5090</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:33.9%;background:#76B900;"></div></div>
-                    <div class="gbar-val">20&times;</div>
-                </div>
-                <div class="gbar-row">
-                    <div class="gbar-name">RX 9070 XT</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:74.6%;background:#E4544E;"></div></div>
-                    <div class="gbar-val"><span class="drv">~44&times;</span>
-                        <details class="deriv"><summary>derived</summary>
-                            <div class="deriv-body">E1080 &times;4 = <code>20&times;</code> the RTX 5090 in raster. The RX 9070 XT sits <strong>~2.2&times; below</strong> the 5090, so <code>20 &times; 2.2 = ~44&times;</code> vs the E1080 &times;4 tile.</div>
-                        </details>
+        <!-- ── Interactive hero chart: E1080 to scale (metric tabs + tile scaler) ── -->
+        <div class="hc" id="el-hero">
+            <div class="hc-legend">
+                <div class="hc-leg"><span style="background:#F0B848;"></span>Arc E1080 (hero)</div>
+                <div class="hc-leg"><span style="background:#76B900;"></span>RTX 5090 · baseline 1&times;</div>
+                <div class="hc-leg"><span style="background:#E4544E;"></span>RX 9070 XT · derived</div>
+            </div>
+            <div class="hc-controls">
+                <div class="hc-ctl-group">
+                    <span class="hc-ctl-label">Metric</span>
+                    <div class="hc-tabs" id="hc-metric">
+                        <button type="button" data-m="raster" class="active">Raster</button>
+                        <button type="button" data-m="rtraw">RT · raw</button>
+                        <button type="button" data-m="rteff">RT · effective</button>
                     </div>
                 </div>
-                <div class="gbar-row">
-                    <div class="gbar-name">Adreno X2-90</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:0;"></div></div>
-                    <div class="gbar-val" style="color:rgba(255,255,255,0.35);">n/a</div>
-                </div>
-            </div>
-
-            <div class="gbar-group">
-                <div class="gbar-glabel">Ray tracing &middot; raw <span class="unit">E1080 &times;4 advantage multiple</span></div>
-                <div class="gbar-row">
-                    <div class="gbar-name">RTX 5090</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:28.5%;background:#76B900;"></div></div>
-                    <div class="gbar-val">16.8&times;</div>
-                </div>
-                <div class="gbar-row">
-                    <div class="gbar-name">RX 9070 XT</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:62.7%;background:#E4544E;"></div></div>
-                    <div class="gbar-val"><span class="drv">~37&times;</span>
-                        <details class="deriv"><summary>derived</summary>
-                            <div class="deriv-body">E1080 &times;4 raw RT = <code>16.8&times;</code> the RTX 5090. Carrying the same <strong>~2.2&times;</strong> tier gap: <code>16.8 &times; 2.2 = ~37&times;</code>.</div>
-                        </details>
+                <div class="hc-ctl-group">
+                    <span class="hc-ctl-label">E1080 tiles</span>
+                    <div class="hc-tabs" id="hc-tiles">
+                        <button type="button" data-t="1">&times;1</button>
+                        <button type="button" data-t="2">&times;2</button>
+                        <button type="button" data-t="3">&times;3</button>
+                        <button type="button" data-t="4" class="active">&times;4</button>
                     </div>
                 </div>
-                <div class="gbar-row">
-                    <div class="gbar-name">Adreno X2-90</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:0;"></div></div>
-                    <div class="gbar-val" style="color:rgba(255,255,255,0.35);">n/a</div>
-                </div>
             </div>
-
-            <div class="gbar-group">
-                <div class="gbar-glabel">Ray tracing &middot; effective <span class="unit">E1080 &times;4 advantage multiple &middot; + SBP/KPA/PHR</span></div>
-                <div class="gbar-row">
-                    <div class="gbar-name">RTX 5090</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:45.8%;background:#76B900;"></div></div>
-                    <div class="gbar-val">~27&times;</div>
-                </div>
-                <div class="gbar-row">
-                    <div class="gbar-name">RX 9070 XT</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:100%;background:#E4544E;"></div></div>
-                    <div class="gbar-val"><span class="drv">~59&times;</span>
-                        <details class="deriv"><summary>derived</summary>
-                            <div class="deriv-body">E1080 &times;4 effective RT = <code>~27&times;</code> the RTX 5090. Same <strong>~2.2&times;</strong> tier gap: <code>27 &times; 2.2 = ~59&times;</code>.</div>
-                        </details>
-                    </div>
-                </div>
-                <div class="gbar-row">
-                    <div class="gbar-name">Adreno X2-90</div>
-                    <div class="gbar-track"><div class="gbar-fill" style="width:0;"></div></div>
-                    <div class="gbar-val" style="color:rgba(255,255,255,0.35);">n/a</div>
-                </div>
-            </div>
+            <div class="hc-plot" id="hc-plot"><div class="hc-nojs">Interactive performance chart — enable JavaScript to scale it. Every figure is also in the table below.</div></div>
+            <div class="hc-foot" id="hc-foot"></div>
         </div>
 
         <!-- AMD tier-gap contextual note (inline, not a footnote) -->
         <div class="rv-inline-callout">
             <div class="ic">▲</div>
             <div class="tx">
-                <strong>Why RX 9070 XT figures are derived, not measured.</strong> There is no flagship-tier RX part
-                to benchmark directly this generation &mdash; AMD has not fielded one, by choice. The RX 9070 XT
-                numbers above are transitively derived from its ~2.2&times; standing below the RTX 5090, which is why
-                each carries its derivation inline. Adreno X2-90 is a different product category entirely (an SoC
-                iGPU) and is cross-referenced on efficiency/TOPS only, never placed on this discrete-tier scale.
+                <strong>Log scale, and why RX 9070 XT is derived.</strong> The E1080 &times;4 leads by so much that a
+                linear axis would flatten every competitor to a sliver — so the bars use a log scale, and the E1080's
+                real multiple is printed on its bar. There is no flagship-tier RX part to benchmark this generation
+                &mdash; AMD has not fielded one, by choice &mdash; so the RX 9070 XT figure is transitively derived from
+                its ~2.2&times; standing below the RTX 5090. Adreno X2-90 (an SoC iGPU) is a different category and is
+                cross-referenced on efficiency/TOPS only, never on this discrete-tier scale.
+            </div>
+        </div>
+
+        <!-- ═══ Bolt Zeus cross-reference — different workload ═══ -->
+        <div style="margin-top:52px;">
+            <div class="rv-eyebrow" style="color:#c084fc;">Cross-Reference &middot; Bolt Zeus</div>
+            <div class="rv-h2" style="font-size:clamp(26px,3.4vw,40px);">A real-time GPU, next to an offline accelerator.</div>
+            <p class="rv-lede">
+                Bolt's Zeus is an offline rendering and simulation accelerator: a discrete card built to path-trace
+                scenes and hold very large datasets, not to drive frames in real time. Elementalist is built for the
+                frame &mdash; real-time hardware ray tracing, XeSS&nbsp;5.0, and unified-tile raster for games and
+                creation. Two different products for two different jobs, shown here on the same axes for reference.
+            </p>
+            <p class="rv-lede" style="margin-top:14px;">
+                On the two specifications Zeus markets hardest, the top Eventide platform holds the line: its unified
+                memory reaches up to <strong>4&nbsp;TB</strong> (2&nbsp;TB on-package ZAM plus up to 2&nbsp;TB DDR6)
+                against Zeus's 2.25&nbsp;TB LPDDR5X, and <strong>XeAVX-2048</strong> delivers native FP64 on the
+                shader ALUs. On real-time ray tracing &mdash; the E1080's purpose &mdash; it leads decisively. Every
+                Zeus figure below is Bolt's own published claim.
+            </p>
+
+            <!-- ── Interactive: Photonic Ray Mesh tile-network simulator (canvas) ── -->
+            <style>
+            .esim { margin-top: 28px; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; background: #070b16; max-width: 900px; }
+            .esim-head { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+            .esim-title { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--eventide-gold-light); }
+            .esim-controls { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+            .esim-slider { display: flex; align-items: center; gap: 10px; }
+            .esim-slider label { font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,0.45); }
+            .esim-slider input[type=range] { width: 116px; accent-color: var(--eventide-gold); }
+            .esim-slider .tv { font-family: var(--font-mono); color: var(--eventide-gold-light); font-size: 13px; font-weight: 700; width: 26px; }
+            .esim-toggle { display: inline-flex; border: 1px solid rgba(255,255,255,0.14); border-radius: 7px; overflow: hidden; }
+            .esim-toggle button { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: .05em; padding: 6px 11px; background: transparent; border: none; border-right: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); cursor: pointer; }
+            .esim-toggle button:last-child { border-right: none; }
+            .esim-toggle button.active { background: var(--eventide-gold); color: #1a1206; font-weight: 700; }
+            .esim-body { display: grid; grid-template-columns: 1fr 250px; }
+            .esim-canvas-wrap { position: relative; border-right: 1px solid rgba(255,255,255,0.08); }
+            .esim-canvas-wrap canvas { display: block; width: 100%; height: auto; }
+            .esim-hint { position: absolute; left: 12px; bottom: 9px; font-family: var(--font-mono); font-size: 9px; color: rgba(255,255,255,0.3); pointer-events: none; }
+            .esim-readout { padding: 15px 18px; display: flex; flex-direction: column; gap: 13px; }
+            .esim-ri .k { font-family: var(--font-mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+            .esim-ri .v { font-family: var(--font-mono); font-size: 17px; font-weight: 700; color: #fff; margin-top: 3px; }
+            .esim-ri .v.gold { color: var(--eventide-gold-light); }
+            .esim-ri .v.warn { color: #fca5a5; }
+            .esim-ri .n { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 3px; line-height: 1.5; }
+            @media (max-width: 720px) { .esim-body { grid-template-columns: 1fr; } .esim-canvas-wrap { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); } }
+            </style>
+            <div class="esim" id="prm-sim">
+                <div class="esim-head">
+                    <div class="esim-title">Interactive · Photonic Ray Mesh · Multi-Tile Scaling</div>
+                    <div class="esim-controls">
+                        <div class="esim-slider"><label for="prm-tiles">Tiles</label><input type="range" id="prm-tiles" min="1" max="4" step="1" value="4"><span class="tv" id="prm-tiles-v">×4</span></div>
+                        <div class="esim-toggle" id="prm-mode">
+                            <button type="button" data-mode="mesh" class="active">Ray Mesh</button>
+                            <button type="button" data-mode="silo">Siloed</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="esim-body">
+                    <div class="esim-canvas-wrap">
+                        <canvas id="prm-canvas" width="760" height="440"></canvas>
+                        <div class="esim-hint">Illustration of tile-level work distribution — not a cycle-accurate model</div>
+                    </div>
+                    <div class="esim-readout">
+                        <div class="esim-ri"><div class="k">Presents to the OS as</div><div class="v gold" id="prm-present">1 device</div><div class="n" id="prm-present-n">Four tiles, one coherent RT engine.</div></div>
+                        <div class="esim-ri"><div class="k">Effective RT vs RTX 5090</div><div class="v" id="prm-tput">~27×</div><div class="n" id="prm-tput-n">6.7× per tile, near-linear over the fabric</div></div>
+                        <div class="esim-ri"><div class="k">Photonic fabric</div><div class="v" id="prm-fabric">448 Tbps</div><div class="n">−70% latency vs copper · 0.08 pJ/bit</div></div>
+                        <div class="esim-ri"><div class="k">Cross-tile work trading</div><div class="v" id="prm-trade">yes</div><div class="n" id="prm-trade-n">Idle tiles absorb neighbours’ overflow.</div></div>
+                    </div>
+                </div>
+            </div>
+            <script>
+            (function () {
+                'use strict';
+                var cv = document.getElementById('prm-canvas');
+                if (!cv || !cv.getContext) return;
+                var ctx = cv.getContext('2d'), W = cv.width, H = cv.height;
+                var state = { tiles: 4, mode: 'mesh' };
+                var disp = { x: 74, y: H / 2 };
+                var tw = 150, th = 132, gx = 372, gy = 60, gap = 34;
+                var tiles = [
+                    { x: gx, y: gy }, { x: gx + tw + gap, y: gy },
+                    { x: gx, y: gy + th + gap }, { x: gx + tw + gap, y: gy + th + gap }
+                ].map(function (t) { t.w = tw; t.h = th; t.cx = t.x + tw / 2; t.cy = t.y + th / 2; t.load = 0; return t; });
+                var packets = [], t0 = 0, pulse = 0;
+                function on(i) { return i < state.tiles; }
+                function ease(t) { t = t < 0 ? 0 : t > 1 ? 1 : t; return t * t * (3 - 2 * t); }
+                function rr(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+                function step(ts) {
+                    if (!t0) t0 = ts; var dt = Math.min(40, ts - t0); t0 = ts;
+                    ctx.clearRect(0, 0, W, H);
+                    ctx.strokeStyle = 'rgba(240,184,72,0.035)'; ctx.lineWidth = 1;
+                    for (var gxx = 0; gxx < W; gxx += 40) { ctx.beginPath(); ctx.moveTo(gxx, 0); ctx.lineTo(gxx, H); ctx.stroke(); }
+                    for (var gyy = 0; gyy < H; gyy += 40) { ctx.beginPath(); ctx.moveTo(0, gyy); ctx.lineTo(W, gyy); ctx.stroke(); }
+                    var mesh = state.mode === 'mesh';
+                    pulse = (pulse + dt * 0.0018) % 1;
+                    // inter-tile fabric links
+                    for (var a = 0; a < 4; a++) for (var b = a + 1; b < 4; b++) {
+                        if (!on(a) || !on(b)) continue;
+                        ctx.strokeStyle = mesh ? 'rgba(240,184,72,0.38)' : 'rgba(255,255,255,0.05)';
+                        ctx.lineWidth = mesh ? 2 : 1;
+                        ctx.beginPath(); ctx.moveTo(tiles[a].cx, tiles[a].cy); ctx.lineTo(tiles[b].cx, tiles[b].cy); ctx.stroke();
+                        if (mesh) {
+                            var pp = (pulse + a * 0.17 + b * 0.11) % 1;
+                            var px = tiles[a].cx + (tiles[b].cx - tiles[a].cx) * pp, py = tiles[a].cy + (tiles[b].cy - tiles[a].cy) * pp;
+                            ctx.fillStyle = 'rgba(255,222,150,0.95)'; ctx.beginPath(); ctx.arc(px, py, 3, 0, 6.29); ctx.fill();
+                        }
+                    }
+                    // dispatcher
+                    ctx.fillStyle = 'rgba(56,189,248,0.92)'; rr(disp.x - 34, disp.y - 28, 60, 56, 8); ctx.fill();
+                    ctx.fillStyle = '#04121f'; ctx.textAlign = 'center'; ctx.font = 'bold 11px "IBM Plex Mono",monospace';
+                    ctx.fillText('RTU5', disp.x - 4, disp.y - 4); ctx.fillText('DISP', disp.x - 4, disp.y + 10);
+                    // tiles
+                    tiles.forEach(function (t, i) {
+                        t.load *= 0.93;
+                        if (on(i)) {
+                            var g = Math.min(1, t.load);
+                            ctx.fillStyle = 'rgba(240,184,72,' + (0.07 + g * 0.34) + ')';
+                            ctx.strokeStyle = 'rgba(240,184,72,' + (0.5 + g * 0.4) + ')'; ctx.lineWidth = 1.5; ctx.setLineDash([]);
+                        } else {
+                            ctx.fillStyle = 'rgba(255,255,255,0.015)'; ctx.strokeStyle = 'rgba(255,255,255,0.13)'; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+                        }
+                        rr(t.x, t.y, t.w, t.h, 10); ctx.fill(); ctx.stroke(); ctx.setLineDash([]);
+                        ctx.textAlign = 'center';
+                        ctx.fillStyle = on(i) ? 'rgba(255,255,255,0.88)' : 'rgba(255,255,255,0.28)'; ctx.font = 'bold 12px "IBM Plex Mono",monospace';
+                        ctx.fillText('TILE ' + (i + 1), t.cx, t.y + 24);
+                        ctx.fillStyle = on(i) ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.22)'; ctx.font = '9px "IBM Plex Mono",monospace';
+                        ctx.fillText(on(i) ? 'Xe5 · RTU5' : 'power-gated', t.cx, t.y + 40);
+                        if (on(i) && !mesh && state.tiles > 1) {
+                            ctx.fillStyle = 'rgba(248,113,113,0.6)'; ctx.font = '8px "IBM Plex Mono",monospace';
+                            ctx.fillText('own BVH copy', t.cx, t.cy + 34);
+                        }
+                    });
+                    // spawn + move ray packets
+                    if (Math.random() < 0.05 * state.tiles) {
+                        var idx = Math.floor(Math.random() * state.tiles);
+                        packets.push({ tile: idx, p: 0, y0: disp.y + (Math.random() * 44 - 22), x: disp.x, y: disp.y });
+                    }
+                    ctx.fillStyle = 'rgba(125,211,252,0.9)';
+                    packets.forEach(function (pk) {
+                        var t = tiles[pk.tile]; pk.p += dt * 0.0016;
+                        pk.x = disp.x + (t.cx - disp.x) * ease(pk.p);
+                        pk.y = pk.y0 + (t.cy - pk.y0) * ease(pk.p);
+                        if (pk.p >= 1) { t.load = Math.min(1.3, t.load + 0.28); pk.dead = true; }
+                        ctx.beginPath(); ctx.arc(pk.x, pk.y, 2.3, 0, 6.29); ctx.fill();
+                    });
+                    packets = packets.filter(function (p) { return !p.dead; });
+                    if (packets.length > 150) packets.splice(0, packets.length - 150);
+                    requestAnimationFrame(step);
+                }
+                requestAnimationFrame(step);
+                // readouts
+                var PEN = [1, 0.78, 0.75, 0.72];
+                function update() {
+                    var n = state.tiles, mesh = state.mode === 'mesh';
+                    document.getElementById('prm-tiles-v').textContent = '×' + n;
+                    var eff = 6.7 * n * (mesh ? 1 : PEN[n - 1]);
+                    document.getElementById('prm-tput').textContent = (mesh && n === 4) ? '~27×' : '~' + Math.round(eff) + '×';
+                    document.getElementById('prm-tput-n').textContent = mesh ? '6.7× per tile, near-linear over the fabric' : 'siloed — duplicated BVH, no cross-tile balancing';
+                    var pres = document.getElementById('prm-present');
+                    pres.textContent = mesh ? '1 device' : (n + ' device' + (n > 1 ? 's' : ''));
+                    pres.className = 'v ' + (mesh ? 'gold' : 'warn');
+                    document.getElementById('prm-present-n').textContent = mesh ? (n > 1 ? 'Tiles unified as one coherent RT engine.' : 'A single tile — the same engine, one node.') : (n > 1 ? 'Four separate GPUs — SLI-style, not one engine.' : 'A single tile.');
+                    document.getElementById('prm-trade').textContent = (mesh && n > 1) ? 'yes' : (n > 1 ? 'no' : 'n/a');
+                    document.getElementById('prm-trade-n').textContent = (mesh && n > 1) ? 'Idle tiles absorb neighbours’ overflow over the photonic fabric.' : (n > 1 ? 'Each tile on its own; overflow stalls its own queue.' : 'Nothing to trade with one tile.');
+                }
+                var sl = document.getElementById('prm-tiles');
+                sl.addEventListener('input', function () { state.tiles = parseInt(sl.value, 10); update(); });
+                var mode = document.getElementById('prm-mode');
+                mode.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; state.mode = b.getAttribute('data-mode'); Array.prototype.forEach.call(mode.querySelectorAll('button'), function (x) { x.classList.remove('active'); }); b.classList.add('active'); update(); });
+                update();
+            })();
+            </script>
+
+            <div class="ptc" id="el-ptc">
+                <div class="hc-legend">
+                    <div class="hc-leg"><span style="background:#F0B848;"></span>Arc E1080 &times;4 · real-time RT</div>
+                    <div class="hc-leg"><span style="background:#c084fc;"></span>Bolt Zeus · offline path tracing (claim)</div>
+                    <div class="hc-leg"><span style="background:#76B900;"></span>RTX 5090 · baseline</div>
+                </div>
+                <div class="ptc-plot" id="ptc-plot"><div class="hc-nojs">Interactive chart — enable JavaScript.</div></div>
+                <div class="ptc-foot">
+                    Both bars read against the RTX 5090, but they measure different things: the E1080's
+                    <b>~27&times;</b> is real-time hardware ray tracing inside a game frame; Bolt's <b>~10&times;</b> is
+                    an offline path-tracing / rendering claim for a compute-class board. Not a like-for-like race.
+                </div>
+            </div>
+
+            <!-- The two Zeus claims, checked against the top Eventide platform -->
+            <div class="bl-strip">
+                <div class="bl-card e">
+                    <div class="k">Memory capacity · E1080 platform leads</div>
+                    <div class="big">up to 4 TB</div>
+                    <div class="sub">Zeus's 2.25&nbsp;TB is its whole memory pool. The E1080's 4&nbsp;GB is <strong>cache</strong> (Kache Kore bLLC). Its actual VRAM is the top X9 platform's unified memory: up to 2&nbsp;TB on-package ZAM <strong>plus up to 2&nbsp;TB DDR6</strong> = up to 4&nbsp;TB, addressed by the 4&times; E1080 as VRAM. More pool than Zeus, before the cache.</div>
+                </div>
+                <div class="bl-card e">
+                    <div class="k">Memory bandwidth · E1080 platform leads</div>
+                    <div class="big">5&ndash;6 TB/s</div>
+                    <div class="sub">ZAM is FOveros-mounted on-package memory at <strong>5&ndash;6&nbsp;TB/s</strong> &mdash; a faster class than Zeus's <strong>LPDDR5X</strong>. Capacity Zeus can match on paper; on-package bandwidth is not a fight it set up to win.</div>
+                </div>
+                <div class="bl-card e">
+                    <div class="k">FP64 · XeAVX-2048 answers it</div>
+                    <div class="big">2048-bit vector</div>
+                    <div class="sub">Zeus leans on FP64 as an HPC part &mdash; but the E1080 fights that on the shader ALUs with <strong>XeAVX-2048</strong>, a 2048-bit-wide vector ISA running <strong>native FP64 at ½ FP32 rate</strong>, not emulated through FP32 pairs. FP64 isn't a capability the E1080 lacks; it's a lane it runs wide.</div>
+                </div>
+            </div>
+
+            <div class="ptc" id="el-mem" style="margin-top:24px;">
+                <div class="hc-legend" style="margin-bottom:6px;"><div class="hc-leg" style="color:rgba(255,255,255,0.4);">Addressable memory pool (VRAM) · log scale</div></div>
+                <div class="ptc-plot" id="mem-plot"><div class="hc-nojs">Interactive chart — enable JavaScript.</div></div>
+                <div class="ptc-foot">The E1080's 4&nbsp;GB is <b>cache</b> (Kache Kore bLLC), not its memory ceiling. Its VRAM is the top X9 platform's unified pool: up to <b>2&nbsp;TB on-package ZAM (5&ndash;6&nbsp;TB/s)</b> plus up to <b>2&nbsp;TB DDR6</b> &mdash; up to 4&nbsp;TB, addressed by the 4&times; E1080. More capacity than Zeus's 2.25&nbsp;TB, on a faster memory class (ZAM vs LPDDR5X), with the 4&nbsp;GB bLLC on top.</div>
+            </div>
+
+            <div class="rv-inline-callout bolt">
+                <div class="ic">◆</div>
+                <div class="tx">
+                    <strong>Zeus figures are Bolt's published claims.</strong> The ~10&times; path-tracing number and the
+                    2.25&nbsp;TB LPDDR5X ceiling are vendor marketing figures, not independently benchmarked, for an
+                    offline rendering / simulation accelerator &mdash; a different product category from a real-time
+                    gaming GPU. Shown for context and labeled as claims; the top Eventide platform meets or beats both,
+                    and neither is blended into the E1080's real-time multiples.
+                </div>
             </div>
         </div>
 
         <!-- Full spec comparison table -->
-        <div class="rv-table-wrap" style="max-width:920px;">
-            <table class="rv-table" style="min-width:640px;">
+        <div class="rv-table-wrap" style="max-width:1000px;">
+            <table class="rv-table" style="min-width:760px;">
                 <caption>Elementalist E1080 cross-reference &middot; competitor specs shown as fact, not callout</caption>
                 <thead>
                     <tr>
                         <th>Metric</th>
                         <th><span style="color:#8fce00;">RTX 5090</span></th>
                         <th><span style="color:#f08a86;">RX 9070 XT</span></th>
+                        <th><span style="color:#d8b4fe;">Bolt Zeus</span></th>
                         <th><span style="color:#8fb3f5;">Adreno X2-90</span></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <th>Raster &middot; vs E1080 &times;4</th>
-                        <td class="rv-mono">baseline &rarr; 20&times; raw</td>
+                        <td class="rv-mono">baseline &rarr; 20&times;</td>
                         <td class="rv-mono rv-eff">~44&times; <span style="font-weight:400;font-size:10px;color:rgba(255,255,255,0.4);">derived</span></td>
+                        <td style="color:rgba(255,255,255,0.45);">not a raster-first part</td>
                         <td style="color:rgba(255,255,255,0.4);">not comparable tier</td>
                     </tr>
                     <tr>
-                        <th>RT &middot; vs E1080 &times;4</th>
+                        <th>RT / path tracing &middot; vs RTX 5090</th>
+                        <td class="rv-mono">1&times; (RT baseline)</td>
+                        <td class="rv-mono rv-eff">~0.45&times; <span style="font-weight:400;font-size:10px;color:rgba(255,255,255,0.4);">derived</span></td>
+                        <td class="rv-mono" style="color:#d8b4fe;">~10&times; PT <span style="font-weight:400;font-size:10px;color:rgba(255,255,255,0.4);">offline · claim</span></td>
+                        <td style="color:rgba(255,255,255,0.4);">not comparable tier</td>
+                    </tr>
+                    <tr>
+                        <th>E1080 &times;4 RT vs part</th>
                         <td class="rv-mono">16.8&times; raw / ~27&times; eff</td>
                         <td class="rv-mono rv-eff">~37&times; raw / ~59&times; eff <span style="font-weight:400;font-size:10px;color:rgba(255,255,255,0.4);">derived</span></td>
+                        <td style="color:rgba(255,255,255,0.5);">different workload (offline PT)</td>
                         <td style="color:rgba(255,255,255,0.4);">not comparable tier</td>
                     </tr>
                     <tr>
                         <th>FP32 compute</th>
                         <td>~105 TFLOPS</td>
                         <td>mid-range tier</td>
+                        <td style="color:rgba(255,255,255,0.6);">rendering/HPC-class · native FP64</td>
                         <td>LP tier</td>
                     </tr>
                     <tr>
                         <th>Process node</th>
                         <td>TSMC 4N-class</td>
                         <td>TSMC N4</td>
+                        <td>TSMC (announced)</td>
                         <td>TSMC 3nm</td>
                     </tr>
                     <tr>
                         <th>Memory</th>
                         <td>32 GB GDDR7 · ~1.8 TB/s</td>
                         <td>16 GB GDDR6</td>
+                        <td style="color:#d8b4fe;">up to 2.25 TB LPDDR5X <span style="font-size:10px;color:rgba(255,255,255,0.4);">claim · below the X9 platform's up-to-4 TB unified ZAM+DDR6</span></td>
                         <td>228 GB/s LPDDR5X (SoC-shared)</td>
                     </tr>
                     <tr>
-                        <th>Context</th>
-                        <td style="color:rgba(255,255,255,0.4);">&mdash;</td>
-                        <td style="color:rgba(255,255,255,0.55);">No flagship-tier part fielded this generation, by choice</td>
-                        <td style="color:rgba(255,255,255,0.55);">Different product category (SoC iGPU) &mdash; TOPS/efficiency cross-reference only</td>
+                        <th>Category</th>
+                        <td style="color:rgba(255,255,255,0.55);">Real-time gaming flagship</td>
+                        <td style="color:rgba(255,255,255,0.55);">No flagship-tier part this gen, by choice</td>
+                        <td style="color:rgba(255,255,255,0.55);">Offline rendering / simulation accelerator (vendor claims)</td>
+                        <td style="color:rgba(255,255,255,0.55);">SoC iGPU &mdash; TOPS/efficiency cross-reference only</td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
+        <script>
+        (function () {
+            'use strict';
+            // Shared log-scale horizontal bar renderer (SVG). Pages are self-contained
+            // now, so this script executes normally (the old deep-dive loader is gone).
+            function renderChart(host, rows, axis) {
+                if (!host) return;
+                var min = axis.min, max = axis.max, ticks = axis.ticks, fmt = axis.fmt || function (v) { return v + '×'; };
+                var X0 = 152, X1 = 604, W = 700, top = 12, rowH = 48;
+                var H = top + rows.length * rowH + 30;
+                var lg = Math.log10;
+                function sx(v) { v = Math.max(min, Math.min(max, v)); return X0 + (lg(v) - lg(min)) / (lg(max) - lg(min)) * (X1 - X0); }
+                var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" font-family="\'IBM Plex Mono\', monospace">';
+                // gridlines + tick labels
+                ticks.forEach(function (t) {
+                    var x = sx(t).toFixed(1);
+                    var base = (t === 1);
+                    s += '<line x1="' + x + '" y1="' + (top - 2) + '" x2="' + x + '" y2="' + (top + rows.length * rowH - 8) + '" stroke="' + (base ? 'rgba(118,185,0,0.45)' : 'rgba(255,255,255,0.08)') + '" stroke-width="1"' + (base ? '' : ' stroke-dasharray="2 3"') + '/>';
+                    s += '<text x="' + x + '" y="' + (top + rows.length * rowH + 14) + '" text-anchor="middle" font-size="10" fill="' + (base ? 'rgba(143,206,0,0.8)' : 'rgba(255,255,255,0.32)') + '">' + fmt(t) + '</text>';
+                });
+                rows.forEach(function (d, i) {
+                    var y = top + i * rowH;
+                    var bh = d.hero ? 28 : 20;
+                    var by = y + (rowH - bh) / 2 - 4;
+                    var mid = by + bh / 2;
+                    s += '<text x="' + (X0 - 12) + '" y="' + (mid - (d.sub ? 5 : 0)) + '" text-anchor="end" dominant-baseline="middle" font-size="' + (d.hero ? 13 : 12) + '" font-weight="' + (d.hero ? 700 : 500) + '" fill="' + (d.hero ? '#fff' : 'rgba(255,255,255,0.75)') + '">' + d.name + '</text>';
+                    if (d.sub) s += '<text x="' + (X0 - 12) + '" y="' + (mid + 9) + '" text-anchor="end" dominant-baseline="middle" font-size="9" fill="rgba(255,255,255,0.4)">' + d.sub + '</text>';
+                    s += '<rect x="' + X0 + '" y="' + by + '" width="' + (X1 - X0) + '" height="' + bh + '" rx="5" fill="rgba(255,255,255,0.045)"/>';
+                    var w = Math.max(3, sx(d.val) - X0);
+                    s += '<rect x="' + X0 + '" y="' + by + '" width="' + w.toFixed(1) + '" height="' + bh + '" rx="5" fill="' + d.color + '"><title>' + d.name + ': ' + d.label + '</title></rect>';
+                    s += '<text x="' + (X1 + 10) + '" y="' + mid + '" dominant-baseline="middle" font-size="' + (d.hero ? 15 : 13) + '" font-weight="700" fill="' + d.color + '">' + d.label + '</text>';
+                });
+                s += '</svg>';
+                host.innerHTML = s;
+            }
+
+            function fx(v) {
+                if (Math.abs(v - Math.round(v)) < 0.05) return Math.round(v) + '×';
+                return v.toFixed(1) + '×';
+            }
+
+            // ── Interactive hero chart ──
+            var PER = { raster: 5.0, rtraw: 4.2, rteff: 6.7 };
+            var MNAME = { raster: 'raster', rtraw: 'raw ray tracing', rteff: 'effective ray tracing' };
+            var COMP9070 = 0.4545; // ~1 / 2.2 tier gap below the RTX 5090
+            var state = { metric: 'raster', tiles: 4 };
+            var axisPerf = { min: 0.35, max: 32, ticks: [1, 2, 5, 10, 20], fmt: function (v) { return v + '×'; } };
+
+            function heroRows() {
+                var e = PER[state.metric] * state.tiles;
+                var eLabel = (state.metric === 'rteff' && state.tiles === 4) ? '~27×' : fx(e);
+                return [
+                    { name: 'Arc E1080', sub: '×' + state.tiles + ' tile' + (state.tiles > 1 ? 's' : ''), val: e, color: '#F0B848', hero: true, label: eLabel, e: e },
+                    { name: 'RTX 5090', sub: 'baseline', val: 1, color: '#76B900', label: '1×' },
+                    { name: 'RX 9070 XT', sub: 'derived', val: COMP9070, color: '#E4544E', label: '~0.45×' }
+                ];
+            }
+            function renderHero() {
+                var rows = heroRows();
+                renderChart(document.getElementById('hc-plot'), rows, axisPerf);
+                var e = rows[0].e, n9070 = Math.round(e / COMP9070);
+                var foot = document.getElementById('hc-foot');
+                if (foot) foot.innerHTML = 'At ×' + state.tiles + ', the E1080 delivers <b>' + rows[0].label +
+                    '</b> the RTX 5090 in ' + MNAME[state.metric] + ' — and <b>~' + n9070 +
+                    '×</b> the RX 9070 XT (that part’s ~2.2× tier gap below the 5090, carried through). ' +
+                    'Photonic Ray Mesh is why tiles scale near-linearly: drag the tile control to watch it.';
+            }
+            function wire(id, key, cast) {
+                var box = document.getElementById(id);
+                if (!box) return;
+                box.addEventListener('click', function (ev) {
+                    var b = ev.target.closest('button'); if (!b) return;
+                    state[key] = cast(b.getAttribute(key === 'metric' ? 'data-m' : 'data-t'));
+                    Array.prototype.forEach.call(box.querySelectorAll('button'), function (x) { x.classList.remove('active'); });
+                    b.classList.add('active');
+                    renderHero();
+                });
+            }
+            wire('hc-metric', 'metric', String);
+            wire('hc-tiles', 'tiles', function (v) { return parseInt(v, 10); });
+            renderHero();
+
+            // ── Bolt Zeus path-tracing chart ──
+            renderChart(document.getElementById('ptc-plot'), [
+                { name: 'Arc E1080', sub: '×4 · real-time RT', val: 27, color: '#F0B848', hero: true, label: '~27×' },
+                { name: 'Bolt Zeus', sub: 'offline PT · claim', val: 10, color: '#c084fc', label: '~10×' },
+                { name: 'RTX 5090', sub: 'baseline', val: 1, color: '#76B900', label: '1×' }
+            ], axisPerf);
+
+            // ── Memory capacity chart — E1080 platform (unified ZAM + DDR6) leads ──
+            renderChart(document.getElementById('mem-plot'), [
+                { name: 'Arc E1080 ×4', sub: 'unified ZAM + DDR6 · X9', val: 4096, color: '#F0B848', hero: true, label: 'up to 4 TB' },
+                { name: 'Bolt Zeus', sub: 'LPDDR5X · claim', val: 2304, color: '#c084fc', label: '2.25 TB' },
+                { name: 'RTX 5090', sub: 'GDDR7', val: 32, color: '#76B900', label: '32 GB' }
+            ], { min: 16, max: 6144, ticks: [32, 256, 1024, 4096], fmt: function (v) { return v >= 1024 ? (v / 1024) + ' TB' : v + ' GB'; } });
+        })();
+        </script>
     </div>
 
 </div>
