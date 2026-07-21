@@ -198,6 +198,7 @@ function audioSectionHtml(rows) {
 
 function buildTileConfig(comp) {
   const tiles = [];
+  tiles.push({ id: "kachekore" });
   if (comp.computeTiles > 0) tiles.push({ id: "compute", count: comp.computeTiles });
   tiles.push({ id: "lpisland" });
   tiles.push({ id: "hnpu" });
@@ -218,6 +219,12 @@ function buildTileConfig(comp) {
 
 function buildTileSpecs(comp, rows, affinity) {
   const specs = {};
+  specs.kachekore = [
+    { label: "L4 / bLLC Capacity", val: rows["Kache Kore™ L4 / bLLC"] || rows["Kache Kore™ bLLC"] || "—" },
+    { label: "L3 (LP Island share)", val: rows["L3 (LP Island, shared)"] || "—" },
+    { label: "Total SRAM + L4", val: rows["Total SRAM cache (approx.)"] || "—" },
+    { label: "Fabric", val: "FOveros 2.0 · shared by every tile" }
+  ];
   if (comp.computeTiles > 0) {
     specs.compute = [
       { label: "Instances", val: comp.computeTiles },

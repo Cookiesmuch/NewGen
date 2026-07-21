@@ -15,17 +15,24 @@
     return n;
   }
 
-  var ROWS = [
-    { zones: ["compute", "lp", "ai"], h: 120, gap: 14 },
-    { zones: ["gpu", "gpu-aux"], h: 116, gap: 14 },
-    { zones: ["mem", "audio"], h: 108, gap: 18 },
-    { zones: ["anc"], h: 62, gap: 10 }
-  ];
-  var SIZES = {
-    compute: [118, 118], lp: [150, 118], ai: [104, 118],
-    gpu: [118, 112], "gpu-aux": [96, 84],
-    mem: [140, 104], audio: [156, 104],
-    anc: [108, 58]
+  /* ------------------------------------------------------------------
+   * Compass floorplan around the central Kache Kore die. Region distance
+   * from the core encodes cache-latency sensitivity: Compute, LP Island,
+   * HNPU and ZAM sit in the innermost ring; GPU sits to the left in a
+   * second ring; low-bandwidth ancillary I/O sits furthest out, bottom
+   * right. Positions are fixed (schematic, not to scale).
+   * ------------------------------------------------------------------ */
+  var VIEW_W = 1180, VIEW_H = 920;
+  var REGIONS = {
+    core:           { x: 460, y: 360, w: 220, h: 200 },
+    "top-right":    { x: 700, y: 40,  w: 440, h: 260, itemW: 150, itemH: 108, gap: 14 },
+    right:          { x: 700, y: 330, w: 150, h: 140, itemW: 150, itemH: 140, gap: 14 },
+    top:            { x: 460, y: 140, w: 220, h: 180, itemW: 220, itemH: 170, gap: 14 },
+    left:           { x: 40,  y: 280, w: 380, h: 340, itemW: 150, itemH: 150, gap: 16 },
+    "far-left":     { x: 40,  y: 650, w: 210, h: 130, itemW: 190, itemH: 120, gap: 14 },
+    bottom:         { x: 460, y: 580, w: 220, h: 140, itemW: 220, itemH: 130, gap: 14 },
+    "bottom-left":  { x: 190, y: 740, w: 260, h: 150, itemW: 210, itemH: 130, gap: 14 },
+    "bottom-right": { x: 700, y: 500, w: 440, h: 340, itemW: 100, itemH: 78,  gap: 12 }
   };
 
   function buildLayout(tiles) {
@@ -40,25 +47,35 @@
     });
 
     var placed = [];
-    var y = 30;
-    var VIEW_W = 1180;
-    ROWS.forEach(function (row) {
-      var items = [];
-      row.zones.forEach(function (z) { if (byZone[z]) items = items.concat(byZone[z]); });
-      if (!items.length) return;
-      var size = SIZES[items[0].meta.zone];
-      // total width for centering
-      var widths = items.map(function (it) { return SIZES[it.meta.zone][0]; });
-      var totalW = widths.reduce(function (a, b) { return a + b; }, 0) + row.gap * (items.length - 1);
-      var x = Math.max(20, (VIEW_W - totalW) / 2);
+    Object.keys(REGIONS).forEach(function (zoneKey) {
+      var items = byZone[zoneKey];
+      if (!items || !items.length) return;
+      var region = REGIONS[zoneKey];
+
+      if (zoneKey === "core") {
+        var it = items[0];
+        placed.push({ id: it.id, meta: it.meta, index: 0, count: 1, x: region.x, y: region.y, w: region.w, h: region.h });
+        return;
+      }
+
+      var iw = region.itemW, ih = region.itemH, gap = region.gap;
+      var cols = Math.max(1, Math.min(items.length, Math.floor((region.w + gap) / (iw + gap))));
+      var rows = Math.ceil(items.length / cols);
+      var gridW = cols * iw + (cols - 1) * gap;
+      var gridH = rows * ih + (rows - 1) * gap;
+      var startX = region.x + Math.max(0, (region.w - gridW) / 2);
+      var startY = region.y + Math.max(0, (region.h - gridH) / 2);
+
       items.forEach(function (it, i) {
-        var w = SIZES[it.meta.zone][0], h = SIZES[it.meta.zone][1];
-        placed.push({ id: it.id, meta: it.meta, index: it.index, count: it.count, x: x, y: y + (row.h - h) / 2, w: w, h: h });
-        x += w + row.gap;
+        var col = i % cols, row = Math.floor(i / cols);
+        placed.push({
+          id: it.id, meta: it.meta, index: it.index, count: it.count,
+          x: startX + col * (iw + gap), y: startY + row * (ih + gap), w: iw, h: ih
+        });
       });
-      y += row.h + row.gap + 10;
     });
-    return { placed: placed, height: y + 10 };
+
+    return { placed: placed, height: VIEW_H };
   }
 
   function typeText(node, text, speed) {
