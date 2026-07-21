@@ -16,49 +16,36 @@
   }
 
   /* ------------------------------------------------------------------
-   * True-size floorplan, built bottom-up from Intel/Eventide/assets/
-   * tile-sizes.js — every tile is drawn at its actual relative footprint
-   * (an E1080 is always the same size everywhere it appears; a 12-core
-   * Compute Tile is visibly smaller than an 86-core one), and the overall
-   * package canvas is sized to fit its real content rather than tiles
-   * being stretched to fill a fixed frame. Kache Kore + HNPU + 2DKanvas
-   * and the LP cluster + Compute grid form two stacked rows to the right
-   * of the GPU column; the GPU column spans exactly that two-row height
-   * (two E1080s stacked 2x2 span the whole NoC, by definition — see
-   * tile-sizes.js). Klangkerne/SoRT + the ancillary I/O cluster sit in
-   * their own full-width row below the NoC, and ZAM is its own full-width
-   * row of up to 4 module slots below that, matching "1TB spans the full
-   * package width" (lower capacities simply populate fewer of the 4
-   * slots, like empty RAM sockets).
+   * Gap-free true-area floorplan. Tiles are laid out with an area-
+   * preserving treemap: the package is recursively split into rectangles,
+   * each split partitioning its parent COMPLETELY and in proportion to
+   * the true silicon area (from tile-sizes.js) of the tiles inside it. A
+   * region is therefore never bigger than its contents, so nothing floats
+   * over empty substrate — the result reads as a solid die, and each
+   * tile's rendered AREA equals its true area (aspect ratio flexes to
+   * tessellate, exactly like a real floorplan).
+   *
+   * Arrangement (per the 599HKX reference): GPU (2x2 E1080) is the big
+   * block on the left; to its right, Kache Kore anchors the middle of a
+   * left column with the D390/2DKanvas/media strip above it and
+   * Klangkerne below; the Compute tiles sit in the top-right with the
+   * remaining I/O tiles filling in beneath them. ZAM is the one tile that
+   * spans the whole package width, as a module row along the bottom.
    * ------------------------------------------------------------------ */
-  var GAP = 6;
-  var M = 22; // outer margin to the package substrate edge
+  var INSET = 3;        // half of the ~6px substrate reveal between neighbours
+  var M = 20;           // outer margin to the package substrate edge
 
-  function rowOf(items, gap) {
-    // lays `items` (each {w,h}) left-to-right, top-aligned to the tallest —
-    // a shorter tile reads as "a smaller die sharing this row," not as a
-    // floating box with padding above and below it.
-    var h = 0;
-    items.forEach(function (it) { h = Math.max(h, it.h); });
-    var x = 0;
-    var out = [];
-    items.forEach(function (it) {
-      out.push({ x: x, y: 0, w: it.w, h: it.h });
-      x += it.w + gap;
-    });
-    return { items: out, w: Math.max(0, x - gap), h: h };
+  /* ---- treemap primitives: a node is a leaf {kind:'leaf',...} or a
+     split {kind:'row'|'col', kids:[...]}; weight = total true area. ---- */
+  function grp(kind, kids) {
+    kids = kids.filter(Boolean);
+    if (!kids.length) return null;
+    if (kids.length === 1) return kids[0];
+    var w = 0; kids.forEach(function (k) { w += k.weight; });
+    return { kind: kind, kids: kids, weight: w };
   }
-
-  function gridOf(cellW, cellH, n, cols) {
-    cols = Math.min(cols, n);
-    var rows = Math.ceil(n / cols);
-    var out = [];
-    for (var i = 0; i < n; i++) {
-      var col = i % cols, row = Math.floor(i / cols);
-      out.push({ x: col * (cellW + GAP), y: row * (cellH + GAP), w: cellW, h: cellH });
-    }
-    return { items: out, w: cols * cellW + (cols - 1) * GAP, h: rows * cellH + (rows - 1) * GAP };
-  }
+  function rowN() { return grp("row", [].slice.call(arguments)); }
+  function colN() { return grp("col", [].slice.call(arguments)); }
 
   function buildLayout(tiles) {
     var S = window.EventideTileSizes;
@@ -68,125 +55,110 @@
       if (meta) byId[t.id] = { t: t, meta: meta };
     });
 
-    var placed = [];
-    function place(id, meta, index, count, x, y, w, h, model) {
-      placed.push({ id: id, meta: meta, index: index, count: count, x: x, y: y, w: w, h: h, model: model });
-    }
-
-    // ---- GPU column: the single largest thing on the package. 2-wide grid
-    // (2x2 for a 4-tile flagship); everything else packs beside it. ----
-    var gpuEntry = byId.gpu;
-    var gpuCount = gpuEntry ? gpuEntry.t.count : 0;
-    var gpuCell = gpuEntry ? S.elementalistSize(gpuEntry.t.xe5) : { w: 0, h: 0 };
-    var gpuGrid = gpuCount ? gridOf(gpuCell.w, gpuCell.h, gpuCount, 2) : { w: 0, h: 0, items: [] };
-    var gpuH = gpuGrid.h;
-
-    // ---- Top strip beside GPU: LP Island, Arc Druid, BionzXR, MFX,
-    // 2DKanvas, HNPU — small/medium tiles, top-aligned. ----
-    var topIds = ["lpisland", "druid", "bionzxr", "mfx", "kanvas2d", "hnpu"];
-    var topItems = [];
-    topIds.forEach(function (id) {
+    function leaf(id, index, count) {
       var e = byId[id];
-      if (!e) return;
-      var size, model;
-      if (id === "druid") { size = S.druidSize(e.t.xeCores); model = e.t.model; }
-      else if (id === "lpisland" || id === "bionzxr") size = S.LP_CLUSTER_SIZE;
-      else if (id === "hnpu") size = S.HNPU_SIZE;
-      else if (id === "kanvas2d") size = S.KANVAS_MIN;
-      else size = S.ANCILLARY_SIZE;
-      topItems.push({ id: id, meta: e.meta, w: size.w, h: size.h, model: model });
-    });
-    var topRow = rowOf(topItems, GAP);
-
-    // ---- Kache Kore: sits directly right of GPU, vertically centered on
-    // the GPU column's full height — "somewhat big," 4GB bLLC is real
-    // silicon, not an afterthought. ----
-    var coreEntry = byId.kachekore;
-    var coreSize = S.KACHE_KORE_SIZE;
-    var coreY = Math.max(topRow.h + GAP, gpuH / 2 - coreSize.h / 2);
-
-    // ---- Compute grid: top-right corner, right of the top strip — sized
-    // clearly smaller than GPU (hundreds of cores is real, but nowhere
-    // near an E1080's shader count), tall enough that its bottom edge
-    // meets Kache Kore's top edge. ----
-    var computeEntry = byId.compute;
-    var computeCount = computeEntry ? computeEntry.t.count : 0;
-    var computeCols = Math.min(2, computeCount);
-    var computeRows = computeCount ? Math.ceil(computeCount / computeCols) : 1;
-    var computeCell = computeEntry ? S.computeTileSize(computeEntry.t.coresPerTile, computeRows, coreY) : { w: 0, h: 0 };
-    var computeGrid = computeCount ? gridOf(computeCell.w, computeCell.h, computeCount, 2) : { w: 0, h: 0, items: [] };
-
-    // topRow occupies the left part of the right-side width; compute sits to its right
-    var rightW = topRow.w + (computeGrid.w ? GAP + computeGrid.w : 0);
-
-    // ---- Below Kache Kore / below Compute: everything left over packs in
-    // here — not a clean grid, just filled. ----
-    var belowY = Math.max(coreY + coreSize.h, computeGrid.h) + GAP;
-    var klEntry = byId.klangkerne;
-    var klSize = S.KLANGKERNE_SIZE;
-    var fillIds = ["io", "psm", "killers1", "ipu", "gna", "display", "threaddirector"];
-    var fillPresent = fillIds.filter(function (id) { return byId[id]; });
-    var fillGrid = fillPresent.length ? gridOf(S.ANCILLARY_SIZE.w, S.ANCILLARY_SIZE.h, fillPresent.length, 4) : { w: 0, h: 0, items: [] };
-    var belowW = (klEntry ? klSize.w + GAP : 0) + fillGrid.w;
-    var belowH = Math.max(klEntry ? klSize.h : 0, fillGrid.h);
-
-    rightW = Math.max(rightW, belowW, coreSize.w);
-    var nocH = Math.max(gpuH, belowY + belowH);
-    var nocW = (gpuGrid.w ? gpuGrid.w + GAP : 0) + rightW;
-
-    // ---- ZAM — the only other tile that spans the package's full width,
-    // as a single row of up to 4 module slots directly under the NoC. ----
-    var zamEntry = byId.zam;
-    var zamSlots = 4;
-    var zamModuleCount = zamEntry ? Math.min(zamSlots, S.zamModules(zamEntry.t.capacityGB)) : 0;
-    var zamRowH = zamEntry ? S.ZAM_ROW_H : 0;
-    var zamModuleW = zamEntry ? (nocW - (zamSlots - 1) * GAP) / zamSlots : 0;
-
-    var totalW = nocW;
-    var totalH = nocH + (zamEntry ? GAP + zamRowH : 0);
-
-    // ---- Place everything ----
-    var x0 = M, y0 = M;
-
-    if (gpuGrid.items.length) {
-      gpuGrid.items.forEach(function (it, i) {
-        place("gpu", gpuEntry.meta, i, gpuCount, x0 + it.x, y0 + it.y, it.w, it.h, gpuEntry.t.model);
-      });
+      if (!e) return null;
+      var sz = S.sizeOf(id, e);
+      return {
+        kind: "leaf", id: id, meta: e.meta, model: e.t.model,
+        index: index || 0, count: count || 1, weight: sz.w * sz.h
+      };
     }
-    var stackX = x0 + (gpuGrid.w ? gpuGrid.w + GAP : 0);
-    topRow.items.forEach(function (it, i) {
-      place(topItems[i].id, topItems[i].meta, 0, 1, stackX + it.x, y0 + it.y, it.w, it.h, topItems[i].model);
-    });
-    if (coreEntry) place("kachekore", coreEntry.meta, 0, 1, stackX, y0 + coreY, coreSize.w, coreSize.h);
-    if (computeGrid.items.length) {
-      var computeX = stackX + topRow.w + GAP;
-      computeGrid.items.forEach(function (it, i) {
-        place("compute", computeEntry.meta, i, computeCount, computeX + it.x, y0 + it.y, it.w, it.h);
-      });
+    // multi-instance tile (gpu / compute) as a 2-column grid of leaves
+    function gridN(id) {
+      var e = byId[id];
+      if (!e) return null;
+      var n = e.t.count || 1;
+      var leaves = [];
+      for (var i = 0; i < n; i++) leaves.push(leaf(id, i, n));
+      if (n === 1) return leaves[0];
+      var rows = [];
+      for (var r = 0; r < Math.ceil(n / 2); r++) rows.push(rowN.apply(null, leaves.slice(r * 2, r * 2 + 2)));
+      return colN.apply(null, rows);
     }
 
-    var belowYAbs = y0 + belowY;
-    if (klEntry) place("klangkerne", klEntry.meta, 0, 1, stackX, belowYAbs, klSize.w, klSize.h);
-    var fillX = stackX + (klEntry ? klSize.w + GAP : 0);
-    fillGrid.items.forEach(function (it, i) {
-      var id = fillPresent[i];
-      place(id, byId[id].meta, 0, 1, fillX + it.x, belowYAbs + it.y, it.w, it.h);
-    });
-
-    var ghostSlots = [];
-    if (zamEntry) {
-      var zamY = y0 + nocH + GAP;
-      for (var s = 0; s < zamSlots; s++) {
-        var sx = x0 + s * (zamModuleW + GAP);
-        if (s < zamModuleCount) {
-          place("zam", zamEntry.meta, s, zamModuleCount, sx, zamY, zamModuleW, zamRowH);
-        } else {
-          ghostSlots.push({ x: sx, y: zamY, w: zamModuleW, h: zamRowH });
+    var placed = [];
+    function emit(node, r) {
+      placed.push({
+        id: node.id, meta: node.meta, index: node.index, count: node.count, model: node.model,
+        x: r.x + INSET, y: r.y + INSET, w: Math.max(1, r.w - 2 * INSET), h: Math.max(1, r.h - 2 * INSET)
+      });
+    }
+    function layoutNode(r, node) {
+      if (!node) return;
+      if (node.kind === "leaf") { emit(node, r); return; }
+      var total = node.weight, off, i, k, ext;
+      if (node.kind === "row") {
+        off = r.x;
+        for (i = 0; i < node.kids.length; i++) {
+          k = node.kids[i]; ext = r.w * k.weight / total;
+          layoutNode({ x: off, y: r.y, w: ext, h: r.h }, k); off += ext;
+        }
+      } else {
+        off = r.y;
+        for (i = 0; i < node.kids.length; i++) {
+          k = node.kids[i]; ext = r.h * k.weight / total;
+          layoutNode({ x: r.x, y: off, w: r.w, h: ext }, k); off += ext;
         }
       }
     }
 
-    return { placed: placed, ghostSlots: ghostSlots, width: totalW + M * 2, height: totalH + M * 2 };
+    // ---- GPU block: 2x2 (or 1x1) grid of E1080s, the big block on the left ----
+    var gpuNode = gridN("gpu");
+
+    // ---- Right block tree: Kache-Kore column | I/O-media column | Compute column ----
+    var col1 = colN(
+      rowN(leaf("druid"), leaf("kanvas2d")),      // media strip, above the cache
+      leaf("kachekore"),                          // centrepiece, centre of the column
+      rowN(leaf("klangkerne"), leaf("mfx"))       // below the cache
+    );
+    var col2 = colN(
+      rowN(leaf("lpisland"), leaf("hnpu")),       // cores/AI, upper-middle
+      rowN(leaf("bionzxr"), leaf("io")),
+      rowN(leaf("psm"), leaf("killers1"))
+    );
+    var col3 = colN(
+      gridN("compute"),                           // Compute tiles, top-right
+      rowN(leaf("ipu"), leaf("gna")),             // fill beneath compute
+      rowN(leaf("display"), leaf("threaddirector"))
+    );
+    var rightTree = rowN(col1, col2, col3);
+
+    // ---- One unified area-preserving treemap: GPU on the left, everything
+    // else to its right. Every region gets width/height in proportion to its
+    // true silicon area, partitioning the package completely — so the whole
+    // NoC is gap-free at a stable landscape aspect no matter the GPU count
+    // (a 1-GPU part is just a smaller, differently-proportioned die, not a
+    // short-wide sliver). ----
+    var fullTree = rowN(gpuNode, rightTree);
+    var totalArea = fullTree ? fullTree.weight : 1;
+    var ASPECT = 1.95; // NoC width : height
+    var nocH = Math.sqrt(totalArea / ASPECT);
+    var nocW = totalArea / nocH;
+
+    var x0 = M, y0 = M;
+    if (fullTree) layoutNode({ x: x0, y: y0, w: nocW, h: nocH }, fullTree);
+
+    // ---- ZAM: a module row below the whole NoC. Module width is fixed at
+    // nocW/4, so 1TB (4 modules) spans the full package width edge-to-edge,
+    // and lower capacities are simply fewer modules of that same size,
+    // left-aligned (no empty sockets drawn — less memory just means a
+    // physically smaller memory strip). ----
+    var zamEntry = byId.zam;
+    var zamModuleCount = zamEntry ? Math.min(4, S.zamModules(zamEntry.t.capacityGB)) : 0;
+    var zamRowH = zamEntry ? S.ZAM_ROW_H : 0;
+    var zamModuleW = zamEntry ? nocW / 4 : 0;
+    if (zamEntry) {
+      var zamY = y0 + nocH;
+      for (var s = 0; s < zamModuleCount; s++) {
+        emit({ id: "zam", meta: zamEntry.meta, index: s, count: zamModuleCount },
+          { x: x0 + s * zamModuleW, y: zamY, w: zamModuleW, h: zamRowH });
+      }
+    }
+
+    var totalW = nocW + M * 2;
+    var totalH = nocH + (zamEntry ? zamRowH : 0) + M * 2;
+    return { placed: placed, ghostSlots: [], width: totalW, height: totalH };
   }
 
   function typeText(node, text, speed) {
@@ -253,14 +225,23 @@
         rx: 3, fill: meta.color, "fill-opacity": "0.85"
       });
       body.appendChild(accent);
+      /* Label sized to the tile, and estimated against tile width so it never
+         spills past the tile edges; sublabel only on tiles big enough for two
+         lines. Tiny tiles show no text at all — hover reveals the callout. */
+      var minDim = Math.min(w, h);
+      var fs = Math.max(6, Math.min(13, minDim * 0.16, (w - 8) / (labelText.length * 0.56)));
+      var showLabel = w > 26 && h > 18;
+      var showSub = subLabel && h > 46 && fs >= 8;
       var midY = y + h / 2 + accentH / 2;
-      var label = el("text", { class: "ev-tile-label", x: x + w / 2, y: subLabel ? midY - 2 : midY + 3 });
-      label.textContent = labelText;
-      body.appendChild(label);
-      if (subLabel) {
-        var sub = el("text", { class: "ev-tile-sublabel", x: x + w / 2, y: midY + 12 });
-        sub.textContent = subLabel;
-        body.appendChild(sub);
+      if (showLabel) {
+        var label = el("text", { class: "ev-tile-label", x: x + w / 2, y: showSub ? midY - 2 : midY + fs * 0.34, "font-size": fs });
+        label.textContent = labelText;
+        body.appendChild(label);
+        if (showSub) {
+          var sub = el("text", { class: "ev-tile-sublabel", x: x + w / 2, y: midY + fs * 0.9 + 4, "font-size": Math.max(6, fs * 0.68) });
+          sub.textContent = subLabel;
+          body.appendChild(sub);
+        }
       }
       g.appendChild(body);
       g._center = { x: x + w / 2, y: y };
@@ -318,7 +299,7 @@
     layout.placed.forEach(function (p) {
       var baseLabel = p.model || p.meta.name.replace(" Tile", "");
       var labelText = p.count > 1 ? baseLabel + " " + (p.index + 1) : baseLabel;
-      var subLabel = p.h >= 60 ? (p.meta.node.match(/Intel [\w.-]+/) || [p.meta.category])[0].replace("Intel ", "") : null;
+      var subLabel = (p.meta.node.match(/Intel [\w.-]+/) || [p.meta.category])[0].replace("Intel ", "");
       var g = makeTileGroup(p.id, p.meta, p.x, p.y, p.w, p.h, labelText, subLabel);
       addLegend(p.id, p.meta, p.count);
 
@@ -328,7 +309,8 @@
           var sx = p.x + p.w - p.w * 0.42, sy = p.y - p.h * 0.06, sw = p.w * 0.44, sh = p.h * 0.5;
           var sg = makeTileGroup(p.meta.stackTileId, stackMeta, sx, sy, sw, sh, stackMeta.name, null);
           sg.classList.add("ev-stack-top");
-          sg.querySelector(".ev-tile-label").setAttribute("fill", "#0B0714");
+          var slab = sg.querySelector(".ev-tile-label");
+          if (slab) slab.setAttribute("fill", "#0B0714");
           addLegend(p.meta.stackTileId, stackMeta, 1);
           svg.appendChild(g);
           svg.appendChild(sg);
