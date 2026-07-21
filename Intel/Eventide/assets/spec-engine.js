@@ -30,16 +30,12 @@
   var M = 20; // outer margin to the package substrate edge
   var PKG = { x: M, y: M, w: VIEW_W - M * 2, h: VIEW_H - M * 2 };
   var BAND_H = PKG.h / 3;
-  var BAND1 = { x: PKG.x, y: PKG.y, w: PKG.w, h: BAND_H };
-  var BAND2 = { x: PKG.x, y: PKG.y + BAND_H, w: PKG.w, h: BAND_H };
-  var BAND3 = { x: PKG.x, y: PKG.y + BAND_H * 2, w: PKG.w, h: BAND_H };
 
   /* Fills a sub-rect edge-to-edge with `n` items in a fixed column count,
      leaving only GAP px of substrate reveal between cells. */
   function fillGrid(rect, n, cols) {
     cols = Math.min(cols, n);
     var rows = Math.ceil(n / cols);
-    var cw = (rect.w - (cols - 1) * GAP) / cols;
     var ch = (rect.h - (rows - 1) * GAP) / rows;
     var out = [];
     for (var i = 0; i < n; i++) {
@@ -56,11 +52,9 @@
 
   function buildLayout(tiles) {
     var byZone = {};
-    var present = {};
     tiles.forEach(function (t) {
       var meta = window.EventideTiles.CATALOG[t.id];
       if (!meta) return;
-      present[t.id] = true;
       var zone = meta.zone;
       byZone[zone] = byZone[zone] || [];
       var count = t.count == null ? 1 : t.count;
@@ -68,20 +62,35 @@
     });
 
     var hasCompute = !!(byZone["band1-right"] && byZone["band1-right"].length);
-    var hasGpu = !!(byZone["band2-left"] && byZone["band2-left"].length);
+    var gpuItems = byZone["band2-left"] || [];
+    var hasGpu = !!gpuItems.length;
+    var gpuTiles = gpuItems.length;
+
+    /* The Elementalist GPU tile is physically large — a top E1080 config (×4 tiles)
+       is meaningfully more silicon than a single small E-class tile, and it never
+       shares a row with anything else: it runs the FULL height of the package on
+       the left edge, tall, exactly like the actual die. Its width share of the
+       package scales with tile count, so a 4-tile flagship visibly dominates the
+       floorplan and everything else gets proportionally smaller — more silicon,
+       more of the picture. Non-GPU content occupies whatever width is left. */
+    var gpuColW = hasGpu ? PKG.w * Math.min(0.46, 0.22 + 0.06 * gpuTiles) : 0;
+    var gpuRect = hasGpu ? { x: PKG.x, y: PKG.y, w: gpuColW, h: PKG.h } : null;
+
+    var restX = PKG.x + (hasGpu ? gpuColW + GAP : 0);
+    var restW = PKG.w - (hasGpu ? gpuColW + GAP : 0);
+    var BAND1 = { x: restX, y: PKG.y, w: restW, h: BAND_H };
+    var BAND2 = { x: restX, y: PKG.y + BAND_H, w: restW, h: BAND_H };
+    var BAND3 = { x: restX, y: PKG.y + BAND_H * 2, w: restW, h: BAND_H };
 
     // Band 1: LP cluster (left) + Compute (right). Compute absent -> LP cluster fills the band.
     var band1Left = hasCompute ? { x: BAND1.x, y: BAND1.y, w: BAND1.w * 0.37, h: BAND1.h } : BAND1;
     var band1Right = { x: BAND1.x + band1Left.w + GAP, y: BAND1.y, w: BAND1.w - band1Left.w - GAP, h: BAND1.h };
 
-    // Band 2: GPU (left) + Kache Kore (center) + HNPU + 2DKanvas (right strip).
-    // GPU absent -> Kache Kore expands leftward to reclaim its slot.
-    var b2GpuW = hasGpu ? BAND2.w * 0.385 : 0;
-    var gpuRect = hasGpu ? { x: BAND2.x, y: BAND2.y, w: b2GpuW, h: BAND2.h } : null;
-    var coreX = hasGpu ? BAND2.x + b2GpuW + GAP : BAND2.x;
-    var coreW = hasGpu ? BAND2.w * 0.21 : BAND2.w * 0.30;
-    var coreRect = { x: coreX, y: BAND2.y, w: coreW, h: BAND2.h };
-    var hnpuW = BAND2.w * 0.14;
+    // Band 2: Kache Kore (center) + HNPU + 2DKanvas (right strip). GPU no longer
+    // lives in this band (see above) — Kache Kore anchors the left of the row.
+    var coreW = BAND2.w * 0.32;
+    var coreRect = { x: BAND2.x, y: BAND2.y, w: coreW, h: BAND2.h };
+    var hnpuW = BAND2.w * 0.20;
     var hnpuRect = { x: coreRect.x + coreRect.w + GAP, y: BAND2.y, w: hnpuW, h: BAND2.h };
     var kanvasX = hnpuRect.x + hnpuRect.w + GAP;
     var kanvasRect = { x: kanvasX, y: BAND2.y, w: BAND2.x + BAND2.w - kanvasX, h: BAND2.h };
@@ -106,7 +115,7 @@
 
     placeZone("band1-left", band1Left, 3);
     placeZone("band1-right", band1Right, 2);
-    placeZone("band2-left", gpuRect, 2);
+    placeZone("band2-left", gpuRect, 1);
     placeZone("core", coreRect, 1);
     placeZone("band2-right", hnpuRect, 1);
     placeZone("band2-far-right", kanvasRect, 1);
