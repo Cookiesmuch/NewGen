@@ -191,7 +191,25 @@ function buildModel(dirName) {
   const wifiGen = suffix.wifi ? "Intel® Killer™ Wi-Fi 7 (802.11be)" : "Not present (Killer S1 tile disabled)";
   const wifiChips = suffix.wifi ? (tier.line === "X" ? "2× X1 chips (8 bands total)" : "1× X1 chip (4 bands)") : "—";
   const bluetooth = suffix.wifi ? "Bluetooth Core 6.2" : "—";
-  const cellular = suffix.cellular ? "5G Sub-6 / mmWave, 4G LTE, VoLTE" : "Not present";
+  /* Killer S1 cellular ships on every line except Core i- (the traditional-PC line, no cellular
+     modem by design) — not gated on the V suffix alone. Still requires the Killer S1 tile itself
+     (suffix.wifi) to be present. */
+  const cellularPresent = suffix.wifi && tier.line !== "I";
+  const cellular = cellularPresent ? "5G Sub-6 / mmWave, 4G LTE, VoLTE" : "Not present";
+
+  /* SoRT (Tile/Klangkerne + Technology/Sonoral): fixed-function cluster count and ray budget
+     scale by tier class — "Core 500" tiers run 1 cluster, "Laptop-class" (Core i-/Ultra-) run 2,
+     "Xeon 500" runs 4. Feature set is uniform across all tiers; only ray budget scales. */
+  const sortClusters = tier.line === "C" ? 1 : tier.line === "X" ? 4 : 2;
+  const sortRayBudget = sortClusters * 6144;
+  const sortMaxSources = sortClusters * 64;
+
+  /* Total L2 across every core type present, for the CPU Specifications "Total L2 Cache" row. */
+  const totalL2MB = round(
+    (computeTiles ? uhpTotal * 4 + dpTotal * 6 + speTotal * (2 / 9) : 0) +
+    uheCores * 3 + lpeCores * (1 / 4),
+    1
+  );
 
   /* Calibrated against Eventide's official AFFINITY™ envelopes (Intel/Eventide/index.html):
      On Battery 0.5–45W (Supersaver/Efficiency live here), On Adapter 15–175W (Balanced/
@@ -222,7 +240,8 @@ function buildModel(dirName) {
     zamMaxCapacityGB, zamBandwidthGBs, zamLatencyNs, ddr6MaxGB, ddr6Speed,
     maxDisplays, maxResW, maxResH, maxResHz,
     bionzCores, ipuMp,
-    pcieRev, tbVersion, usbSpec, wifiGen, wifiChips, bluetooth, cellular,
+    pcieRev, tbVersion, usbSpec, wifiGen, wifiChips, bluetooth, cellular, cellularPresent,
+    sortClusters, sortRayBudget, sortMaxSources, totalL2MB,
     tdp: { floor, efficiency, balanced, performance, unleashed, unlocked },
     priceUsd
   };

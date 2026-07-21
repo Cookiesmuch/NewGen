@@ -62,7 +62,7 @@ function sectionEssentials(m) {
 }
 
 function sectionCpu(m) {
-  return rows([
+  const rowsArr = [
     ["Total Physical Cores", fmt(m.totalPhysicalCores)],
     ["Total Logical Threads", fmt(m.totalThreads)],
     ["Compute Tiles", m.computeTiles],
@@ -72,14 +72,41 @@ function sectionCpu(m) {
     ["Total UHE Cores (Lunar Eclipse)", m.uheCores],
     ["Total LPE Cores (Darkmont)", m.lpeCores],
     ["UHP Base / Max Turbo", m.computeTiles ? `${m.uhpBase} GHz / ${m.uhpTurbo} GHz` : "—"],
-    ["UHP V8 HyperBOOST (peak)", m.computeTiles ? `${m.hyperboost} GHz <span class="note">· 8–40ms burst window; thermally gated; hardware-scheduled</span>` : "—"],
+    ["UHP V8 HyperBOOST (peak)", m.computeTiles ? `${m.hyperboost} GHz <span class="note">· all 8 UHP cores, Ford-inspired V8 firing sequence 1-4-6-3-8-5-7-2, 8–40ms burst window, Unleashed AFFINITY™ only — requires external PSU + cooler, auto-disabled on battery</span>` : "—"],
     ["DP Base / Max Turbo", m.computeTiles ? `${m.dpBase} GHz / ${m.dpTurbo} GHz` : "—"],
     ["SPE Base / Max Turbo", m.computeTiles ? `${m.speBase} GHz / ${m.speTurbo} GHz` : "—"],
     ["UHE Base / Max Turbo", `${m.uheBase} GHz / ${m.uheTurbo} GHz`],
     ["LPE Base / Max Turbo", `${m.lpeBase} GHz / ${m.lpeTurbo} GHz`],
     ["Overclocking", m.unlocked ? "Yes — UHP, DP, SPE; per-tile granular multiplier unlock" : "No — locked multiplier"],
     ["Instruction Set Extensions", "AVX2, AVX-512 (UHP/DP only), AMX-Tile, AMX-INT8, AMX-BF16, AES-NI, SHA-NI"],
-    ["Thread Director Scheduling Classes", "5 hardware classes (UHP/DP/SPE/UHE/LPE) + GPU-coupled RT/BVH dispatch class"]
+    ["Instruction Set", "64-bit"],
+    ["Intel® 64", "Yes"],
+    ["Thread Director Scheduling Classes", "5 hardware classes (UHP/DP/SPE/UHE/LPE) + GPU-coupled RT/BVH dispatch class"],
+    ["Total L2 Cache", round1(m.totalL2MB) + " MB"],
+    ["Processor Base Power", m.tdp.balanced + "W"],
+    ["Maximum Turbo Power", m.tdp.performance + "W"],
+    ["Intel® Deep Learning Boost (CPU)", m.computeTiles ? "Yes — AMX-INT8, AMX-BF16" : "No"],
+    ["AI Software Frameworks Supported (CPU)", "OpenVINO, DirectML, WindowsML, PyTorch, TensorFlow"]
+  ];
+  if (m.tier.line === "X") {
+    rowsArr.push(
+      ["Intel® UPI Speed", "24 GT/s"],
+      ["Max # of UPI Links", "4"],
+      ["High Priority Cores", fmt(Math.round(m.totalPhysicalCores * 0.25))],
+      ["High Priority Core Frequency", m.uhpTurbo + " GHz"],
+      ["Low Priority Cores", fmt(m.totalPhysicalCores - Math.round(m.totalPhysicalCores * 0.25))],
+      ["Low Priority Core Frequency", m.speTurbo + " GHz"]
+    );
+  }
+  return rows(rowsArr);
+}
+
+function sectionSupplemental(m) {
+  return rows([
+    ["Marketing Status", "Launched"],
+    ["Embedded Options Available", "No"],
+    ["Use Conditions", m.tier.line === "X" ? "Server / Workstation" : "PC / Client"],
+    ["Datasheet", "Contact Intel / OEM"]
   ]);
 }
 
@@ -149,6 +176,7 @@ function sectionMemory(m) {
     ["Max DDR6 Capacity", m.ddr6MaxGB ? gb(m.ddr6MaxGB) : "Not applicable"],
     ["DDR6 Speed", m.ddr6MaxGB ? "DDR6-" + m.ddr6Speed + " / LPDDR6X-" + (m.ddr6Speed + 800) : "Not applicable"],
     ["Max Total Memory", m.ddr6MaxGB ? "Up to " + gb(m.zamMaxCapacityGB + m.ddr6MaxGB) + " unified (ZAM + DDR6)" : gb(m.zamMaxCapacityGB) + " unified (ZAM only)"],
+    ["Max # of Memory Channels", m.ddr6MaxGB ? "2× ZAM + 1× DDR6/LPDDR6X (3 total)" : "2× ZAM"],
     ["Memory Coherency", "Hardware cache coherency across all tiles via FOveros 2.0 · <2ns signalling · zero-copy CPU↔GPU↔NPU"],
     ["Intel DirectStorage 2.0", "NVMe → DDR6 staging → ZAM runtime → Kache Kore™ bLLC hot data"],
     ["ECC Memory Support", "Yes — inline ECC correction on both ZAM and DDR6 paths"]
@@ -168,10 +196,19 @@ function sectionGraphicsElementalist(m) {
       ["GPU Boost Clock", m.gpuBoostClock + " GHz"],
       ["XMX5 AI Units (total)", fmt(m.xmx5Total) + ` <span class="note">· ${fmt(m.gpuTOPS)} AI TOPS combined</span>`],
       ["RTU5 Ray Tracing Units (total)", fmt(m.rtu5Total)],
+      ["Render Slices (total)", fmt(Math.round(m.xe5Total / 8))],
+      ["Xe Vector Engines (total)", fmt(m.xe5Total * 16)],
       ["Multi-Tile Presentation", m.gpuTiles > 1 ? `${m.gpuTiles}× ${m.gpuModel} appear as a single render device via FOveros 2.0 + Thread Director` : "Single tile — native presentation"],
+      ["Device ID", "0xE1" + String(m.tier.n).padStart(2, "0") + String(m.gpuTiles).padStart(2, "0")],
       ["VR Support", "Yes — native VRV1 / VRV2 codec hardware"],
       ["DirectX Support", "DirectX 12 Ultimate (FL 12_2)"],
       ["OpenGL / Vulkan Support", "OpenGL 4.6 / Vulkan 1.4"],
+      ["OpenCL Support", "OpenCL 3.0"],
+      ["oneAPI Support", "Yes — Intel oneAPI / Level Zero"],
+      ["OpenVINO Support", "Yes"],
+      ["Intel® XeSS Support", "Yes — XeSS 3 (XMX5-accelerated)"],
+      ["Media Profiles", "Same codec set as BionzXR — AV2, AV1, H.266/VVC, H.265, H.264, VP9 decode; hardware VR codec transport (VRV1/VRV2)"],
+      ["VESA Adaptive Sync", "Yes — Full VRR"],
       ["Max Displays Supported", m.maxDisplays]
     ]);
 }
@@ -204,12 +241,17 @@ function sectionGraphicsKanvas(m) {
 
 function sectionDisplay(m) {
   return rows([
-    ["Max Displays Supported", m.maxDisplays],
-    ["Display Outputs", "eDP 1.5, Intel×Sony eDP 2.0 (over " + m.pcieRev + "), DisplayPort 2.1 UHBR20, HDMI 2.1 FRL"],
-    ["Max Resolution (eDP 2.0)", `${fmt(m.maxResW)} × ${fmt(m.maxResH)} @ ${m.maxResHz} Hz`],
-    ["HDR Support", "HDR10, Dolby Vision (via BionzXR tone-mapping)"],
+    ["Max Displays Supported", m.maxDisplays + " simultaneous native"],
+    ["iDP (Intel Display Protocol) 1.0", `Up to ${fmt(m.maxResW)}×${fmt(m.maxResH)} @ ${m.maxResHz} Hz <span class="note">· in-house eDP derivative over ${m.pcieRev} ×16×3 · up to 2× ports</span>`],
+    ["iDP Color Depth", "Up to 96-bit (RGB+MCY)"],
+    ["DisplayPort", "DP 2.1b UHBR20"],
+    ["eDP", "eDP 1.6"],
+    ["HDMI", "HDMI 2.2"],
+    ["Codec Transport", "VRV1 / VRV2 over iDP — carries resolutions exceeding raw link bandwidth compressed, without quality loss"],
+    ["Variable Refresh Rate", "Full VRR · XCD-LED DIAC"],
+    ["HDR Support", "HDR10+ Ultra, Dolby Vision 2 (via BionzXR tone-mapping)"],
     ["Display Stream Compression", "VESA DSC 1.2a"],
-    ["Unified Display Engine", "Any GPU tile (Elementalist, Druid, 2DKanvas) can drive any output — no MUX switching"]
+    ["Unified Display Engine", "Any GPU tile (Elementalist, Druid, 2DKanvas) can drive any output — no MUX switching, no GPU-to-GPU frame copy"]
   ]);
 }
 
@@ -269,7 +311,14 @@ function sectionSort(m) {
       ["Die Size", "7.2 mm²"],
       ["Process Node", "Intel 04A"],
       ["Bond to Klangkerne", "Foveros 2.0 hybrid bond · 0.4µm pitch · +38µm package height"],
-      ["Pipeline Blocks", "Traversal Engine, Diffraction Unit, Binaural Divergence Unit, IR Assembler"],
+      ["SoRT Clusters", `×${m.sortClusters} <span class="note">· fixed-function pipeline, no shader cores — feature-uniform across tiers, ray budget quantity-scaled</span>`],
+      ["Traversal Engine (per cluster)", "96M ray-steps/s · 210 mW peak"],
+      ["Diffraction Unit (per cluster)", "2.4M UTD edge-diffraction evaluations/s"],
+      ["Binaural Divergence Unit (per cluster)", "512 paths/frame forked · 1.08× ray overhead"],
+      ["IR Assembler (per cluster)", "8-frame history · 2,048-tap staging buffer"],
+      ["Material LUT (per cluster)", "64 × 8 bands × 16-bit SRAM · 1-cycle access"],
+      ["Ray Budget (total)", fmt(m.sortRayBudget) + " ray-paths per 128-sample audio block"],
+      ["Max Concurrent Sources", fmt(m.sortMaxSources)],
       ["Real-Time Deadline", "2.67 ms hard deadline per acoustic block (Sonoral™ runtime contract)"],
       ["Typical Power", "~118 mW <span class=\"note\">· vs. 1.8W+ for a CPU-software approximation of the same field</span>"],
       ["Ray-Traced Frame Cost", "0.0% — never shares the GPU render path"],
@@ -301,12 +350,17 @@ function sectionMedia(m) {
 }
 
 function sectionExpansion(m) {
-  return rows([
+  const rowsArr = [
     ["PCIe Revision", m.pcieRev + (m.gpuTiles >= 4 ? " (primary GPU tile interconnect); PCIe 6.0 (storage / peripherals)" : "")],
-    ["Thunderbolt Version", m.tbVersion + " <span class=\"note\">· 120 Gbps; supports Intel×Sony eDP 2.0 tunnel</span>"],
+    ["PCI Express Configurations", m.tier.line === "X" ? "1×16, 2×8, 4×4, 8×2" : m.computeTiles ? "1×16, 2×8" : "1×8, 2×4"],
+    ["Max # of PCI Express Lanes", m.tier.line === "X" ? "64" : m.computeTiles ? "28" : "16"],
+    ["Thunderbolt Version", m.tbVersion + " <span class=\"note\">· 160 Gbps symmetric / 240 Gbps boost; supports Intel×Sony eDP 2.0 tunnel</span>"],
+    ["Thunderbolt Ports", m.tbVersion.includes("6") ? "Up to 4" : "—"],
     ["USB Specification", m.usbSpec + ", USB 3.2 Gen 2×2"],
-    ["Max PCIe Lanes (platform)", m.tier.line === "X" ? "64" : m.computeTiles ? "28" : "16"]
-  ]);
+    ["Intel® DirectStorage NVMe Path", "PCIe 6.0 NVMe · ~24 GB/s sustained via I/O tile"]
+  ];
+  if (m.tier.line === "X") rowsArr.push(["Scalability", "1S / 2S / 4S / 8S"]);
+  return rows(rowsArr);
 }
 
 function sectionWireless(m) {
@@ -322,35 +376,86 @@ function sectionWireless(m) {
 }
 
 function sectionSecurity(m) {
-  return capGrid([
-    capCard("🛡️", "Intel® vPro®", m.tier.line === "X" ? "Hardware-rooted vPro for Xeon-class manageability and fleet security." : "Hardware-rooted manageability and security platform for business-class systems."),
-    capCard("🔐", "Microsoft Pluton", "Hardware TPM 2.1 + Pluton security processor, integrated into the PSM tile as a root of trust below the OS."),
-    capCard("🧩", "PSM Tile", "Platform Security & Management — owns platform-wide power sequencing and the hardware root of trust."),
-    capCard("🔑", "Intel® Total Memory Encryption", "Full-memory AES-XTS encryption across ZAM and DDR6 paths, keyed per boot."),
-    capCard("⚙️", "Intel® VT-x / VT-d", "Hardware virtualization and directed I/O, exposed across all active Compute Tiles."),
-    capCard("🧮", "AES-NI / SHA-NI", "Hardware-accelerated cryptographic instruction extensions on UHP and DP cores.")
-  ]);
+  const cards = [
+    capCard("🛡️", "Intel® vPro® Eligibility", m.tier.line === "X" ? "Hardware-rooted vPro for Xeon-class manageability and fleet security." : "Hardware-rooted manageability and security platform for business-class systems."),
+    capCard("🕵️", "Intel® Threat Detection Technology (TDT)", "NPU + hardware performance-monitor anomaly detection on the PSM tile — 150+ MITRE ATT&CK behaviors, ransomware and cryptojacking detection below the OS."),
+    capCard("📡", "Intel® Active Management Technology (AMT)", "Out-of-band remote management via CSME 2.0 — works even when the OS is crashed, hung, or powered off."),
+    capCard("🔐", "Microsoft Pluton 2.1", "Hardware TPM 2.1 + Pluton security processor, integrated into the PSM tile as a root of trust below the OS — parallel to Alloy OS's EGP root."),
+    capCard("🧩", "Eventide Guardian Protocol (EGP)", "Intel-developed silicon root of trust for Alloy OS — on-tile AES-256 key vault, per-app hardware attestation, anti-rollback firmware enforcement."),
+    capCard("🔑", "Intel® Total Memory Encryption — Multi-Key", "Full-memory AES-XTS encryption across ZAM and DDR6 paths, keyed per boot; multi-key variant isolates VM/container memory domains."),
+    capCard("🗝️", "Intel® Key Locker", "AES key handles stored in silicon — applications reference handles instead of plaintext keys, preventing memory-dump key extraction."),
+    capCard("🧷", "Intel® Secure Key", "Hardware digital random number generator (RDRAND / RDSEED)."),
+    capCard("🧱", "Intel® Control-Flow Enforcement Technology (CET)", "Hardware shadow stack + indirect branch tracking — blocks ROP / JOP exploitation."),
+    capCard("🥾", "Intel® Boot Guard", "Cryptographically-verified UEFI boot — bootkits and unsigned firmware cannot execute."),
+    capCard("🏛️", "Intel® Trusted Execution Technology (TXT)", "Hardware-measured launch environment, verified against the PSM root of trust."),
+    capCard("🚫", "Execute Disable Bit", "Hardware NX enforcement, preventing code execution from data pages."),
+    capCard("🛑", "Intel® OS Guard (SMEP/SMAP)", "Blocks kernel-mode execution of user-space code and unauthorized kernel access to user memory."),
+    capCard("🎯", "Mode-based Execute Control (MBEC)", "Hypervisor-enforced per-page execute permissions, hardening VM-based security products."),
+    capCard("⚙️", "Intel® VT-x / VT-d / VT-x with EPT", "Hardware virtualization, directed I/O (IOMMU) and extended page tables, exposed across all active Compute Tiles."),
+    capCard("🛰️", "Intel® Virtualization Technology with Redirect Protection (VT-rp)", "Hardware protection against hypervisor-level redirection attacks."),
+    capCard("🧮", "AES-NI / SHA-NI", "Hardware-accelerated cryptographic instruction extensions on UHP and DP cores."),
+    capCard("🧰", "Intel® Stable IT Platform Program (SIPP)", "Guaranteed 15-month image-stability window for enterprise deployment.")
+  ];
+  if (m.tier.line === "X") {
+    cards.push(
+      capCard("🔒", "Intel® Trust Domain Extensions (Intel® TDX)", "Hardware-isolated confidential-computing VMs, encrypted and inaccessible to the hypervisor."),
+      capCard("🏰", "Intel® Software Guard Extensions (Intel® SGX)", `Hardware enclaves for confidential workloads. Default max EPC size: ${m.tier.n >= 9 ? "1 TB" : "512 GB"}.`),
+      capCard("🚑", "Intel® Run Sure Technology", "RAS feature set for mission-critical uptime — machine-check recovery, memory mirroring, and rank-sparing.")
+    );
+  }
+  return capGrid(cards);
 }
 
 function sectionAdvancedTech(m) {
-  return capGrid([
+  const cards = [
     capCard("🧠", "Intel® Thread Director", "Dedicated in-fabric scheduling tile making sub-100-nanosecond core, GPU and NPU placement decisions — not a software layer."),
     capCard("⚡", "AFFINITY™ Power System", "Supersaver / Efficiency / Balanced / Performance / Unleashed profiles, hardware-enforced by Thread Director and the LPNPU co-pilot."),
     capCard("💡", "FOveros 2.0", "Photonic tile-to-tile interconnect, co-developed with Lightmatter (USA), replacing copper die-to-die links with on-package optical signaling."),
     capCard("🔗", "ASSI 2.0", "Advanced Stacked Silicon Interconnect — the 0.4µm-pitch hybrid bond used to stack SoRT on Klangkerne."),
     capCard("💾", "Intel DirectStorage 2.0", "Staged data path from DDR6 through ZAM to the Kache Kore bLLC for fast asset streaming."),
-    capCard("🚀", "V8 HyperBOOST", m.computeTiles ? "8–40ms hardware-scheduled burst clock above sustained Max Turbo, thermally gated and scheduled entirely by Thread Director." : "Not applicable — no Compute Tile present on this SKU.")
-  ]);
+    capCard("🚀", "V8 HyperBOOST", m.computeTiles ? "All 8 UHP (Solar Eclipse) cores run a Ford Mustang V8-inspired offset firing sequence (1-4-6-3-8-5-7-2) to sustain an effective 10 GHz across 8–40ms burst windows — Unleashed AFFINITY™ only, requires external PSU + cooler, auto-disabled the instant the system goes on battery. Exclusive to UHP; no other core class supports it." : "Not applicable — no Compute Tile present on this SKU."),
+    capCard("🎛️", "Intel® Speed Shift Technology", "Hardware-controlled P-state selection, removing OS DVFS latency."),
+    capCard("🌙", "Idle States", "Full ACPI C-state support across all five core classes."),
+    capCard("📉", "Enhanced Intel SpeedStep® Technology", "Dynamic voltage/frequency scaling per core class."),
+    capCard("🌡️", "Thermal Monitoring Technologies", "Per-core and per-tile digital thermal sensors feeding Thread Director's burst and throttle decisions."),
+    capCard("🧭", "Intel® Volume Management Device (VMD)", "Hardware-level NVMe RAID and hot-plug management via the I/O tile."),
+    capCard("🎙️", "Intel® Gaussian & Neural Accelerator (GNA)", "Milliwatt-class always-on audio inference — see AI — GNA section."),
+    capCard("🧩", "Intel® Deep Learning Boost", "AMX-INT8 / AMX-BF16 matrix acceleration on UHP/DP cores, complementing HNPU and XMX5.")
+  ];
+  if (m.tier.line === "X") {
+    cards.push(
+      capCard("🔗", "Intel® UPI (Ultra Path Interconnect)", "24 GT/s coherent socket-to-socket fabric for multi-socket Xeon 500 scale-out, up to 4 links per socket."),
+      capCard("🚀", "Intel® QuickAssist Technology (QAT)", "Hardware-accelerated cryptography and lossless compression, offloaded from the compute tiles."),
+      capCard("⚖️", "Intel® Dynamic Load Balancer (DLB)", "Hardware work-queue balancing across cores for packet-processing and event-driven workloads."),
+      capCard("📊", "Intel® Data Streaming Accelerator (DSA)", "Hardware-accelerated data movement and transformation, offloading memcpy-class operations."),
+      capCard("🔎", "Intel® In-Memory Analytics Accelerator (IAA)", "Hardware-accelerated analytics primitives — filtering, compression, decompression for in-memory databases."),
+      capCard("🧮", "Intel® Advanced Matrix Extensions (AMX)", "Tile-based matrix multiply units on DP cores for INT8/BF16 inference and training acceleration."),
+      capCard("🎚️", "Intel® Speed Select Technology — Performance Profile (SST-PP)", "Per-core-count, per-frequency performance profiles selectable at boot for workload-tuned configurations."),
+      capCard("⚡", "Intel® Speed Select Technology — Core Power (SST-CP)", "Prioritized power allocation to high-priority core groups under contention."),
+      capCard("🔺", "Intel® Speed Select Technology — Turbo Frequency (SST-TF)", "Elevated turbo ceilings for designated high-priority cores at the expense of the rest."),
+      capCard("🧊", "Intel® Speed Select Technology — Base Frequency (SST-BF)", "Guaranteed base frequency for high-priority cores under sustained AVX-heavy load."),
+      capCard("📐", "Intel® Resource Director Technology (Intel® RDT)", "Cache and memory-bandwidth allocation/monitoring per VM or container — prevents noisy-neighbor contention."),
+      capCard("🔁", "Intel® Transactional Synchronization Extensions", "Hardware lock elision for high-concurrency data structures.")
+    );
+  }
+  return capGrid(cards);
 }
 
 function sectionPackage(m) {
   const rowsArr = [
     ["Sockets Supported", m.tier.line === "X" ? "FCLGA-Eventide-X (workstation/server)" : "BGA (integrated, non-socketed)"],
+    ["Package Carrier", m.tier.line === "X" ? "FCLGA" : "FCBGA"],
     ["Package Size", m.tier.line === "X" ? "58.5mm × 51mm" : "35mm × 30mm"],
+    ["Thermal Solution Specification", m.tier.line === "X" ? "Datacenter liquid / air, OEM-specified" : m.unlocked ? "Unleashed dock (liquid-assisted) or OEM cooler" : "OEM-specified"],
+    ["Max Operating Temperature", m.suffix.form === "Desktop" ? "100°C" : "105°C"],
     ["T Junction Max", m.suffix.form === "Desktop" ? "100°C" : "105°C"]
   ];
   if (m.tier.line === "X") {
-    rowsArr.push(["Max CPU Configuration", "1"], ["ECC Memory Supported", "Yes"]);
+    rowsArr.push(
+      ["DTS Max", "105°C"], ["TCASE", "81°C"],
+      ["Max CPU Configuration", "1S / 2S / 4S / 8S — see Scalability"],
+      ["ECC Memory Supported", "Yes"]
+    );
   }
   return rows(rowsArr);
 }
@@ -374,6 +479,7 @@ function affinityTable(m) {
 
 const SECTIONS = [
   { id: "essentials", label: "Essentials", body: sectionEssentials, open: true },
+  { id: "supplemental", label: "Supplemental Information", body: sectionSupplemental },
   { id: "cpu", label: "CPU Specifications", body: sectionCpu, open: true },
   { id: "compute-tile", label: "Compute Tile — Solar Eclipse + Sunset Cove + Venusmont", body: sectionComputeTile, guard: (m) => m.computeTiles > 0 },
   { id: "lp-island", label: "LP Island Tile", body: sectionLpIsland },
@@ -401,7 +507,7 @@ const SECTIONS = [
 function buildTileConfig(m) {
   const tiles = [{ id: "kachekore" }];
   if (m.computeTiles > 0) tiles.push({ id: "compute", count: m.computeTiles });
-  tiles.push({ id: "lpisland" }, { id: "hnpu" });
+  tiles.push({ id: "lpisland" }, { id: "druid" }, { id: "bionzxr" }, { id: "hnpu" });
   if (m.gpuTiles > 0) tiles.push({ id: "gpu", count: m.gpuTiles });
   tiles.push(
     { id: "kanvas2d" }, { id: "zam" }, { id: "klangkerne" },
@@ -421,8 +527,15 @@ function buildTileSpecs(m) {
     ],
     lpisland: [
       { label: "UHE Cores", val: m.uheCores }, { label: "LPE Cores", val: m.lpeCores },
-      { label: "LP iGPU", val: "Arc® Druid " + m.druidModel }, { label: "LPNPU", val: m.lpnpuTOPS + " TOPS" },
       { label: "Min Island TDP", val: m.tdp.floor + "W" }
+    ],
+    druid: [
+      { label: "Model", val: "Arc® Druid " + m.druidModel }, { label: "Xe4E-Cores", val: m.druidXeCores },
+      { label: "Boost Clock", val: m.druidBoost + " GHz" }, { label: "Node", val: "Intel 06E" }
+    ],
+    bionzxr: [
+      { label: "Cores", val: m.bionzCores }, { label: "Node", val: "Intel 06E" },
+      { label: "Flagship Codec", val: "AV2 (hardware encode)" }
     ],
     hnpu: [{ label: "Throughput", val: m.hnpuTOPS + " TOPS" }, { label: "Node", val: "Intel 04A" }],
     kanvas2d: [{ label: "Node", val: "Intel 14A-E" }, { label: "Function", val: "2D compositor, no 3D ALUs" }],
@@ -435,7 +548,8 @@ function buildTileSpecs(m) {
       { label: "Function", val: "Mixer/DSP, Tiefton, Hallraum" }
     ],
     sort: [
-      { label: "Die Size", val: "7.2 mm² · Intel 04A" }, { label: "Frame Cost", val: "0.0%" },
+      { label: "Die Size", val: "7.2 mm² · Intel 04A" }, { label: "Clusters", val: m.sortClusters },
+      { label: "Ray Budget / Block", val: fmt(m.sortRayBudget) }, { label: "Frame Cost", val: "0.0%" },
       { label: "Power", val: "~118 mW" }, { label: "Deadline", val: "2.67 ms" }
     ],
     killers1: [{ label: "WiFi", val: m.wifiGen }, { label: "Chips", val: m.wifiChips }],

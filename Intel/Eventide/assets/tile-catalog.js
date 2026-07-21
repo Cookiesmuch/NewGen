@@ -22,7 +22,7 @@
       short: "One repeatable performance tile carrying three distinct core micro-architectures side by side.",
       detail: [
         "Each Compute Tile is a single reticle carrying three purpose-built core designs: Solar Eclipse (UHP — Ultra High Performance), Sunset Cove (DP — Dense Performance) and Venusmont (SPE — Scalar Parallel Engine).",
-        "Solar Eclipse (UHP) is the flagship single-thread core, home to V8 HyperBOOST — an 8–40ms hardware-scheduled burst window above sustained Max Turbo.",
+        "Solar Eclipse (UHP) is the flagship single-thread core, home to V8 HyperBOOST — all 8 UHP cores firing in a Ford Mustang V8-inspired offset sequence (1-4-6-3-8-5-7-2) to sustain an effective 10 GHz across 8–40ms burst windows. Unleashed AFFINITY™ only; auto-disabled on battery.",
         "Sunset Cove (DP) trades a fraction of peak clock for area efficiency, packing more cores per tile for throughput-bound multi-threaded work.",
         "Venusmont (SPE) is a scalar-parallel cluster design descended from Intel's E-core lineage, run in 9-wide clusters sharing L1/L2 for extreme core-count density.",
         "All three core types share a per-tile 24MB L3 slice and are scheduled as one fabric by the dedicated Thread Director tile."
@@ -31,21 +31,53 @@
 
     lpisland: {
       name: "LP Island",
-      codename: "Lunar Eclipse + Darkmont + Arc Druid + BionzXR + LPNPU",
+      codename: "Lunar Eclipse + Darkmont",
       category: "CPU · Efficiency",
       node: "Intel 06E (0.6nm-class FinFlex GAA)",
       color: "#4CC38A",
       zone: "top",
       repeatKey: null,
       tagline: "Always-on. Always present. The tile that never sleeps.",
-      short: "A single self-contained low-power tile bundling efficiency cores, a low-power iGPU, media encode and an always-on NPU.",
+      short: "A self-contained low-power core tile — UHE + LPE cores only. Sits in a cluster of independent 06E/14A-E tiles (Arc Druid, BionzXR, LPNPU) that power up and down together but are physically separate dies.",
       detail: [
         "The LP Island is present on every Eventide SKU — even fanless, GPU-less parts — and is the last domain to power down.",
         "Lunar Eclipse (UHE — Ultra High Efficiency) cores handle background and idle-adjacent work at a fraction of Compute Tile power.",
         "Darkmont (LPE — Low Power Efficiency) cores run in 4-core clusters for the deepest idle states, waking the rest of the package on demand.",
-        "Arc® Druid is the always-on low-power iGPU (Xe4E) — capable of driving the full desktop and light 3D without ever spinning up a Compute Tile or Elementalist GPU tile.",
-        "QuickSync BionzXR (co-developed with Sony Semiconductor) provides the primary hardware media encode/decode block, including AV2 — the industry's first shipping AV2 hardware encoder.",
-        "LPNPU delivers always-on inferencing — wake-on-voice, presence sensing, and Thread Director's predictive co-pilot — within a sub-1.5W envelope."
+        "The LP Island tile itself carries only these two core types — Arc® Druid (LP iGPU), QuickSync BionzXR (media) and LPNPU are separate, independently-clickable tiles that happen to share the LP power cluster."
+      ]
+    },
+
+    druid: {
+      name: "Arc Druid",
+      codename: "LP iGPU · Xe4E",
+      category: "GPU · Efficiency",
+      node: "Intel 06E (0.6nm-class FinFlex GAA)",
+      color: "#6FE3A6",
+      zone: "top",
+      repeatKey: null,
+      tagline: "Always-on. Never asked to spin up anything else.",
+      short: "The always-on low-power iGPU — a dedicated Xe4E tile capable of driving the full desktop and light 3D without ever waking a Compute Tile or Elementalist GPU tile.",
+      detail: [
+        "Arc® Druid is a physically separate tile from LP Island, fabricated alongside it on Intel 06E, in the same low-power cluster.",
+        "Runs the entire desktop compositing and light-3D workload set at idle-adjacent power, so heavier GPU tiles (Elementalist) can stay fully power-gated.",
+        "Scales in Xe4E-core count and boost clock by SKU tier, always present regardless of whether an Elementalist GPU tile is also on package."
+      ]
+    },
+
+    bionzxr: {
+      name: "BionzXR",
+      codename: "QuickSync BionzXR · Intel × Sony",
+      category: "Media · Efficiency",
+      node: "Intel 06E (0.6nm-class FinFlex GAA)",
+      color: "#3FAE8C",
+      zone: "top",
+      repeatKey: null,
+      tagline: "The flagship media engine. AV2, first to ship.",
+      short: "The primary hardware media encode/decode tile, co-developed with Sony Semiconductor — the industry's first shipping AV2 hardware encoder.",
+      detail: [
+        "A physically separate 06E tile from LP Island and Arc Druid, in the same low-power cluster — not merged silicon.",
+        "Handles the platform's flagship encode workloads: AV2, AV1, H.266/VVC, H.265, H.264, plus VRV1/VRV2 for VR codec transport.",
+        "Feeds directly from the IPU tile for camera pipelines, and works alongside the lower-power MFX tile, which handles sustained decode-only playback without waking BionzXR."
       ]
     },
 
@@ -312,7 +344,7 @@
   /* Glossary of inline terms eligible for a (?) tooltip inside spec rows. */
   var GLOSSARY = {
     "FOveros 2.0": "Intel's photonic tile-to-tile interconnect, co-developed with Lightmatter (USA). Replaces copper die-to-die links with on-package optical signaling.",
-    "HyperBOOST": "V8 HyperBOOST — an 8–40ms hardware-scheduled burst clock above sustained Max Turbo, thermally gated and scheduled entirely by Thread Director.",
+    "HyperBOOST": "V8 HyperBOOST — all 8 UHP (Solar Eclipse) cores run a Ford Mustang V8-inspired offset firing sequence (1-4-6-3-8-5-7-2) to sustain an effective 10 GHz across 8–40ms burst windows. UHP-exclusive, Unleashed AFFINITY™ only, requires external PSU + cooler, auto-disabled on battery.",
     "Kache Kore": "A large shared L4 / bLLC cache pool acting as latency-hiding DRAM for hot working sets, shared across CPU, GPU and NPU tiles.",
     "AFFINITY": "Eventide's platform-wide power profile system — Supersaver / Efficiency / Balanced / Performance / Unleashed — enforced in hardware by Thread Director and the LPNPU co-pilot.",
     "ZAM": "Z-Angle Memory — Intel's on-package, FOveros-stacked memory subsystem.",

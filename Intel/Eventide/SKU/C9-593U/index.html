@@ -63,6 +63,13 @@
 <div class="ev-row"><div class="ev-row-key">Recommended Customer Price</div><div class="ev-row-val">$395 USD</div></div></div>
 </div>
 <div class="ev-section">
+  <div class="ev-section-head"><span class="ev-section-head-label">Supplemental Information</span><span class="ev-section-head-icon ">▼</span></div>
+  <div class="ev-section-body "><div class="ev-row"><div class="ev-row-key">Marketing Status</div><div class="ev-row-val">Launched</div></div>
+<div class="ev-row"><div class="ev-row-key">Embedded Options Available</div><div class="ev-row-val">No</div></div>
+<div class="ev-row"><div class="ev-row-key">Use Conditions</div><div class="ev-row-val">PC / Client</div></div>
+<div class="ev-row"><div class="ev-row-key">Datasheet</div><div class="ev-row-val">Contact Intel / OEM</div></div></div>
+</div>
+<div class="ev-section">
   <div class="ev-section-head"><span class="ev-section-head-label">CPU Specifications</span><span class="ev-section-head-icon open">▲</span></div>
   <div class="ev-section-body open"><div class="ev-row"><div class="ev-row-key">Total Physical Cores</div><div class="ev-row-val">9</div></div>
 <div class="ev-row"><div class="ev-row-key">Total Logical Threads</div><div class="ev-row-val">9</div></div>
@@ -80,7 +87,14 @@
 <div class="ev-row"><div class="ev-row-key">LPE Base / Max Turbo</div><div class="ev-row-val">0.8 GHz / 3 GHz</div></div>
 <div class="ev-row"><div class="ev-row-key">Overclocking</div><div class="ev-row-val">No — locked multiplier</div></div>
 <div class="ev-row"><div class="ev-row-key">Instruction Set Extensions</div><div class="ev-row-val">AVX2, AVX-512 (UHP/DP only), AMX-Tile, AMX-INT8, AMX-BF16, AES-NI, SHA-NI</div></div>
-<div class="ev-row"><div class="ev-row-key">Thread Director Scheduling Classes <span class="ev-help-btn" data-term="Thread Director">?<span class="ev-help-pop">A dedicated in-fabric scheduling tile making hardware-native, sub-100ns core/GPU/NPU placement decisions.</span></span></div><div class="ev-row-val">5 hardware classes (UHP/DP/SPE/UHE/LPE) + GPU-coupled RT/BVH dispatch class</div></div></div>
+<div class="ev-row"><div class="ev-row-key">Instruction Set</div><div class="ev-row-val">64-bit</div></div>
+<div class="ev-row"><div class="ev-row-key">Intel® 64</div><div class="ev-row-val">Yes</div></div>
+<div class="ev-row"><div class="ev-row-key">Thread Director Scheduling Classes <span class="ev-help-btn" data-term="Thread Director">?<span class="ev-help-pop">A dedicated in-fabric scheduling tile making hardware-native, sub-100ns core/GPU/NPU placement decisions.</span></span></div><div class="ev-row-val">5 hardware classes (UHP/DP/SPE/UHE/LPE) + GPU-coupled RT/BVH dispatch class</div></div>
+<div class="ev-row"><div class="ev-row-key">Total L2 Cache</div><div class="ev-row-val">13.3 MB</div></div>
+<div class="ev-row"><div class="ev-row-key">Processor Base Power</div><div class="ev-row-val">8W</div></div>
+<div class="ev-row"><div class="ev-row-key">Maximum Turbo Power</div><div class="ev-row-val">14W</div></div>
+<div class="ev-row"><div class="ev-row-key">Intel® Deep Learning Boost (CPU)</div><div class="ev-row-val">No</div></div>
+<div class="ev-row"><div class="ev-row-key">AI Software Frameworks Supported (CPU)</div><div class="ev-row-val">OpenVINO, DirectML, WindowsML, PyTorch, TensorFlow</div></div></div>
 </div>
 
 <div class="ev-section">
@@ -128,6 +142,7 @@
 <div class="ev-row"><div class="ev-row-key">Max DDR6 Capacity</div><div class="ev-row-val">Not applicable</div></div>
 <div class="ev-row"><div class="ev-row-key">DDR6 Speed</div><div class="ev-row-val">Not applicable</div></div>
 <div class="ev-row"><div class="ev-row-key">Max Total Memory <span class="ev-help-btn" data-term="ZAM">?<span class="ev-help-pop">Z-Angle Memory — Intel's on-package, FOveros-stacked memory subsystem.</span></span></div><div class="ev-row-val">36 GB unified (ZAM only)</div></div>
+<div class="ev-row"><div class="ev-row-key">Max # of Memory Channels <span class="ev-help-btn" data-term="ZAM">?<span class="ev-help-pop">Z-Angle Memory — Intel's on-package, FOveros-stacked memory subsystem.</span></span></div><div class="ev-row-val">2× ZAM</div></div>
 <div class="ev-row"><div class="ev-row-key">Memory Coherency <span class="ev-help-btn" data-term="FOveros 2.0">?<span class="ev-help-pop">Intel's photonic tile-to-tile interconnect, co-developed with Lightmatter (USA). Replaces copper die-to-die links with on-package optical signaling.</span></span></div><div class="ev-row-val">Hardware cache coherency across all tiles via FOveros 2.0 · <2ns signalling · zero-copy CPU↔GPU↔NPU</div></div>
 <div class="ev-row"><div class="ev-row-key">Intel DirectStorage 2.0 <span class="ev-help-btn" data-term="DirectStorage">?<span class="ev-help-pop">Intel DirectStorage 2.0 — a staged data path from DDR6 through ZAM to the Kache Kore bLLC for fast asset streaming.</span></span></div><div class="ev-row-val">NVMe → DDR6 staging → ZAM runtime → Kache Kore™ bLLC hot data</div></div>
 <div class="ev-row"><div class="ev-row-key">ECC Memory Support <span class="ev-help-btn" data-term="ZAM">?<span class="ev-help-pop">Z-Angle Memory — Intel's on-package, FOveros-stacked memory subsystem.</span></span></div><div class="ev-row-val">Yes — inline ECC correction on both ZAM and DDR6 paths</div></div></div>
@@ -155,12 +170,17 @@
 </div>
 <div class="ev-section">
   <div class="ev-section-head"><span class="ev-section-head-label">Display Engine</span><span class="ev-section-head-icon ">▼</span></div>
-  <div class="ev-section-body "><div class="ev-row"><div class="ev-row-key">Max Displays Supported</div><div class="ev-row-val">2</div></div>
-<div class="ev-row"><div class="ev-row-key">Display Outputs</div><div class="ev-row-val">eDP 1.5, Intel×Sony eDP 2.0 (over PCIe 6.0), DisplayPort 2.1 UHBR20, HDMI 2.1 FRL</div></div>
-<div class="ev-row"><div class="ev-row-key">Max Resolution (eDP 2.0)</div><div class="ev-row-val">5,120 × 2,880 @ 240 Hz</div></div>
-<div class="ev-row"><div class="ev-row-key">HDR Support <span class="ev-help-btn" data-term="BionzXR">?<span class="ev-help-pop">QuickSync BionzXR — Intel × Sony's flagship media encode/decode engine, including the industry's first shipping AV2 hardware encoder.</span></span></div><div class="ev-row-val">HDR10, Dolby Vision (via BionzXR tone-mapping)</div></div>
+  <div class="ev-section-body "><div class="ev-row"><div class="ev-row-key">Max Displays Supported</div><div class="ev-row-val">2 simultaneous native</div></div>
+<div class="ev-row"><div class="ev-row-key">iDP (Intel Display Protocol) 1.0</div><div class="ev-row-val">Up to 5,120×2,880 @ 240 Hz <span class="note">· in-house eDP derivative over PCIe 6.0 ×16×3 · up to 2× ports</span></div></div>
+<div class="ev-row"><div class="ev-row-key">iDP Color Depth</div><div class="ev-row-val">Up to 96-bit (RGB+MCY)</div></div>
+<div class="ev-row"><div class="ev-row-key">DisplayPort</div><div class="ev-row-val">DP 2.1b UHBR20</div></div>
+<div class="ev-row"><div class="ev-row-key">eDP</div><div class="ev-row-val">eDP 1.6</div></div>
+<div class="ev-row"><div class="ev-row-key">HDMI</div><div class="ev-row-val">HDMI 2.2</div></div>
+<div class="ev-row"><div class="ev-row-key">Codec Transport</div><div class="ev-row-val">VRV1 / VRV2 over iDP — carries resolutions exceeding raw link bandwidth compressed, without quality loss</div></div>
+<div class="ev-row"><div class="ev-row-key">Variable Refresh Rate</div><div class="ev-row-val">Full VRR · XCD-LED DIAC</div></div>
+<div class="ev-row"><div class="ev-row-key">HDR Support <span class="ev-help-btn" data-term="BionzXR">?<span class="ev-help-pop">QuickSync BionzXR — Intel × Sony's flagship media encode/decode engine, including the industry's first shipping AV2 hardware encoder.</span></span></div><div class="ev-row-val">HDR10+ Ultra, Dolby Vision 2 (via BionzXR tone-mapping)</div></div>
 <div class="ev-row"><div class="ev-row-key">Display Stream Compression</div><div class="ev-row-val">VESA DSC 1.2a</div></div>
-<div class="ev-row"><div class="ev-row-key">Unified Display Engine</div><div class="ev-row-val">Any GPU tile (Elementalist, Druid, 2DKanvas) can drive any output — no MUX switching</div></div></div>
+<div class="ev-row"><div class="ev-row-key">Unified Display Engine</div><div class="ev-row-val">Any GPU tile (Elementalist, Druid, 2DKanvas) can drive any output — no MUX switching, no GPU-to-GPU frame copy</div></div></div>
 </div>
 <div class="ev-section">
   <div class="ev-section-head"><span class="ev-section-head-label">AI — HNPU</span><span class="ev-section-head-icon ">▼</span></div>
@@ -205,7 +225,14 @@
 <div class="ev-row"><div class="ev-row-key">Die Size</div><div class="ev-row-val">7.2 mm²</div></div>
 <div class="ev-row"><div class="ev-row-key">Process Node</div><div class="ev-row-val">Intel 04A</div></div>
 <div class="ev-row"><div class="ev-row-key">Bond to Klangkerne</div><div class="ev-row-val">Foveros 2.0 hybrid bond · 0.4µm pitch · +38µm package height</div></div>
-<div class="ev-row"><div class="ev-row-key">Pipeline Blocks</div><div class="ev-row-val">Traversal Engine, Diffraction Unit, Binaural Divergence Unit, IR Assembler</div></div>
+<div class="ev-row"><div class="ev-row-key">SoRT Clusters <span class="ev-help-btn" data-term="SoRT">?<span class="ev-help-pop">Sound Ray Tracing — a dedicated die stacked on the Klangkerne audio tile via Foveros 2.0, computing hardware-accelerated acoustic reflection and diffraction.</span></span></div><div class="ev-row-val">×1 <span class="note">· fixed-function pipeline, no shader cores — feature-uniform across tiers, ray budget quantity-scaled</span></div></div>
+<div class="ev-row"><div class="ev-row-key">Traversal Engine (per cluster)</div><div class="ev-row-val">96M ray-steps/s · 210 mW peak</div></div>
+<div class="ev-row"><div class="ev-row-key">Diffraction Unit (per cluster)</div><div class="ev-row-val">2.4M UTD edge-diffraction evaluations/s</div></div>
+<div class="ev-row"><div class="ev-row-key">Binaural Divergence Unit (per cluster)</div><div class="ev-row-val">512 paths/frame forked · 1.08× ray overhead</div></div>
+<div class="ev-row"><div class="ev-row-key">IR Assembler (per cluster)</div><div class="ev-row-val">8-frame history · 2,048-tap staging buffer</div></div>
+<div class="ev-row"><div class="ev-row-key">Material LUT (per cluster)</div><div class="ev-row-val">64 × 8 bands × 16-bit SRAM · 1-cycle access</div></div>
+<div class="ev-row"><div class="ev-row-key">Ray Budget (total)</div><div class="ev-row-val">6,144 ray-paths per 128-sample audio block</div></div>
+<div class="ev-row"><div class="ev-row-key">Max Concurrent Sources</div><div class="ev-row-val">64</div></div>
 <div class="ev-row"><div class="ev-row-key">Real-Time Deadline <span class="ev-help-btn" data-term="Sonoral">?<span class="ev-help-pop">Intel's audio ray-tracing platform brand — the software/driver layer that programs the SoRT die.</span></span></div><div class="ev-row-val">2.67 ms hard deadline per acoustic block (Sonoral™ runtime contract)</div></div>
 <div class="ev-row"><div class="ev-row-key">Typical Power</div><div class="ev-row-val">~118 mW <span class="note">· vs. 1.8W+ for a CPU-software approximation of the same field</span></div></div>
 <div class="ev-row"><div class="ev-row-key">Ray-Traced Frame Cost</div><div class="ev-row-val">0.0% — never shares the GPU render path</div></div>
@@ -233,28 +260,43 @@
 <div class="ev-section">
   <div class="ev-section-head"><span class="ev-section-head-label">Expansion Options</span><span class="ev-section-head-icon ">▼</span></div>
   <div class="ev-section-body "><div class="ev-row"><div class="ev-row-key">PCIe Revision</div><div class="ev-row-val">PCIe 6.0</div></div>
-<div class="ev-row"><div class="ev-row-key">Thunderbolt Version</div><div class="ev-row-val">Thunderbolt 6 <span class="note">· 120 Gbps; supports Intel×Sony eDP 2.0 tunnel</span></div></div>
+<div class="ev-row"><div class="ev-row-key">PCI Express Configurations</div><div class="ev-row-val">1×8, 2×4</div></div>
+<div class="ev-row"><div class="ev-row-key">Max # of PCI Express Lanes</div><div class="ev-row-val">16</div></div>
+<div class="ev-row"><div class="ev-row-key">Thunderbolt Version</div><div class="ev-row-val">Thunderbolt 6 <span class="note">· 160 Gbps symmetric / 240 Gbps boost; supports Intel×Sony eDP 2.0 tunnel</span></div></div>
+<div class="ev-row"><div class="ev-row-key">Thunderbolt Ports</div><div class="ev-row-val">Up to 4</div></div>
 <div class="ev-row"><div class="ev-row-key">USB Specification</div><div class="ev-row-val">USB4 Gen 3×2 (40 Gbps), USB 3.2 Gen 2×2</div></div>
-<div class="ev-row"><div class="ev-row-key">Max PCIe Lanes (platform)</div><div class="ev-row-val">16</div></div></div>
+<div class="ev-row"><div class="ev-row-key">Intel® DirectStorage NVMe Path <span class="ev-help-btn" data-term="DirectStorage">?<span class="ev-help-pop">Intel DirectStorage 2.0 — a staged data path from DDR6 through ZAM to the Kache Kore bLLC for fast asset streaming.</span></span></div><div class="ev-row-val">PCIe 6.0 NVMe · ~24 GB/s sustained via I/O tile</div></div></div>
 </div>
 <div class="ev-section">
   <div class="ev-section-head"><span class="ev-section-head-label">Wireless & Connectivity</span><span class="ev-section-head-icon ">▼</span></div>
   <div class="ev-section-body "><div class="ev-row"><div class="ev-row-key">WiFi Specification <span class="ev-help-btn" data-term="Killer">?<span class="ev-help-pop">Intel × OPPO's Killer SignalBoost S1 wireless tile — Wi-Fi 7, Bluetooth 6.2 and 5G cellular with SONAR presence sensing.</span></span></div><div class="ev-row-val">Intel® Killer™ Wi-Fi 7 (802.11be) — via Killer SignalBoost S1</div></div>
 <div class="ev-row"><div class="ev-row-key">WiFi Chips</div><div class="ev-row-val">1× X1 chip (4 bands)</div></div>
 <div class="ev-row"><div class="ev-row-key">Bluetooth</div><div class="ev-row-val">Bluetooth Core 6.2</div></div>
-<div class="ev-row"><div class="ev-row-key">Cellular</div><div class="ev-row-val">Not present</div></div>
+<div class="ev-row"><div class="ev-row-key">Cellular</div><div class="ev-row-val">5G Sub-6 / mmWave, 4G LTE, VoLTE</div></div>
 <div class="ev-row"><div class="ev-row-key">Antenna Support</div><div class="ev-row-val">Up to 2× 360° Intel LinkBoost antennae; SONAR user presence via WiFi signal</div></div>
 <div class="ev-row"><div class="ev-row-key">Intel® Wake on Voice</div><div class="ev-row-val">Yes (LPNPU-powered; always-on)</div></div>
 <div class="ev-row"><div class="ev-row-key">Intel® Wake on Wi-Fi (SONAR)</div><div class="ev-row-val">Yes</div></div></div>
 </div>
 <div class="ev-section">
   <div class="ev-section-head"><span class="ev-section-head-label">Security & Manageability</span><span class="ev-section-head-icon ">▼</span></div>
-  <div class="ev-section-body "><div class="ev-cap-grid"><div class="ev-cap-card"><div class="ev-cap-icon">🛡️</div><div class="ev-cap-name">Intel® vPro®</div><div class="ev-cap-desc">Hardware-rooted manageability and security platform for business-class systems.</div></div>
-<div class="ev-cap-card"><div class="ev-cap-icon">🔐</div><div class="ev-cap-name">Microsoft Pluton</div><div class="ev-cap-desc">Hardware TPM 2.1 + Pluton security processor, integrated into the PSM tile as a root of trust below the OS.</div></div>
-<div class="ev-cap-card"><div class="ev-cap-icon">🧩</div><div class="ev-cap-name">PSM Tile</div><div class="ev-cap-desc">Platform Security & Management — owns platform-wide power sequencing and the hardware root of trust.</div></div>
-<div class="ev-cap-card"><div class="ev-cap-icon">🔑</div><div class="ev-cap-name">Intel® Total Memory Encryption</div><div class="ev-cap-desc">Full-memory AES-XTS encryption across ZAM and DDR6 paths, keyed per boot.</div></div>
-<div class="ev-cap-card"><div class="ev-cap-icon">⚙️</div><div class="ev-cap-name">Intel® VT-x / VT-d</div><div class="ev-cap-desc">Hardware virtualization and directed I/O, exposed across all active Compute Tiles.</div></div>
-<div class="ev-cap-card"><div class="ev-cap-icon">🧮</div><div class="ev-cap-name">AES-NI / SHA-NI</div><div class="ev-cap-desc">Hardware-accelerated cryptographic instruction extensions on UHP and DP cores.</div></div></div></div>
+  <div class="ev-section-body "><div class="ev-cap-grid"><div class="ev-cap-card"><div class="ev-cap-icon">🛡️</div><div class="ev-cap-name">Intel® vPro® Eligibility</div><div class="ev-cap-desc">Hardware-rooted manageability and security platform for business-class systems.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🕵️</div><div class="ev-cap-name">Intel® Threat Detection Technology (TDT)</div><div class="ev-cap-desc">NPU + hardware performance-monitor anomaly detection on the PSM tile — 150+ MITRE ATT&CK behaviors, ransomware and cryptojacking detection below the OS.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">📡</div><div class="ev-cap-name">Intel® Active Management Technology (AMT)</div><div class="ev-cap-desc">Out-of-band remote management via CSME 2.0 — works even when the OS is crashed, hung, or powered off.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🔐</div><div class="ev-cap-name">Microsoft Pluton 2.1</div><div class="ev-cap-desc">Hardware TPM 2.1 + Pluton security processor, integrated into the PSM tile as a root of trust below the OS — parallel to Alloy OS's EGP root.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🧩</div><div class="ev-cap-name">Eventide Guardian Protocol (EGP)</div><div class="ev-cap-desc">Intel-developed silicon root of trust for Alloy OS — on-tile AES-256 key vault, per-app hardware attestation, anti-rollback firmware enforcement.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🔑</div><div class="ev-cap-name">Intel® Total Memory Encryption — Multi-Key</div><div class="ev-cap-desc">Full-memory AES-XTS encryption across ZAM and DDR6 paths, keyed per boot; multi-key variant isolates VM/container memory domains.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🗝️</div><div class="ev-cap-name">Intel® Key Locker</div><div class="ev-cap-desc">AES key handles stored in silicon — applications reference handles instead of plaintext keys, preventing memory-dump key extraction.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🧷</div><div class="ev-cap-name">Intel® Secure Key</div><div class="ev-cap-desc">Hardware digital random number generator (RDRAND / RDSEED).</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🧱</div><div class="ev-cap-name">Intel® Control-Flow Enforcement Technology (CET)</div><div class="ev-cap-desc">Hardware shadow stack + indirect branch tracking — blocks ROP / JOP exploitation.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🥾</div><div class="ev-cap-name">Intel® Boot Guard</div><div class="ev-cap-desc">Cryptographically-verified UEFI boot — bootkits and unsigned firmware cannot execute.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🏛️</div><div class="ev-cap-name">Intel® Trusted Execution Technology (TXT)</div><div class="ev-cap-desc">Hardware-measured launch environment, verified against the PSM root of trust.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🚫</div><div class="ev-cap-name">Execute Disable Bit</div><div class="ev-cap-desc">Hardware NX enforcement, preventing code execution from data pages.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🛑</div><div class="ev-cap-name">Intel® OS Guard (SMEP/SMAP)</div><div class="ev-cap-desc">Blocks kernel-mode execution of user-space code and unauthorized kernel access to user memory.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🎯</div><div class="ev-cap-name">Mode-based Execute Control (MBEC)</div><div class="ev-cap-desc">Hypervisor-enforced per-page execute permissions, hardening VM-based security products.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">⚙️</div><div class="ev-cap-name">Intel® VT-x / VT-d / VT-x with EPT</div><div class="ev-cap-desc">Hardware virtualization, directed I/O (IOMMU) and extended page tables, exposed across all active Compute Tiles.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🛰️</div><div class="ev-cap-name">Intel® Virtualization Technology with Redirect Protection (VT-rp)</div><div class="ev-cap-desc">Hardware protection against hypervisor-level redirection attacks.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🧮</div><div class="ev-cap-name">AES-NI / SHA-NI</div><div class="ev-cap-desc">Hardware-accelerated cryptographic instruction extensions on UHP and DP cores.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🧰</div><div class="ev-cap-name">Intel® Stable IT Platform Program (SIPP)</div><div class="ev-cap-desc">Guaranteed 15-month image-stability window for enterprise deployment.</div></div></div></div>
 </div>
 <div class="ev-section">
   <div class="ev-section-head"><span class="ev-section-head-label">Advanced Technologies</span><span class="ev-section-head-icon ">▼</span></div>
@@ -263,12 +305,22 @@
 <div class="ev-cap-card"><div class="ev-cap-icon">💡</div><div class="ev-cap-name">FOveros 2.0</div><div class="ev-cap-desc">Photonic tile-to-tile interconnect, co-developed with Lightmatter (USA), replacing copper die-to-die links with on-package optical signaling.</div></div>
 <div class="ev-cap-card"><div class="ev-cap-icon">🔗</div><div class="ev-cap-name">ASSI 2.0</div><div class="ev-cap-desc">Advanced Stacked Silicon Interconnect — the 0.4µm-pitch hybrid bond used to stack SoRT on Klangkerne.</div></div>
 <div class="ev-cap-card"><div class="ev-cap-icon">💾</div><div class="ev-cap-name">Intel DirectStorage 2.0</div><div class="ev-cap-desc">Staged data path from DDR6 through ZAM to the Kache Kore bLLC for fast asset streaming.</div></div>
-<div class="ev-cap-card"><div class="ev-cap-icon">🚀</div><div class="ev-cap-name">V8 HyperBOOST</div><div class="ev-cap-desc">Not applicable — no Compute Tile present on this SKU.</div></div></div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🚀</div><div class="ev-cap-name">V8 HyperBOOST</div><div class="ev-cap-desc">Not applicable — no Compute Tile present on this SKU.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🎛️</div><div class="ev-cap-name">Intel® Speed Shift Technology</div><div class="ev-cap-desc">Hardware-controlled P-state selection, removing OS DVFS latency.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🌙</div><div class="ev-cap-name">Idle States</div><div class="ev-cap-desc">Full ACPI C-state support across all five core classes.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">📉</div><div class="ev-cap-name">Enhanced Intel SpeedStep® Technology</div><div class="ev-cap-desc">Dynamic voltage/frequency scaling per core class.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🌡️</div><div class="ev-cap-name">Thermal Monitoring Technologies</div><div class="ev-cap-desc">Per-core and per-tile digital thermal sensors feeding Thread Director's burst and throttle decisions.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🧭</div><div class="ev-cap-name">Intel® Volume Management Device (VMD)</div><div class="ev-cap-desc">Hardware-level NVMe RAID and hot-plug management via the I/O tile.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🎙️</div><div class="ev-cap-name">Intel® Gaussian & Neural Accelerator (GNA)</div><div class="ev-cap-desc">Milliwatt-class always-on audio inference — see AI — GNA section.</div></div>
+<div class="ev-cap-card"><div class="ev-cap-icon">🧩</div><div class="ev-cap-name">Intel® Deep Learning Boost</div><div class="ev-cap-desc">AMX-INT8 / AMX-BF16 matrix acceleration on UHP/DP cores, complementing HNPU and XMX5.</div></div></div></div>
 </div>
 <div class="ev-section">
   <div class="ev-section-head"><span class="ev-section-head-label">Package Specifications</span><span class="ev-section-head-icon ">▼</span></div>
   <div class="ev-section-body "><div class="ev-row"><div class="ev-row-key">Sockets Supported</div><div class="ev-row-val">BGA (integrated, non-socketed)</div></div>
+<div class="ev-row"><div class="ev-row-key">Package Carrier</div><div class="ev-row-val">FCBGA</div></div>
 <div class="ev-row"><div class="ev-row-key">Package Size</div><div class="ev-row-val">35mm × 30mm</div></div>
+<div class="ev-row"><div class="ev-row-key">Thermal Solution Specification</div><div class="ev-row-val">OEM-specified</div></div>
+<div class="ev-row"><div class="ev-row-key">Max Operating Temperature</div><div class="ev-row-val">105°C</div></div>
 <div class="ev-row"><div class="ev-row-key">T Junction Max</div><div class="ev-row-val">105°C</div></div></div>
 </div>
 <div class="ev-section">
@@ -279,7 +331,7 @@
     </div>
   </div>
   <div class="ev-footer">Intel, the Intel logo, Core, Core Ultra, Xeon, Arc, Thunderbolt, Killer, vPro, QuickSync, Thread Director, PowerVia, Foveros, and Turbo Boost are trademarks of Intel Corporation or its subsidiaries. Klangkerne, SoRT, Sonoral and AcoustX are trademarks used under the Eventide co-engineering program.<br>Specifications subject to change. Performance and power numbers represent theoretical maximums under ideal conditions; AFFINITY™ power figures are derived from tile composition.<br>Intel® Core™ 9 593U Processor · Eventide Generation · Intel Corporation 2028 · All rights reserved.</div>
-  <script type="application/json" id="ev-sku-data">{"tiles":[{"id":"kachekore"},{"id":"lpisland"},{"id":"hnpu"},{"id":"kanvas2d"},{"id":"zam"},{"id":"klangkerne"},{"id":"io"},{"id":"psm"},{"id":"killers1"},{"id":"ipu"},{"id":"mfx"},{"id":"gna"},{"id":"display"},{"id":"threaddirector"}],"tileSpecs":{"kachekore":[{"label":"L4 / bLLC Capacity","val":"4 MB"},{"label":"L3 (LP Island share)","val":"8 MB"},{"label":"Total SRAM + L4","val":"~8 MB SRAM + 4 MB"},{"label":"Fabric","val":"FOveros 2.0 · shared by every tile"}],"lpisland":[{"label":"UHE Cores","val":4},{"label":"LPE Cores","val":5},{"label":"LP iGPU","val":"Arc® Druid D390"},{"label":"LPNPU","val":"18 TOPS"},{"label":"Min Island TDP","val":"0.5W"}],"hnpu":[{"label":"Throughput","val":"43 TOPS"},{"label":"Node","val":"Intel 04A"}],"kanvas2d":[{"label":"Node","val":"Intel 14A-E"},{"label":"Function","val":"2D compositor, no 3D ALUs"}],"zam":[{"label":"Max Capacity","val":"36 GB"},{"label":"Bandwidth","val":"3713 GB/s"},{"label":"Latency","val":"8 ns"}],"klangkerne":[{"label":"Base Die","val":"18 mm² · Intel 14A-E"},{"label":"Stack Partner","val":"SoRT (see separate tile)"},{"label":"Function","val":"Mixer/DSP, Tiefton, Hallraum"}],"sort":[{"label":"Die Size","val":"7.2 mm² · Intel 04A"},{"label":"Frame Cost","val":"0.0%"},{"label":"Power","val":"~118 mW"},{"label":"Deadline","val":"2.67 ms"}],"killers1":[{"label":"WiFi","val":"Intel® Killer™ Wi-Fi 7 (802.11be)"},{"label":"Chips","val":"1× X1 chip (4 bands)"}],"ipu":[{"label":"Max Input","val":"64 MP"}],"mfx":[{"label":"Function","val":"Low-power decode"}],"gna":[{"label":"Throughput","val":"5 TOPS"}],"display":[{"label":"Max Displays","val":2},{"label":"Max Resolution","val":"5,120×2,880@240Hz"}],"threaddirector":[{"label":"Decision Latency","val":"<100 ns"},{"label":"Classes","val":"5 core + 1 GPU-coupled"}],"io":[{"label":"PCIe","val":"PCIe 6.0"},{"label":"Thunderbolt","val":"Thunderbolt 6"}],"psm":[{"label":"Root of Trust","val":"Pluton + TPM 2.1"}]}}</script>
+  <script type="application/json" id="ev-sku-data">{"tiles":[{"id":"kachekore"},{"id":"lpisland"},{"id":"druid"},{"id":"bionzxr"},{"id":"hnpu"},{"id":"kanvas2d"},{"id":"zam"},{"id":"klangkerne"},{"id":"io"},{"id":"psm"},{"id":"killers1"},{"id":"ipu"},{"id":"mfx"},{"id":"gna"},{"id":"display"},{"id":"threaddirector"}],"tileSpecs":{"kachekore":[{"label":"L4 / bLLC Capacity","val":"4 MB"},{"label":"L3 (LP Island share)","val":"8 MB"},{"label":"Total SRAM + L4","val":"~8 MB SRAM + 4 MB"},{"label":"Fabric","val":"FOveros 2.0 · shared by every tile"}],"lpisland":[{"label":"UHE Cores","val":4},{"label":"LPE Cores","val":5},{"label":"Min Island TDP","val":"0.5W"}],"druid":[{"label":"Model","val":"Arc® Druid D390"},{"label":"Xe4E-Cores","val":14},{"label":"Boost Clock","val":"1.87 GHz"},{"label":"Node","val":"Intel 06E"}],"bionzxr":[{"label":"Cores","val":3},{"label":"Node","val":"Intel 06E"},{"label":"Flagship Codec","val":"AV2 (hardware encode)"}],"hnpu":[{"label":"Throughput","val":"43 TOPS"},{"label":"Node","val":"Intel 04A"}],"kanvas2d":[{"label":"Node","val":"Intel 14A-E"},{"label":"Function","val":"2D compositor, no 3D ALUs"}],"zam":[{"label":"Max Capacity","val":"36 GB"},{"label":"Bandwidth","val":"3713 GB/s"},{"label":"Latency","val":"8 ns"}],"klangkerne":[{"label":"Base Die","val":"18 mm² · Intel 14A-E"},{"label":"Stack Partner","val":"SoRT (see separate tile)"},{"label":"Function","val":"Mixer/DSP, Tiefton, Hallraum"}],"sort":[{"label":"Die Size","val":"7.2 mm² · Intel 04A"},{"label":"Clusters","val":1},{"label":"Ray Budget / Block","val":"6,144"},{"label":"Frame Cost","val":"0.0%"},{"label":"Power","val":"~118 mW"},{"label":"Deadline","val":"2.67 ms"}],"killers1":[{"label":"WiFi","val":"Intel® Killer™ Wi-Fi 7 (802.11be)"},{"label":"Chips","val":"1× X1 chip (4 bands)"}],"ipu":[{"label":"Max Input","val":"64 MP"}],"mfx":[{"label":"Function","val":"Low-power decode"}],"gna":[{"label":"Throughput","val":"5 TOPS"}],"display":[{"label":"Max Displays","val":2},{"label":"Max Resolution","val":"5,120×2,880@240Hz"}],"threaddirector":[{"label":"Decision Latency","val":"<100 ns"},{"label":"Classes","val":"5 core + 1 GPU-coupled"}],"io":[{"label":"PCIe","val":"PCIe 6.0"},{"label":"Thunderbolt","val":"Thunderbolt 6"}],"psm":[{"label":"Root of Trust","val":"Pluton + TPM 2.1"}]}}</script>
   <script src="../../assets/tile-catalog.js"></script>
   <script src="../../assets/spec-engine.js"></script>
 </div>

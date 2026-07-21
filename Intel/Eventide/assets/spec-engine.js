@@ -27,7 +27,7 @@
     core:           { x: 460, y: 360, w: 220, h: 200 },
     "top-right":    { x: 700, y: 40,  w: 440, h: 260, itemW: 150, itemH: 108, gap: 14 },
     right:          { x: 700, y: 330, w: 150, h: 140, itemW: 150, itemH: 140, gap: 14 },
-    top:            { x: 460, y: 140, w: 220, h: 180, itemW: 220, itemH: 170, gap: 14 },
+    top:            { x: 372, y: 120, w: 300, h: 210, itemW: 92,  itemH: 195, gap: 10 },
     left:           { x: 40,  y: 280, w: 380, h: 340, itemW: 150, itemH: 150, gap: 16 },
     "far-left":     { x: 40,  y: 650, w: 210, h: 130, itemW: 190, itemH: 120, gap: 14 },
     bottom:         { x: 460, y: 580, w: 220, h: 140, itemW: 220, itemH: 130, gap: 14 },
