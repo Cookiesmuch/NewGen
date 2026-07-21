@@ -69,107 +69,119 @@
     });
 
     var placed = [];
-    function place(id, meta, index, count, x, y, w, h) {
-      placed.push({ id: id, meta: meta, index: index, count: count, x: x, y: y, w: w, h: h });
+    function place(id, meta, index, count, x, y, w, h, model) {
+      placed.push({ id: id, meta: meta, index: index, count: count, x: x, y: y, w: w, h: h, model: model });
     }
 
-    // ---- GPU column (2-wide grid; 1 tile is just a 1x1 "grid") ----
+    // ---- GPU column: the single largest thing on the package. 2-wide grid
+    // (2x2 for a 4-tile flagship); everything else packs beside it. ----
     var gpuEntry = byId.gpu;
     var gpuCount = gpuEntry ? gpuEntry.t.count : 0;
     var gpuCell = gpuEntry ? S.elementalistSize(gpuEntry.t.xe5) : { w: 0, h: 0 };
     var gpuGrid = gpuCount ? gridOf(gpuCell.w, gpuCell.h, gpuCount, 2) : { w: 0, h: 0, items: [] };
+    var gpuH = gpuGrid.h;
 
-    // ---- Row 1: LP cluster (LP Island + Arc Druid + BionzXR) + Compute grid ----
-    var lpEntry = byId.lpisland, druidEntry = byId.druid, bionzEntry = byId.bionzxr;
-    var lpRowItems = [];
-    if (lpEntry) lpRowItems.push({ id: "lpisland", meta: lpEntry.meta, w: S.LP_CLUSTER_SIZE.w, h: S.LP_CLUSTER_SIZE.h });
-    if (druidEntry) { var ds = S.druidSize(druidEntry.t.xeCores); lpRowItems.push({ id: "druid", meta: druidEntry.meta, w: ds.w, h: ds.h }); }
-    if (bionzEntry) lpRowItems.push({ id: "bionzxr", meta: bionzEntry.meta, w: S.LP_CLUSTER_SIZE.w, h: S.LP_CLUSTER_SIZE.h });
-    var lpRow = rowOf(lpRowItems, GAP);
+    // ---- Top strip beside GPU: LP Island, Arc Druid, BionzXR, MFX,
+    // 2DKanvas, HNPU — small/medium tiles, top-aligned. ----
+    var topIds = ["lpisland", "druid", "bionzxr", "mfx", "kanvas2d", "hnpu"];
+    var topItems = [];
+    topIds.forEach(function (id) {
+      var e = byId[id];
+      if (!e) return;
+      var size, model;
+      if (id === "druid") { size = S.druidSize(e.t.xeCores); model = e.t.model; }
+      else if (id === "lpisland" || id === "bionzxr") size = S.LP_CLUSTER_SIZE;
+      else if (id === "hnpu") size = S.HNPU_SIZE;
+      else if (id === "kanvas2d") size = S.KANVAS_MIN;
+      else size = S.ANCILLARY_SIZE;
+      topItems.push({ id: id, meta: e.meta, w: size.w, h: size.h, model: model });
+    });
+    var topRow = rowOf(topItems, GAP);
 
+    // ---- Kache Kore: sits directly right of GPU, vertically centered on
+    // the GPU column's full height — "somewhat big," 4GB bLLC is real
+    // silicon, not an afterthought. ----
+    var coreEntry = byId.kachekore;
+    var coreSize = S.KACHE_KORE_SIZE;
+    var coreY = Math.max(topRow.h + GAP, gpuH / 2 - coreSize.h / 2);
+
+    // ---- Compute grid: top-right corner, right of the top strip — sized
+    // clearly smaller than GPU (hundreds of cores is real, but nowhere
+    // near an E1080's shader count), tall enough that its bottom edge
+    // meets Kache Kore's top edge. ----
     var computeEntry = byId.compute;
     var computeCount = computeEntry ? computeEntry.t.count : 0;
     var computeCols = Math.min(2, computeCount);
     var computeRows = computeCount ? Math.ceil(computeCount / computeCols) : 1;
-    var computeCell = computeEntry ? S.computeTileSize(computeEntry.t.coresPerTile, computeRows) : { w: 0, h: 0 };
+    var computeCell = computeEntry ? S.computeTileSize(computeEntry.t.coresPerTile, computeRows, coreY) : { w: 0, h: 0 };
     var computeGrid = computeCount ? gridOf(computeCell.w, computeCell.h, computeCount, 2) : { w: 0, h: 0, items: [] };
 
-    var row1H = Math.max(lpRow.h, computeGrid.h);
-    var row1W = lpRow.w + (computeGrid.w ? GAP + computeGrid.w : 0);
+    // topRow occupies the left part of the right-side width; compute sits to its right
+    var rightW = topRow.w + (computeGrid.w ? GAP + computeGrid.w : 0);
 
-    // ---- Row 2: Kache Kore + HNPU + 2DKanvas ----
-    var coreEntry = byId.kachekore, hnpuEntry = byId.hnpu, kanvasEntry = byId.kanvas2d;
-    var coreSize = { w: S.HNPU_SIZE.w * 1.3, h: S.HNPU_SIZE.h };
-    var row2Items = [];
-    if (coreEntry) row2Items.push({ id: "kachekore", meta: coreEntry.meta, w: coreSize.w, h: coreSize.h });
-    if (hnpuEntry) row2Items.push({ id: "hnpu", meta: hnpuEntry.meta, w: S.HNPU_SIZE.w, h: S.HNPU_SIZE.h });
-    if (kanvasEntry) row2Items.push({ id: "kanvas2d", meta: kanvasEntry.meta, w: S.KANVAS_MIN.w, h: S.KANVAS_MIN.h });
-    var row2 = rowOf(row2Items, GAP);
-
-    var rightStackW = Math.max(row1W, row2.w);
-    var rightStackH = row1H + GAP + row2.h;
-    var nocH = Math.max(gpuGrid.h, rightStackH);
-    var nocW = (gpuGrid.w ? gpuGrid.w + GAP : 0) + rightStackW;
-
-    // ---- Row 3: Klangkerne/SoRT stack + ancillary I/O cluster ----
+    // ---- Below Kache Kore / below Compute: everything left over packs in
+    // here — not a clean grid, just filled. ----
+    var belowY = Math.max(coreY + coreSize.h, computeGrid.h) + GAP;
     var klEntry = byId.klangkerne;
     var klSize = S.KLANGKERNE_SIZE;
-    var ancillaryIds = ["io", "psm", "killers1", "ipu", "mfx", "gna", "display", "threaddirector"];
-    var ancillaryPresent = ancillaryIds.filter(function (id) { return byId[id]; });
-    var ancGrid = ancillaryPresent.length ? gridOf(S.ANCILLARY_SIZE.w, S.ANCILLARY_SIZE.h, ancillaryPresent.length, 4) : { w: 0, h: 0, items: [] };
-    var row3H = Math.max(klEntry ? klSize.h : 0, ancGrid.h);
-    var row3W = (klEntry ? klSize.w + GAP : 0) + ancGrid.w;
+    var fillIds = ["io", "psm", "killers1", "ipu", "gna", "display", "threaddirector"];
+    var fillPresent = fillIds.filter(function (id) { return byId[id]; });
+    var fillGrid = fillPresent.length ? gridOf(S.ANCILLARY_SIZE.w, S.ANCILLARY_SIZE.h, fillPresent.length, 4) : { w: 0, h: 0, items: [] };
+    var belowW = (klEntry ? klSize.w + GAP : 0) + fillGrid.w;
+    var belowH = Math.max(klEntry ? klSize.h : 0, fillGrid.h);
 
-    // ---- Row 4: ZAM — 4 fixed module slots, populated left-to-right by capacity ----
+    rightW = Math.max(rightW, belowW, coreSize.w);
+    var nocH = Math.max(gpuH, belowY + belowH);
+    var nocW = (gpuGrid.w ? gpuGrid.w + GAP : 0) + rightW;
+
+    // ---- ZAM — the only other tile that spans the package's full width,
+    // as a single row of up to 4 module slots directly under the NoC. ----
     var zamEntry = byId.zam;
-    var zamModuleCount = zamEntry ? Math.min(4, S.zamModules(zamEntry.t.capacityGB)) : 0;
     var zamSlots = 4;
-    var zamRowW = zamSlots * S.ZAM_MODULE_SIZE.w + (zamSlots - 1) * GAP;
-    var zamRowH = S.ZAM_MODULE_SIZE.h;
+    var zamModuleCount = zamEntry ? Math.min(zamSlots, S.zamModules(zamEntry.t.capacityGB)) : 0;
+    var zamRowH = zamEntry ? S.ZAM_ROW_H : 0;
+    var zamModuleW = zamEntry ? (nocW - (zamSlots - 1) * GAP) / zamSlots : 0;
 
-    var totalW = Math.max(nocW, row3W, zamEntry ? zamRowW : 0);
-    var totalH = nocH + (row3H ? GAP + row3H : 0) + (zamEntry ? GAP + zamRowH : 0);
+    var totalW = nocW;
+    var totalH = nocH + (zamEntry ? GAP + zamRowH : 0);
 
     // ---- Place everything ----
     var x0 = M, y0 = M;
 
     if (gpuGrid.items.length) {
       gpuGrid.items.forEach(function (it, i) {
-        place("gpu", gpuEntry.meta, i, gpuCount, x0 + it.x, y0 + it.y, it.w, it.h);
+        place("gpu", gpuEntry.meta, i, gpuCount, x0 + it.x, y0 + it.y, it.w, it.h, gpuEntry.t.model);
       });
     }
     var stackX = x0 + (gpuGrid.w ? gpuGrid.w + GAP : 0);
-    lpRow.items.forEach(function (it, i) {
-      place(lpRowItems[i].id, lpRowItems[i].meta, 0, 1, stackX + it.x, y0 + it.y, it.w, it.h);
+    topRow.items.forEach(function (it, i) {
+      place(topItems[i].id, topItems[i].meta, 0, 1, stackX + it.x, y0 + it.y, it.w, it.h, topItems[i].model);
     });
+    if (coreEntry) place("kachekore", coreEntry.meta, 0, 1, stackX, y0 + coreY, coreSize.w, coreSize.h);
     if (computeGrid.items.length) {
-      var computeX = stackX + lpRow.w + GAP;
+      var computeX = stackX + topRow.w + GAP;
       computeGrid.items.forEach(function (it, i) {
         place("compute", computeEntry.meta, i, computeCount, computeX + it.x, y0 + it.y, it.w, it.h);
       });
     }
-    var row2Y = y0 + row1H + GAP;
-    row2.items.forEach(function (it, i) {
-      place(row2Items[i].id, row2Items[i].meta, 0, 1, stackX + it.x, row2Y + it.y, it.w, it.h);
-    });
 
-    var row3Y = y0 + nocH + GAP;
-    if (klEntry) place("klangkerne", klEntry.meta, 0, 1, x0, row3Y, klSize.w, klSize.h);
-    var ancX = x0 + (klEntry ? klSize.w + GAP : 0);
-    ancGrid.items.forEach(function (it, i) {
-      var id = ancillaryPresent[i];
-      place(id, byId[id].meta, 0, 1, ancX + it.x, row3Y + it.y, it.w, it.h);
+    var belowYAbs = y0 + belowY;
+    if (klEntry) place("klangkerne", klEntry.meta, 0, 1, stackX, belowYAbs, klSize.w, klSize.h);
+    var fillX = stackX + (klEntry ? klSize.w + GAP : 0);
+    fillGrid.items.forEach(function (it, i) {
+      var id = fillPresent[i];
+      place(id, byId[id].meta, 0, 1, fillX + it.x, belowYAbs + it.y, it.w, it.h);
     });
 
     var ghostSlots = [];
     if (zamEntry) {
-      var zamY = row3Y + (row3H ? GAP + row3H : 0);
+      var zamY = y0 + nocH + GAP;
       for (var s = 0; s < zamSlots; s++) {
-        var sx = x0 + s * (S.ZAM_MODULE_SIZE.w + GAP);
+        var sx = x0 + s * (zamModuleW + GAP);
         if (s < zamModuleCount) {
-          place("zam", zamEntry.meta, s, zamModuleCount, sx, zamY, S.ZAM_MODULE_SIZE.w, S.ZAM_MODULE_SIZE.h);
+          place("zam", zamEntry.meta, s, zamModuleCount, sx, zamY, zamModuleW, zamRowH);
         } else {
-          ghostSlots.push({ x: sx, y: zamY, w: S.ZAM_MODULE_SIZE.w, h: S.ZAM_MODULE_SIZE.h });
+          ghostSlots.push({ x: sx, y: zamY, w: zamModuleW, h: zamRowH });
         }
       }
     }
@@ -304,7 +316,8 @@
 
     var groups = [];
     layout.placed.forEach(function (p) {
-      var labelText = p.count > 1 ? p.meta.name.replace(" Tile", "") + " " + (p.index + 1) : p.meta.name.replace(" Tile", "");
+      var baseLabel = p.model || p.meta.name.replace(" Tile", "");
+      var labelText = p.count > 1 ? baseLabel + " " + (p.index + 1) : baseLabel;
       var subLabel = p.h >= 60 ? (p.meta.node.match(/Intel [\w.-]+/) || [p.meta.category])[0].replace("Intel ", "") : null;
       var g = makeTileGroup(p.id, p.meta, p.x, p.y, p.w, p.h, labelText, subLabel);
       addLegend(p.id, p.meta, p.count);
