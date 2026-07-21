@@ -119,24 +119,41 @@
     },
 
     klangkerne: {
-      name: "Klangkerne + SoRT",
-      codename: "Klangkerne (base die) + SoRT (stacked die)",
+      name: "Klangkerne",
+      codename: "Audio DSP Base Die",
       category: "Audio",
-      node: "Intel 14A-E (base) + Intel 04A (SoRT)",
+      node: "Intel 14A-E",
       color: "#C9A227",
       zone: "bottom-left",
       repeatKey: null,
       stacked: true,
-      stackLabel: "SoRT",
-      stackColor: "#8A6D1F",
-      tagline: "The world's first fully vertically-integrated audio stack — with sound ray-tracing stacked on top.",
-      short: "An 18mm² audio DSP base die with a 7.2mm² sound-ray-tracing die (SoRT) hybrid-bonded directly on top of it via Foveros 2.0.",
+      stackTileId: "sort",
+      tagline: "The base of Eventide's audio stack — DSP first, ray tracing bonded on top.",
+      short: "An 18mm² audio DSP base die carrying the mixer/DSP grid, the Tiefton resonator bank and the Hallraum output stage, co-engineered with Bang & Olufsen's acoustic engineering group in Copenhagen.",
       detail: [
-        "Klangkerne is the base die: mixer/DSP grid, the Tiefton resonator bank, and the Hallraum output stage — co-engineered with Bang & Olufsen's acoustic engineering group in Copenhagen.",
-        "SoRT (Sound Ray Tracing) is bonded on top at 0.4µm pitch, adding only 38 microns of package height. It carries the Traversal Engine, Diffraction Unit, Binaural Divergence Unit and IR Assembler.",
-        "SoRT computes real acoustic ray-traced reflection/diffraction fields at a hard 2.67ms deadline, for ~118mW — versus 1.8W+ to approximate the same field in a CPU shader.",
-        "Because SoRT never touches the render path, its ray tracing costs 0.0% GPU frame time — unlike time-slicing audio rays on the GPU's own RTU units.",
-        "The hybrid-bond handoff from SoRT's parametric impulse response to Klangkerne's convolution engine costs just 0.02ms — Foveros 2.0 makes the two dies, for scheduling purposes, one."
+        "Klangkerne owns the full classical audio pipeline: mixing, the Tiefton resonator bank (physical-modeling resonance synthesis), and the Hallraum output stage (final transducer-matched rendering).",
+        "SoRT — a separate sound-ray-tracing die — is hybrid-bonded directly on top of Klangkerne via Foveros 2.0; the two are physically stacked but function as independent tiles with independent specs.",
+        "The hybrid-bond handoff from SoRT's parametric impulse response to Klangkerne's convolution engine costs just 0.02ms — Foveros 2.0 makes the two dies, for scheduling purposes, one.",
+        "Klangkerne also hosts the codec bridge and transducer inversion stage, applying measured-transfer-function DSP to whichever acoustic field it receives — from SoRT, from software, or from a static preset."
+      ]
+    },
+
+    sort: {
+      name: "SoRT",
+      codename: "Sound Ray Tracing Die",
+      category: "Audio · Ray Tracing",
+      node: "Intel 04A",
+      color: "#8A6D1F",
+      zone: "stack-on-klangkerne",
+      repeatKey: null,
+      tagline: "Real acoustic ray tracing, hybrid-bonded onto Klangkerne, for 0.0% frame cost.",
+      short: "A 7.2mm² dedicated sound-ray-tracing die, stacked on Klangkerne via a 0.4µm-pitch Foveros 2.0 hybrid bond — the world's first shipping consumer sound-ray-tracing silicon.",
+      detail: [
+        "SoRT carries the Traversal Engine, Diffraction Unit, Binaural Divergence Unit and IR Assembler — a fixed-function pipeline computing real acoustic reflection, diffraction and occlusion, not a shader approximation.",
+        "Every acoustic block is computed at a hard 2.67ms real-time deadline (the Sonoral™ runtime's scheduling contract) for roughly 118mW typical — versus 1.8W+ for a CPU-software approximation of the same field.",
+        "Because SoRT never touches the GPU's render path, its ray tracing costs 0.0% GPU frame time — unlike time-slicing audio rays on the GPU's own RTU units, which steals ray-tracing hardware from frame rendering at exactly the wrong moments.",
+        "Adds only 38 microns of package height over Klangkerne's base die, bonded at 0.4µm pitch — for scheduling purposes, Foveros 2.0 makes the two dies effectively one.",
+        "Programmed by the Sonoral™ runtime and marketed under the AcoustX™ platform brand alongside Klangkerne."
       ]
     },
 

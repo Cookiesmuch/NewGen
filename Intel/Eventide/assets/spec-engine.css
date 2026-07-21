@@ -18,6 +18,7 @@
   --ev-text-faint: rgba(244,241,234,0.38);
   font-family: var(--font-body, 'Space Grotesk', sans-serif);
   background:
+    radial-gradient(ellipse 1400px 700px at 50% 0px, rgba(240,184,72,0.09) 0%, transparent 70%),
     radial-gradient(ellipse 70% 45% at 18% 10%, rgba(147,51,234,0.14) 0%, transparent 60%),
     radial-gradient(ellipse 55% 55% at 85% 85%, rgba(240,184,72,0.08) 0%, transparent 55%),
     linear-gradient(180deg, var(--ev-dusk) 0%, #0D0818 55%, var(--ev-dusk) 100%);
@@ -27,43 +28,53 @@
 }
 .ev-spec::before {
   content: '';
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-  background-size: 44px 44px;
-  pointer-events: none;
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 63px, rgba(240,184,72,0.055) 63px, rgba(240,184,72,0.055) 64px),
+    repeating-linear-gradient(90deg, transparent, transparent 63px, rgba(240,184,72,0.055) 63px, rgba(240,184,72,0.055) 64px),
+    repeating-linear-gradient(0deg, transparent, transparent 15px, rgba(240,184,72,0.02) 15px, rgba(240,184,72,0.02) 16px),
+    repeating-linear-gradient(90deg, transparent, transparent 15px, rgba(240,184,72,0.02) 15px, rgba(240,184,72,0.02) 16px);
 }
-.ev-spec .ev-wrap { max-width: 1240px; margin: 0 auto; padding: 0 40px; position: relative; }
+.ev-spec .ev-wrap { max-width: 1240px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 1; }
 
 /* ---------- Header ---------- */
-.ev-header { padding: 44px 0 18px; }
+.ev-header { padding: 48px 0 22px; }
 .ev-eyebrow {
   font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  font-size: 10px; letter-spacing: .25em; text-transform: uppercase;
-  color: rgba(240,184,72,0.6); margin-bottom: 10px;
+  font-size: 11px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--ev-gold); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 12px;
 }
+.ev-eyebrow::before { content: ''; width: 26px; height: 2px; background: var(--ev-gold); flex: none; }
 .ev-title {
   font-family: var(--font-display, 'Bebas Neue', sans-serif);
-  font-size: clamp(38px, 5.4vw, 62px);
-  line-height: .98; color: #fff; letter-spacing: .01em;
+  font-size: clamp(40px, 5.8vw, 68px);
+  line-height: .96; letter-spacing: .01em;
+  background: linear-gradient(180deg, #FFFFFF 0%, var(--ev-gold) 85%, var(--ev-gold-dim) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
-.ev-subtitle { margin-top: 8px; font-size: 13px; color: var(--ev-text-dim); max-width: 760px; line-height: 1.6; }
-.ev-badges { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
+.ev-subtitle { margin-top: 10px; font-size: 14px; color: var(--ev-text-dim); max-width: 780px; line-height: 1.7; }
+.ev-badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
 .ev-badge {
-  font-family: var(--font-mono, monospace); font-size: 10px; letter-spacing: .07em; text-transform: uppercase;
-  padding: 6px 11px; border-radius: 3px; border: 1px solid; white-space: nowrap;
+  font-family: var(--font-mono, monospace); font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  padding: 8px 14px; border-radius: 4px; border: 1px solid; white-space: nowrap;
+  background: rgba(240,184,72,0.05); transition: background .2s ease, border-color .2s ease;
 }
+.ev-badge:hover { filter: brightness(1.25); }
 .ev-badge.gold { color: var(--ev-gold); background: rgba(240,184,72,0.10); border-color: rgba(240,184,72,0.32); }
 .ev-badge.orange { color: #FFAE91; background: rgba(255,107,53,0.10); border-color: rgba(255,107,53,0.32); }
 .ev-badge.blue { color: #49B7FF; background: rgba(0,104,181,0.12); border-color: rgba(0,104,181,0.35); }
 .ev-badge.purple { color: #D8B4FE; background: rgba(147,51,234,0.12); border-color: rgba(147,51,234,0.35); }
 
 /* ---------- Key stats ---------- */
-.ev-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgba(147,51,234,0.28); margin: 22px 0; border-radius: 8px; overflow: hidden; }
-.ev-stat { background: rgba(10,6,20,0.85); padding: 16px 14px; text-align: center; }
-.ev-stat-num { font-family: var(--font-display, sans-serif); font-size: 34px; color: var(--ev-gold); line-height: 1; }
-.ev-stat-label { font-size: 10.5px; color: var(--ev-text-faint); margin-top: 4px; text-transform: uppercase; letter-spacing: .05em; }
+.ev-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 28px 0;
+  background: rgba(21,12,38,0.55); border: 1px solid rgba(240,184,72,0.22); border-radius: 10px; overflow: hidden;
+}
+.ev-stat { padding: 26px 18px 22px; text-align: center; border-right: 1px solid rgba(240,184,72,0.14); }
+.ev-stat:last-child { border-right: none; }
+.ev-stat-num { font-family: var(--font-display, sans-serif); font-size: 40px; color: var(--ev-gold); line-height: 1; margin-bottom: 6px; }
+.ev-stat-label { font-family: var(--font-mono, monospace); font-size: 10px; color: var(--ev-text-faint); text-transform: uppercase; letter-spacing: .14em; }
 
 /* ---------- Die map ---------- */
 .ev-diemap-card {
@@ -90,11 +101,16 @@
 .ev-tile-group.ev-focused .ev-tile-rect { transform: translateY(-18px) scale(1.16); filter: drop-shadow(0 24px 26px rgba(0,0,0,0.65)); }
 .ev-tile-label { font-family: var(--font-mono, monospace); font-size: 8.4px; fill: rgba(255,255,255,0.72); pointer-events: none; text-anchor: middle; }
 
-/* stacked SoRT sub-die */
-.ev-stack-top { transition: transform .32s cubic-bezier(.2,.8,.3,1.2), filter .32s ease; transform-box: fill-box; transform-origin: center; }
-.ev-tile-group:hover .ev-stack-top,
-.ev-tile-group.ev-hover .ev-stack-top { transform: translate(-13px,-22px) scale(1.08); filter: drop-shadow(0 16px 14px rgba(0,0,0,.6)); }
-.ev-tile-group.ev-focused .ev-stack-top { transform: translate(-20px,-36px) scale(1.2); }
+/* stacked SoRT die — independently interactive, but lifts further/diagonally
+   since it is physically bonded on top of Klangkerne rather than flat on
+   the substrate. */
+.ev-tile-group.ev-stack-top .ev-tile-rect { transition: transform .32s cubic-bezier(.2,.8,.3,1.2), filter .32s ease; }
+.ev-tile-group.ev-stack-top:hover .ev-tile-rect,
+.ev-tile-group.ev-stack-top.ev-hover .ev-tile-rect { transform: translate(-13px,-22px) scale(1.1); filter: drop-shadow(0 18px 16px rgba(0,0,0,.6)); }
+.ev-tile-group.ev-stack-top.ev-focused .ev-tile-rect { transform: translate(-20px,-38px) scale(1.22); }
+/* When Klangkerne (the base die) is focused/hovered, nudge SoRT up too so the stack visibly separates. */
+.ev-diemap-card .ev-tile-group[data-tile="klangkerne"]:hover ~ .ev-tile-group.ev-stack-top .ev-tile-rect,
+.ev-diemap-card .ev-tile-group[data-tile="klangkerne"].ev-hover ~ .ev-tile-group.ev-stack-top .ev-tile-rect { transform: translate(-13px,-22px) scale(1.08); filter: drop-shadow(0 16px 14px rgba(0,0,0,.55)); }
 
 /* callout line + typing label */
 .ev-callout-path { fill: none; stroke: var(--ev-gold); stroke-width: 1.4; stroke-dasharray: 3 4; opacity: 0; pointer-events: none; }
@@ -136,17 +152,35 @@
 .ev-spec-sheet { background: var(--ev-panel); border: 1px solid var(--ev-border); border-radius: 10px; overflow: hidden; }
 .ev-section { border-bottom: 1px solid var(--ev-border); }
 .ev-section:last-child { border-bottom: none; }
-.ev-section-head { background: rgba(255,255,255,0.03); padding: 11px 20px; display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
-.ev-section-head-label { font-family: var(--font-mono, monospace); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; font-weight: 500; color: var(--ev-gold); flex: 1; }
+.ev-section-head {
+  background: rgba(240,184,72,0.04); padding: 14px 22px; display: flex; align-items: center; gap: 12px;
+  cursor: pointer; user-select: none; border-left: 3px solid transparent; transition: border-color .2s ease, background .2s ease;
+}
+.ev-section-head:hover { background: rgba(240,184,72,0.08); }
+.ev-section-head:has(+ .ev-section-body.open) { border-left-color: var(--ev-gold); }
+.ev-section-head-label { font-family: var(--font-mono, monospace); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; color: var(--ev-gold); flex: 1; }
+.ev-section-head-sub { font-family: var(--font-mono, monospace); font-size: 9.5px; color: var(--ev-text-faint); letter-spacing: .05em; }
 .ev-section-head-icon { font-size: 11px; color: var(--ev-text-faint); transition: transform .2s; }
-.ev-section-head-icon.open { transform: rotate(180deg); }
+.ev-section-head-icon.open { transform: rotate(180deg); color: var(--ev-gold); }
 .ev-section-body { display: none; }
 .ev-section-body.open { display: block; }
+.ev-section-intro { padding: 14px 22px 4px; font-size: 12.5px; color: var(--ev-text-dim); line-height: 1.7; max-width: 900px; }
 .ev-row { display: grid; grid-template-columns: 300px 1fr; border-bottom: 1px solid var(--ev-border); }
 .ev-row:last-child { border-bottom: none; }
+.ev-row:hover { background: rgba(240,184,72,0.03); }
 .ev-row-key { padding: 10px 20px; font-size: 12px; color: var(--ev-text-dim); border-right: 1px solid var(--ev-border); background: rgba(255,255,255,0.015); display: flex; align-items: center; gap: 6px; }
 .ev-row-val { padding: 10px 20px; font-size: 12px; color: var(--ev-text); font-weight: 500; }
 .ev-row-val .note { font-weight: 400; color: var(--ev-text-faint); font-size: 11px; }
+
+/* Capability cards — used for qualitative/technology sections. */
+.ev-cap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; padding: 18px 22px 22px; }
+.ev-cap-card { padding: 18px; border: 1px solid var(--ev-border); border-radius: 8px; background: rgba(255,255,255,0.02); position: relative; overflow: hidden; transition: border-color .2s ease, transform .2s ease; }
+.ev-cap-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--ev-gold), transparent); opacity: 0; transition: opacity .2s ease; }
+.ev-cap-card:hover { border-color: rgba(240,184,72,0.4); transform: translateY(-2px); }
+.ev-cap-card:hover::before { opacity: 1; }
+.ev-cap-icon { font-size: 20px; margin-bottom: 8px; }
+.ev-cap-name { font-family: var(--font-mono, monospace); font-size: 11px; font-weight: 600; letter-spacing: .04em; color: var(--ev-gold); text-transform: uppercase; margin-bottom: 8px; }
+.ev-cap-desc { font-size: 12px; line-height: 1.65; color: var(--ev-text-dim); }
 
 .ev-help-btn {
   display: inline-flex; align-items: center; justify-content: center;

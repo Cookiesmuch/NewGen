@@ -109,51 +109,61 @@
     var seenLegend = {};
     var focusedId = null;
 
-    var groups = layout.placed.map(function (p) {
-      var g = el("g", { class: "ev-tile-group", "data-tile": p.id, tabindex: "0" });
+    function addLegend(id, meta, count) {
+      if (seenLegend[id]) return;
+      seenLegend[id] = true;
+      var li = document.createElement("div");
+      li.className = "ev-legend-item";
+      var sw2 = document.createElement("span");
+      sw2.className = "ev-legend-swatch";
+      sw2.style.background = meta.color;
+      li.appendChild(sw2);
+      var txt = document.createElement("span");
+      txt.textContent = meta.name + (count > 1 ? " ×" + count : "");
+      li.appendChild(txt);
+      if (legend) legend.appendChild(li);
+    }
+
+    function makeTileGroup(id, meta, x, y, w, h, labelText) {
+      var g = el("g", { class: "ev-tile-group", "data-tile": id, tabindex: "0" });
       var body = el("g", { class: "ev-tile-rect" });
       var rect = el("rect", {
-        x: p.x, y: p.y, width: p.w, height: p.h, rx: 8,
-        fill: p.meta.color, "fill-opacity": "0.16", stroke: p.meta.color, "stroke-width": "1.3"
+        x: x, y: y, width: w, height: h, rx: 8,
+        fill: meta.color, "fill-opacity": "0.16", stroke: meta.color, "stroke-width": "1.3"
       });
       body.appendChild(rect);
-      var label = el("text", { class: "ev-tile-label", x: p.x + p.w / 2, y: p.y + p.h / 2 + 3 });
-      label.textContent = p.count > 1 ? p.meta.name.replace(" Tile", "") + " " + (p.index + 1) : p.meta.name.replace(" Tile", "");
+      var label = el("text", { class: "ev-tile-label", x: x + w / 2, y: y + h / 2 + 3 });
+      label.textContent = labelText;
       body.appendChild(label);
       g.appendChild(body);
-
-      if (p.meta.stacked) {
-        var sx = p.x + p.w - p.w * 0.42, sy = p.y - p.h * 0.06, sw = p.w * 0.44, sh = p.h * 0.5;
-        var stackTop = el("g", { class: "ev-stack-top" });
-        var srect = el("rect", { x: sx, y: sy, width: sw, height: sh, rx: 6, fill: p.meta.stackColor, "fill-opacity": "0.85", stroke: "#fff", "stroke-width": "0.6", "stroke-opacity": "0.3" });
-        var slabel = el("text", { class: "ev-tile-label", x: sx + sw / 2, y: sy + sh / 2 + 3 });
-        slabel.textContent = p.meta.stackLabel;
-        slabel.setAttribute("fill", "#0B0714");
-        stackTop.appendChild(srect); stackTop.appendChild(slabel);
-        g.appendChild(stackTop);
-        g._stackNode = { x: sx + sw / 2, y: sy, w: sw, name: p.meta.stackLabel };
-      }
-
-      g._center = { x: p.x + p.w / 2, y: p.y };
-      g._tileId = p.id;
-      g._meta = p.meta;
-
-      if (!seenLegend[p.id]) {
-        seenLegend[p.id] = true;
-        var li = document.createElement("div");
-        li.className = "ev-legend-item";
-        var sw2 = document.createElement("span");
-        sw2.className = "ev-legend-swatch";
-        sw2.style.background = p.meta.color;
-        li.appendChild(sw2);
-        var txt = document.createElement("span");
-        txt.textContent = p.meta.name + (p.count > 1 ? " ×" + p.count : "");
-        li.appendChild(txt);
-        if (legend) legend.appendChild(li);
-      }
-
-      svg.appendChild(g);
+      g._center = { x: x + w / 2, y: y };
+      g._tileId = id;
+      g._meta = meta;
       return g;
+    }
+
+    var groups = [];
+    layout.placed.forEach(function (p) {
+      var labelText = p.count > 1 ? p.meta.name.replace(" Tile", "") + " " + (p.index + 1) : p.meta.name.replace(" Tile", "");
+      var g = makeTileGroup(p.id, p.meta, p.x, p.y, p.w, p.h, labelText);
+      addLegend(p.id, p.meta, p.count);
+
+      if (p.meta.stacked && p.meta.stackTileId) {
+        var stackMeta = window.EventideTiles.CATALOG[p.meta.stackTileId];
+        if (stackMeta) {
+          var sx = p.x + p.w - p.w * 0.42, sy = p.y - p.h * 0.06, sw = p.w * 0.44, sh = p.h * 0.5;
+          var sg = makeTileGroup(p.meta.stackTileId, stackMeta, sx, sy, sw, sh, stackMeta.name);
+          sg.classList.add("ev-stack-top");
+          sg.querySelector(".ev-tile-label").setAttribute("fill", "#0B0714");
+          addLegend(p.meta.stackTileId, stackMeta, 1);
+          svg.appendChild(g);
+          svg.appendChild(sg);
+          groups.push(g, sg);
+          return;
+        }
+      }
+      svg.appendChild(g);
+      groups.push(g);
     });
 
     svg.appendChild(callout);
