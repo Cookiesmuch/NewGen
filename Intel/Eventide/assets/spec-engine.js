@@ -17,19 +17,19 @@
 
   /* ------------------------------------------------------------------
    * True-size floorplan, built bottom-up from Intel/Eventide/assets/
-   * tile-sizes.js — every tile is drawn at its actual relative footprint
-   * (an E1080 is always the same size everywhere it appears; a 12-core
-   * Compute Tile is visibly smaller than an 86-core one), and the overall
-   * package canvas is sized to fit its real content rather than tiles
-   * being stretched to fill a fixed frame. Kache Kore + HNPU + 2DKanvas
-   * and the LP cluster + Compute grid form two stacked rows to the right
-   * of the GPU column; the GPU column spans exactly that two-row height
-   * (two E1080s stacked 2x2 span the whole NoC, by definition — see
-   * tile-sizes.js). Klangkerne/SoRT + the ancillary I/O cluster sit in
-   * their own full-width row below the NoC, and ZAM is its own full-width
-   * row of up to 4 module slots below that, matching "1TB spans the full
-   * package width" (lower capacities simply populate fewer of the 4
-   * slots, like empty RAM sockets).
+   * tile-sizes.js — every tile is drawn at its real physical footprint
+   * (an E1080 is always the same size everywhere it appears; an 86-core
+   * Compute Tile is sized like the huge multi-hundred-core die it is, not
+   * a small controller). GPU is the only tile that shares the package's
+   * full NoC height on its own column, on the left. Everything else packs
+   * into the column beside it, built outward from Kache Kore: LP cluster
+   * + Compute above, HNPU + 2DKanvas beside the core, Klangkerne +
+   * ancillary I/O below — three stacked rows that together approximate
+   * the GPU column's height instead of leaving it dangling over dead
+   * package substrate. ZAM is the ONE other tile that spans the package's
+   * full width (GPU column included) — a single full-width row of up to
+   * 4 module slots below the entire NoC, 1TB populating all 4 edge to
+   * edge, lower capacities populating fewer (visibly empty sockets).
    * ------------------------------------------------------------------ */
   var GAP = 6;
   var M = 22; // outer margin to the package substrate edge
@@ -89,9 +89,7 @@
 
     var computeEntry = byId.compute;
     var computeCount = computeEntry ? computeEntry.t.count : 0;
-    var computeCols = Math.min(2, computeCount);
-    var computeRows = computeCount ? Math.ceil(computeCount / computeCols) : 1;
-    var computeCell = computeEntry ? S.computeTileSize(computeEntry.t.coresPerTile, computeRows) : { w: 0, h: 0 };
+    var computeCell = computeEntry ? S.computeTileSize(computeEntry.t.coresPerTile) : { w: 0, h: 0 };
     var computeGrid = computeCount ? gridOf(computeCell.w, computeCell.h, computeCount, 2) : { w: 0, h: 0, items: [] };
 
     var row1H = Math.max(lpRow.h, computeGrid.h);
@@ -99,19 +97,15 @@
 
     // ---- Row 2: Kache Kore + HNPU + 2DKanvas ----
     var coreEntry = byId.kachekore, hnpuEntry = byId.hnpu, kanvasEntry = byId.kanvas2d;
-    var coreSize = { w: S.HNPU_SIZE.w * 1.3, h: S.HNPU_SIZE.h };
     var row2Items = [];
-    if (coreEntry) row2Items.push({ id: "kachekore", meta: coreEntry.meta, w: coreSize.w, h: coreSize.h });
+    if (coreEntry) row2Items.push({ id: "kachekore", meta: coreEntry.meta, w: S.KACHE_KORE_SIZE.w, h: S.KACHE_KORE_SIZE.h });
     if (hnpuEntry) row2Items.push({ id: "hnpu", meta: hnpuEntry.meta, w: S.HNPU_SIZE.w, h: S.HNPU_SIZE.h });
     if (kanvasEntry) row2Items.push({ id: "kanvas2d", meta: kanvasEntry.meta, w: S.KANVAS_MIN.w, h: S.KANVAS_MIN.h });
     var row2 = rowOf(row2Items, GAP);
 
-    var rightStackW = Math.max(row1W, row2.w);
-    var rightStackH = row1H + GAP + row2.h;
-    var nocH = Math.max(gpuGrid.h, rightStackH);
-    var nocW = (gpuGrid.w ? gpuGrid.w + GAP : 0) + rightStackW;
-
-    // ---- Row 3: Klangkerne/SoRT stack + ancillary I/O cluster ----
+    // ---- Row 3: Klangkerne/SoRT stack + ancillary I/O cluster — packs
+    // beside the core too, NOT below the whole NoC, so only ZAM (below)
+    // and GPU (left) span space nothing else does. ----
     var klEntry = byId.klangkerne;
     var klSize = S.KLANGKERNE_SIZE;
     var ancillaryIds = ["io", "psm", "killers1", "ipu", "mfx", "gna", "display", "threaddirector"];
@@ -120,15 +114,22 @@
     var row3H = Math.max(klEntry ? klSize.h : 0, ancGrid.h);
     var row3W = (klEntry ? klSize.w + GAP : 0) + ancGrid.w;
 
-    // ---- Row 4: ZAM — 4 fixed module slots, populated left-to-right by capacity ----
-    var zamEntry = byId.zam;
-    var zamModuleCount = zamEntry ? Math.min(4, S.zamModules(zamEntry.t.capacityGB)) : 0;
-    var zamSlots = 4;
-    var zamRowW = zamSlots * S.ZAM_MODULE_SIZE.w + (zamSlots - 1) * GAP;
-    var zamRowH = S.ZAM_MODULE_SIZE.h;
+    var rightStackW = Math.max(row1W, row2.w, row3W);
+    var rightStackH = row1H + (row2.h ? GAP + row2.h : 0) + (row3H ? GAP + row3H : 0);
+    var nocH = Math.max(gpuGrid.h, rightStackH);
+    var nocW = (gpuGrid.w ? gpuGrid.w + GAP : 0) + rightStackW;
 
-    var totalW = Math.max(nocW, row3W, zamEntry ? zamRowW : 0);
-    var totalH = nocH + (row3H ? GAP + row3H : 0) + (zamEntry ? GAP + zamRowH : 0);
+    // ---- ZAM — the only other tile that spans the package's full width,
+    // as a single row of up to 4 module slots directly under the NoC
+    // (GPU column included), populated left-to-right by capacity. ----
+    var zamEntry = byId.zam;
+    var zamSlots = 4;
+    var zamModuleCount = zamEntry ? Math.min(zamSlots, S.zamModules(zamEntry.t.capacityGB)) : 0;
+    var zamRowH = zamEntry ? S.ZAM_ROW_H : 0;
+    var zamModuleW = zamEntry ? (nocW - (zamSlots - 1) * GAP) / zamSlots : 0;
+
+    var totalW = nocW;
+    var totalH = nocH + (zamEntry ? GAP + zamRowH : 0);
 
     // ---- Place everything ----
     var x0 = M, y0 = M;
@@ -153,9 +154,9 @@
       place(row2Items[i].id, row2Items[i].meta, 0, 1, stackX + it.x, row2Y + it.y, it.w, it.h);
     });
 
-    var row3Y = y0 + nocH + GAP;
-    if (klEntry) place("klangkerne", klEntry.meta, 0, 1, x0, row3Y, klSize.w, klSize.h);
-    var ancX = x0 + (klEntry ? klSize.w + GAP : 0);
+    var row3Y = row2Y + (row2.h ? row2.h + GAP : 0);
+    if (klEntry) place("klangkerne", klEntry.meta, 0, 1, stackX, row3Y, klSize.w, klSize.h);
+    var ancX = stackX + (klEntry ? klSize.w + GAP : 0);
     ancGrid.items.forEach(function (it, i) {
       var id = ancillaryPresent[i];
       place(id, byId[id].meta, 0, 1, ancX + it.x, row3Y + it.y, it.w, it.h);
@@ -163,13 +164,13 @@
 
     var ghostSlots = [];
     if (zamEntry) {
-      var zamY = row3Y + (row3H ? GAP + row3H : 0);
+      var zamY = y0 + nocH + GAP;
       for (var s = 0; s < zamSlots; s++) {
-        var sx = x0 + s * (S.ZAM_MODULE_SIZE.w + GAP);
+        var sx = x0 + s * (zamModuleW + GAP);
         if (s < zamModuleCount) {
-          place("zam", zamEntry.meta, s, zamModuleCount, sx, zamY, S.ZAM_MODULE_SIZE.w, S.ZAM_MODULE_SIZE.h);
+          place("zam", zamEntry.meta, s, zamModuleCount, sx, zamY, zamModuleW, zamRowH);
         } else {
-          ghostSlots.push({ x: sx, y: zamY, w: S.ZAM_MODULE_SIZE.w, h: S.ZAM_MODULE_SIZE.h });
+          ghostSlots.push({ x: sx, y: zamY, w: zamModuleW, h: zamRowH });
         }
       }
     }
