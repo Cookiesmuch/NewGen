@@ -16,114 +16,165 @@
   }
 
   /* ------------------------------------------------------------------
-   * Edge-to-edge mosaic floorplan — three contiguous bands subdivided into
-   * abutting tile slots (2px reveal only, not a gapped grid), the way an
-   * actual lithographed package or die-shot reads. Kache Kore sits at the
-   * physical center of the middle band; distance from it still encodes
-   * cache-latency sensitivity (Compute/LP top, GPU/HNPU flank the core,
-   * ancillary I/O sits furthest away, bottom band). When a line has no
-   * Compute Tile or no GPU tile (the C-line), the neighboring slot expands
-   * to fill the freed space rather than leaving a blank rectangle.
+   * True-size floorplan, built bottom-up from Intel/Eventide/assets/
+   * tile-sizes.js — every tile is drawn at its actual relative footprint
+   * (an E1080 is always the same size everywhere it appears; a 12-core
+   * Compute Tile is visibly smaller than an 86-core one), and the overall
+   * package canvas is sized to fit its real content rather than tiles
+   * being stretched to fill a fixed frame. Kache Kore + HNPU + 2DKanvas
+   * and the LP cluster + Compute grid form two stacked rows to the right
+   * of the GPU column; the GPU column spans exactly that two-row height
+   * (two E1080s stacked 2x2 span the whole NoC, by definition — see
+   * tile-sizes.js). Klangkerne/SoRT + the ancillary I/O cluster sit in
+   * their own full-width row below the NoC, and ZAM is its own full-width
+   * row of up to 4 module slots below that, matching "1TB spans the full
+   * package width" (lower capacities simply populate fewer of the 4
+   * slots, like empty RAM sockets).
    * ------------------------------------------------------------------ */
-  var VIEW_W = 1180, VIEW_H = 760;
-  var GAP = 3;
-  var M = 20; // outer margin to the package substrate edge
-  var PKG = { x: M, y: M, w: VIEW_W - M * 2, h: VIEW_H - M * 2 };
-  var BAND_H = PKG.h / 3;
+  var GAP = 6;
+  var M = 22; // outer margin to the package substrate edge
 
-  /* Fills a sub-rect edge-to-edge with `n` items in a fixed column count,
-     leaving only GAP px of substrate reveal between cells. */
-  function fillGrid(rect, n, cols) {
+  function rowOf(items, gap) {
+    // lays `items` (each {w,h}) left-to-right, top-aligned to the tallest —
+    // a shorter tile reads as "a smaller die sharing this row," not as a
+    // floating box with padding above and below it.
+    var h = 0;
+    items.forEach(function (it) { h = Math.max(h, it.h); });
+    var x = 0;
+    var out = [];
+    items.forEach(function (it) {
+      out.push({ x: x, y: 0, w: it.w, h: it.h });
+      x += it.w + gap;
+    });
+    return { items: out, w: Math.max(0, x - gap), h: h };
+  }
+
+  function gridOf(cellW, cellH, n, cols) {
     cols = Math.min(cols, n);
     var rows = Math.ceil(n / cols);
-    var ch = (rect.h - (rows - 1) * GAP) / rows;
     var out = [];
     for (var i = 0; i < n; i++) {
       var col = i % cols, row = Math.floor(i / cols);
-      // last row: if it isn't full, stretch remaining items to fill the width evenly
-      var itemsInRow = (row === rows - 1) ? (n - cols * row) : cols;
-      var ccw = (rect.w - (itemsInRow - 1) * GAP) / itemsInRow;
-      out.push({
-        x: rect.x + col * (ccw + GAP), y: rect.y + row * (ch + GAP), w: ccw, h: ch
-      });
+      out.push({ x: col * (cellW + GAP), y: row * (cellH + GAP), w: cellW, h: cellH });
     }
-    return out;
+    return { items: out, w: cols * cellW + (cols - 1) * GAP, h: rows * cellH + (rows - 1) * GAP };
   }
 
   function buildLayout(tiles) {
-    var byZone = {};
+    var S = window.EventideTileSizes;
+    var byId = {};
     tiles.forEach(function (t) {
       var meta = window.EventideTiles.CATALOG[t.id];
-      if (!meta) return;
-      var zone = meta.zone;
-      byZone[zone] = byZone[zone] || [];
-      var count = t.count == null ? 1 : t.count;
-      for (var i = 0; i < count; i++) byZone[zone].push({ id: t.id, meta: meta, index: i, count: count });
+      if (meta) byId[t.id] = { t: t, meta: meta };
     });
 
-    var hasCompute = !!(byZone["band1-right"] && byZone["band1-right"].length);
-    var gpuItems = byZone["band2-left"] || [];
-    var hasGpu = !!gpuItems.length;
-    var gpuTiles = gpuItems.length;
-
-    /* The Elementalist GPU tile is physically large — a top E1080 config (×4 tiles)
-       is meaningfully more silicon than a single small E-class tile, and it never
-       shares a row with anything else: it runs the FULL height of the package on
-       the left edge, tall, exactly like the actual die. Its width share of the
-       package scales with tile count, so a 4-tile flagship visibly dominates the
-       floorplan and everything else gets proportionally smaller — more silicon,
-       more of the picture. Non-GPU content occupies whatever width is left. */
-    var gpuColW = hasGpu ? PKG.w * Math.min(0.46, 0.22 + 0.06 * gpuTiles) : 0;
-    var gpuRect = hasGpu ? { x: PKG.x, y: PKG.y, w: gpuColW, h: PKG.h } : null;
-
-    var restX = PKG.x + (hasGpu ? gpuColW + GAP : 0);
-    var restW = PKG.w - (hasGpu ? gpuColW + GAP : 0);
-    var BAND1 = { x: restX, y: PKG.y, w: restW, h: BAND_H };
-    var BAND2 = { x: restX, y: PKG.y + BAND_H, w: restW, h: BAND_H };
-    var BAND3 = { x: restX, y: PKG.y + BAND_H * 2, w: restW, h: BAND_H };
-
-    // Band 1: LP cluster (left) + Compute (right). Compute absent -> LP cluster fills the band.
-    var band1Left = hasCompute ? { x: BAND1.x, y: BAND1.y, w: BAND1.w * 0.37, h: BAND1.h } : BAND1;
-    var band1Right = { x: BAND1.x + band1Left.w + GAP, y: BAND1.y, w: BAND1.w - band1Left.w - GAP, h: BAND1.h };
-
-    // Band 2: Kache Kore (center) + HNPU + 2DKanvas (right strip). GPU no longer
-    // lives in this band (see above) — Kache Kore anchors the left of the row.
-    var coreW = BAND2.w * 0.32;
-    var coreRect = { x: BAND2.x, y: BAND2.y, w: coreW, h: BAND2.h };
-    var hnpuW = BAND2.w * 0.20;
-    var hnpuRect = { x: coreRect.x + coreRect.w + GAP, y: BAND2.y, w: hnpuW, h: BAND2.h };
-    var kanvasX = hnpuRect.x + hnpuRect.w + GAP;
-    var kanvasRect = { x: kanvasX, y: BAND2.y, w: BAND2.x + BAND2.w - kanvasX, h: BAND2.h };
-
-    // Band 3: Klangkerne/SoRT stack, ZAM, then the ancillary I/O cluster.
-    var b3StackW = BAND3.w * 0.24, b3ZamW = BAND3.w * 0.24;
-    var stackRect = { x: BAND3.x, y: BAND3.y, w: b3StackW, h: BAND3.h };
-    var zamRect = { x: BAND3.x + b3StackW + GAP, y: BAND3.y, w: b3ZamW, h: BAND3.h };
-    var ancillaryX = zamRect.x + zamRect.w + GAP;
-    var ancillaryRect = { x: ancillaryX, y: BAND3.y, w: BAND3.x + BAND3.w - ancillaryX, h: BAND3.h };
-
     var placed = [];
-
-    function placeZone(zoneKey, rect, cols) {
-      var items = byZone[zoneKey];
-      if (!items || !items.length || !rect) return;
-      var slots = fillGrid(rect, items.length, cols || items.length);
-      items.forEach(function (it, i) {
-        placed.push({ id: it.id, meta: it.meta, index: it.index, count: it.count, x: slots[i].x, y: slots[i].y, w: slots[i].w, h: slots[i].h });
-      });
+    function place(id, meta, index, count, x, y, w, h) {
+      placed.push({ id: id, meta: meta, index: index, count: count, x: x, y: y, w: w, h: h });
     }
 
-    placeZone("band1-left", band1Left, 3);
-    placeZone("band1-right", band1Right, 2);
-    placeZone("band2-left", gpuRect, 1);
-    placeZone("core", coreRect, 1);
-    placeZone("band2-right", hnpuRect, 1);
-    placeZone("band2-far-right", kanvasRect, 1);
-    placeZone("band3-b", stackRect, 1);
-    placeZone("band3-a", zamRect, 1);
-    placeZone("band3-c", ancillaryRect, 4);
+    // ---- GPU column (2-wide grid; 1 tile is just a 1x1 "grid") ----
+    var gpuEntry = byId.gpu;
+    var gpuCount = gpuEntry ? gpuEntry.t.count : 0;
+    var gpuCell = gpuEntry ? S.elementalistSize(gpuEntry.t.xe5) : { w: 0, h: 0 };
+    var gpuGrid = gpuCount ? gridOf(gpuCell.w, gpuCell.h, gpuCount, 2) : { w: 0, h: 0, items: [] };
 
-    return { placed: placed, height: VIEW_H };
+    // ---- Row 1: LP cluster (LP Island + Arc Druid + BionzXR) + Compute grid ----
+    var lpEntry = byId.lpisland, druidEntry = byId.druid, bionzEntry = byId.bionzxr;
+    var lpRowItems = [];
+    if (lpEntry) lpRowItems.push({ id: "lpisland", meta: lpEntry.meta, w: S.LP_CLUSTER_SIZE.w, h: S.LP_CLUSTER_SIZE.h });
+    if (druidEntry) { var ds = S.druidSize(druidEntry.t.xeCores); lpRowItems.push({ id: "druid", meta: druidEntry.meta, w: ds.w, h: ds.h }); }
+    if (bionzEntry) lpRowItems.push({ id: "bionzxr", meta: bionzEntry.meta, w: S.LP_CLUSTER_SIZE.w, h: S.LP_CLUSTER_SIZE.h });
+    var lpRow = rowOf(lpRowItems, GAP);
+
+    var computeEntry = byId.compute;
+    var computeCount = computeEntry ? computeEntry.t.count : 0;
+    var computeCols = Math.min(2, computeCount);
+    var computeRows = computeCount ? Math.ceil(computeCount / computeCols) : 1;
+    var computeCell = computeEntry ? S.computeTileSize(computeEntry.t.coresPerTile, computeRows) : { w: 0, h: 0 };
+    var computeGrid = computeCount ? gridOf(computeCell.w, computeCell.h, computeCount, 2) : { w: 0, h: 0, items: [] };
+
+    var row1H = Math.max(lpRow.h, computeGrid.h);
+    var row1W = lpRow.w + (computeGrid.w ? GAP + computeGrid.w : 0);
+
+    // ---- Row 2: Kache Kore + HNPU + 2DKanvas ----
+    var coreEntry = byId.kachekore, hnpuEntry = byId.hnpu, kanvasEntry = byId.kanvas2d;
+    var coreSize = { w: S.HNPU_SIZE.w * 1.3, h: S.HNPU_SIZE.h };
+    var row2Items = [];
+    if (coreEntry) row2Items.push({ id: "kachekore", meta: coreEntry.meta, w: coreSize.w, h: coreSize.h });
+    if (hnpuEntry) row2Items.push({ id: "hnpu", meta: hnpuEntry.meta, w: S.HNPU_SIZE.w, h: S.HNPU_SIZE.h });
+    if (kanvasEntry) row2Items.push({ id: "kanvas2d", meta: kanvasEntry.meta, w: S.KANVAS_MIN.w, h: S.KANVAS_MIN.h });
+    var row2 = rowOf(row2Items, GAP);
+
+    var rightStackW = Math.max(row1W, row2.w);
+    var rightStackH = row1H + GAP + row2.h;
+    var nocH = Math.max(gpuGrid.h, rightStackH);
+    var nocW = (gpuGrid.w ? gpuGrid.w + GAP : 0) + rightStackW;
+
+    // ---- Row 3: Klangkerne/SoRT stack + ancillary I/O cluster ----
+    var klEntry = byId.klangkerne;
+    var klSize = S.KLANGKERNE_SIZE;
+    var ancillaryIds = ["io", "psm", "killers1", "ipu", "mfx", "gna", "display", "threaddirector"];
+    var ancillaryPresent = ancillaryIds.filter(function (id) { return byId[id]; });
+    var ancGrid = ancillaryPresent.length ? gridOf(S.ANCILLARY_SIZE.w, S.ANCILLARY_SIZE.h, ancillaryPresent.length, 4) : { w: 0, h: 0, items: [] };
+    var row3H = Math.max(klEntry ? klSize.h : 0, ancGrid.h);
+    var row3W = (klEntry ? klSize.w + GAP : 0) + ancGrid.w;
+
+    // ---- Row 4: ZAM — 4 fixed module slots, populated left-to-right by capacity ----
+    var zamEntry = byId.zam;
+    var zamModuleCount = zamEntry ? Math.min(4, S.zamModules(zamEntry.t.capacityGB)) : 0;
+    var zamSlots = 4;
+    var zamRowW = zamSlots * S.ZAM_MODULE_SIZE.w + (zamSlots - 1) * GAP;
+    var zamRowH = S.ZAM_MODULE_SIZE.h;
+
+    var totalW = Math.max(nocW, row3W, zamEntry ? zamRowW : 0);
+    var totalH = nocH + (row3H ? GAP + row3H : 0) + (zamEntry ? GAP + zamRowH : 0);
+
+    // ---- Place everything ----
+    var x0 = M, y0 = M;
+
+    if (gpuGrid.items.length) {
+      gpuGrid.items.forEach(function (it, i) {
+        place("gpu", gpuEntry.meta, i, gpuCount, x0 + it.x, y0 + it.y, it.w, it.h);
+      });
+    }
+    var stackX = x0 + (gpuGrid.w ? gpuGrid.w + GAP : 0);
+    lpRow.items.forEach(function (it, i) {
+      place(lpRowItems[i].id, lpRowItems[i].meta, 0, 1, stackX + it.x, y0 + it.y, it.w, it.h);
+    });
+    if (computeGrid.items.length) {
+      var computeX = stackX + lpRow.w + GAP;
+      computeGrid.items.forEach(function (it, i) {
+        place("compute", computeEntry.meta, i, computeCount, computeX + it.x, y0 + it.y, it.w, it.h);
+      });
+    }
+    var row2Y = y0 + row1H + GAP;
+    row2.items.forEach(function (it, i) {
+      place(row2Items[i].id, row2Items[i].meta, 0, 1, stackX + it.x, row2Y + it.y, it.w, it.h);
+    });
+
+    var row3Y = y0 + nocH + GAP;
+    if (klEntry) place("klangkerne", klEntry.meta, 0, 1, x0, row3Y, klSize.w, klSize.h);
+    var ancX = x0 + (klEntry ? klSize.w + GAP : 0);
+    ancGrid.items.forEach(function (it, i) {
+      var id = ancillaryPresent[i];
+      place(id, byId[id].meta, 0, 1, ancX + it.x, row3Y + it.y, it.w, it.h);
+    });
+
+    var ghostSlots = [];
+    if (zamEntry) {
+      var zamY = row3Y + (row3H ? GAP + row3H : 0);
+      for (var s = 0; s < zamSlots; s++) {
+        var sx = x0 + s * (S.ZAM_MODULE_SIZE.w + GAP);
+        if (s < zamModuleCount) {
+          place("zam", zamEntry.meta, s, zamModuleCount, sx, zamY, S.ZAM_MODULE_SIZE.w, S.ZAM_MODULE_SIZE.h);
+        } else {
+          ghostSlots.push({ x: sx, y: zamY, w: S.ZAM_MODULE_SIZE.w, h: S.ZAM_MODULE_SIZE.h });
+        }
+      }
+    }
+
+    return { placed: placed, ghostSlots: ghostSlots, width: totalW + M * 2, height: totalH + M * 2 };
   }
 
   function typeText(node, text, speed) {
@@ -146,7 +197,10 @@
     if (!mount) return;
 
     var layout = buildLayout(data.tiles);
-    var svg = el("svg", { class: "ev-diemap-svg", viewBox: "0 0 1180 " + layout.height, role: "img", "aria-label": "Interactive Eventide die map" });
+    var svg = el("svg", {
+      class: "ev-diemap-svg", width: layout.width, height: layout.height,
+      viewBox: "0 0 " + layout.width + " " + layout.height, role: "img", "aria-label": "Interactive Eventide die map"
+    });
 
     var callout = el("g", { class: "ev-callout" });
     var calloutPath = el("path", { class: "ev-callout-path" });
@@ -181,7 +235,7 @@
         fill: meta.color, "fill-opacity": "0.20", stroke: meta.color, "stroke-width": "1.3"
       });
       body.appendChild(rect);
-      var accentH = Math.min(5, h * 0.09);
+      var accentH = Math.min(8, h * 0.06);
       var accent = el("rect", {
         class: "ev-tile-accent", x: x + 1.3, y: y + 1.3, width: w - 2.6, height: accentH,
         rx: 3, fill: meta.color, "fill-opacity": "0.85"
@@ -207,20 +261,29 @@
     /* Package substrate + BGA ball ring, drawn first so every tile sits on top of it. */
     var pad = 14;
     var substrate = el("rect", {
-      class: "ev-package-substrate", x: pad, y: pad, width: 1180 - pad * 2, height: layout.height - pad * 2, rx: 26
+      class: "ev-package-substrate", x: pad, y: pad, width: layout.width - pad * 2, height: layout.height - pad * 2, rx: 26
     });
     svg.appendChild(substrate);
     var ballLayer = el("g", { class: "ev-package-balls" });
     var ballGap = 26;
-    for (var bx = pad + 10; bx < 1180 - pad; bx += ballGap) {
+    for (var bx = pad + 10; bx < layout.width - pad; bx += ballGap) {
       ballLayer.appendChild(el("circle", { class: "ev-package-ball", cx: bx, cy: pad + 4, r: 1.6 }));
       ballLayer.appendChild(el("circle", { class: "ev-package-ball", cx: bx, cy: layout.height - pad - 4, r: 1.6 }));
     }
     for (var by = pad + 10; by < layout.height - pad; by += ballGap) {
       ballLayer.appendChild(el("circle", { class: "ev-package-ball", cx: pad + 4, cy: by, r: 1.6 }));
-      ballLayer.appendChild(el("circle", { class: "ev-package-ball", cx: 1180 - pad - 4, cy: by, r: 1.6 }));
+      ballLayer.appendChild(el("circle", { class: "ev-package-ball", cx: layout.width - pad - 4, cy: by, r: 1.6 }));
     }
     svg.appendChild(ballLayer);
+
+    /* Ghost ZAM module slots — empty sockets below the SKU's actual populated
+       capacity, so 1TB (4 populated) vs. a lower-tier capacity (fewer) reads
+       the way empty RAM slots do on a real board. */
+    layout.ghostSlots.forEach(function (gs) {
+      svg.appendChild(el("rect", {
+        class: "ev-zam-ghost", x: gs.x, y: gs.y, width: gs.w, height: gs.h, rx: 6
+      }));
+    });
 
     /* Fabric bus traces — a static right-angle trace from every tile straight into
        Kache Kore, visualizing the FOveros 2.0 interconnect hub every tile shares. */

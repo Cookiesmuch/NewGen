@@ -158,8 +158,8 @@ function sectionCache(m) {
     ["L2 (LPE, per 4-core cluster)", "1 MB shared"],
     ["L3 (Compute Tile, shared)", m.computeTiles ? `${m.l3PerComputeTile} MB per tile · ${m.l3Total} MB total (${m.computeTiles} tiles)` : "Not present"],
     ["L3 (LP Island, shared)", `${m.l3LPIsland} MB (Kache Kore™ shared)`],
-    ["Kache Kore™ L4 / bLLC", `${mbfmt(m.l4KacheGB)} <span class="note">· shared cache interposer at the physical center of the package</span>`],
-    ["Total SRAM Cache (approx.)", `~${m.totalSRAM} MB SRAM + ${mbfmt(m.l4KacheGB)} L4 bLLC`],
+    ["Kache Kore™ L4 / bLLC", `${(m.l4KacheGB + " GB")} <span class="note">· shared cache interposer at the physical center of the package</span>`],
+    ["Total SRAM Cache (approx.)", `~${m.totalSRAM} MB SRAM + ${(m.l4KacheGB + " GB")} L4 bLLC`],
     ["Kache Kore™ Round-Trip Latency", `${round1(9 + (m.computeTiles ? 0 : 3))} ns typical`]
   ]);
 }
@@ -570,11 +570,16 @@ const SECTIONS = [
 
 function buildTileConfig(m) {
   const tiles = [{ id: "kachekore" }];
-  if (m.computeTiles > 0) tiles.push({ id: "compute", count: m.computeTiles });
-  tiles.push({ id: "lpisland" }, { id: "druid" }, { id: "bionzxr" }, { id: "hnpu" });
-  if (m.gpuTiles > 0) tiles.push({ id: "gpu", count: m.gpuTiles });
+  if (m.computeTiles > 0) tiles.push({ id: "compute", count: m.computeTiles, coresPerTile: m.uhpPerTile + m.dpPerTile + m.spePerTile });
   tiles.push(
-    { id: "kanvas2d" }, { id: "zam" }, { id: "klangkerne" },
+    { id: "lpisland" },
+    { id: "druid", xeCores: m.druidXeCores, model: m.druidModel },
+    { id: "bionzxr" },
+    { id: "hnpu" }
+  );
+  if (m.gpuTiles > 0) tiles.push({ id: "gpu", count: m.gpuTiles, xe5: m.xe5PerTile, model: m.gpuModel });
+  tiles.push(
+    { id: "kanvas2d" }, { id: "zam", capacityGB: m.zamMaxCapacityGB }, { id: "klangkerne" },
     { id: "io" }, { id: "psm" }, { id: "killers1" }, { id: "ipu" },
     { id: "mfx" }, { id: "gna" }, { id: "display" }, { id: "threaddirector" }
   );
@@ -584,9 +589,9 @@ function buildTileConfig(m) {
 function buildTileSpecs(m) {
   const specs = {
     kachekore: [
-      { label: "L4 / bLLC Capacity", val: mbfmt(m.l4KacheGB) },
+      { label: "L4 / bLLC Capacity", val: (m.l4KacheGB + " GB") },
       { label: "L3 (LP Island share)", val: m.l3LPIsland + " MB" },
-      { label: "Total SRAM + L4", val: `~${m.totalSRAM} MB SRAM + ${mbfmt(m.l4KacheGB)}` },
+      { label: "Total SRAM + L4", val: `~${m.totalSRAM} MB SRAM + ${(m.l4KacheGB + " GB")}` },
       { label: "Fabric", val: "FOveros 2.0 · shared by every tile" }
     ],
     lpisland: [
@@ -654,7 +659,7 @@ function render(dirName, m) {
   const badgesHtml = badges.map((b) => `<span class="ev-badge ${b.cls}">${b.text}</span>`).join("\n        ");
 
   const maxTurboStat = m.computeTiles ? m.uhpTurbo + " GHz" : m.uheTurbo + " GHz";
-  const cacheStat = `~${m.totalSRAM} MB + ${mbfmt(m.l4KacheGB)}`;
+  const cacheStat = `~${m.totalSRAM} MB + ${(m.l4KacheGB + " GB")}`;
 
   const sectionsHtml = SECTIONS.map((s) => {
     if (s.guard && !s.guard(m)) return "";
@@ -727,6 +732,7 @@ ${sectionsHtml}
   <div class="ev-footer">Intel, the Intel logo, Core, Core Ultra, Xeon, Arc, Thunderbolt, Killer, vPro, QuickSync, Thread Director, PowerVia, Foveros, and Turbo Boost are trademarks of Intel Corporation or its subsidiaries. Klangkerne, SoRT, Sonoral and AcoustX are trademarks used under the Eventide co-engineering program.<br>Specifications subject to change. Performance and power numbers represent theoretical maximums under ideal conditions; AFFINITY™ power figures are derived from tile composition.<br>${m.brand} · Eventide Generation · Intel Corporation 2028 · All rights reserved.</div>
   <script type="application/json" id="ev-sku-data">${skuData}<\/script>
   <script src="../../assets/tile-catalog.js"><\/script>
+  <script src="../../assets/tile-sizes.js"><\/script>
   <script src="../../assets/spec-engine.js"><\/script>
 </div>
   </div>

@@ -86,13 +86,19 @@
 .ev-diemap-title { font-family: var(--font-mono, monospace); font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
 .ev-diemap-hint { font-size: 11px; color: var(--ev-text-faint); }
 .ev-diemap-svg-wrap { width: 100%; overflow: visible; }
-.ev-diemap-svg { width: 100%; height: auto; display: block; overflow: visible; }
+/* Intentionally NOT width:100% — a smaller/GPU-less SKU's package is
+   genuinely a smaller die than the flagship's, and should render smaller,
+   not get stretched to fill the card at the same visual size. max-width
+   caps it on narrow viewports; otherwise it renders at its true pixel
+   footprint (1 die-unit == 1px), centered in the card. */
+.ev-diemap-svg { display: block; max-width: 100%; height: auto; margin: 0 auto; overflow: visible; }
 
 /* Package substrate — the flat rounded card every tile sits on, with a
    BGA-style ball ring around the edge, matching the "chip on a package"
    look of Intel's own die/package diagrams. */
 .ev-package-substrate { fill: rgba(255,255,255,0.018); stroke: rgba(255,255,255,0.10); stroke-width: 1.5; }
 .ev-package-ball { fill: rgba(255,255,255,0.14); }
+.ev-zam-ghost { fill: none; stroke: rgba(255,255,255,0.12); stroke-width: 1.2; stroke-dasharray: 4 4; }
 
 /* Fabric — the FOveros interconnect traces from every tile into Kache Kore,
    drawn as static right-angled bus traces beneath the tiles. */
