@@ -16,64 +16,103 @@
   }
 
   /* ------------------------------------------------------------------
-   * Compass floorplan around the central Kache Kore die. Region distance
-   * from the core encodes cache-latency sensitivity: Compute, LP Island,
-   * HNPU and ZAM sit in the innermost ring; GPU sits to the left in a
-   * second ring; low-bandwidth ancillary I/O sits furthest out, bottom
-   * right. Positions are fixed (schematic, not to scale).
+   * Edge-to-edge mosaic floorplan — three contiguous bands subdivided into
+   * abutting tile slots (2px reveal only, not a gapped grid), the way an
+   * actual lithographed package or die-shot reads. Kache Kore sits at the
+   * physical center of the middle band; distance from it still encodes
+   * cache-latency sensitivity (Compute/LP top, GPU/HNPU flank the core,
+   * ancillary I/O sits furthest away, bottom band). When a line has no
+   * Compute Tile or no GPU tile (the C-line), the neighboring slot expands
+   * to fill the freed space rather than leaving a blank rectangle.
    * ------------------------------------------------------------------ */
-  var VIEW_W = 1180, VIEW_H = 920;
-  var REGIONS = {
-    core:           { x: 460, y: 360, w: 220, h: 200 },
-    "top-right":    { x: 700, y: 40,  w: 440, h: 260, itemW: 150, itemH: 108, gap: 14 },
-    right:          { x: 700, y: 330, w: 150, h: 140, itemW: 150, itemH: 140, gap: 14 },
-    top:            { x: 372, y: 120, w: 300, h: 210, itemW: 92,  itemH: 195, gap: 10 },
-    left:           { x: 40,  y: 280, w: 380, h: 340, itemW: 150, itemH: 150, gap: 16 },
-    "far-left":     { x: 40,  y: 650, w: 210, h: 130, itemW: 190, itemH: 120, gap: 14 },
-    bottom:         { x: 460, y: 580, w: 220, h: 140, itemW: 220, itemH: 130, gap: 14 },
-    "bottom-left":  { x: 190, y: 740, w: 260, h: 150, itemW: 210, itemH: 130, gap: 14 },
-    "bottom-right": { x: 700, y: 500, w: 440, h: 340, itemW: 100, itemH: 78,  gap: 12 }
-  };
+  var VIEW_W = 1180, VIEW_H = 760;
+  var GAP = 3;
+  var M = 20; // outer margin to the package substrate edge
+  var PKG = { x: M, y: M, w: VIEW_W - M * 2, h: VIEW_H - M * 2 };
+  var BAND_H = PKG.h / 3;
+  var BAND1 = { x: PKG.x, y: PKG.y, w: PKG.w, h: BAND_H };
+  var BAND2 = { x: PKG.x, y: PKG.y + BAND_H, w: PKG.w, h: BAND_H };
+  var BAND3 = { x: PKG.x, y: PKG.y + BAND_H * 2, w: PKG.w, h: BAND_H };
+
+  /* Fills a sub-rect edge-to-edge with `n` items in a fixed column count,
+     leaving only GAP px of substrate reveal between cells. */
+  function fillGrid(rect, n, cols) {
+    cols = Math.min(cols, n);
+    var rows = Math.ceil(n / cols);
+    var cw = (rect.w - (cols - 1) * GAP) / cols;
+    var ch = (rect.h - (rows - 1) * GAP) / rows;
+    var out = [];
+    for (var i = 0; i < n; i++) {
+      var col = i % cols, row = Math.floor(i / cols);
+      // last row: if it isn't full, stretch remaining items to fill the width evenly
+      var itemsInRow = (row === rows - 1) ? (n - cols * row) : cols;
+      var ccw = (rect.w - (itemsInRow - 1) * GAP) / itemsInRow;
+      out.push({
+        x: rect.x + col * (ccw + GAP), y: rect.y + row * (ch + GAP), w: ccw, h: ch
+      });
+    }
+    return out;
+  }
 
   function buildLayout(tiles) {
     var byZone = {};
+    var present = {};
     tiles.forEach(function (t) {
       var meta = window.EventideTiles.CATALOG[t.id];
       if (!meta) return;
+      present[t.id] = true;
       var zone = meta.zone;
       byZone[zone] = byZone[zone] || [];
       var count = t.count == null ? 1 : t.count;
       for (var i = 0; i < count; i++) byZone[zone].push({ id: t.id, meta: meta, index: i, count: count });
     });
 
+    var hasCompute = !!(byZone["band1-right"] && byZone["band1-right"].length);
+    var hasGpu = !!(byZone["band2-left"] && byZone["band2-left"].length);
+
+    // Band 1: LP cluster (left) + Compute (right). Compute absent -> LP cluster fills the band.
+    var band1Left = hasCompute ? { x: BAND1.x, y: BAND1.y, w: BAND1.w * 0.37, h: BAND1.h } : BAND1;
+    var band1Right = { x: BAND1.x + band1Left.w + GAP, y: BAND1.y, w: BAND1.w - band1Left.w - GAP, h: BAND1.h };
+
+    // Band 2: GPU (left) + Kache Kore (center) + HNPU + 2DKanvas (right strip).
+    // GPU absent -> Kache Kore expands leftward to reclaim its slot.
+    var b2GpuW = hasGpu ? BAND2.w * 0.385 : 0;
+    var gpuRect = hasGpu ? { x: BAND2.x, y: BAND2.y, w: b2GpuW, h: BAND2.h } : null;
+    var coreX = hasGpu ? BAND2.x + b2GpuW + GAP : BAND2.x;
+    var coreW = hasGpu ? BAND2.w * 0.21 : BAND2.w * 0.30;
+    var coreRect = { x: coreX, y: BAND2.y, w: coreW, h: BAND2.h };
+    var hnpuW = BAND2.w * 0.14;
+    var hnpuRect = { x: coreRect.x + coreRect.w + GAP, y: BAND2.y, w: hnpuW, h: BAND2.h };
+    var kanvasX = hnpuRect.x + hnpuRect.w + GAP;
+    var kanvasRect = { x: kanvasX, y: BAND2.y, w: BAND2.x + BAND2.w - kanvasX, h: BAND2.h };
+
+    // Band 3: Klangkerne/SoRT stack, ZAM, then the ancillary I/O cluster.
+    var b3StackW = BAND3.w * 0.24, b3ZamW = BAND3.w * 0.24;
+    var stackRect = { x: BAND3.x, y: BAND3.y, w: b3StackW, h: BAND3.h };
+    var zamRect = { x: BAND3.x + b3StackW + GAP, y: BAND3.y, w: b3ZamW, h: BAND3.h };
+    var ancillaryX = zamRect.x + zamRect.w + GAP;
+    var ancillaryRect = { x: ancillaryX, y: BAND3.y, w: BAND3.x + BAND3.w - ancillaryX, h: BAND3.h };
+
     var placed = [];
-    Object.keys(REGIONS).forEach(function (zoneKey) {
+
+    function placeZone(zoneKey, rect, cols) {
       var items = byZone[zoneKey];
-      if (!items || !items.length) return;
-      var region = REGIONS[zoneKey];
-
-      if (zoneKey === "core") {
-        var it = items[0];
-        placed.push({ id: it.id, meta: it.meta, index: 0, count: 1, x: region.x, y: region.y, w: region.w, h: region.h });
-        return;
-      }
-
-      var iw = region.itemW, ih = region.itemH, gap = region.gap;
-      var cols = Math.max(1, Math.min(items.length, Math.floor((region.w + gap) / (iw + gap))));
-      var rows = Math.ceil(items.length / cols);
-      var gridW = cols * iw + (cols - 1) * gap;
-      var gridH = rows * ih + (rows - 1) * gap;
-      var startX = region.x + Math.max(0, (region.w - gridW) / 2);
-      var startY = region.y + Math.max(0, (region.h - gridH) / 2);
-
+      if (!items || !items.length || !rect) return;
+      var slots = fillGrid(rect, items.length, cols || items.length);
       items.forEach(function (it, i) {
-        var col = i % cols, row = Math.floor(i / cols);
-        placed.push({
-          id: it.id, meta: it.meta, index: it.index, count: it.count,
-          x: startX + col * (iw + gap), y: startY + row * (ih + gap), w: iw, h: ih
-        });
+        placed.push({ id: it.id, meta: it.meta, index: it.index, count: it.count, x: slots[i].x, y: slots[i].y, w: slots[i].w, h: slots[i].h });
       });
-    });
+    }
+
+    placeZone("band1-left", band1Left, 3);
+    placeZone("band1-right", band1Right, 2);
+    placeZone("band2-left", gpuRect, 2);
+    placeZone("core", coreRect, 1);
+    placeZone("band2-right", hnpuRect, 1);
+    placeZone("band2-far-right", kanvasRect, 1);
+    placeZone("band3-b", stackRect, 1);
+    placeZone("band3-a", zamRect, 1);
+    placeZone("band3-c", ancillaryRect, 4);
 
     return { placed: placed, height: VIEW_H };
   }
