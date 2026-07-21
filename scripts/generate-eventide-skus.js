@@ -460,19 +460,83 @@ function sectionPackage(m) {
   return rows(rowsArr);
 }
 
+function affinityChart(m) {
+  const t = m.tdp;
+  const tiers = [
+    { label: "Supersaver", v: t.floor, ctx: "Battery" },
+    { label: "Efficiency", v: t.efficiency, ctx: "Battery" },
+    { label: "Balanced", v: t.balanced, ctx: "Adapter" },
+    { label: "Performance", v: t.performance, ctx: "Adapter" },
+    { label: "Unleashed", v: t.unleashed, ctx: "Docked" }
+  ];
+  const W = 860, rowH = 34, padL = 300, padR = 90, chartW = W - padL - padR;
+  const logMin = Math.log10(0.35), logMax = Math.log10(2500);
+  const xOf = (v) => padL + ((Math.log10(Math.max(v, 0.35)) - logMin) / (logMax - logMin)) * chartW;
+  const H = rowH * tiers.length + 30;
+  const gridVals = [1, 10, 100, 1000, 2000];
+  const gridLines = gridVals.map((gv) => {
+    const x = xOf(gv);
+    return `<line x1="${round1(x)}" y1="10" x2="${round1(x)}" y2="${H - 20}" stroke="rgba(255,255,255,0.08)" stroke-width="1"/><text x="${round1(x)}" y="${H - 6}" font-family="monospace" font-size="9" fill="rgba(255,255,255,0.35)" text-anchor="middle">${gv}W</text>`;
+  }).join("");
+  const bars = tiers.map((tier, i) => {
+    const y = 16 + i * rowH;
+    const active = tier.v != null;
+    const x0 = xOf(0.35);
+    const x1 = active ? xOf(tier.v) : x0;
+    const color = i === 4 ? "#9333EA" : "#F0B848";
+    return `
+      <text x="${padL - 14}" y="${y + 14}" font-family="sans-serif" font-size="12" font-weight="600" fill="${active ? "#fff" : "rgba(255,255,255,0.35)"}" text-anchor="end">${tier.label}</text>
+      <text x="${padL - 14}" y="${y + 26}" font-family="monospace" font-size="8.5" fill="rgba(255,255,255,0.4)" text-anchor="end" letter-spacing="0.06em">${tier.ctx.toUpperCase()}</text>
+      ${active ? `<rect x="${round1(x0)}" y="${y + 2}" width="${round1(Math.max(2, x1 - x0))}" height="16" rx="4" fill="${color}" fill-opacity="0.85"/>
+      <text x="${round1(x1 + 8)}" y="${y + 15}" font-family="monospace" font-size="11.5" font-weight="700" fill="${color}">${tier.v}W</text>`
+      : `<rect x="${round1(x0)}" y="${y + 2}" width="6" height="16" rx="3" fill="rgba(255,255,255,0.12)"/><text x="${round1(x0 + 14)}" y="${y + 15}" font-family="monospace" font-size="10.5" fill="rgba(255,255,255,0.35)">locked</text>`}
+    `;
+  }).join("");
+  return `<div class="ev-affinity-chart-wrap"><svg class="ev-affinity-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="AFFINITY power envelope by profile, logarithmic watt scale">${gridLines}${bars}</svg></div>`;
+}
+
+function affinityMatrix(m) {
+  const cols = ["Supersaver", "Efficiency", "Balanced", "Performance", "Unleashed"];
+  function cell(states) {
+    return states.map((s) => `<td class="ev-affstate ev-affstate-${s[0]}"><span class="ev-affdot"></span>${s[1]}</td>`).join("");
+  }
+  const rows = [
+    ["LP Island (UHE/LPE + Druid + BionzXR + LPNPU)", cell([["active", "Active"], ["active", "Active"], ["active", "Active"], ["active", "Active"], ["active", "Active"]])],
+    ["Compute Tile" + (m.computeTiles > 1 ? "s ×" + m.computeTiles : ""), m.computeTiles
+      ? cell([["off", "Parked"], ["off", "Parked"], ["active", "Active"], ["boost", "Turbo"], ["boost", "Max"]])
+      : cell([["na", "—"], ["na", "—"], ["na", "—"], ["na", "—"], ["na", "—"]])],
+    ["Elementalist GPU" + (m.gpuTiles > 1 ? " ×" + m.gpuTiles : ""), m.gpuTiles
+      ? cell([["off", "Parked"], ["off", "Parked"], ["idle", "Idle"], ["active", "Active"], ["boost", "Max"]])
+      : cell([["na", "—"], ["na", "—"], ["na", "—"], ["na", "—"], ["na", "—"]])],
+    ["HNPU", cell([["off", "Parked"], ["idle", "Idle"], ["active", "Active"], ["active", "Active"], ["boost", "Max"]])],
+    ["V8 HyperBOOST", m.computeTiles && m.unlocked
+      ? cell([["off", "Off"], ["off", "Off"], ["off", "Off"], ["off", "Off"], ["boost", "10 GHz"]])
+      : cell([["na", "—"], ["na", "—"], ["na", "—"], ["na", "—"], ["na", "—"]])]
+  ];
+  const head = `<tr><th>Tile / Domain</th>${cols.map((c) => `<th>${c}</th>`).join("")}</tr>`;
+  const body = rows.map((r) => `<tr><td class="ev-affrow-label">${r[0]}</td>${r[1]}</tr>`).join("");
+  return `<table class="ev-affinity-matrix"><thead>${head}</thead><tbody>${body}</tbody></table>`;
+}
+
 function affinityTable(m) {
   const t = m.tdp;
+  const batteryWh = 70;
+  const supersaverHrs = round1(batteryWh / t.floor);
+  const efficiencyHrs = round1(batteryWh / t.efficiency);
   const trs = [
-    ["Supersaver", t.floor + "W", "LP Island only — UHE/LPE cores idle-parked, screen dimmed, all Compute/GPU tiles powered off. The assured minimum running power on battery."],
-    ["Efficiency", t.efficiency + "W", "LP Island active for everyday light use — Compute Tiles and GPU tiles stay parked unless woken by Thread Director."],
-    ["Balanced", t.balanced + "W", "Sustained cTDP with Compute Tiles and iGPU active under typical mixed load."],
-    ["Performance", t.performance + "W", "Sustained Max Turbo across all active tiles — Compute, GPU and HNPU boosted, thermally gated by Thread Director."],
-    ["Unleashed", t.unleashed ? t.unleashed + "W" : "Not available", t.unlocked
+    ["Supersaver", t.floor + "W", "Battery", "LP Island only — UHE/LPE cores idle-parked, screen dimmed, Compute/GPU tiles fully power-gated. The assured minimum running power on battery.", `~${supersaverHrs}h on a 70Wh battery`, "Fanless"],
+    ["Efficiency", t.efficiency + "W", "Battery", "LP Island active for everyday light use — Compute Tiles and GPU tiles stay parked unless woken by Thread Director.", `~${efficiencyHrs}h on a 70Wh battery`, "Fanless / passive"],
+    ["Balanced", t.balanced + "W", "Adapter", "Sustained cTDP with Compute Tiles and iGPU active under typical mixed load.", "Plugged in — not battery-optimized", m.suffix.form === "Desktop" ? "Stock air cooler" : "Standard laptop fan"],
+    ["Performance", t.performance + "W", "Adapter", "Sustained Max Turbo across all active tiles — Compute, GPU and HNPU boosted, thermally gated by Thread Director.", "Plugged in — sustained ceiling", m.suffix.form === "Desktop" ? "Tower air / AIO liquid" : "Active laptop cooling, fans audible"],
+    ["Unleashed", t.unleashed ? t.unleashed + "W" : "Not available", "Docked", t.unlocked
       ? "Dock-fed ceiling with liquid-assisted cooling. Scales with Compute Tile and Elementalist GPU tile count — requires a compatible power-delivery dock."
-      : "Locked multiplier — this SKU does not expose an Unleashed AFFINITY™ tier. Performance is the sustained ceiling."]
-  ].map((r) => `<tr><td>${r[0]}</td><td class="num">${r[1]}</td><td>${r[2]}</td></tr>`).join("");
-  return `<table class="ev-tdp-table"><thead><tr><th>AFFINITY™ Profile</th><th>Package Power</th><th>Behavior</th></tr></thead><tbody>${trs}</tbody></table>
-<div class="ev-tdp-note">Package power is derived from tile composition (Compute Tiles, Elementalist GPU tiles, HNPU throughput) under Intel's AFFINITY™ power-profile model. Supersaver's ${m.tdp.floor}W floor is the assured minimum running power while on battery with the display active; it is not a full system-off state. Unleashed requires a compatible cooling + power-delivery dock and is only exposed on unlocked SKUs.</div>`;
+      : "Locked multiplier — this SKU does not expose an Unleashed AFFINITY™ tier. Performance is the sustained ceiling.", t.unlocked ? "Dock power delivery only" : "Not applicable", t.unlocked ? "Liquid-assisted power-delivery dock required" : "—"]
+  ].map((r) => `<tr><td>${r[0]}</td><td class="num">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td></tr>`).join("");
+  return `${affinityChart(m)}
+<table class="ev-tdp-table"><thead><tr><th>AFFINITY™ Profile</th><th>Package Power</th><th>Context</th><th>Behavior</th><th>Runtime / Duty</th><th>Cooling Requirement</th></tr></thead><tbody>${trs}</tbody></table>
+<div class="ev-tdp-note">Package power is derived from tile composition (Compute Tiles, Elementalist GPU tiles, HNPU throughput) under Intel's AFFINITY™ power-profile model. Supersaver's ${m.tdp.floor}W floor is the assured minimum running power while on battery with the display active; it is not a full system-off state. Unleashed requires a compatible cooling + power-delivery dock and is only exposed on unlocked SKUs. Battery-life figures assume a representative 70Wh pack and do not model display or radio power.</div>
+<div class="ev-affinity-matrix-title">Tile Power State by AFFINITY™ Profile</div>
+${affinityMatrix(m)}`;
 }
 
 /* ---------------------------------------------------------------- Layout */

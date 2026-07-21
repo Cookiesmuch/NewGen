@@ -124,35 +124,85 @@
       if (legend) legend.appendChild(li);
     }
 
-    function makeTileGroup(id, meta, x, y, w, h, labelText) {
+    function makeTileGroup(id, meta, x, y, w, h, labelText, subLabel) {
       var g = el("g", { class: "ev-tile-group", "data-tile": id, tabindex: "0" });
       var body = el("g", { class: "ev-tile-rect" });
       var rect = el("rect", {
-        x: x, y: y, width: w, height: h, rx: 8,
-        fill: meta.color, "fill-opacity": "0.16", stroke: meta.color, "stroke-width": "1.3"
+        class: "ev-tile-fill",
+        x: x, y: y, width: w, height: h, rx: 7,
+        fill: meta.color, "fill-opacity": "0.20", stroke: meta.color, "stroke-width": "1.3"
       });
       body.appendChild(rect);
-      var label = el("text", { class: "ev-tile-label", x: x + w / 2, y: y + h / 2 + 3 });
+      var accentH = Math.min(5, h * 0.09);
+      var accent = el("rect", {
+        class: "ev-tile-accent", x: x + 1.3, y: y + 1.3, width: w - 2.6, height: accentH,
+        rx: 3, fill: meta.color, "fill-opacity": "0.85"
+      });
+      body.appendChild(accent);
+      var midY = y + h / 2 + accentH / 2;
+      var label = el("text", { class: "ev-tile-label", x: x + w / 2, y: subLabel ? midY - 2 : midY + 3 });
       label.textContent = labelText;
       body.appendChild(label);
+      if (subLabel) {
+        var sub = el("text", { class: "ev-tile-sublabel", x: x + w / 2, y: midY + 12 });
+        sub.textContent = subLabel;
+        body.appendChild(sub);
+      }
       g.appendChild(body);
       g._center = { x: x + w / 2, y: y };
+      g._anchor = { x: x + w / 2, y: y + h / 2 };
       g._tileId = id;
       g._meta = meta;
       return g;
     }
 
+    /* Package substrate + BGA ball ring, drawn first so every tile sits on top of it. */
+    var pad = 14;
+    var substrate = el("rect", {
+      class: "ev-package-substrate", x: pad, y: pad, width: 1180 - pad * 2, height: layout.height - pad * 2, rx: 26
+    });
+    svg.appendChild(substrate);
+    var ballLayer = el("g", { class: "ev-package-balls" });
+    var ballGap = 26;
+    for (var bx = pad + 10; bx < 1180 - pad; bx += ballGap) {
+      ballLayer.appendChild(el("circle", { class: "ev-package-ball", cx: bx, cy: pad + 4, r: 1.6 }));
+      ballLayer.appendChild(el("circle", { class: "ev-package-ball", cx: bx, cy: layout.height - pad - 4, r: 1.6 }));
+    }
+    for (var by = pad + 10; by < layout.height - pad; by += ballGap) {
+      ballLayer.appendChild(el("circle", { class: "ev-package-ball", cx: pad + 4, cy: by, r: 1.6 }));
+      ballLayer.appendChild(el("circle", { class: "ev-package-ball", cx: 1180 - pad - 4, cy: by, r: 1.6 }));
+    }
+    svg.appendChild(ballLayer);
+
+    /* Fabric bus traces — a static right-angle trace from every tile straight into
+       Kache Kore, visualizing the FOveros 2.0 interconnect hub every tile shares. */
+    var corePlaced = layout.placed.filter(function (p) { return p.id === "kachekore"; })[0];
+    var coreAnchor = corePlaced ? { x: corePlaced.x + corePlaced.w / 2, y: corePlaced.y + corePlaced.h / 2 } : { x: 570, y: 460 };
+    var fabricLayer = el("g", { class: "ev-fabric" });
+    layout.placed.forEach(function (p) {
+      if (p.id === "kachekore") return;
+      var ax = p.x + p.w / 2, ay = p.y + p.h / 2;
+      var midX = coreAnchor.x + (ax - coreAnchor.x) * 0.5;
+      var d = "M " + ax + " " + ay + " L " + midX + " " + ay + " L " + midX + " " + coreAnchor.y + " L " + coreAnchor.x + " " + coreAnchor.y;
+      fabricLayer.appendChild(el("path", { class: "ev-fabric-trace", "data-fabric-for": p.id, d: d }));
+    });
+    svg.appendChild(fabricLayer);
+    if (corePlaced) {
+      svg.appendChild(el("circle", { class: "ev-fabric-hub", cx: coreAnchor.x, cy: coreAnchor.y, r: Math.min(corePlaced.w, corePlaced.h) / 2 + 14 }));
+    }
+
     var groups = [];
     layout.placed.forEach(function (p) {
       var labelText = p.count > 1 ? p.meta.name.replace(" Tile", "") + " " + (p.index + 1) : p.meta.name.replace(" Tile", "");
-      var g = makeTileGroup(p.id, p.meta, p.x, p.y, p.w, p.h, labelText);
+      var subLabel = p.h >= 60 ? (p.meta.node.match(/Intel [\w.-]+/) || [p.meta.category])[0].replace("Intel ", "") : null;
+      var g = makeTileGroup(p.id, p.meta, p.x, p.y, p.w, p.h, labelText, subLabel);
       addLegend(p.id, p.meta, p.count);
 
       if (p.meta.stacked && p.meta.stackTileId) {
         var stackMeta = window.EventideTiles.CATALOG[p.meta.stackTileId];
         if (stackMeta) {
           var sx = p.x + p.w - p.w * 0.42, sy = p.y - p.h * 0.06, sw = p.w * 0.44, sh = p.h * 0.5;
-          var sg = makeTileGroup(p.meta.stackTileId, stackMeta, sx, sy, sw, sh, stackMeta.name);
+          var sg = makeTileGroup(p.meta.stackTileId, stackMeta, sx, sy, sw, sh, stackMeta.name, null);
           sg.classList.add("ev-stack-top");
           sg.querySelector(".ev-tile-label").setAttribute("fill", "#0B0714");
           addLegend(p.meta.stackTileId, stackMeta, 1);
@@ -232,10 +282,14 @@
         if (focusedId) return;
         g.classList.add("ev-hover");
         showCallout(g);
+        var trace = fabricLayer.querySelector('[data-fabric-for="' + g._tileId + '"]');
+        if (trace) trace.classList.add("ev-fabric-lit");
       });
       g.addEventListener("mouseleave", function () {
         g.classList.remove("ev-hover");
         if (!focusedId) hideCallout();
+        var trace = fabricLayer.querySelector('[data-fabric-for="' + g._tileId + '"]');
+        if (trace) trace.classList.remove("ev-fabric-lit");
       });
       g.addEventListener("click", function () {
         if (focusedId === g._tileId) { clearFocus(); return; }

@@ -88,18 +88,32 @@
 .ev-diemap-svg-wrap { width: 100%; overflow: visible; }
 .ev-diemap-svg { width: 100%; height: auto; display: block; overflow: visible; }
 
+/* Package substrate — the flat rounded card every tile sits on, with a
+   BGA-style ball ring around the edge, matching the "chip on a package"
+   look of Intel's own die/package diagrams. */
+.ev-package-substrate { fill: rgba(255,255,255,0.018); stroke: rgba(255,255,255,0.10); stroke-width: 1.5; }
+.ev-package-ball { fill: rgba(255,255,255,0.14); }
+
+/* Fabric — the FOveros interconnect traces from every tile into Kache Kore,
+   drawn as static right-angled bus traces beneath the tiles. */
+.ev-fabric-trace { fill: none; stroke: var(--ev-gold); stroke-width: 1; opacity: .16; stroke-linecap: round; }
+.ev-fabric-trace.ev-fabric-lit { opacity: .55; stroke-width: 1.4; }
+.ev-fabric-hub { fill: none; stroke: var(--ev-gold); stroke-width: 1; opacity: .22; }
+
 .ev-tile-rect {
   cursor: pointer;
   transition: transform .28s cubic-bezier(.2,.8,.3,1.15), filter .28s ease, opacity .3s ease;
   transform-box: fill-box; transform-origin: center;
 }
-.ev-tile-rect rect { transition: fill-opacity .2s ease, stroke-width .2s ease; }
+.ev-tile-rect rect.ev-tile-fill { transition: fill-opacity .2s ease, stroke-width .2s ease; }
+.ev-tile-rect rect.ev-tile-accent { transition: height .2s ease; }
 .ev-tile-group:hover .ev-tile-rect,
 .ev-tile-group.ev-hover .ev-tile-rect { transform: translateY(-9px) scale(1.045); filter: drop-shadow(0 14px 18px rgba(0,0,0,0.55)); }
-.ev-tile-group.ev-hover .ev-tile-rect rect { stroke-width: 2; }
-.ev-tile-group.ev-dim .ev-tile-rect { opacity: .28; filter: saturate(.4); }
+.ev-tile-group.ev-hover .ev-tile-rect rect.ev-tile-fill { stroke-width: 2; fill-opacity: .3; }
+.ev-tile-group.ev-dim .ev-tile-rect { opacity: .22; filter: saturate(.35); }
 .ev-tile-group.ev-focused .ev-tile-rect { transform: translateY(-18px) scale(1.16); filter: drop-shadow(0 24px 26px rgba(0,0,0,0.65)); }
-.ev-tile-label { font-family: var(--font-mono, monospace); font-size: 8.4px; fill: rgba(255,255,255,0.72); pointer-events: none; text-anchor: middle; }
+.ev-tile-label { font-family: var(--font-display, sans-serif); font-size: 10.5px; font-weight: 600; fill: rgba(255,255,255,0.92); pointer-events: none; text-anchor: middle; letter-spacing: .01em; }
+.ev-tile-sublabel { font-family: var(--font-mono, monospace); font-size: 7px; letter-spacing: .06em; text-transform: uppercase; fill: rgba(255,255,255,0.42); pointer-events: none; text-anchor: middle; }
 
 /* stacked SoRT die — independently interactive, but lifts further/diagonally
    since it is physically bonded on top of Klangkerne rather than flat on
@@ -198,10 +212,30 @@
 .ev-help-btn.open .ev-help-pop { display: block; }
 
 .ev-tdp-table { width: 100%; border-collapse: collapse; }
-.ev-tdp-table th, .ev-tdp-table td { padding: 9px 14px; font-size: 11.5px; text-align: left; border-bottom: 1px solid var(--ev-border); }
-.ev-tdp-table th { font-family: var(--font-mono, monospace); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ev-text-faint); }
-.ev-tdp-table td.num { font-family: var(--font-mono, monospace); color: var(--ev-gold); font-weight: 600; }
+.ev-tdp-table th, .ev-tdp-table td { padding: 9px 12px; font-size: 11px; text-align: left; border-bottom: 1px solid var(--ev-border); line-height: 1.5; }
+.ev-tdp-table th { font-family: var(--font-mono, monospace); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; color: var(--ev-text-faint); }
+.ev-tdp-table td.num { font-family: var(--font-mono, monospace); color: var(--ev-gold); font-weight: 600; white-space: nowrap; }
 .ev-tdp-note { padding: 10px 20px; font-size: 10.5px; color: var(--ev-text-faint); line-height: 1.6; }
+
+.ev-affinity-chart-wrap { padding: 18px 20px 6px; }
+.ev-affinity-chart { width: 100%; height: auto; display: block; }
+
+.ev-affinity-matrix-title { padding: 18px 20px 6px; font-family: var(--font-mono, monospace); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--ev-text-faint); }
+.ev-affinity-matrix { width: calc(100% - 40px); margin: 0 20px 20px; border-collapse: collapse; }
+.ev-affinity-matrix th, .ev-affinity-matrix td { padding: 8px 10px; font-size: 10.5px; text-align: center; border-bottom: 1px solid var(--ev-border); }
+.ev-affinity-matrix th { font-family: var(--font-mono, monospace); font-size: 8.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--ev-text-faint); }
+.ev-affrow-label { text-align: left !important; color: var(--ev-text-dim); font-size: 11px; }
+.ev-affdot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+.ev-affstate-na { color: rgba(255,255,255,0.25); }
+.ev-affstate-na .ev-affdot { background: rgba(255,255,255,0.15); }
+.ev-affstate-off { color: rgba(255,255,255,0.4); }
+.ev-affstate-off .ev-affdot { background: rgba(255,255,255,0.3); }
+.ev-affstate-idle { color: #7DD3FC; }
+.ev-affstate-idle .ev-affdot { background: #7DD3FC; }
+.ev-affstate-active { color: var(--ev-gold); }
+.ev-affstate-active .ev-affdot { background: var(--ev-gold); }
+.ev-affstate-boost { color: #E85D9E; font-weight: 700; }
+.ev-affstate-boost .ev-affdot { background: #E85D9E; box-shadow: 0 0 6px #E85D9E; }
 
 .ev-footer { max-width: 1240px; margin: 20px auto 0; padding: 0 40px; color: var(--ev-text-faint); font-size: 10.5px; line-height: 1.7; }
 
