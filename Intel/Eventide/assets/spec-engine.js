@@ -17,68 +17,95 @@
 
   /* ------------------------------------------------------------------
    * Real fixed-size floorplan. Every tile renders at its EXACT declared
-   * box from tile-sizes.js — no stretching, ever. (The previous version
-   * used a proportional treemap that only consumed a tile's true area as
-   * a splitting *weight*; the actual rendered rectangle came from
-   * dividing up the parent's allocated space, which meant a fixed-size
-   * tile like PSM or Thread Director rendered at a different literal
-   * size on every SKU depending on what shared its row/column. That's
-   * gone — this is real shelf-packing against exact boxes instead.)
+   * box from tile-sizes.js — no stretching, ever — and the tiles are
+   * packed as tightly as possible around a centre-pinned Kache Kore by a
+   * MaxRects bin-packer (see below), then mounted on a continuous base
+   * die / interposer that spans the whole package. Wherever no tile sits,
+   * the textured base die shows through: that's real structural silicon,
+   * exactly as on a Foveros package, not dead space — which is how the
+   * die stays a clean rectangle with true tile sizes and no stretching.
    *
-   * Two composition primitives:
-   *   shelf(...cells) — lays cells left-to-right at their exact widths;
-   *     shelf height = the tallest cell, shorter ones top-align (real
-   *     gap below them, not stretched to fill).
-   *   stack(...cells) — lays cells top-to-bottom at their exact heights;
-   *     stack width = the widest cell, narrower ones left-align.
-   * Both collapse to their single child when only one is non-null, so
-   * absent tiles (SKUs that don't carry a given tile) disappear cleanly
-   * without leaving a gap where they'd have been.
-   *
-   * Grouping mirrors the previous arrangement (GPU block on the left;
-   * Kache-Kore/media column, cores/AI column, Compute/IO column to its
-   * right) but every column's width/height is now just the true sum of
-   * its real content — a sparse SKU produces a smaller die, not a
-   * stretched one. Columns of different heights leave real (visible)
-   * empty substrate at the bottom of the shorter ones, which is honestly
-   * more realistic than forcing a perfect rectangle — real die shots
-   * have plenty of visible scribe-line/interconnect area between blocks.
-   *
-   * ZAM/LPDDR6X renders as a row of real fixed-size modules below the
-   * NoC, at its own true width (module count × the fixed module box) —
-   * not stretched to match the NoC's width either. The package's outer
-   * bounding box just grows to fit whichever of the two is wider.
+   * ZAM/LPDDR6X renders as a band of fixed-size modules below the tile
+   * cluster; the package bounding box grows to fit whichever of the two
+   * (cluster vs. memory band) is wider.
    * ------------------------------------------------------------------ */
   var GAP = 6;   // real gap between adjacent tiles (substrate reveal)
   var M = 20;    // outer margin to the package substrate edge
 
-  function shelf() {
-    var cells = [].slice.call(arguments).filter(Boolean);
-    if (!cells.length) return null;
-    if (cells.length === 1) return cells[0];
-    var w = 0, h = 0;
-    cells.forEach(function (c, i) { w += c.w + (i > 0 ? GAP : 0); h = Math.max(h, c.h); });
-    return {
-      w: w, h: h,
-      place: function (x, y) {
-        var off = x;
-        cells.forEach(function (c) { c.place(off, y); off += c.w + GAP; });
+  /* MaxRects bin-packer (Best-Short-Side-Fit). Packs a set of {w,h} units into
+     a bin as tightly as the free-rectangle heuristic allows, optionally around
+     an already-placed unit (Kache Kore, pinned to the bin centre). Units are
+     inflated by GAP during packing so a real substrate channel is left between
+     neighbours; the returned coords use the true (un-inflated) size. Returns a
+     placement list or null if something didn't fit (caller then grows the bin).
+     ~20 units, runs once per render — cost is irrelevant. */
+  function packMaxRects(units, pinned, binW, binH, pinX, pinY) {
+    var free = [{ x: 0, y: 0, w: binW, h: binH }];
+    var out = [];
+    function contains(a, b) {
+      return a.x <= b.x + 0.01 && a.y <= b.y + 0.01 &&
+             a.x + a.w >= b.x + b.w - 0.01 && a.y + a.h >= b.y + b.h - 0.01;
+    }
+    function carve(u) { // u = {x,y,w,h} inflated footprint just consumed
+      var next = [];
+      for (var i = 0; i < free.length; i++) {
+        var f = free[i];
+        if (u.x >= f.x + f.w || u.x + u.w <= f.x || u.y >= f.y + f.h || u.y + u.h <= f.y) { next.push(f); continue; }
+        if (u.x > f.x) next.push({ x: f.x, y: f.y, w: u.x - f.x, h: f.h });
+        if (u.x + u.w < f.x + f.w) next.push({ x: u.x + u.w, y: f.y, w: (f.x + f.w) - (u.x + u.w), h: f.h });
+        if (u.y > f.y) next.push({ x: f.x, y: f.y, w: f.w, h: u.y - f.y });
+        if (u.y + u.h < f.y + f.h) next.push({ x: f.x, y: u.y + u.h, w: f.w, h: (f.y + f.h) - (u.y + u.h) });
       }
-    };
+      var pruned = [];
+      for (var i = 0; i < next.length; i++) {
+        var c = false;
+        for (var j = 0; j < next.length; j++) { if (i !== j && contains(next[j], next[i])) { c = true; break; } }
+        if (!c) pruned.push(next[i]);
+      }
+      free = pruned;
+    }
+
+    if (pinned) {
+      var kw = pinned.w + GAP, kh = pinned.h + GAP;
+      var wantX = (pinX != null) ? pinX : (binW / 2 - kw / 2);
+      var wantY = (pinY != null) ? pinY : (binH / 2 - kh / 2);
+      var kx = Math.max(0, Math.min(wantX, binW - kw));
+      var ky = Math.max(0, Math.min(wantY, binH - kh));
+      out.push({ unit: pinned, x: kx, y: ky });
+      carve({ x: kx, y: ky, w: kw, h: kh });
+    }
+    // largest-first — big blocks (GPU, Compute) anchor corners, smalls fill in
+    var sorted = units.slice().sort(function (a, b) {
+      return (b.w + GAP) * (b.h + GAP) - (a.w + GAP) * (a.h + GAP);
+    });
+    for (var s = 0; s < sorted.length; s++) {
+      var it = sorted[s], iw = it.w + GAP, ih = it.h + GAP;
+      var best = -1, bScore = Infinity, bLong = Infinity, bx = 0, by = 0;
+      for (var i = 0; i < free.length; i++) {
+        var f = free[i];
+        if (iw <= f.w + 0.01 && ih <= f.h + 0.01) {
+          var leftH = f.w - iw, leftV = f.h - ih;
+          var shortS = Math.min(leftH, leftV), longS = Math.max(leftH, leftV);
+          if (shortS < bScore - 0.01 || (Math.abs(shortS - bScore) <= 0.01 && longS < bLong)) {
+            bScore = shortS; bLong = longS; best = i; bx = f.x; by = f.y;
+          }
+        }
+      }
+      if (best < 0) return null;
+      out.push({ unit: it, x: bx, y: by });
+      carve({ x: bx, y: by, w: iw, h: ih });
+    }
+    return out;
   }
-  function stack() {
-    var cells = [].slice.call(arguments).filter(Boolean);
-    if (!cells.length) return null;
-    if (cells.length === 1) return cells[0];
-    var w = 0, h = 0;
-    cells.forEach(function (c, i) { w = Math.max(w, c.w); h += c.h + (i > 0 ? GAP : 0); });
-    return {
-      w: w, h: h,
-      place: function (x, y) {
-        var off = y;
-        cells.forEach(function (c) { c.place(x, off); off += c.h + GAP; });
-      }
-    };
+
+  // visible extent of a packed result (un-inflated tile sizes)
+  function clusterBounds(res) {
+    var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    res.forEach(function (p) {
+      minX = Math.min(minX, p.x); minY = Math.min(minY, p.y);
+      maxX = Math.max(maxX, p.x + p.unit.w); maxY = Math.max(maxY, p.y + p.unit.h);
+    });
+    return { minX: minX, minY: minY, w: maxX - minX, h: maxY - minY };
   }
 
   function buildLayout(tiles) {
@@ -96,13 +123,13 @@
       if (!e) return null;
       var sz = S.sizeOf(id, e);
       return {
-        w: sz.w, h: sz.h,
+        id: id, w: sz.w, h: sz.h,
         place: function (x, y) {
           placed.push({ id: id, meta: e.meta, model: e.t.model, index: 0, count: 1, x: x, y: y, w: sz.w, h: sz.h });
         }
       };
     }
-    // multi-instance tile (gpu / compute / killers1) as a 2-column grid of exact-size leaves
+    // multi-instance tile (gpu / compute / killers1) as a compact grid block
     function gridCell(id) {
       var e = byId[id];
       if (!e) return null;
@@ -113,7 +140,7 @@
       var w = cols * sz.w + (cols - 1) * GAP;
       var h = rows * sz.h + (rows - 1) * GAP;
       return {
-        w: w, h: h,
+        id: id, w: w, h: h,
         place: function (x, y) {
           for (var i = 0; i < n; i++) {
             var c = i % cols, r = Math.floor(i / cols);
@@ -126,46 +153,84 @@
       };
     }
 
-    // ---- GPU block: 2x2 (or 1x1) grid of E1080s, the big block on the left ----
-    var gpuCell = gridCell("gpu");
+    /* ---- Collect every functional tile as a packing unit. GPU / Compute /
+       dual Killer S1 stay welded into their own grid blocks so related tiles
+       read as one cluster; everything else is an individual unit. Kache Kore
+       is pulled out and pinned to the die centre — it's the FOveros 2.0 fabric
+       hub every other tile traces into, so it belongs dead-centre. ---- */
+    var ids = ["gpu", "compute", "killers1", "druid", "lpisland", "hnpu", "bionzxr",
+               "kanvas2d", "klangkerne", "mfx", "io", "psm", "ipu", "gna",
+               "display", "threaddirector"];
+    var units = [];
+    ids.forEach(function (id) {
+      var u = (id === "gpu" || id === "compute" || id === "killers1") ? gridCell(id) : leafCell(id);
+      if (u) units.push(u);
+    });
+    var kache = leafCell("kachekore");
 
-    // ---- Right block: Kache-Kore column | cores/AI column | Compute column ----
-    var col1 = stack(
-      shelf(leafCell("druid"), leafCell("kanvas2d")),  // media strip, above the cache
-      leafCell("kachekore"),                           // centrepiece, centre of the column
-      shelf(leafCell("klangkerne"), leafCell("mfx"))   // below the cache
-    );
-    var col2 = stack(
-      shelf(leafCell("lpisland"), leafCell("hnpu")),   // cores/AI, upper-middle
-      shelf(leafCell("bionzxr"), leafCell("io")),
-      shelf(leafCell("psm"), gridCell("killers1"))     // killers1 renders 2 tiles on dual-ISP flagship SKUs
-    );
-    var col3 = stack(
-      gridCell("compute"),                             // Compute tiles, top-right
-      shelf(leafCell("ipu"), leafCell("gna")),         // fill beneath compute
-      shelf(leafCell("display"), leafCell("threaddirector"))
-    );
-    var rightTree = shelf(col1, col2, col3);
-    var fullTree = shelf(gpuCell, rightTree);
+    var nocW = 0, nocH = 0;
+    if (units.length || kache) {
+      var packUnits = units;
+      var totalArea = (kache ? (kache.w + GAP) * (kache.h + GAP) : 0);
+      packUnits.forEach(function (u) { totalArea += (u.w + GAP) * (u.h + GAP); });
+      // seed a bin at a chip-like ~1.5 aspect, sized with slack for packing loss
+      var aspect = 1.5, eff = 0.68;
+      var binW = Math.sqrt(totalArea * aspect / eff);
+      var binH = binW / aspect;
+      // never smaller than the largest single unit
+      (kache ? packUnits.concat([kache]) : packUnits).forEach(function (u) {
+        binW = Math.max(binW, u.w + GAP); binH = Math.max(binH, u.h + GAP);
+      });
 
-    var nocW = fullTree ? fullTree.w : 0;
-    var nocH = fullTree ? fullTree.h : 0;
-    if (fullTree) fullTree.place(M, M);
+      var result = null;
+      for (var attempt = 0; attempt < 60 && !result; attempt++) {
+        result = packMaxRects(packUnits, kache, binW, binH, null, null);
+        if (!result) { binW *= 1.05; binH *= 1.05; }
+      }
+      /* First pass pins Kache Kore to the bin centre, but the big GPU/Compute
+         blocks skew the packed cluster off that centre. Iterate: re-pin Kache
+         at the current cluster's true centre and repack, converging it to the
+         middle of the die (it's the fabric hub — it should sit dead-centre). */
+      if (result && kache) {
+        for (var iter = 0; iter < 6; iter++) {
+          var bb = clusterBounds(result);
+          var kp = null;
+          for (var q = 0; q < result.length; q++) if (result[q].unit === kache) kp = result[q];
+          var kcx = kp.x + kache.w / 2, kcy = kp.y + kache.h / 2;
+          var tcx = bb.minX + bb.w / 2, tcy = bb.minY + bb.h / 2;
+          if (Math.abs(kcx - tcx) < 6 && Math.abs(kcy - tcy) < 6) break;
+          var r2 = packMaxRects(packUnits, kache, binW, binH, tcx - (kache.w + GAP) / 2, tcy - (kache.h + GAP) / 2);
+          if (!r2) break;
+          result = r2;
+        }
+      }
+      if (!result) { // pathological fallback: single row, no pinning
+        result = []; var rx = 0;
+        (kache ? [kache].concat(packUnits) : packUnits).forEach(function (u) { result.push({ unit: u, x: rx, y: 0 }); rx += u.w + GAP; });
+      }
 
-    // ---- ZAM/LPDDR6X: real fixed-size modules in a row below the NoC, at
-    // their own true width. The Core ZAM box is calibrated so the flagship's
-    // 8-module row exactly spans the tile grid; lower SKUs' shorter rows
-    // simply cover less of the package, and the base-die fill below takes
-    // the remainder — see tile-sizes.js. ----
+      var bbF = clusterBounds(result);
+      result.forEach(function (p) {
+        var px = p.x - bbF.minX, py = p.y - bbF.minY;
+        nocW = Math.max(nocW, px + p.unit.w);
+        nocH = Math.max(nocH, py + p.unit.h);
+        p.unit.place(M + px, M + py);
+      });
+    }
+
+    // ---- ZAM/LPDDR6X: fixed-size modules in a band below the tile cluster.
+    // The Core ZAM box is calibrated so the flagship's 8-module row spans the
+    // flagship's (now tightly-packed) cluster width; lower SKUs' shorter rows
+    // cover less, with base die taking the remainder — see tile-sizes.js. ----
     var zamEntry = byId.zam;
     var zamBox = S.zamModuleBox(zamEntry && zamEntry.t.model);
     var zamCount = zamEntry ? S.zamModules(zamEntry.t.capacityGB, zamEntry.t.moduleGB) : 0;
     if (zamEntry) {
       var zamY = M + nocH + GAP;
-      for (var s = 0; s < zamCount; s++) {
+      for (var s2 = 0; s2 < zamCount; s2++) {
         placed.push({
-          id: "zam", meta: zamEntry.meta, model: zamEntry.t.model, index: s, count: zamCount,
-          x: M + s * (zamBox.w + GAP), y: zamY, w: zamBox.w, h: zamBox.h
+          id: "zam", meta: zamEntry.meta, model: zamEntry.t.model, index: s2, count: zamCount,
+          x: M + s2 * (zamBox.w + GAP), y: zamY, w: zamBox.w, h: zamBox.h
         });
       }
     }
@@ -174,76 +239,7 @@
     var totalW = Math.max(nocW, zamRowW) + M * 2;
     var totalH = nocH + (zamEntry ? GAP + zamBox.h : 0) + M * 2;
 
-    /* ---- Base-die fill (the Foveros "magic") -------------------------------
-       Real Foveros packages don't tessellate their functional tiles into a
-       seamless rectangle — the tiles sit on a base die / interposer that IS
-       the rectangle, and every square micron the tiles don't cover is passive
-       structural silicon, not empty space. That's how you get all three at
-       once: exact fixed tile sizes (no stretching), a perfect rectangle
-       outline (the base die), and no visible voids (the base die fills the
-       rest). We reproduce it here: after the true-size tiles are placed, we
-       decompose every remaining rectangle inside the package into base-die
-       cells. Grid-cut on every tile edge (so each grid cell is wholly covered
-       or wholly empty), then greedily merge empty cells into maximal
-       rectangles. Sub-GAP slivers between adjacent tiles are left to the
-       substrate (they already read as base die); only meaningful leftover
-       regions become explicit structural-silicon blocks. ---- */
-    var fillers = computeBaseDie(placed, M, M, totalW - M, totalH - M);
-
-    return { placed: placed, fillers: fillers, ghostSlots: [], width: totalW, height: totalH };
-  }
-
-  /* Decompose [x0,y0]-[x1,y1] minus every rect in `placed` into a small set of
-     maximal empty rectangles (base-die fill). O(edges^2) — trivial for ~20
-     tiles, runs once per render. */
-  function computeBaseDie(placed, x0, y0, x1, y1) {
-    var MIN_FILL = 12; // ignore inter-tile slivers this thin — substrate covers them
-    var xsSet = {}, ysSet = {};
-    xsSet[x0] = xsSet[x1] = true; ysSet[y0] = ysSet[y1] = true;
-    placed.forEach(function (p) {
-      if (p.x > x0) xsSet[p.x] = true;
-      if (p.x + p.w < x1) xsSet[p.x + p.w] = true;
-      if (p.y > y0) ysSet[p.y] = true;
-      if (p.y + p.h < y1) ysSet[p.y + p.h] = true;
-    });
-    var xs = Object.keys(xsSet).map(Number).sort(function (a, b) { return a - b; });
-    var ys = Object.keys(ysSet).map(Number).sort(function (a, b) { return a - b; });
-    var nc = xs.length - 1, nr = ys.length - 1;
-    if (nc < 1 || nr < 1) return [];
-
-    function cellEmpty(i, j) {
-      var cx = (xs[i] + xs[i + 1]) / 2, cy = (ys[j] + ys[j + 1]) / 2;
-      for (var k = 0; k < placed.length; k++) {
-        var p = placed[k];
-        if (cx > p.x && cx < p.x + p.w && cy > p.y && cy < p.y + p.h) return false;
-      }
-      return true;
-    }
-    var empty = [], used = [];
-    for (var j = 0; j < nr; j++) {
-      empty[j] = []; used[j] = [];
-      for (var i = 0; i < nc; i++) { empty[j][i] = cellEmpty(i, j); used[j][i] = false; }
-    }
-
-    var out = [];
-    for (var jj = 0; jj < nr; jj++) {
-      for (var ii = 0; ii < nc; ii++) {
-        if (!empty[jj][ii] || used[jj][ii]) continue;
-        // extend right along this row
-        var i2 = ii;
-        while (i2 + 1 < nc && empty[jj][i2 + 1] && !used[jj][i2 + 1]) i2++;
-        // extend down while the whole [ii..i2] span stays empty+unused
-        var j2 = jj, ok = true;
-        while (ok && j2 + 1 < nr) {
-          for (var k = ii; k <= i2; k++) { if (!empty[j2 + 1][k] || used[j2 + 1][k]) { ok = false; break; } }
-          if (ok) j2++;
-        }
-        for (var a = jj; a <= j2; a++) for (var b = ii; b <= i2; b++) used[a][b] = true;
-        var rx = xs[ii], ry = ys[jj], rw = xs[i2 + 1] - xs[ii], rh = ys[j2 + 1] - ys[jj];
-        if (rw >= MIN_FILL && rh >= MIN_FILL) out.push({ x: rx, y: ry, w: rw, h: rh });
-      }
-    }
-    return out;
+    return { placed: placed, ghostSlots: [], width: totalW, height: totalH };
   }
 
   function typeText(node, text, speed) {
@@ -346,25 +342,28 @@
     });
     svg.appendChild(substrate);
 
-    /* Base-die / structural-silicon fill: the passive interposer showing
-       through wherever no functional tile sits. Drawn right on top of the
-       substrate (behind every tile, ball and trace) so the whole package
-       reads as one solid rectangle of silicon with the tiles mounted on it —
-       no empty voids, exact tile sizes preserved. A faint diagonal hatch
-       pattern sells it as real structural silicon rather than dead space. */
-    var hatchId = "ev-basedie-hatch";
+    /* Continuous base die / active interposer. In a real Foveros package the
+       tiles are mounted on ONE base die that spans the whole package; every
+       spot the tiles don't cover is that base die showing through — structural,
+       routed silicon, not dead space. So we draw it as one continuous layer
+       across the package interior (behind every tile, ball and trace) with a
+       micro-bump (TSV) dot field over faint metal-routing lines, so what shows
+       reads as real silicon rather than empty substrate. Tighter tile packing
+       means far less of it is exposed. */
+    var viaId = "ev-basedie-vias";
     var defs = el("defs", {});
-    var pat = el("pattern", { id: hatchId, width: "7", height: "7", patternUnits: "userSpaceOnUse", patternTransform: "rotate(45)" });
-    pat.appendChild(el("rect", { width: "7", height: "7", fill: "rgba(150,140,180,0.05)" }));
-    pat.appendChild(el("line", { x1: "0", y1: "0", x2: "0", y2: "7", stroke: "rgba(255,255,255,0.06)", "stroke-width": "1" }));
+    var pat = el("pattern", { id: viaId, width: "10", height: "10", patternUnits: "userSpaceOnUse" });
+    pat.appendChild(el("rect", { width: "10", height: "10", fill: "rgba(120,132,168,0.10)" }));
+    pat.appendChild(el("path", { d: "M0 5 H10 M5 0 V10", stroke: "rgba(150,165,205,0.06)", "stroke-width": "0.6", fill: "none" }));
+    pat.appendChild(el("circle", { cx: "2.5", cy: "2.5", r: "0.9", fill: "rgba(190,205,240,0.14)" }));
+    pat.appendChild(el("circle", { cx: "7.5", cy: "7.5", r: "0.9", fill: "rgba(190,205,240,0.14)" }));
     defs.appendChild(pat);
     svg.appendChild(defs);
-    (layout.fillers || []).forEach(function (f) {
-      svg.appendChild(el("rect", {
-        class: "ev-basedie", x: f.x, y: f.y, width: f.w, height: f.h, rx: 3,
-        fill: "url(#" + hatchId + ")", stroke: "rgba(255,255,255,0.05)", "stroke-width": "1"
-      }));
-    });
+    svg.appendChild(el("rect", {
+      class: "ev-basedie", x: pad + 3, y: pad + 3,
+      width: layout.width - (pad + 3) * 2, height: layout.height - (pad + 3) * 2,
+      rx: 20, fill: "url(#" + viaId + ")", stroke: "rgba(150,165,205,0.10)", "stroke-width": "1"
+    }));
 
     var ballLayer = el("g", { class: "ev-package-balls" });
     var ballGap = 26;
