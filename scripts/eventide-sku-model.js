@@ -259,7 +259,11 @@ function buildModel(dirName) {
   const unleashedRaw = Math.round(150 + computeTiles * 100 + gpuTiles * 350 + 50);
   const unleashed = unlocked ? Math.min(2000, unleashedRaw) : null;
 
-  const priceUsd = tier.line === "X" ? null : round(89 + tier.n * 34 + computeTiles * 65 + gpuTiles * 40 + (unlocked ? 60 : 0), 0);
+  const priceUsd = round(
+    line === "X"
+      ? 1200 + tier.n * 120 + computeTiles * 900 + gpuTiles * 700 + (unlocked ? 800 : 0)
+      : 89 + tier.n * 34 + computeTiles * 55 + gpuTiles * 260 + hnpuTOPS * 0.4 + (unlocked ? 60 : 0),
+    0);
 
   return {
     code, tierKey, suffixKey, tier, suffix, brand, shortBrand,

@@ -661,7 +661,7 @@ function buildTileSpecs(m) {
   return specs;
 }
 
-function render(dirName, m) {
+function render(dirName, m, summary) {
   const badges = [
     { cls: "gold", text: BRAND_BADGE(m) },
     { cls: "orange", text: `${m.suffixKey} · ${m.suffix.label}` },
@@ -743,6 +743,7 @@ ${sectionsHtml}
   </div>
   <div class="ev-footer">Intel, the Intel logo, Core, Core Ultra, Xeon, Arc, Thunderbolt, Killer, vPro, QuickSync, Thread Director, PowerVia, Foveros, and Turbo Boost are trademarks of Intel Corporation or its subsidiaries. Klangkerne, SoRT, Sonoral and AcoustX are trademarks used under the Eventide co-engineering program.<br>Specifications subject to change. Performance and power numbers represent theoretical maximums under ideal conditions; AFFINITY™ power figures are derived from tile composition.<br>${m.brand} · Eventide Generation · Intel Corporation 2028 · All rights reserved.</div>
   <script type="application/json" id="ev-sku-data">${skuData}<\/script>
+  <script type="application/json" id="ev-sku-summary">${JSON.stringify(summary || {})}<\/script>
   <script src="../../assets/tile-catalog.js"><\/script>
   <script src="../../assets/tile-sizes.js"><\/script>
   <script src="../../assets/spec-engine.js"><\/script>
@@ -758,23 +759,79 @@ function BRAND_BADGE(m) {
   return `${label} 500`;
 }
 
+/* Machine-readable SKU summary — consumed by the Eventide SKU Library on the
+   main page (which fetches SKU/skus.json at runtime rather than hard-coding a
+   stale copy), and embedded per-page so the data traces back to the deep dive
+   it describes. Derived from the same model, so it can never drift from the
+   deep-dive pages. */
+function FAMILY_LABEL(line) {
+  return { C: "Core 500", I: "Core i500", U: "Core Ultra 500", X: "Core Xeon 500" }[line];
+}
+function FAMILY_KEY(line) {
+  return { C: "core", I: "i", U: "u", X: "x" }[line];
+}
+function buildSummary(m) {
+  const rows = [];
+  if (m.uhpTotal) rows.push({ type: "UHP (Solar Eclipse)", count: String(m.uhpTotal), base: m.uhpBase + " GHz", boost: m.uhpTurbo + " GHz" });
+  if (m.dpTotal) rows.push({ type: "DP (Sunset Cove)", count: String(m.dpTotal), base: m.dpBase + " GHz", boost: m.dpTurbo + " GHz" });
+  if (m.speTotal) rows.push({ type: "SPE (Venusmont)", count: String(m.speTotal), base: m.speBase + " GHz", boost: m.speTurbo + " GHz" });
+  if (m.hasLpIsland && m.uheCores) rows.push({ type: "UHE (Lunar Eclipse)", count: String(m.uheCores), base: m.uheBase + " GHz", boost: m.uheTurbo + " GHz" });
+  if (m.hasLpIsland && m.lpeCores) rows.push({ type: "LPE (Darkmont)", count: String(m.lpeCores), base: m.lpeBase + " GHz", boost: m.lpeTurbo + " GHz" });
+
+  let gpu;
+  if (m.gpuTiles) gpu = `Intel® Arc® Elementalist ${m.gpuModel} ×${m.gpuTiles}${m.hasDruid ? ` + Arc® Druid ${m.druidModel}` : ""}`;
+  else if (m.hasDruid) gpu = `Intel® Arc® Druid ${m.druidModel} (Xe4E efficiency iGPU)`;
+  else gpu = "No iGPU (F-suffix — discrete GPU required)";
+
+  let ram;
+  if (m.hasZam && m.hasDdr6) ram = `${gb(m.zamMaxCapacityGB)} on-package ZAM + up to ${gb(m.ddr6MaxGB)} DDR6`;
+  else if (m.hasZam) ram = `Up to ${gb(m.zamMaxCapacityGB)} on-package ZAM (no DDR6)`;
+  else ram = `Up to ${gb(m.ddr6MaxGB)} DDR6 (conventional — no ZAM)`;
+
+  const hasV8 = m.uhpTotal > 0 && m.unlocked;
+  return {
+    id: m.code,
+    name: m.shortBrand.replace("Intel® ", ""),
+    family: FAMILY_LABEL(m.line),
+    familyKey: FAMILY_KEY(m.line),
+    series: String(m.tier.n),
+    suffix: m.suffixKey,
+    image: m.tierKey.toLowerCase(),
+    deepdivePath: "/Intel/Eventide/SKU/" + m.code,
+    gpu, ram,
+    msrp: m.priceUsd,
+    rows,
+    hasV8,
+    v8Boost: hasV8 ? m.hyperboost.toFixed(2) + " GHz" : null
+  };
+}
+
 function main() {
   const dirs = fs.readdirSync(SKU_ROOT).filter((d) => fs.statSync(path.join(SKU_ROOT, d)).isDirectory());
   let ok = 0, fail = 0;
+  const summaries = [];
   dirs.forEach((dir) => {
     const file = path.join(SKU_ROOT, dir, "index.html");
     try {
       const m = buildModel(dir);
-      const out = render(dir, m);
+      const summary = buildSummary(m);
+      const out = render(dir, m, summary);
       fs.mkdirSync(path.dirname(file), { recursive: true });
       fs.writeFileSync(file, out, "utf8");
+      summaries.push(summary);
       ok++;
     } catch (e) {
       console.error("FAIL:", dir, e.message);
       fail++;
     }
   });
-  console.log(`Generated ${ok} SKU pages, ${fail} failures out of ${dirs.length}.`);
+  /* Order the manifest the way the library expects: family (C,I,U,X), then
+     series, then suffix. */
+  const FAM_ORDER = { C: 0, I: 1, U: 2, X: 3 };
+  summaries.sort((a, b) =>
+    (FAM_ORDER[a.id[0]] - FAM_ORDER[b.id[0]]) || (a.series - b.series) || a.suffix.localeCompare(b.suffix));
+  fs.writeFileSync(path.join(SKU_ROOT, "skus.json"), JSON.stringify(summaries), "utf8");
+  console.log(`Generated ${ok} SKU pages + skus.json manifest, ${fail} failures out of ${dirs.length}.`);
 }
 
 main();
