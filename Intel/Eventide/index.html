@@ -421,6 +421,8 @@
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
   }
 
   .sku-header { padding: 16px 18px 12px; }
@@ -438,7 +440,8 @@
   .sku-logo { width: 22px; height: 22px; flex-shrink: 0; border-radius: 5px; vertical-align: middle; margin-right: 8px; }
   .sku-tier-row { display: flex; align-items: center; }
 
-  .sku-body { padding: 16px 18px; background: var(--surface); }
+  .sku-body { padding: 16px 18px; background: var(--surface); flex: 1; display: flex; flex-direction: column; }
+  .sku-body-footnote { margin-top: auto; }
 
   .sku-feature { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary); }
   .sku-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
@@ -4047,7 +4050,7 @@
         <div class="sku-feature"><div class="sku-dot yes"></div>2DKR, MFX QuickSync</div>
         <div class="sku-feature"><div class="sku-dot partial"></div>HNPU (low config)</div>
         <div class="sku-feature"><div class="sku-dot no"></div>No BionzXR cores</div>
-        <div style="margin-top: 12px; font-size: 11px; color: var(--text-muted); padding-top: 10px; border-top: 1px solid var(--border);">Fanless designs; ultra-thin; extreme battery life.</div>
+        <div class="sku-body-footnote" style="font-size: 11px; color: var(--text-muted); padding-top: 10px; border-top: 1px solid var(--border);">Fanless designs; ultra-thin; extreme battery life.</div>
       </div>
     </div>
 
@@ -4062,7 +4065,7 @@
         <div class="sku-feature"><div class="sku-dot yes"></div>2DKR, MFX QuickSync, IPU</div>
         <div class="sku-feature"><div class="sku-dot no"></div>No BionzXR</div>
         <div class="sku-feature"><div class="sku-dot yes"></div>F-suffix: no GPU at all</div>
-        <div style="margin-top: 12px; font-size: 11px; color: var(--text-muted); padding-top: 10px; border-top: 1px solid var(--border);">Classic Intel performance tier; gaming + workstation without LP complexity.</div>
+        <div class="sku-body-footnote" style="font-size: 11px; color: var(--text-muted); padding-top: 10px; border-top: 1px solid var(--border);">Classic Intel performance tier; gaming + workstation without LP complexity.</div>
       </div>
     </div>
 
@@ -4077,7 +4080,7 @@
         <div class="sku-feature"><div class="sku-dot yes"></div>HNPU 256 TOPS + LPNPU</div>
         <div class="sku-feature"><div class="sku-dot yes"></div>BionzXR (up to 4 cores)</div>
         <div class="sku-feature"><div class="sku-dot yes"></div>Full Affinity system</div>
-        <div style="margin-top: 12px; font-size: 11px; color: var(--text-muted); padding-top: 10px; border-top: 1px solid var(--border);">The everyday Eventide experience. Flagship laptop tier.</div>
+        <div class="sku-body-footnote" style="font-size: 11px; color: var(--text-muted); padding-top: 10px; border-top: 1px solid var(--border);">The everyday Eventide experience. Flagship laptop tier.</div>
       </div>
     </div>
 
@@ -4092,7 +4095,7 @@
         <div class="sku-feature"><div class="sku-dot yes"></div>HNPU 256 T + LPNPU 88T</div>
         <div class="sku-feature"><div class="sku-dot yes"></div>8× BionzXR cores</div>
         <div class="sku-feature"><div class="sku-dot yes"></div>Full Affinity + vPro + Pluton</div>
-        <div style="margin-top: 12px; font-size: 11px; color: var(--text-muted); padding-top: 10px; border-top: 1px solid var(--border);">No-compromise. Mobile supercomputer.</div>
+        <div class="sku-body-footnote" style="font-size: 11px; color: var(--text-muted); padding-top: 10px; border-top: 1px solid var(--border);">No-compromise. Mobile supercomputer.</div>
       </div>
     </div>
 
@@ -4140,7 +4143,7 @@
         <div class="sku-feature"><div class="sku-dot yes"></div>LPDDR6X primary memory (8-24 GB)</div>
         <div class="sku-feature"><div class="sku-dot partial"></div>QuickSync MFX camera pipeline (2 cores, compact)</div>
         <div class="sku-feature"><div class="sku-dot partial"></div>Single, compact Killer S1 (4 bands)</div>
-        <div style="margin-top: 12px; font-size: 11px; color: rgba(255,255,255,0.5); padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.12);">Everyday mainstream phones; extreme battery life.</div>
+        <div class="sku-body-footnote" style="font-size: 11px; color: rgba(255,255,255,0.5); padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.12);">Everyday mainstream phones; extreme battery life.</div>
       </div>
     </div>
 
@@ -4155,7 +4158,7 @@
         <div class="sku-feature"><div class="sku-dot yes"></div>LPDDR6X primary memory (12-28 GB)</div>
         <div class="sku-feature"><div class="sku-dot partial"></div>Single BionzXR core (tiny) + QuickSync MFX</div>
         <div class="sku-feature"><div class="sku-dot yes"></div><strong>DX suffix: full-size dual Killer S1 (8 bands)</strong></div>
-        <div style="margin-top: 12px; font-size: 11px; color: rgba(255,255,255,0.5); padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.12);">Signature dual-ISP WiFi bonding; the top phone tier.</div>
+        <div class="sku-body-footnote" style="font-size: 11px; color: rgba(255,255,255,0.5); padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.12);">Signature dual-ISP WiFi bonding; the top phone tier.</div>
       </div>
     </div>
 
