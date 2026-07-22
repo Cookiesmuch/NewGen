@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Core i500 — Eventide Family Overview</title>
+<link rel="stylesheet" href="../../../../assets/nav.css">
+<script src="../../../../assets/nav.js" defer></script>
+<link rel="stylesheet" href="../../deepdive.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+:root {
+  --ci5-bg1: #0A1A2E; --ci5-bg2: #04101E;
+  --ci5-accent: #0068B5; --ci5-accent2: #F0B848;
+}
+body { background: var(--ci5-bg2); }
+.ci5-wrap {
+  min-height: 100vh;
+  padding: 100px 8vw 80px;
+  background: radial-gradient(120% 90% at 15% 0%, #0068B522 0%, var(--ci5-bg1) 55%, var(--ci5-bg2) 100%);
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  overflow: hidden;
+}
+.ci5-logo { width: 72px; height: 72px; border-radius: 16px; opacity: 0; animation: ci5-fadeScale 0.7s ease forwards; }
+@keyframes ci5-fadeScale { from { opacity: 0; transform: scale(0.7) rotate(-8deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+.ci5-eyebrow {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ci5-accent); margin: 22px 0 10px; opacity: 0; animation: ci5-riseIn 0.6s ease 0.15s forwards;
+}
+.ci5-headline {
+  font-family: 'Bebas Neue', sans-serif; font-size: clamp(38px, 6vw, 74px); line-height: 0.98; letter-spacing: 0.01em;
+  max-width: 780px; opacity: 0; animation: ci5-riseIn 0.6s ease 0.28s forwards;
+}
+.ci5-sub {
+  max-width: 640px; margin-top: 18px; font-size: 15px; line-height: 1.7; color: rgba(255,255,255,0.72);
+  opacity: 0; animation: ci5-riseIn 0.6s ease 0.42s forwards;
+}
+@keyframes ci5-riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+.ci5-stats { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 40px; }
+.ci5-stat { opacity: 0; animation: ci5-riseIn 0.55s ease forwards; }
+.ci5-stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 34px; color: var(--ci5-accent); line-height: 1; }
+.ci5-stat-label { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 4px; max-width: 140px; }
+
+.ci5-section-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(255,255,255,0.4); margin: 64px 0 18px;
+}
+.ci5-feature-grid { display: grid; grid-template-columns: repeat(2, minmax(240px, 1fr)); gap: 6px 32px; max-width: 900px; }
+.ci5-feature-wrap { }
+.ci5-feature {
+  display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: rgba(255,255,255,0.82);
+  padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+  opacity: 0; transform: translateX(-10px); transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.ci5-feature.on { opacity: 1; transform: translateX(0); }
+.ci5-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.ci5-dot.yes { background: #16A34A; box-shadow: 0 0 8px #16A34A88; }
+.ci5-dot.no { background: #DC2626; }
+.ci5-dot.partial { background: var(--ci5-accent); }
+
+.ci5-chip-row { display: flex; flex-wrap: wrap; gap: 10px; max-width: 900px; }
+.ci5-chip {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; padding: 10px 16px; border-radius: 30px; cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.04); color: #fff;
+  transition: background 0.2s ease, border-color 0.2s ease, opacity 0.5s ease, transform 0.5s ease;
+  opacity: 0; transform: translateY(8px);
+}
+.ci5-chip.on { opacity: 1; transform: translateY(0); }
+.ci5-chip:hover { background: var(--ci5-accent); border-color: var(--ci5-accent); color: #0B0714; }
+.ci5-chip-arrow { opacity: 0.6; }
+
+.ci5-use {
+  margin-top: 56px; max-width: 700px; padding: 20px 24px; border-left: 3px solid var(--ci5-accent);
+  background: rgba(255,255,255,0.03); font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.6;
+  opacity: 0; transition: opacity 0.6s ease;
+}
+.ci5-use.on { opacity: 1; }
+
+@media (max-width: 720px) {
+  .ci5-feature-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+  <a class="back-button" href="../../">← Back to Overview</a>
+  <div id="deepdive-container" class="deepdive-container">
+    <div class="ci5-wrap">
+      <img class="ci5-logo" src="../../assets/logos/corei500.svg" alt="Core i500 logo">
+      <div class="ci5-eyebrow">Product Family · Mid to Enthusiast</div>
+      <div class="ci5-headline">The classic tier.<br>No LP complexity.</div>
+      <div class="ci5-sub">A conventional high-clock CPU tier — Compute Tile only, no LP Island, no NPU, no ZAM. Gaming and workstation performance without the efficiency architecture.</div>
+
+      <div class="ci5-stats">
+        <div class="ci5-stat" style="animation-delay:0.5s"><div class="ci5-stat-num">1</div><div class="ci5-stat-label">Compute Tile</div></div>
+        <div class="ci5-stat" style="animation-delay:0.58s"><div class="ci5-stat-num">UHP+DP</div><div class="ci5-stat-label">Core mix, no SPE</div></div>
+        <div class="ci5-stat" style="animation-delay:0.66s"><div class="ci5-stat-num">DDR6</div><div class="ci5-stat-label">Conventional memory</div></div>
+      </div>
+
+      <div class="ci5-section-label">Tile Composition</div>
+      <div class="ci5-feature-grid" id="ci5-features">
+        <div class="ci5-feature-wrap" style="transition-delay:0s"><div class="ci5-feature"><div class="ci5-dot yes"></div>Compute Tile — Solar Eclipse (UHP) + Sunset Cove (DP) only</div></div>
+        <div class="ci5-feature-wrap" style="transition-delay:0.05s"><div class="ci5-feature"><div class="ci5-dot no"></div>No SPE (Venusmont) cores in the Compute Tile</div></div>
+        <div class="ci5-feature-wrap" style="transition-delay:0.1s"><div class="ci5-feature"><div class="ci5-dot no"></div>No Low Power Island — classic always-on design</div></div>
+        <div class="ci5-feature-wrap" style="transition-delay:0.15000000000000002s"><div class="ci5-feature"><div class="ci5-dot partial"></div>Arc Druid iGPU only — no Elementalist (F-suffix removes it entirely)</div></div>
+        <div class="ci5-feature-wrap" style="transition-delay:0.2s"><div class="ci5-feature"><div class="ci5-dot no"></div>No NPU — HNPU and LPNPU both disabled</div></div>
+        <div class="ci5-feature-wrap" style="transition-delay:0.25s"><div class="ci5-feature"><div class="ci5-dot yes"></div>2DKanvas, MFX QuickSync, IPU camera pipeline</div></div>
+        <div class="ci5-feature-wrap" style="transition-delay:0.30000000000000004s"><div class="ci5-feature"><div class="ci5-dot no"></div>No BionzXR</div></div>
+        <div class="ci5-feature-wrap" style="transition-delay:0.35000000000000003s"><div class="ci5-feature"><div class="ci5-dot yes"></div>Conventional DDR6 — no Z-Angle Memory</div></div>
+      </div>
+
+      <div class="ci5-section-label">Built From</div>
+      <div class="ci5-chip-row" id="ci5-chips">
+        <div class="ci5-chip" data-deepdive-path="/Intel/Eventide/CPU/SolarEclipse" style="transition-delay:0s">Solar Eclipse (UHP) <span class="ci5-chip-arrow">→</span></div>
+        <div class="ci5-chip" data-deepdive-path="/Intel/Eventide/CPU/SunsetCove" style="transition-delay:0.05s">Sunset Cove (DP) <span class="ci5-chip-arrow">→</span></div>
+        <div class="ci5-chip" data-deepdive-path="/Intel/Eventide/GPU/Druid" style="transition-delay:0.1s">Arc Druid <span class="ci5-chip-arrow">→</span></div>
+        <div class="ci5-chip" data-deepdive-path="/Intel/Eventide/Tile/MFX" style="transition-delay:0.15000000000000002s">MFX Tile <span class="ci5-chip-arrow">→</span></div>
+        <div class="ci5-chip" data-deepdive-path="/Intel/Eventide/Tile/IPU" style="transition-delay:0.2s">IPU Tile <span class="ci5-chip-arrow">→</span></div>
+      </div>
+
+      <div class="ci5-use" id="ci5-use">Classic Intel performance tier — gaming and workstation without LP Island complexity.</div>
+    </div>
+  </div>
+  <script>
+  (function () {
+    "use strict";
+    function navigateToDeepdive(path) {
+      var rel = path.replace(/^\/Intel\/Eventide\//, '');
+      if (!rel.endsWith('/')) rel += '/';
+      window.location.href = '../../' + rel;
+    }
+    document.addEventListener('click', function (e) {
+      var el = e.target.closest('[data-deepdive-path]');
+      if (el) navigateToDeepdive(el.getAttribute('data-deepdive-path'));
+    });
+    function reveal(t) {
+      t.classList.add('on');
+      var feat = t.querySelector('.ci5-feature');
+      if (feat) feat.classList.add('on');
+    }
+    var targets = document.querySelectorAll('#ci5-features > *, #ci5-chips > *, #ci5-use');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) { reveal(entry.target); io.unobserve(entry.target); }
+        });
+      }, { threshold: 0.15 });
+      targets.forEach(function (t) { io.observe(t); });
+    } else {
+      targets.forEach(reveal);
+    }
+  })();
+  </script>
+</body>
+</html>

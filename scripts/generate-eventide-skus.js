@@ -52,7 +52,7 @@ function sectionEssentials(m) {
     ["Vertical Segment", m.vertical],
     ["Status", "Launched"],
     ["Launch Date", launchQ],
-    ["Lithography (Primary — Compute)", `Intel 04A (0.4nm-class GaNSi GAA) <span class="note">· Compute Tiles, HNPU, Elementalist GPU</span>`],
+    ["Lithography (Primary — Compute)", (m.computeTiles || m.hasHnpu || m.gpuTiles) ? `Intel 04A (0.4nm-class GaNSi GAA) <span class="note">· Compute Tiles, HNPU, Elementalist GPU</span>` : `Not present on this line <span class="note">· Atom carries no 04A silicon — efficiency-first 06E only</span>`],
     ["Lithography (Efficiency — LP Island)", `Intel 06E (0.6nm-class FinFlex GAA) <span class="note">· LP Island cores, Arc Druid, BionzXR, LPNPU</span>`],
     ["Lithography (Ancillary)", `Intel 14A-E <span class="note">· MFX, IPU, 2DKR, I/O, Klangkerne, PSM, Killer S1, Display, GNA</span>`],
     ["Package Interconnect", "Intel FOveros 2.0 (FiberOptic-VEROS) — photonic; co-developed with Lightmatter (USA)"],
@@ -156,15 +156,33 @@ function sectionCache(m) {
     ["L2 (SPE, per 9-core cluster)", m.speTotal ? "2 MB shared" : null],
     ["L2 (UHE, per core)", m.hasLpIsland ? "3 MB" : null],
     ["L2 (LPE, per 4-core cluster)", m.hasLpIsland ? "1 MB shared" : null],
+    ["Total L0 / L1 / L2 (approx.)", `${round1(m.totalL0KB)} KB / ${round1(m.totalL1KB)} KB / ${round1(m.totalL2MB)} MB`],
     ["L3 (Compute Tile, shared)", m.computeTiles ? `${m.l3PerComputeTile} MB per tile · ${m.l3Total} MB total (${m.computeTiles} tile${m.computeTiles > 1 ? "s" : ""})` : "Not present"],
-    ["L3 (LP Island, shared)", m.hasLpIsland ? `${m.l3LPIsland} MB (Kache Kore™ shared)` : null],
-    ["Kache Kore™ L4 / bLLC", `${(m.l4KacheGB + " GB")} <span class="note">· shared cache interposer at the physical center of the package</span>`],
-    ["Total SRAM Cache (approx.)", `~${m.totalSRAM} MB SRAM + ${(m.l4KacheGB + " GB")} L4 bLLC`],
-    ["Kache Kore™ Round-Trip Latency", `${round1(9 + (m.computeTiles ? 0 : 3))} ns typical`]
+    ["L3 (LP Island, shared)", m.hasLpIsland ? `${m.l3LPIsland} MB${m.hasKacheKore ? " (Kache Kore™ shared)" : ""}` : null],
+    ["Kache Kore™ L4 / bLLC", m.hasKacheKore
+      ? `${(m.l4KacheGB + " GB")} <span class="note">· shared cache interposer at the physical center of the package</span>`
+      : `Not present <span class="note">· phone-scale package has no room for the bLLC interposer — LPDDR6X is the primary memory tier instead</span>`],
+    ["Total SRAM Cache (approx.)", m.hasKacheKore ? `~${m.totalSRAM} MB SRAM + ${(m.l4KacheGB + " GB")} L4 bLLC` : `~${m.totalSRAM} MB SRAM <span class="note">· no L4 bLLC on this line</span>`],
+    ["Kache Kore™ Round-Trip Latency", m.hasKacheKore ? `${round1(9 + (m.computeTiles ? 0 : 3))} ns typical` : "Not applicable"]
   ]);
 }
 
 function sectionMemory(m) {
+  if (!m.hasKacheKore && (m.line === "A" || m.line === "P")) {
+    /* Atom / Atom Ultra — LPDDR6X is PRIMARY memory (not a ZAM secondary),
+       unlike every other line: with no Kache Kore to hide its latency
+       behind, ZAM's usual advantage over conventional memory disappears at
+       phone scale, so the phone tier skips it entirely. */
+    return intro("Atom is the LPDDR6X-primary tier — with no Kache Kore bLLC to mask ZAM's higher raw latency, on-package Z-Angle Memory loses its usual advantage at phone scale, so this line runs conventional LPDDR6X directly instead.") +
+      rows([
+        ["Primary Memory Type", "LPDDR6X (on-package, soldered) — no ZAM, no Kache Kore on this line"],
+        ["Max LPDDR6X Capacity", gb(m.zamMaxCapacityGB)],
+        ["LPDDR6X Speed", "LPDDR6X-" + (m.ddr6Speed + 800)],
+        ["Max # of Memory Channels", "2× (dual-channel LPDDR6X)"],
+        ["ECC Memory Support", "In-band ECC (LPDDR6X)"],
+        ["Intel DirectStorage 2.0", "UFS 5.0 → LPDDR6X hot data <span class=\"note\">· no Kache Kore staging tier on this line</span>"]
+      ]);
+  }
   if (!m.hasZam) {
     /* Core i500 — the classic-CPU tier: conventional DDR6 only, no ZAM, no
        on-package memory, no Kache-Kore-as-DRAM-cache-layer. */
@@ -459,7 +477,7 @@ function sectionPackage(m) {
   const rowsArr = [
     ["Sockets Supported", m.tier.line === "X" ? "FCLGA-Eventide-X (workstation/server)" : "BGA (integrated, non-socketed)"],
     ["Package Carrier", m.tier.line === "X" ? "FCLGA" : "FCBGA"],
-    ["Package Size", m.tier.line === "X" ? "58.5mm × 51mm" : "35mm × 30mm"],
+    ["Package Size", m.tier.line === "X" ? "58.5mm × 51mm" : (m.line === "A" || m.line === "P") ? "12mm × 10mm" : "35mm × 30mm"],
     ["Thermal Solution Specification", m.tier.line === "X" ? "Datacenter liquid / air, OEM-specified" : m.unlocked ? "Unleashed dock (liquid-assisted) or OEM cooler" : "OEM-specified"],
     ["Max Operating Temperature", m.suffix.form === "Desktop" ? "100°C" : "105°C"],
     ["T Junction Max", m.suffix.form === "Desktop" ? "100°C" : "105°C"]
@@ -534,14 +552,17 @@ function affinityMatrix(m) {
 
 function affinityTable(m) {
   const t = m.tdp;
-  const batteryWh = 70;
+  const isPhone = m.line === "A" || m.line === "P";
+  const batteryWh = isPhone ? 18.5 : 70;
   const supersaverHrs = round1(batteryWh / t.floor);
   const efficiencyHrs = round1(batteryWh / t.efficiency);
+  const coolBalanced = m.suffix.form === "Desktop" ? "Stock air cooler" : isPhone ? "Passive phone chassis" : "Standard laptop fan";
+  const coolPerf = m.suffix.form === "Desktop" ? "Tower air / AIO liquid" : isPhone ? "Phone vapor chamber, throttles under sustained load" : "Active laptop cooling, fans audible";
   const trs = [
-    ["Supersaver", t.floor + "W", "Battery", "LP Island only — UHE/LPE cores idle-parked, screen dimmed, Compute/GPU tiles fully power-gated. The assured minimum running power on battery.", `~${supersaverHrs}h on a 70Wh battery`, "Fanless"],
-    ["Efficiency", t.efficiency + "W", "Battery", "LP Island active for everyday light use — Compute Tiles and GPU tiles stay parked unless woken by Thread Director.", `~${efficiencyHrs}h on a 70Wh battery`, "Fanless / passive"],
-    ["Balanced", t.balanced + "W", "Adapter", "Sustained cTDP with Compute Tiles and iGPU active under typical mixed load.", "Plugged in — not battery-optimized", m.suffix.form === "Desktop" ? "Stock air cooler" : "Standard laptop fan"],
-    ["Performance", t.performance + "W", "Adapter", "Sustained Max Turbo across all active tiles — Compute, GPU and HNPU boosted, thermally gated by Thread Director.", "Plugged in — sustained ceiling", m.suffix.form === "Desktop" ? "Tower air / AIO liquid" : "Active laptop cooling, fans audible"],
+    ["Supersaver", t.floor + "W", "Battery", "LP Island only — UHE/LPE cores idle-parked, screen dimmed, Compute/GPU tiles fully power-gated. The assured minimum running power on battery.", `~${supersaverHrs}h on a ${batteryWh}Wh battery`, "Fanless"],
+    ["Efficiency", t.efficiency + "W", "Battery", "LP Island active for everyday light use — Compute Tiles and GPU tiles stay parked unless woken by Thread Director.", `~${efficiencyHrs}h on a ${batteryWh}Wh battery`, "Fanless / passive"],
+    ["Balanced", t.balanced + "W", "Adapter", "Sustained cTDP with Compute Tiles and iGPU active under typical mixed load.", "Plugged in — not battery-optimized", coolBalanced],
+    ["Performance", t.performance + "W", "Adapter", "Sustained Max Turbo across all active tiles — Compute, GPU and HNPU boosted, thermally gated by Thread Director.", "Plugged in — sustained ceiling", coolPerf],
     ["Unleashed", t.unleashed ? t.unleashed + "W" : "Not available", "Docked", t.unlocked
       ? "Dock-fed ceiling with liquid-assisted cooling. Scales with Compute Tile and Elementalist GPU tile count — requires a compatible power-delivery dock."
       : "Locked multiplier — this SKU does not expose an Unleashed AFFINITY™ tier. Performance is the sustained ceiling.", t.unlocked ? "Dock power delivery only" : "Not applicable", t.unlocked ? "Liquid-assisted power-delivery dock required" : "—"]
@@ -567,7 +588,7 @@ const SECTIONS = [
   { id: "gpu-druid", label: "Graphics — Arc Druid (LP)", body: sectionGraphicsDruid, guard: (m) => m.hasDruid },
   { id: "gpu-kanvas", label: "Graphics — 2DKanvas (2D)", body: sectionGraphicsKanvas },
   { id: "display", label: "Display Engine", body: sectionDisplay },
-  { id: "ai-hnpu", label: "AI — HNPU", body: sectionHnpu, guard: (m) => m.hasNpu },
+  { id: "ai-hnpu", label: "AI — HNPU", body: sectionHnpu, guard: (m) => m.hasHnpu },
   { id: "ai-lpnpu", label: "AI — LPNPU", body: sectionLpnpu, guard: (m) => m.hasNpu },
   { id: "ai-gna", label: "AI — GNA (Audio NPU)", body: sectionGna },
   { id: "audio-klangkerne", label: "Audio — Klangkerne", body: sectionKlangkerne },
@@ -583,16 +604,16 @@ const SECTIONS = [
 ];
 
 function buildTileConfig(m) {
-  const tiles = [{ id: "kachekore" }];
+  const tiles = m.hasKacheKore ? [{ id: "kachekore" }] : [];
   if (m.computeTiles > 0) tiles.push({ id: "compute", count: m.computeTiles, coresPerTile: m.uhpPerTile + m.dpPerTile + m.spePerTile });
   if (m.hasLpIsland) tiles.push({ id: "lpisland" });
   if (m.hasDruid) tiles.push({ id: "druid", xeCores: m.druidXeCores, model: m.druidModel });
   if (m.hasBionz) tiles.push({ id: "bionzxr" });
-  if (m.hasNpu) tiles.push({ id: "hnpu" });
+  if (m.hasHnpu) tiles.push({ id: "hnpu" });
   if (m.gpuTiles > 0) tiles.push({ id: "gpu", count: m.gpuTiles, xe5: m.xe5PerTile, model: m.gpuModel });
   tiles.push({ id: "kanvas2d" });
   if (m.hasZam) tiles.push({ id: "zam", capacityGB: m.zamMaxCapacityGB });
-  tiles.push({ id: "klangkerne" }, { id: "io" }, { id: "psm" }, { id: "killers1" });
+  tiles.push({ id: "klangkerne" }, { id: "io" }, { id: "psm" }, { id: "killers1", count: m.killerS1Count });
   if (m.hasIpu) tiles.push({ id: "ipu" });
   tiles.push({ id: "mfx" }, { id: "gna" }, { id: "display" }, { id: "threaddirector" });
   return tiles;
@@ -633,7 +654,7 @@ function buildTileSpecs(m) {
       { label: "Ray Budget / Block", val: fmt(m.sortRayBudget) }, { label: "Frame Cost", val: "0.0%" },
       { label: "Power", val: "~118 mW" }, { label: "Deadline", val: "2.67 ms" }
     ],
-    killers1: [{ label: "WiFi", val: m.wifiGen }, { label: "Chips", val: m.wifiChips }],
+    killers1: [{ label: "Instances", val: m.killerS1Count }, { label: "WiFi", val: m.wifiGen }, { label: "Chips", val: m.wifiChips }],
     ipu: [{ label: "Max Input", val: fmt(m.ipuMp) + " MP" }],
     mfx: [{ label: "Function", val: "Low-power decode" }],
     gna: [{ label: "Throughput", val: m.gnaTOPS + " TOPS" }],
@@ -671,7 +692,7 @@ function render(dirName, m, summary) {
   const badgesHtml = badges.map((b) => `<span class="ev-badge ${b.cls}">${b.text}</span>`).join("\n        ");
 
   const maxTurboStat = m.computeTiles ? m.uhpTurbo + " GHz" : m.uheTurbo + " GHz";
-  const cacheStat = `~${m.totalSRAM} MB + ${(m.l4KacheGB + " GB")}`;
+  const cacheStat = m.hasKacheKore ? `~${m.totalSRAM} MB + ${(m.l4KacheGB + " GB")}` : `~${m.totalSRAM} MB SRAM`;
 
   const sectionsHtml = SECTIONS.map((s) => {
     if (s.guard && !s.guard(m)) return "";
@@ -755,7 +776,7 @@ ${sectionsHtml}
 }
 
 function BRAND_BADGE(m) {
-  const label = { C: "Core", I: "Core i", U: "Core Ultra", X: "Core Xeon" }[m.tier.line];
+  const label = { C: "Core", I: "Core i", U: "Core Ultra", X: "Core Xeon", A: "Atom", P: "Atom Ultra" }[m.tier.line];
   return `${label} 500`;
 }
 
@@ -765,10 +786,10 @@ function BRAND_BADGE(m) {
    it describes. Derived from the same model, so it can never drift from the
    deep-dive pages. */
 function FAMILY_LABEL(line) {
-  return { C: "Core 500", I: "Core i500", U: "Core Ultra 500", X: "Core Xeon 500" }[line];
+  return { C: "Core 500", I: "Core i500", U: "Core Ultra 500", X: "Core Xeon 500", A: "Atom 500", P: "Atom Ultra 500" }[line];
 }
 function FAMILY_KEY(line) {
-  return { C: "core", I: "i", U: "u", X: "x" }[line];
+  return { C: "core", I: "i", U: "u", X: "x", A: "atom", P: "atomultra" }[line];
 }
 function buildSummary(m) {
   const rows = [];
@@ -784,11 +805,16 @@ function buildSummary(m) {
   else gpu = "No iGPU (F-suffix — discrete GPU required)";
 
   let ram;
-  if (m.hasZam && m.hasDdr6) ram = `${gb(m.zamMaxCapacityGB)} on-package ZAM + up to ${gb(m.ddr6MaxGB)} DDR6`;
+  if (m.line === "A" || m.line === "P") ram = `Up to ${gb(m.zamMaxCapacityGB)} on-package LPDDR6X (no ZAM, no DDR6)`;
+  else if (m.hasZam && m.hasDdr6) ram = `${gb(m.zamMaxCapacityGB)} on-package ZAM + up to ${gb(m.ddr6MaxGB)} DDR6`;
   else if (m.hasZam) ram = `Up to ${gb(m.zamMaxCapacityGB)} on-package ZAM (no DDR6)`;
   else ram = `Up to ${gb(m.ddr6MaxGB)} DDR6 (conventional — no ZAM)`;
 
   const hasV8 = m.uhpTotal > 0 && m.unlocked;
+  const cache = {
+    l0KB: round1(m.totalL0KB), l1KB: round1(m.totalL1KB), l2MB: round1(m.totalL2MB),
+    l3MB: m.totalSRAM, bllcGB: m.l4KacheGB, hasKacheKore: m.hasKacheKore
+  };
   return {
     id: m.code,
     name: m.shortBrand.replace("Intel® ", ""),
@@ -798,7 +824,7 @@ function buildSummary(m) {
     suffix: m.suffixKey,
     image: m.tierKey.toLowerCase(),
     deepdivePath: "/Intel/Eventide/SKU/" + m.code,
-    gpu, ram,
+    gpu, ram, cache,
     msrp: m.priceUsd,
     rows,
     hasV8,
@@ -827,7 +853,7 @@ function main() {
   });
   /* Order the manifest the way the library expects: family (C,I,U,X), then
      series, then suffix. */
-  const FAM_ORDER = { C: 0, I: 1, U: 2, X: 3 };
+  const FAM_ORDER = { C: 0, I: 1, U: 2, X: 3, A: 4, P: 5 };
   summaries.sort((a, b) =>
     (FAM_ORDER[a.id[0]] - FAM_ORDER[b.id[0]]) || (a.series - b.series) || a.suffix.localeCompare(b.suffix));
   fs.writeFileSync(path.join(SKU_ROOT, "skus.json"), JSON.stringify(summaries), "utf8");

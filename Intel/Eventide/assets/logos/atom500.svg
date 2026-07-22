@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Atom 500 logo">
+  <defs>
+    <linearGradient id="bg-atom500" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#142A47"/>
+      <stop offset="100%" stop-color="#0A1628"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="url(#bg-atom500)"/>
+  <g fill="#22D3EE">
+    <circle cx="44" cy="12" r="1.6"/><circle cx="50" cy="12" r="1.6"/><circle cx="56" cy="12" r="1.6"/>
+    <circle cx="44" cy="18" r="1.6" opacity="0.85"/><circle cx="50" cy="18" r="1.6" opacity="0.85"/><circle cx="56" cy="18" r="1.6" opacity="0.85"/>
+    <circle cx="44" cy="24" r="1.6" opacity="0.6"/><circle cx="50" cy="24" r="1.6" opacity="0.6"/>
+    <circle cx="44" cy="30" r="1.6" opacity="0.35"/>
+  </g>
+  <!-- simple atom orbit glyph -->
+  <g transform="translate(18,34)" fill="none" stroke="#3B82F6" stroke-width="1.6">
+    <ellipse rx="13" ry="5"/>
+    <ellipse rx="13" ry="5" transform="rotate(60)"/>
+    <ellipse rx="13" ry="5" transform="rotate(120)"/>
+  </g>
+  <circle cx="18" cy="34" r="2.6" fill="#22D3EE"/>
+  <text x="10" y="56" font-family="'Bebas Neue',Arial,sans-serif" font-size="14" fill="#FFFFFF" letter-spacing="0.5">ATOM 500</text>
+</svg>

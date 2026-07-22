@@ -115,7 +115,7 @@
     var col2 = colN(
       rowN(leaf("lpisland"), leaf("hnpu")),       // cores/AI, upper-middle
       rowN(leaf("bionzxr"), leaf("io")),
-      rowN(leaf("psm"), leaf("killers1"))
+      rowN(leaf("psm"), gridN("killers1"))        // killers1 renders 2 tiles on dual-ISP flagship SKUs
     );
     var col3 = colN(
       gridN("compute"),                           // Compute tiles, top-right
