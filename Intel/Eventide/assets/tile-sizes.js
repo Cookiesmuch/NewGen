@@ -61,6 +61,43 @@
      between a Compute Tile and an E1080. ---- */
   var KACHE_KORE_SIZE = mm2(11.5, 11.0);
 
+  /* ---- LP Island — scales by total core count (UHE + LPE) instead of a
+     flat constant, so a phone-scale 2+4-core Atom part renders visibly
+     smaller than a 16+16-core Xeon 500 LP Island rather than identically.
+     Anchored at 32 cores (X-line's UHE+LPE total) == the previous fixed
+     6.6x8.0mm size, so X-line's rendered die is unchanged; everything else
+     scales down by sqrt(cores/32), floored at 0.4x so it never vanishes. ---- */
+  var LP_ISLAND_ANCHOR_MM = { w: 6.6, h: 8.0 };
+  var LP_ISLAND_ANCHOR_CORES = 32;
+  function lpIslandSize(totalCores) {
+    var f = Math.max(Math.sqrt(Math.max(totalCores, 1) / LP_ISLAND_ANCHOR_CORES), 0.4);
+    return mm2(LP_ISLAND_ANCHOR_MM.w * f, LP_ISLAND_ANCHOR_MM.h * f);
+  }
+
+  /* ---- MFX — scales by core count only when the caller supplies one
+     (Atom tiers only; every other line omits it and keeps the fixed
+     default below, unchanged). Anchored at 6 cores == that fixed default,
+     so Atom's 2-core MFX renders at sqrt(2/6) ~= 0.58x. ---- */
+  var MFX_ANCHOR_MM = { w: 4.8, h: 5.4 };
+  var MFX_ANCHOR_CORES = 6;
+  function mfxSize(cores) {
+    var f = Math.sqrt(Math.max(cores, 1) / MFX_ANCHOR_CORES);
+    return mm2(MFX_ANCHOR_MM.w * f, MFX_ANCHOR_MM.h * f);
+  }
+
+  /* ---- BionzXR — scales by core count only when the caller supplies one
+     (Atom Ultra only — its single-core BionzXR is a phone camera ISP, not
+     Core Ultra/Xeon's multi-core media block). Anchored at 8 cores == the
+     fixed default below (X-line's max), so a 1-core BionzXR renders at
+     sqrt(1/8) ~= 0.35x — "much much smaller." Every other line keeps the
+     fixed default, unchanged. ---- */
+  var BIONZ_ANCHOR_MM = { w: 6.0, h: 6.8 };
+  var BIONZ_ANCHOR_CORES = 8;
+  function bionzSize(cores) {
+    var f = Math.sqrt(Math.max(cores, 1) / BIONZ_ANCHOR_CORES);
+    return mm2(BIONZ_ANCHOR_MM.w * f, BIONZ_ANCHOR_MM.h * f);
+  }
+
   /* ---- Fixed-size tiles (not varied by SKU tier in the deep dives) ---- */
   var SIZES = {
     lpisland:       mm2(6.6, 8.0),
@@ -78,14 +115,24 @@
     threaddirector: mm2(4.4, 5.0)
   };
 
+  /* ---- Compact phone-scale variants — used only when the tile config
+     explicitly flags `compact: true` (Atom's IO tile always; Atom's Killer
+     S1 only on single-radio SKUs — the DX flagship's dual instances keep
+     the full-size default above, matching Core-series parity). ---- */
+  var IO_COMPACT_MM = { w: 2.5, h: 2.9 };     // ~0.56x the default — phone has no/little PCIe
+  var KILLERS1_COMPACT_MM = { w: 3.1, h: 3.5 }; // ~0.67x the default — single-radio S1
+
   /* ---- ZAM — the one tile defined by the PACKAGE, not its own footprint:
-     at 1TB (4 populated 256GB modules) its row spans the full package
+     at full capacity (4 populated modules) its row spans the full package
      width, so module width is computed at layout time from the real
-     package width. Only height + the 256GB/module constant are fixed. ---- */
+     package width. Only height + the per-module-GB constant are fixed.
+     LPDDR6X (Atom) SKUs pass a much smaller moduleGB (soldered LPDDR6X
+     packages, not ZAM's 256GB stacks) so their module count reads true at
+     phone-realistic 8-28GB capacities instead of always rounding to 1. ---- */
   var ZAM_MODULE_GB = 256;
   var ZAM_ROW_H = 4.4 * MM_PX;
-  function zamModules(capacityGB) {
-    return Math.max(1, Math.round(capacityGB / ZAM_MODULE_GB));
+  function zamModules(capacityGB, moduleGB) {
+    return Math.max(1, Math.round(capacityGB / (moduleGB || ZAM_MODULE_GB)));
   }
 
   function sizeOf(id, entry) {
@@ -93,6 +140,11 @@
     if (id === "druid") return druidSize(entry.t.xeCores);
     if (id === "compute") return computeTileSize(entry.t.coresPerTile);
     if (id === "kachekore") return KACHE_KORE_SIZE;
+    if (id === "lpisland") return lpIslandSize(entry.t.cores);
+    if (id === "mfx" && entry.t.cores != null) return mfxSize(entry.t.cores);
+    if (id === "bionzxr" && entry.t.cores != null) return bionzSize(entry.t.cores);
+    if (id === "io" && entry.t.compact) return mm2(IO_COMPACT_MM.w, IO_COMPACT_MM.h);
+    if (id === "killers1" && entry.t.compact) return mm2(KILLERS1_COMPACT_MM.w, KILLERS1_COMPACT_MM.h);
     return SIZES[id] || mm2(4.2, 4.8);
   }
 
@@ -101,6 +153,9 @@
     elementalistSize: elementalistSize,
     druidSize: druidSize,
     computeTileSize: computeTileSize,
+    lpIslandSize: lpIslandSize,
+    mfxSize: mfxSize,
+    bionzSize: bionzSize,
     KACHE_KORE_SIZE: KACHE_KORE_SIZE,
     SIZES: SIZES,
     sizeOf: sizeOf,

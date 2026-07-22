@@ -433,6 +433,7 @@
   .sku-x500 .sku-header { background: linear-gradient(135deg, var(--eventide-gold) 0%, #7A5010 100%); }
   .sku-atom-500 .sku-header { background: var(--atom-navy-light); }
   .sku-atom-ultra-500 .sku-header { background: linear-gradient(135deg, var(--atom-blue) 0%, var(--atom-navy) 100%); }
+  .sku-atom-500, .sku-atom-ultra-500 { border-color: rgba(255,255,255,0.14); }
 
   .sku-logo { width: 22px; height: 22px; flex-shrink: 0; border-radius: 5px; vertical-align: middle; margin-right: 8px; }
   .sku-tier-row { display: flex; align-items: center; }
@@ -4132,14 +4133,14 @@
       <div class="sku-header"><div class="sku-tier-row"><img class="sku-logo" src="assets/logos/atom500.svg" alt="" onerror="this.style.display='none'"><div class="sku-tier">Atom 500</div></div><div class="sku-name">Mainstream Phone</div></div>
       <div class="sku-body" style="background: var(--surface-dark); color: rgba(255,255,255,0.85);">
         <div class="sku-feature"><div class="sku-dot no"></div>No Compute Tile, no Elementalist GPU</div>
-        <div class="sku-feature"><div class="sku-dot yes"></div>2× Lunar Eclipse (UHE) + 6-8× Darkmont (LPE)</div>
-        <div class="sku-feature"><div class="sku-dot yes"></div>LPiGPU (Arc Druid) + 2DKR compositor</div>
+        <div class="sku-feature"><div class="sku-dot yes"></div>2× Lunar Eclipse (UHE) + 4-8× Darkmont (LPE)</div>
+        <div class="sku-feature"><div class="sku-dot yes"></div>Compact LPiGPU (Arc Druid) + 2DKR compositor</div>
         <div class="sku-feature"><div class="sku-dot yes"></div>LPNPU AI (88 TOPS, always-on)</div>
-        <div class="sku-feature"><div class="sku-dot no"></div>No HNPU, no Kache Kore</div>
-        <div class="sku-feature"><div class="sku-dot yes"></div>LPDDR6X primary memory</div>
-        <div class="sku-feature"><div class="sku-dot yes"></div>BionzXR + QuickSync ISP camera pipeline</div>
-        <div class="sku-feature"><div class="sku-dot partial"></div>Single Killer S1 (4 bands)</div>
-        <div style="margin-top: 12px; font-size: 11px; color: rgba(255,255,255,0.5); padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.12);">Everyday flagship-class phones; extreme battery life.</div>
+        <div class="sku-feature"><div class="sku-dot no"></div>No HNPU, no Kache Kore, no BionzXR</div>
+        <div class="sku-feature"><div class="sku-dot yes"></div>LPDDR6X primary memory (8-24 GB)</div>
+        <div class="sku-feature"><div class="sku-dot partial"></div>QuickSync MFX camera pipeline (2 cores, compact)</div>
+        <div class="sku-feature"><div class="sku-dot partial"></div>Single, compact Killer S1 (4 bands)</div>
+        <div style="margin-top: 12px; font-size: 11px; color: rgba(255,255,255,0.5); padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.12);">Everyday mainstream phones; extreme battery life.</div>
       </div>
     </div>
 
@@ -4147,13 +4148,13 @@
       <div class="sku-header"><div class="sku-tier-row"><img class="sku-logo" src="assets/logos/atomultra500.svg" alt="" onerror="this.style.display='none'"><div class="sku-tier">Atom Ultra 500</div></div><div class="sku-name">Flagship Phone</div></div>
       <div class="sku-body" style="background: var(--surface-dark); color: rgba(255,255,255,0.85);">
         <div class="sku-feature"><div class="sku-dot no"></div>No Compute Tile, no Elementalist GPU</div>
-        <div class="sku-feature"><div class="sku-dot yes"></div>2× Lunar Eclipse (UHE) + 8× Darkmont (LPE)</div>
+        <div class="sku-feature"><div class="sku-dot yes"></div>2× Lunar Eclipse (UHE) + 6-8× Darkmont (LPE)</div>
         <div class="sku-feature"><div class="sku-dot yes"></div>Bigger LPiGPU (Arc Druid) class + 2DKR</div>
         <div class="sku-feature"><div class="sku-dot yes"></div>LPNPU AI (88 TOPS, always-on)</div>
         <div class="sku-feature"><div class="sku-dot no"></div>No HNPU, no Kache Kore</div>
-        <div class="sku-feature"><div class="sku-dot yes"></div>LPDDR6X primary memory (higher capacity)</div>
-        <div class="sku-feature"><div class="sku-dot yes"></div>BionzXR + QuickSync ISP camera pipeline</div>
-        <div class="sku-feature"><div class="sku-dot yes"></div><strong>DX suffix: Dual Killer S1 (8 bands)</strong></div>
+        <div class="sku-feature"><div class="sku-dot yes"></div>LPDDR6X primary memory (12-28 GB)</div>
+        <div class="sku-feature"><div class="sku-dot partial"></div>Single BionzXR core (tiny) + QuickSync MFX</div>
+        <div class="sku-feature"><div class="sku-dot yes"></div><strong>DX suffix: full-size dual Killer S1 (8 bands)</strong></div>
         <div style="margin-top: 12px; font-size: 11px; color: rgba(255,255,255,0.5); padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.12);">Signature dual-ISP WiFi bonding; the top phone tier.</div>
       </div>
     </div>

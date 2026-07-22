@@ -90,17 +90,22 @@ const TIER_TABLE = {
      primary memory (see zamMaxCapacityGB), no HNPU (see hasHnpu — phone never
      carries the 04A-node HNPU complex, only the always-on 06E LPNPU). 2× UHE
      (Lunar Eclipse) is fixed per the phone architecture research; LPE
-     (Darkmont) count scales 6-8 by series. Atom Ultra runs a bigger Druid
+     (Darkmont) count spreads 4-8 by series so the cheapest tier (A3) is a
+     genuinely budget 2+4 part, not clustered with the rest at 6-8. BionzXR
+     is Atom Ultra-only (bionz:0 on every A-tier) and capped at a single core
+     even there — a phone camera doesn't need Core Ultra/Xeon's multi-core
+     BionzXR block. mfxCores:2 on every Atom tier renders a visibly smaller
+     MFX tile than Core's (see tile-sizes.js). Atom Ultra runs a bigger Druid
      class and adds the dual-Killer-S1 flagship suffix (see killerS1Count). */
-  A3: { line: "A", n: 3, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 6, druid: "D310", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 4, tdpBase: 3, ipuMp: 48, bionz: 1, tdpFloor: 0.05 },
-  A5: { line: "A", n: 5, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 6, druid: "D330", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 4, tdpBase: 4, ipuMp: 64, bionz: 1, tdpFloor: 0.05 },
-  A7: { line: "A", n: 7, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, druid: "D360", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 5, ipuMp: 96, bionz: 2, tdpFloor: 0.05 },
-  A9: { line: "A", n: 9, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 6, ipuMp: 128, bionz: 2, tdpFloor: 0.05 },
+  A3: { line: "A", n: 3, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 4, druid: "D310", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 4, tdpBase: 3, ipuMp: 48, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
+  A5: { line: "A", n: 5, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 6, druid: "D330", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 4, tdpBase: 4, ipuMp: 64, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
+  A7: { line: "A", n: 7, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 6, druid: "D360", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 5, ipuMp: 96, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
+  A9: { line: "A", n: 9, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 6, ipuMp: 128, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
 
-  P3: { line: "P", n: 3, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 6, druid: "D330", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 5, ipuMp: 64, bionz: 2, tdpFloor: 0.05 },
-  P5: { line: "P", n: 5, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, druid: "D360", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 6, ipuMp: 96, bionz: 2, tdpFloor: 0.05 },
-  P7: { line: "P", n: 7, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 6, tdpBase: 7, ipuMp: 128, bionz: 3, tdpFloor: 0.05 },
-  P9: { line: "P", n: 9, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 6, tdpBase: 8, ipuMp: 160, bionz: 3, tdpFloor: 0.05 }
+  P3: { line: "P", n: 3, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 6, druid: "D330", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 5, ipuMp: 64, bionz: 1, mfxCores: 2, tdpFloor: 0.05 },
+  P5: { line: "P", n: 5, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, druid: "D360", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 6, ipuMp: 96, bionz: 1, mfxCores: 2, tdpFloor: 0.05 },
+  P7: { line: "P", n: 7, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 6, tdpBase: 7, ipuMp: 128, bionz: 1, mfxCores: 2, tdpFloor: 0.05 },
+  P9: { line: "P", n: 9, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 6, tdpBase: 8, ipuMp: 160, bionz: 1, mfxCores: 2, tdpFloor: 0.05 }
 };
 
 const BRAND_TEMPLATE = {
@@ -280,6 +285,7 @@ function buildModel(dirName) {
   const maxResHz = gpuTiles >= 4 ? 1200 : gpuTiles ? 480 : 240;
 
   const bionzCores = tier.bionz;
+  const mfxCores = tier.mfxCores;
   const ipuMp = hasIpu ? tier.ipuMp : 0;
 
   const pcieRev = gpuTiles >= 4 ? "PCIe 7.0" : "PCIe 6.0";
@@ -346,7 +352,7 @@ function buildModel(dirName) {
     hnpuTOPS, lpnpuTOPS, gnaTOPS, totalSystemTOPS,
     zamMaxCapacityGB, zamControllers, zamBandwidthGBs, zamLatencyNs, ddr6MaxGB, ddr6Speed,
     maxDisplays, maxResW, maxResH, maxResHz,
-    bionzCores, ipuMp,
+    bionzCores, mfxCores, ipuMp,
     pcieRev, tbVersion, usbSpec, wifiGen, wifiChips, bluetooth, cellular, cellularPresent, killerS1Count,
     sortClusters, sortRayBudget, sortMaxSources, totalL2MB,
     tdp: { floor, efficiency, balanced, performance, unleashed, unlocked },

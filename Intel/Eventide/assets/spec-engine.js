@@ -145,13 +145,13 @@
     // left-aligned (no empty sockets drawn — less memory just means a
     // physically smaller memory strip). ----
     var zamEntry = byId.zam;
-    var zamModuleCount = zamEntry ? Math.min(4, S.zamModules(zamEntry.t.capacityGB)) : 0;
+    var zamModuleCount = zamEntry ? Math.min(4, S.zamModules(zamEntry.t.capacityGB, zamEntry.t.moduleGB)) : 0;
     var zamRowH = zamEntry ? S.ZAM_ROW_H : 0;
     var zamModuleW = zamEntry ? nocW / 4 : 0;
     if (zamEntry) {
       var zamY = y0 + nocH;
       for (var s = 0; s < zamModuleCount; s++) {
-        emit({ id: "zam", meta: zamEntry.meta, index: s, count: zamModuleCount },
+        emit({ id: "zam", meta: zamEntry.meta, model: zamEntry.t.model, index: s, count: zamModuleCount },
           { x: x0 + s * zamModuleW, y: zamY, w: zamModuleW, h: zamRowH });
       }
     }
@@ -304,7 +304,8 @@
       var labelText = p.count > 1 ? baseLabel + " " + (p.index + 1) : baseLabel;
       var subLabel = (p.meta.node.match(/Intel [\w.-]+/) || [p.meta.category])[0].replace("Intel ", "");
       var g = makeTileGroup(p.id, p.meta, p.x, p.y, p.w, p.h, labelText, subLabel);
-      addLegend(p.id, p.meta, p.count);
+      var legendMeta = p.model ? Object.assign({}, p.meta, { name: p.model }) : p.meta;
+      addLegend(p.id, legendMeta, p.count);
 
       if (p.meta.stacked && p.meta.stackTileId) {
         var stackMeta = window.EventideTiles.CATALOG[p.meta.stackTileId];

@@ -141,7 +141,7 @@
             { label: 'Lunar Eclipse', path: '/Intel/Eventide/CPU/LunarEclipse' },
             { label: 'Darkmont', path: '/Intel/Eventide/CPU/Darkmont' }
           ],
-          'Products': [
+          'Core': [
             {
               label: 'Core 500',
               items: [
@@ -218,6 +218,34 @@
                 { label: 'Core™ Xeon® 9 597HX', path: '/Intel/Eventide/SKU/X9-597HX' },
                 { label: 'Core™ Xeon® 9 598HK', path: '/Intel/Eventide/SKU/X9-598HK' },
                 { label: 'Core™ Xeon® 9 599HKX', path: '/Intel/Eventide/SKU/X9-599HKX' }
+              ]
+            }
+          ],
+          'Atom': [
+            {
+              label: 'Atom 500',
+              items: [
+                { label: 'Atom™ 3 533U', path: '/Intel/Eventide/SKU/A3-533U' },
+                { label: 'Atom™ 3 534V', path: '/Intel/Eventide/SKU/A3-534V' },
+                { label: 'Atom™ 5 553U', path: '/Intel/Eventide/SKU/A5-553U' },
+                { label: 'Atom™ 5 554V', path: '/Intel/Eventide/SKU/A5-554V' },
+                { label: 'Atom™ 7 573U', path: '/Intel/Eventide/SKU/A7-573U' },
+                { label: 'Atom™ 7 574V', path: '/Intel/Eventide/SKU/A7-574V' },
+                { label: 'Atom™ 9 593U', path: '/Intel/Eventide/SKU/A9-593U' },
+                { label: 'Atom™ 9 594V', path: '/Intel/Eventide/SKU/A9-594V' }
+              ]
+            },
+            {
+              label: 'Atom Ultra 500',
+              items: [
+                { label: 'Atom™ Ultra 3 533H', path: '/Intel/Eventide/SKU/P3-533H' },
+                { label: 'Atom™ Ultra 3 534DX', path: '/Intel/Eventide/SKU/P3-534DX' },
+                { label: 'Atom™ Ultra 5 553H', path: '/Intel/Eventide/SKU/P5-553H' },
+                { label: 'Atom™ Ultra 5 554DX', path: '/Intel/Eventide/SKU/P5-554DX' },
+                { label: 'Atom™ Ultra 7 573H', path: '/Intel/Eventide/SKU/P7-573H' },
+                { label: 'Atom™ Ultra 7 574DX', path: '/Intel/Eventide/SKU/P7-574DX' },
+                { label: 'Atom™ Ultra 9 593H', path: '/Intel/Eventide/SKU/P9-593H' },
+                { label: 'Atom™ Ultra 9 594DX', path: '/Intel/Eventide/SKU/P9-594DX' }
               ]
             }
           ],

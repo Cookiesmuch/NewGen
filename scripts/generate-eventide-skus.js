@@ -493,6 +493,7 @@ function sectionPackage(m) {
 }
 
 function affinityChart(m) {
+  const isPhone = m.line === "A" || m.line === "P";
   const t = m.tdp;
   const tiers = [
     { label: "Supersaver", v: t.floor, ctx: "Battery" },
@@ -515,7 +516,7 @@ function affinityChart(m) {
     const active = tier.v != null;
     const x0 = xOf(0.35);
     const x1 = active ? xOf(tier.v) : x0;
-    const color = i === 4 ? "#9333EA" : "#F0B848";
+    const color = isPhone ? (i === 4 ? "#22D3EE" : "#3B82F6") : (i === 4 ? "#9333EA" : "#F0B848");
     return `
       <text x="${padL - 14}" y="${y + 14}" font-family="sans-serif" font-size="12" font-weight="600" fill="${active ? "#fff" : "rgba(255,255,255,0.35)"}" text-anchor="end">${tier.label}</text>
       <text x="${padL - 14}" y="${y + 26}" font-family="monospace" font-size="8.5" fill="rgba(255,255,255,0.4)" text-anchor="end" letter-spacing="0.06em">${tier.ctx.toUpperCase()}</text>
@@ -604,18 +605,24 @@ const SECTIONS = [
 ];
 
 function buildTileConfig(m) {
+  const isPhone = m.line === "A" || m.line === "P";
   const tiles = m.hasKacheKore ? [{ id: "kachekore" }] : [];
   if (m.computeTiles > 0) tiles.push({ id: "compute", count: m.computeTiles, coresPerTile: m.uhpPerTile + m.dpPerTile + m.spePerTile });
-  if (m.hasLpIsland) tiles.push({ id: "lpisland" });
+  if (m.hasLpIsland) tiles.push({ id: "lpisland", cores: m.uheCores + m.lpeCores });
   if (m.hasDruid) tiles.push({ id: "druid", xeCores: m.druidXeCores, model: m.druidModel });
-  if (m.hasBionz) tiles.push({ id: "bionzxr" });
+  if (m.hasBionz) tiles.push({ id: "bionzxr", cores: isPhone ? m.bionzCores : undefined });
   if (m.hasHnpu) tiles.push({ id: "hnpu" });
   if (m.gpuTiles > 0) tiles.push({ id: "gpu", count: m.gpuTiles, xe5: m.xe5PerTile, model: m.gpuModel });
   tiles.push({ id: "kanvas2d" });
-  if (m.hasZam) tiles.push({ id: "zam", capacityGB: m.zamMaxCapacityGB });
-  tiles.push({ id: "klangkerne" }, { id: "io" }, { id: "psm" }, { id: "killers1", count: m.killerS1Count });
+  if (m.hasZam) tiles.push({ id: "zam", capacityGB: m.zamMaxCapacityGB, model: isPhone ? "LPDDR6X" : undefined, moduleGB: isPhone ? 7 : undefined });
+  tiles.push(
+    { id: "klangkerne" },
+    { id: "io", compact: isPhone },
+    { id: "psm" },
+    { id: "killers1", count: m.killerS1Count, compact: isPhone && m.killerS1Count === 1 }
+  );
   if (m.hasIpu) tiles.push({ id: "ipu" });
-  tiles.push({ id: "mfx" }, { id: "gna" }, { id: "display" }, { id: "threaddirector" });
+  tiles.push({ id: "mfx", cores: m.mfxCores }, { id: "gna" }, { id: "display" }, { id: "threaddirector" });
   return tiles;
 }
 
@@ -682,6 +689,47 @@ function buildTileSpecs(m) {
   return specs;
 }
 
+/* spec-engine.css's theme is driven by CSS custom properties scoped on
+   .ev-spec (--ev-dusk/--ev-gold/--ev-purple/etc.), except for ~15 spots that
+   hardcode the literal gold (240,184,72) / purple (147,51,234) rgba triplets
+   directly rather than referencing the vars (ambient grid glow, badge fills,
+   stat-block borders, section-head/row/cap-card hover, help-button chrome,
+   tdp-note bubble). Atom SKU pages need both: the var redeclarations handle
+   text/border colors, and these literal re-declarations catch the
+   hardcoded-rgba spots so the palette actually changes everywhere. */
+function atomPaletteOverrideCss(m) {
+  if (m.line !== "A" && m.line !== "P") return "";
+  return `<style>
+.ev-spec {
+  --ev-dusk: #0A1628; --ev-dusk-2: #0F2038; --ev-panel: #0F2038; --ev-panel-2: #142A47;
+  --ev-gold: #3B82F6; --ev-gold-dim: #2563EB; --ev-purple: #22D3EE; --ev-blue: #0068B5;
+}
+.ev-spec { background:
+    radial-gradient(ellipse 1400px 700px at 50% 0px, rgba(59,130,246,0.09) 0%, transparent 70%),
+    radial-gradient(ellipse 70% 45% at 18% 10%, rgba(34,211,238,0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 55% at 85% 85%, rgba(59,130,246,0.08) 0%, transparent 55%),
+    linear-gradient(180deg, var(--ev-dusk) 0%, #0D1A2E 55%, var(--ev-dusk) 100%),
+    repeating-linear-gradient(0deg, transparent, transparent 63px, rgba(59,130,246,0.055) 63px, rgba(59,130,246,0.055) 64px),
+    repeating-linear-gradient(90deg, transparent, transparent 63px, rgba(59,130,246,0.055) 63px, rgba(59,130,246,0.055) 64px),
+    repeating-linear-gradient(0deg, transparent, transparent 15px, rgba(59,130,246,0.02) 15px, rgba(59,130,246,0.02) 16px),
+    repeating-linear-gradient(90deg, transparent, transparent 15px, rgba(59,130,246,0.02) 15px, rgba(59,130,246,0.02) 16px);
+}
+.ev-eyebrow { background: rgba(59,130,246,0.05); }
+.ev-badge.gold { background: rgba(59,130,246,0.10); border-color: rgba(59,130,246,0.32); }
+.ev-badge.purple { color: #A5F3FC; background: rgba(34,211,238,0.12); border-color: rgba(34,211,238,0.35); }
+.ev-stats { background: rgba(21,12,38,0.55); border: 1px solid rgba(59,130,246,0.22); }
+.ev-stat { border-right: 1px solid rgba(59,130,246,0.14); }
+.ev-diemap-hint { background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.35); }
+.ev-section-head { background: rgba(59,130,246,0.04); }
+.ev-section-head:hover { background: rgba(59,130,246,0.08); }
+.ev-row:hover { background: rgba(59,130,246,0.03); }
+.ev-cap-card:hover { border-color: rgba(59,130,246,0.4); }
+.ev-help-btn { border: 1px solid rgba(59,130,246,0.5); background: rgba(59,130,246,0.08); }
+.ev-help-btn:hover { background: rgba(59,130,246,0.22); }
+.ev-help-pop { background: #0F2038; border: 1px solid rgba(59,130,246,0.4); }
+</style>`;
+}
+
 function render(dirName, m, summary) {
   const badges = [
     { cls: "gold", text: BRAND_BADGE(m) },
@@ -726,6 +774,7 @@ function render(dirName, m, summary) {
 <style>@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
 :root { --font-display:'Bebas Neue',sans-serif; --font-body:'Space Grotesk',sans-serif; --font-mono:'IBM Plex Mono',monospace; }
 </style>
+${atomPaletteOverrideCss(m)}
 </head>
 <body>
   <a class="back-button" href="../../">← Back to Overview</a>
