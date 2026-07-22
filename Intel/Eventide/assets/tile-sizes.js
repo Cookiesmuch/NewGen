@@ -169,18 +169,36 @@
   var IO_COMPACT_NM = { w: 2500000, h: 2900000 };     // ~0.56x the default — phone has no/little PCIe
   var KILLERS1_COMPACT_NM = { w: 3100000, h: 3500000 }; // ~0.67x the default — single-radio S1
 
-  /* ---- ZAM / LPDDR6X memory modules — ONE fixed real physical box, the
-     same literal size on every SKU and both memory families (Core's ZAM,
-     Atom's LPDDR6X share the box — same Foveros TSV-stack mounting
-     mechanism per the tile-catalog fiction). Density (GB per module)
-     varies by product line/generation — that's `moduleGB`, supplied by
-     the caller — but the housing itself never stretches; only the
-     module COUNT (capacityGB / moduleGB) changes what you see. This
+  /* ---- ZAM / LPDDR6X memory modules — a fixed real physical box, the
+     same literal size on every SKU within its memory family. Density (GB
+     per module) varies by product line/generation — that's `moduleGB`,
+     supplied by the caller — but the housing itself never stretches; only
+     the module COUNT (capacityGB / moduleGB) changes what you see. This
      mirrors how real RAM packages work: a stick's physical size doesn't
-     grow with the density of the dies stacked inside it. ---- */
-  var ZAM_MODULE_NM = { w: 4600000, h: 5200000 };
+     grow with the density of the dies stacked inside it.
+
+     Two families, two boxes (they are physically different packages —
+     Core's ZAM is a tall Foveros TSV die-stack; Atom's LPDDR6X is a
+     smaller phone-class package):
+
+       ZAM_MODULE_NM  — Core / Core Ultra / Xeon 500. CALIBRATED so the
+         flagship X9-599HKX's full 2 TB config (8× 256 GB modules) spans
+         the flagship's exact tile-grid width (~1489.6px == nocW). That
+         flagship 8-die line is the stated basis for how big ZAM is; every
+         other Core-line SKU uses this same fixed module, so its shorter
+         memory row simply covers less of the package (base-die fill takes
+         the remainder). 8·w + 7·GAP == 1489.6px  =>  w == 9.52e6 nm.
+       LPDDR6X_MODULE_NM — Atom / Atom Ultra 500. A smaller phone-class
+         package (a phone's LPDDR stack is physically far smaller than a
+         server ZAM die-stack), sized so a dense Atom's row reads in scale
+         with its small logic die rather than dwarfing it. ---- */
+  var ZAM_MODULE_NM     = { w: 9520000, h: 6000000 };  // Core ZAM — flagship-calibrated (8 span X9-599HKX)
+  var LPDDR6X_MODULE_NM = { w: 5300000, h: 5200000 };  // Atom LPDDR6X — phone-class package
   var ZAM_MODULE_GB = 256; // Core-derived default density; Atom passes its own (phone-realistic) moduleGB
-  function zamModuleBox() { return nm2(ZAM_MODULE_NM.w, ZAM_MODULE_NM.h); }
+  function zamModuleBox(model) {
+    var b = (model === "LPDDR6X") ? LPDDR6X_MODULE_NM : ZAM_MODULE_NM;
+    return nm2(b.w, b.h);
+  }
   function zamModules(capacityGB, moduleGB) {
     return Math.max(1, Math.round(capacityGB / (moduleGB || ZAM_MODULE_GB)));
   }

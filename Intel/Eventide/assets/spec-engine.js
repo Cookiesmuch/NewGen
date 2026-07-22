@@ -152,10 +152,13 @@
     var nocH = fullTree ? fullTree.h : 0;
     if (fullTree) fullTree.place(M, M);
 
-    // ---- ZAM/LPDDR6X: real fixed-size modules in a row below the NoC,
-    // at their own true width — see comment above. ----
+    // ---- ZAM/LPDDR6X: real fixed-size modules in a row below the NoC, at
+    // their own true width. The Core ZAM box is calibrated so the flagship's
+    // 8-module row exactly spans the tile grid; lower SKUs' shorter rows
+    // simply cover less of the package, and the base-die fill below takes
+    // the remainder — see tile-sizes.js. ----
     var zamEntry = byId.zam;
-    var zamBox = S.zamModuleBox();
+    var zamBox = S.zamModuleBox(zamEntry && zamEntry.t.model);
     var zamCount = zamEntry ? S.zamModules(zamEntry.t.capacityGB, zamEntry.t.moduleGB) : 0;
     if (zamEntry) {
       var zamY = M + nocH + GAP;
@@ -170,7 +173,77 @@
     var zamRowW = zamCount ? zamCount * zamBox.w + (zamCount - 1) * GAP : 0;
     var totalW = Math.max(nocW, zamRowW) + M * 2;
     var totalH = nocH + (zamEntry ? GAP + zamBox.h : 0) + M * 2;
-    return { placed: placed, ghostSlots: [], width: totalW, height: totalH };
+
+    /* ---- Base-die fill (the Foveros "magic") -------------------------------
+       Real Foveros packages don't tessellate their functional tiles into a
+       seamless rectangle — the tiles sit on a base die / interposer that IS
+       the rectangle, and every square micron the tiles don't cover is passive
+       structural silicon, not empty space. That's how you get all three at
+       once: exact fixed tile sizes (no stretching), a perfect rectangle
+       outline (the base die), and no visible voids (the base die fills the
+       rest). We reproduce it here: after the true-size tiles are placed, we
+       decompose every remaining rectangle inside the package into base-die
+       cells. Grid-cut on every tile edge (so each grid cell is wholly covered
+       or wholly empty), then greedily merge empty cells into maximal
+       rectangles. Sub-GAP slivers between adjacent tiles are left to the
+       substrate (they already read as base die); only meaningful leftover
+       regions become explicit structural-silicon blocks. ---- */
+    var fillers = computeBaseDie(placed, M, M, totalW - M, totalH - M);
+
+    return { placed: placed, fillers: fillers, ghostSlots: [], width: totalW, height: totalH };
+  }
+
+  /* Decompose [x0,y0]-[x1,y1] minus every rect in `placed` into a small set of
+     maximal empty rectangles (base-die fill). O(edges^2) — trivial for ~20
+     tiles, runs once per render. */
+  function computeBaseDie(placed, x0, y0, x1, y1) {
+    var MIN_FILL = 12; // ignore inter-tile slivers this thin — substrate covers them
+    var xsSet = {}, ysSet = {};
+    xsSet[x0] = xsSet[x1] = true; ysSet[y0] = ysSet[y1] = true;
+    placed.forEach(function (p) {
+      if (p.x > x0) xsSet[p.x] = true;
+      if (p.x + p.w < x1) xsSet[p.x + p.w] = true;
+      if (p.y > y0) ysSet[p.y] = true;
+      if (p.y + p.h < y1) ysSet[p.y + p.h] = true;
+    });
+    var xs = Object.keys(xsSet).map(Number).sort(function (a, b) { return a - b; });
+    var ys = Object.keys(ysSet).map(Number).sort(function (a, b) { return a - b; });
+    var nc = xs.length - 1, nr = ys.length - 1;
+    if (nc < 1 || nr < 1) return [];
+
+    function cellEmpty(i, j) {
+      var cx = (xs[i] + xs[i + 1]) / 2, cy = (ys[j] + ys[j + 1]) / 2;
+      for (var k = 0; k < placed.length; k++) {
+        var p = placed[k];
+        if (cx > p.x && cx < p.x + p.w && cy > p.y && cy < p.y + p.h) return false;
+      }
+      return true;
+    }
+    var empty = [], used = [];
+    for (var j = 0; j < nr; j++) {
+      empty[j] = []; used[j] = [];
+      for (var i = 0; i < nc; i++) { empty[j][i] = cellEmpty(i, j); used[j][i] = false; }
+    }
+
+    var out = [];
+    for (var jj = 0; jj < nr; jj++) {
+      for (var ii = 0; ii < nc; ii++) {
+        if (!empty[jj][ii] || used[jj][ii]) continue;
+        // extend right along this row
+        var i2 = ii;
+        while (i2 + 1 < nc && empty[jj][i2 + 1] && !used[jj][i2 + 1]) i2++;
+        // extend down while the whole [ii..i2] span stays empty+unused
+        var j2 = jj, ok = true;
+        while (ok && j2 + 1 < nr) {
+          for (var k = ii; k <= i2; k++) { if (!empty[j2 + 1][k] || used[j2 + 1][k]) { ok = false; break; } }
+          if (ok) j2++;
+        }
+        for (var a = jj; a <= j2; a++) for (var b = ii; b <= i2; b++) used[a][b] = true;
+        var rx = xs[ii], ry = ys[jj], rw = xs[i2 + 1] - xs[ii], rh = ys[j2 + 1] - ys[jj];
+        if (rw >= MIN_FILL && rh >= MIN_FILL) out.push({ x: rx, y: ry, w: rw, h: rh });
+      }
+    }
+    return out;
   }
 
   function typeText(node, text, speed) {
@@ -272,6 +345,27 @@
       class: "ev-package-substrate", x: pad, y: pad, width: layout.width - pad * 2, height: layout.height - pad * 2, rx: 26
     });
     svg.appendChild(substrate);
+
+    /* Base-die / structural-silicon fill: the passive interposer showing
+       through wherever no functional tile sits. Drawn right on top of the
+       substrate (behind every tile, ball and trace) so the whole package
+       reads as one solid rectangle of silicon with the tiles mounted on it —
+       no empty voids, exact tile sizes preserved. A faint diagonal hatch
+       pattern sells it as real structural silicon rather than dead space. */
+    var hatchId = "ev-basedie-hatch";
+    var defs = el("defs", {});
+    var pat = el("pattern", { id: hatchId, width: "7", height: "7", patternUnits: "userSpaceOnUse", patternTransform: "rotate(45)" });
+    pat.appendChild(el("rect", { width: "7", height: "7", fill: "rgba(150,140,180,0.05)" }));
+    pat.appendChild(el("line", { x1: "0", y1: "0", x2: "0", y2: "7", stroke: "rgba(255,255,255,0.06)", "stroke-width": "1" }));
+    defs.appendChild(pat);
+    svg.appendChild(defs);
+    (layout.fillers || []).forEach(function (f) {
+      svg.appendChild(el("rect", {
+        class: "ev-basedie", x: f.x, y: f.y, width: f.w, height: f.h, rx: 3,
+        fill: "url(#" + hatchId + ")", stroke: "rgba(255,255,255,0.05)", "stroke-width": "1"
+      }));
+    });
+
     var ballLayer = el("g", { class: "ev-package-balls" });
     var ballGap = 26;
     for (var bx = pad + 10; bx < layout.width - pad; bx += ballGap) {
