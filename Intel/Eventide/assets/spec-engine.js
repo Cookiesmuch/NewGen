@@ -229,9 +229,12 @@
          spills past the tile edges; sublabel only on tiles big enough for two
          lines. Tiny tiles show no text at all — hover reveals the callout. */
       var minDim = Math.min(w, h);
-      var fs = Math.max(6, Math.min(13, minDim * 0.16, (w - 8) / (labelText.length * 0.56)));
-      var showLabel = w > 26 && h > 18;
-      var showSub = subLabel && h > 46 && fs >= 8;
+      var fitFs = (w - 6) / (labelText.length * 0.56); // font size at which the label exactly fits the width
+      var fs = Math.max(6, Math.min(13, minDim * 0.16, fitFs));
+      // Only draw the label if it actually fits inside the tile at a legible
+      // size — otherwise leave the tile clean and let hover reveal the callout.
+      var showLabel = w > 24 && h > 16 && fitFs >= 5.5;
+      var showSub = showLabel && subLabel && h > 46 && fs >= 8;
       var midY = y + h / 2 + accentH / 2;
       if (showLabel) {
         var label = el("text", { class: "ev-tile-label", x: x + w / 2, y: showSub ? midY - 2 : midY + fs * 0.34, "font-size": fs });

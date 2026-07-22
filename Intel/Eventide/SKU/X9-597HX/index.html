@@ -59,7 +59,7 @@
 <div class="ev-row"><div class="ev-row-key">Lithography (Efficiency — LP Island) <span class="ev-help-btn" data-term="BionzXR">?<span class="ev-help-pop">QuickSync BionzXR — Intel × Sony's flagship media encode/decode engine, including the industry's first shipping AV2 hardware encoder.</span></span></div><div class="ev-row-val">Intel 06E (0.6nm-class FinFlex GAA) <span class="note">· LP Island cores, Arc Druid, BionzXR, LPNPU</span></div></div>
 <div class="ev-row"><div class="ev-row-key">Lithography (Ancillary) <span class="ev-help-btn" data-term="2DKR">?<span class="ev-help-pop">2D Kanvas Renderer — a shader-free 2D compositing tile that lets 3D GPU tiles power down entirely at idle.</span></span></div><div class="ev-row-val">Intel 14A-E <span class="note">· MFX, IPU, 2DKR, I/O, Klangkerne, PSM, Killer S1, Display, GNA</span></div></div>
 <div class="ev-row"><div class="ev-row-key">Package Interconnect <span class="ev-help-btn" data-term="FOveros 2.0">?<span class="ev-help-pop">Intel's photonic tile-to-tile interconnect, co-developed with Lightmatter (USA). Replaces copper die-to-die links with on-package optical signaling.</span></span></div><div class="ev-row-val">Intel FOveros 2.0 (FiberOptic-VEROS) — photonic; co-developed with Lightmatter (USA)</div></div>
-<div class="ev-row"><div class="ev-row-key">Total Tiles on Package</div><div class="ev-row-val">20</div></div>
+<div class="ev-row"><div class="ev-row-key">Total Tiles on Package</div><div class="ev-row-val">24</div></div>
 <div class="ev-row"><div class="ev-row-key">Recommended Customer Price</div><div class="ev-row-val">Contact OEM <span class="note">(Xeon-class SKU is OEM/SI channel)</span></div></div></div>
 </div>
 <div class="ev-section">
@@ -150,9 +150,9 @@
 </div>
 <div class="ev-section">
   <div class="ev-section-head"><span class="ev-section-head-label">Memory Specifications</span><span class="ev-section-head-icon ">▼</span></div>
-  <div class="ev-section-body "><div class="ev-row"><div class="ev-row-key">Primary Memory Type <span class="ev-help-btn" data-term="ZAM">?<span class="ev-help-pop">Z-Angle Memory — Intel's on-package, FOveros-stacked memory subsystem.</span></span></div><div class="ev-row-val">Intel® Z-Angle Memory (ZAM) · FOveros-mounted on-package memory · base config on every SKU</div></div>
+  <div class="ev-section-body "><div class="ev-row"><div class="ev-row-key">Primary Memory Type <span class="ev-help-btn" data-term="ZAM">?<span class="ev-help-pop">Z-Angle Memory — Intel's on-package, FOveros-stacked memory subsystem.</span></span></div><div class="ev-row-val">Intel® Z-Angle Memory (ZAM) · FOveros-mounted on-package memory</div></div>
 <div class="ev-row"><div class="ev-row-key">ZAM Architecture <span class="ev-help-btn" data-term="ZAM">?<span class="ev-help-pop">Z-Angle Memory — Intel's on-package, FOveros-stacked memory subsystem.</span></span></div><div class="ev-row-val">Vertical-stack, TSV-interconnected chips mounted directly on the FOveros 2.0 substrate</div></div>
-<div class="ev-row"><div class="ev-row-key">ZAM Controllers <span class="ev-help-btn" data-term="ZAM">?<span class="ev-help-pop">Z-Angle Memory — Intel's on-package, FOveros-stacked memory subsystem.</span></span></div><div class="ev-row-val">undefined ZAM controllers, 2–3 TB/s each</div></div>
+<div class="ev-row"><div class="ev-row-key">ZAM Controllers <span class="ev-help-btn" data-term="ZAM">?<span class="ev-help-pop">Z-Angle Memory — Intel's on-package, FOveros-stacked memory subsystem.</span></span></div><div class="ev-row-val">2× dual-channel ZAM controllers, 2–3 TB/s each</div></div>
 <div class="ev-row"><div class="ev-row-key">Max ZAM Capacity <span class="ev-help-btn" data-term="ZAM">?<span class="ev-help-pop">Z-Angle Memory — Intel's on-package, FOveros-stacked memory subsystem.</span></span></div><div class="ev-row-val">1 TB + inline ECC</div></div>
 <div class="ev-row"><div class="ev-row-key">ZAM Bandwidth <span class="ev-help-btn" data-term="ZAM">?<span class="ev-help-pop">Z-Angle Memory — Intel's on-package, FOveros-stacked memory subsystem.</span></span></div><div class="ev-row-val">4,813 GB/s aggregate</div></div>
 <div class="ev-row"><div class="ev-row-key">ZAM Latency (raw) <span class="ev-help-btn" data-term="ZAM">?<span class="ev-help-pop">Z-Angle Memory — Intel's on-package, FOveros-stacked memory subsystem.</span></span></div><div class="ev-row-val">~+40% vs GDDR7 <span class="note">· masked for hot data by Kache Kore™ (~8ns)</span></div></div>
@@ -193,7 +193,7 @@
 </div>
 <div class="ev-section">
   <div class="ev-section-head"><span class="ev-section-head-label">Graphics — Arc Druid (LP)</span><span class="ev-section-head-icon ">▼</span></div>
-  <div class="ev-section-body "><div class="ev-section-intro">Arc® Druid is the always-on, low-power iGPU built into every LP Island — capable of driving the full desktop and light 3D without ever spinning up a Compute Tile or an Elementalist GPU tile.</div><div class="ev-row"><div class="ev-row-key">Graphics Tile</div><div class="ev-row-val">Intel® Arc® Druid D390 LP</div></div>
+  <div class="ev-section-body "><div class="ev-section-intro">Arc® Druid is the low-power iGPU — a dedicated Xe4E tile capable of driving the full desktop and light 3D without ever spinning up a Compute Tile or an Elementalist GPU tile. On Core i500 it is the ONLY graphics on the package (no Elementalist); the F-suffix removes it entirely, requiring a discrete GPU.</div><div class="ev-row"><div class="ev-row-key">Graphics Tile</div><div class="ev-row-val">Intel® Arc® Druid D390 LP</div></div>
 <div class="ev-row"><div class="ev-row-key">Process Node</div><div class="ev-row-val">Intel 06E</div></div>
 <div class="ev-row"><div class="ev-row-key">Xe4E-Cores</div><div class="ev-row-val">14</div></div>
 <div class="ev-row"><div class="ev-row-key">Shading Units</div><div class="ev-row-val">3,584</div></div>

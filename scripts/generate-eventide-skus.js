@@ -56,7 +56,7 @@ function sectionEssentials(m) {
     ["Lithography (Efficiency — LP Island)", `Intel 06E (0.6nm-class FinFlex GAA) <span class="note">· LP Island cores, Arc Druid, BionzXR, LPNPU</span>`],
     ["Lithography (Ancillary)", `Intel 14A-E <span class="note">· MFX, IPU, 2DKR, I/O, Klangkerne, PSM, Killer S1, Display, GNA</span>`],
     ["Package Interconnect", "Intel FOveros 2.0 (FiberOptic-VEROS) — photonic; co-developed with Lightmatter (USA)"],
-    ["Total Tiles on Package", m.computeTiles + m.gpuTiles + 12 + (m.computeTiles ? 0 : 0)],
+    ["Total Tiles on Package", buildTileConfig(m).reduce((n, t) => n + (t.count || 1), 0)],
     ["Recommended Customer Price", m.priceUsd ? "$" + fmt(m.priceUsd) + " USD" : "Contact OEM <span class=\"note\">(Xeon-class SKU is OEM/SI channel)</span>"]
   ]);
 }
@@ -66,17 +66,17 @@ function sectionCpu(m) {
     ["Total Physical Cores", fmt(m.totalPhysicalCores)],
     ["Total Logical Threads", fmt(m.totalThreads)],
     ["Compute Tiles", m.computeTiles],
-    ["Total UHP Cores (Solar Eclipse)", m.computeTiles ? fmt(m.uhpTotal) : "Not present"],
-    ["Total DP Cores (Sunset Cove)", m.computeTiles ? fmt(m.dpTotal) : "Not present"],
-    ["Total SPE Cores (Venusmont)", m.computeTiles ? fmt(m.speTotal) : "Not present"],
-    ["Total UHE Cores (Lunar Eclipse)", m.uheCores],
-    ["Total LPE Cores (Darkmont)", m.lpeCores],
-    ["UHP Base / Max Turbo", m.computeTiles ? `${m.uhpBase} GHz / ${m.uhpTurbo} GHz` : "—"],
-    ["UHP V8 HyperBOOST (peak)", m.computeTiles ? `${m.hyperboost} GHz <span class="note">· all 8 UHP cores, Ford-inspired V8 firing sequence 1-4-6-3-8-5-7-2, 8–40ms burst window, Unleashed AFFINITY™ only — requires external PSU + cooler, auto-disabled on battery</span>` : "—"],
-    ["DP Base / Max Turbo", m.computeTiles ? `${m.dpBase} GHz / ${m.dpTurbo} GHz` : "—"],
-    ["SPE Base / Max Turbo", m.computeTiles ? `${m.speBase} GHz / ${m.speTurbo} GHz` : "—"],
-    ["UHE Base / Max Turbo", `${m.uheBase} GHz / ${m.uheTurbo} GHz`],
-    ["LPE Base / Max Turbo", `${m.lpeBase} GHz / ${m.lpeTurbo} GHz`],
+    ["Total UHP Cores (Solar Eclipse)", m.uhpTotal ? fmt(m.uhpTotal) : "Not present"],
+    ["Total DP Cores (Sunset Cove)", m.dpTotal ? fmt(m.dpTotal) : "Not present"],
+    ["Total SPE Cores (Venusmont)", m.speTotal ? fmt(m.speTotal) : (m.computeTiles ? "Not present <span class=\"note\">· Core i500 Compute Tile is UHP + DP only</span>" : "Not present")],
+    ["Total UHE Cores (Lunar Eclipse)", m.hasLpIsland ? m.uheCores : "Not present <span class=\"note\">· no LP Island on Core i500</span>"],
+    ["Total LPE Cores (Darkmont)", m.hasLpIsland ? m.lpeCores : "Not present"],
+    ["UHP Base / Max Turbo", m.uhpTotal ? `${m.uhpBase} GHz / ${m.uhpTurbo} GHz` : "—"],
+    ["UHP V8 HyperBOOST (peak)", m.uhpTotal ? `${m.hyperboost} GHz <span class="note">· all 8 UHP cores, Ford-inspired V8 firing sequence 1-4-6-3-8-5-7-2, 8–40ms burst window, Unleashed AFFINITY™ only — requires external PSU + cooler, auto-disabled on battery</span>` : "—"],
+    ["DP Base / Max Turbo", m.dpTotal ? `${m.dpBase} GHz / ${m.dpTurbo} GHz` : "—"],
+    ["SPE Base / Max Turbo", m.speTotal ? `${m.speBase} GHz / ${m.speTurbo} GHz` : null],
+    ["UHE Base / Max Turbo", m.uheBase ? `${m.uheBase} GHz / ${m.uheTurbo} GHz` : null],
+    ["LPE Base / Max Turbo", m.lpeBase ? `${m.lpeBase} GHz / ${m.lpeTurbo} GHz` : null],
     ["Overclocking", m.unlocked ? "Yes — UHP, DP, SPE; per-tile granular multiplier unlock" : "No — locked multiplier"],
     ["Instruction Set Extensions", "AVX2, AVX-512 (UHP/DP only), AMX-Tile, AMX-INT8, AMX-BF16, AES-NI, SHA-NI"],
     ["Instruction Set", "64-bit"],
@@ -144,20 +144,20 @@ function sectionLpIsland(m) {
 
 function sectionCache(m) {
   return rows([
-    ["L0 (UHP, per core)", m.computeTiles ? "96 KB instruction + 64 KB data" : "—"],
-    ["L0 (DP, per core)", m.computeTiles ? "128 KB instruction + 80 KB data" : "—"],
-    ["L0 (UHE, per core)", "48 KB instruction buffer"],
-    ["L1 (UHP/DP, per core)", m.computeTiles ? "256 KB" : "—"],
-    ["L1 (SPE, per 9-core cluster)", m.computeTiles ? "128 KB shared" : "—"],
-    ["L1 (UHE, per core)", "128 KB"],
-    ["L1 (LPE, per 4-core cluster)", "128 KB shared"],
-    ["L2 (UHP, per core)", m.computeTiles ? "4 MB" : "—"],
-    ["L2 (DP, per core)", m.computeTiles ? "6 MB" : "—"],
-    ["L2 (SPE, per 9-core cluster)", m.computeTiles ? "2 MB shared" : "—"],
-    ["L2 (UHE, per core)", "3 MB"],
-    ["L2 (LPE, per 4-core cluster)", "1 MB shared"],
-    ["L3 (Compute Tile, shared)", m.computeTiles ? `${m.l3PerComputeTile} MB per tile · ${m.l3Total} MB total (${m.computeTiles} tiles)` : "Not present"],
-    ["L3 (LP Island, shared)", `${m.l3LPIsland} MB (Kache Kore™ shared)`],
+    ["L0 (UHP, per core)", m.uhpTotal ? "96 KB instruction + 64 KB data" : null],
+    ["L0 (DP, per core)", m.dpTotal ? "128 KB instruction + 80 KB data" : null],
+    ["L0 (UHE, per core)", m.hasLpIsland ? "48 KB instruction buffer" : null],
+    ["L1 (UHP/DP, per core)", m.computeTiles ? "256 KB" : null],
+    ["L1 (SPE, per 9-core cluster)", m.speTotal ? "128 KB shared" : null],
+    ["L1 (UHE, per core)", m.hasLpIsland ? "128 KB" : null],
+    ["L1 (LPE, per 4-core cluster)", m.hasLpIsland ? "128 KB shared" : null],
+    ["L2 (UHP, per core)", m.uhpTotal ? "4 MB" : null],
+    ["L2 (DP, per core)", m.dpTotal ? "6 MB" : null],
+    ["L2 (SPE, per 9-core cluster)", m.speTotal ? "2 MB shared" : null],
+    ["L2 (UHE, per core)", m.hasLpIsland ? "3 MB" : null],
+    ["L2 (LPE, per 4-core cluster)", m.hasLpIsland ? "1 MB shared" : null],
+    ["L3 (Compute Tile, shared)", m.computeTiles ? `${m.l3PerComputeTile} MB per tile · ${m.l3Total} MB total (${m.computeTiles} tile${m.computeTiles > 1 ? "s" : ""})` : "Not present"],
+    ["L3 (LP Island, shared)", m.hasLpIsland ? `${m.l3LPIsland} MB (Kache Kore™ shared)` : null],
     ["Kache Kore™ L4 / bLLC", `${(m.l4KacheGB + " GB")} <span class="note">· shared cache interposer at the physical center of the package</span>`],
     ["Total SRAM Cache (approx.)", `~${m.totalSRAM} MB SRAM + ${(m.l4KacheGB + " GB")} L4 bLLC`],
     ["Kache Kore™ Round-Trip Latency", `${round1(9 + (m.computeTiles ? 0 : 3))} ns typical`]
@@ -165,14 +165,28 @@ function sectionCache(m) {
 }
 
 function sectionMemory(m) {
+  if (!m.hasZam) {
+    /* Core i500 — the classic-CPU tier: conventional DDR6 only, no ZAM, no
+       on-package memory, no Kache-Kore-as-DRAM-cache-layer. */
+    return intro("Core i500 is the conventional-memory tier — it forgoes Eventide's on-package Z-Angle Memory in favour of standard socketed/soldered DDR6, keeping the platform simple and upgradeable like a classic desktop/mobile CPU.") +
+      rows([
+        ["Primary Memory Type", "DDR6 / LPDDR6X (conventional, off-package) — no ZAM on this line"],
+        ["Max DDR6 Capacity", gb(m.ddr6MaxGB)],
+        ["DDR6 Speed", "DDR6-" + m.ddr6Speed + " / LPDDR6X-" + (m.ddr6Speed + 800)],
+        ["Max # of Memory Channels", "2× (dual-channel DDR6)"],
+        ["ECC Memory Support", "In-band ECC (DDR6)"],
+        ["Kache Kore™ L4 / bLLC", m.l4KacheGB + " GB shared LLC in front of DDR6"],
+        ["Intel DirectStorage 2.0", "NVMe → DDR6 → Kache Kore™ bLLC hot data"]
+      ]);
+  }
   return rows([
-    ["Primary Memory Type", "Intel® Z-Angle Memory (ZAM) · FOveros-mounted on-package memory · base config on every SKU"],
+    ["Primary Memory Type", "Intel® Z-Angle Memory (ZAM) · FOveros-mounted on-package memory"],
     ["ZAM Architecture", "Vertical-stack, TSV-interconnected chips mounted directly on the FOveros 2.0 substrate"],
     ["ZAM Controllers", m.zamControllers + " ZAM controllers, 2–3 TB/s each"],
     ["Max ZAM Capacity", gb(m.zamMaxCapacityGB) + " + inline ECC"],
     ["ZAM Bandwidth", fmt(m.zamBandwidthGBs) + " GB/s aggregate"],
     ["ZAM Latency (raw)", "~+40% vs GDDR7 <span class=\"note\">· masked for hot data by Kache Kore™ (~8ns)</span>"],
-    ["DDR6 / LPDDR6X Support", m.ddr6MaxGB ? "3rd dual-channel controller — Core Ultra 500 / Xeon 500 only" : "Not present on this line — ZAM only"],
+    ["DDR6 / LPDDR6X Support", m.ddr6MaxGB ? "3rd dual-channel controller — Core Ultra 500 / Xeon 500 only" : "Not present on this line — ZAM only (on-package)"],
     ["Max DDR6 Capacity", m.ddr6MaxGB ? gb(m.ddr6MaxGB) : "Not applicable"],
     ["DDR6 Speed", m.ddr6MaxGB ? "DDR6-" + m.ddr6Speed + " / LPDDR6X-" + (m.ddr6Speed + 800) : "Not applicable"],
     ["Max Total Memory", m.ddr6MaxGB ? "Up to " + gb(m.zamMaxCapacityGB + m.ddr6MaxGB) + " unified (ZAM + DDR6)" : gb(m.zamMaxCapacityGB) + " unified (ZAM only)"],
@@ -214,7 +228,7 @@ function sectionGraphicsElementalist(m) {
 }
 
 function sectionGraphicsDruid(m) {
-  return intro("Arc® Druid is the always-on, low-power iGPU built into every LP Island — capable of driving the full desktop and light 3D without ever spinning up a Compute Tile or an Elementalist GPU tile.") +
+  return intro("Arc® Druid is the low-power iGPU — a dedicated Xe4E tile capable of driving the full desktop and light 3D without ever spinning up a Compute Tile or an Elementalist GPU tile. On Core i500 it is the ONLY graphics on the package (no Elementalist); the F-suffix removes it entirely, requiring a discrete GPU.") +
     rows([
       ["Graphics Tile", `Intel® Arc® Druid ${m.druidModel}`],
       ["Process Node", "Intel 06E"],
@@ -338,13 +352,13 @@ function sectionAudioPlatform(m) {
 
 function sectionMedia(m) {
   return rows([
-    ["QuickSync BionzXR Cores", m.bionzCores + " cores (Intel 06E) — co-developed with Sony Semiconductor"],
-    ["BionzXR Encode Codecs", "AV2 (world-first hardware encoder), AV1, H.266/VVC, H.265, H.264, VRV1, VRV2, ProRes"],
-    ["BionzXR Decode Codecs", "All encode codecs + VP9, VP8, MPEG-4, VC-1"],
-    ["Max Encode Resolution", "8K120 ProRes; 8K240 AV1; 4K480 AV2"],
-    ["MFX QuickSync (Low-Power)", "AV2, AV1, H.266, H.265, H.264, VP9 decode <span class=\"note\">· ~35% lower power than BionzXR for sustained playback</span>"],
-    ["IPU Version", "Intel IPU 8.2 (Intel 14A-E)"],
-    ["Max Camera Input", fmt(m.ipuMp) + " MP — native USB-C / Thunderbolt sensor ingestion"],
+    ["QuickSync BionzXR Cores", m.hasBionz ? m.bionzCores + " cores (Intel 06E) — co-developed with Sony Semiconductor" : "Not present <span class=\"note\">· BionzXR is Core Ultra 500 / Xeon 500 only</span>"],
+    ["BionzXR Encode Codecs", m.hasBionz ? "AV2 (world-first hardware encoder), AV1, H.266/VVC, H.265, H.264, VRV1, VRV2, ProRes" : null],
+    ["BionzXR Decode Codecs", m.hasBionz ? "All encode codecs + VP9, VP8, MPEG-4, VC-1" : null],
+    ["Max Encode Resolution", m.hasBionz ? "8K120 ProRes; 8K240 AV1; 4K480 AV2" : null],
+    ["MFX QuickSync (Low-Power)", "AV2, AV1, H.266, H.265, H.264, VP9 decode <span class=\"note\">· " + (m.hasBionz ? "~35% lower power than BionzXR for sustained playback" : "the primary media block on this line — decode-focused") + "</span>"],
+    ["IPU Version", m.hasIpu ? "Intel IPU 8.2 (Intel 14A-E)" : "Not present <span class=\"note\">· no camera pipeline on Core 500</span>"],
+    ["Max Camera Input", m.hasIpu ? fmt(m.ipuMp) + " MP — native USB-C / Thunderbolt sensor ingestion" : null],
     ["Intel® Gaussian & Neural Accelerator", "Yes (GNA 5.0) <span class=\"note\">· see AI — GNA section</span>"]
   ]);
 }
@@ -546,15 +560,15 @@ const SECTIONS = [
   { id: "supplemental", label: "Supplemental Information", body: sectionSupplemental },
   { id: "cpu", label: "CPU Specifications", body: sectionCpu, open: true },
   { id: "compute-tile", label: "Compute Tile — Solar Eclipse + Sunset Cove + Venusmont", body: sectionComputeTile, guard: (m) => m.computeTiles > 0 },
-  { id: "lp-island", label: "LP Island Tile", body: sectionLpIsland },
+  { id: "lp-island", label: "LP Island Tile", body: sectionLpIsland, guard: (m) => m.hasLpIsland },
   { id: "cache", label: "Cache Specifications", body: sectionCache },
   { id: "memory", label: "Memory Specifications", body: sectionMemory },
   { id: "gpu-elementalist", label: "Graphics — Elementalist GPU Tile", body: sectionGraphicsElementalist, guard: (m) => m.gpuTiles > 0 },
-  { id: "gpu-druid", label: "Graphics — Arc Druid (LP)", body: sectionGraphicsDruid },
+  { id: "gpu-druid", label: "Graphics — Arc Druid (LP)", body: sectionGraphicsDruid, guard: (m) => m.hasDruid },
   { id: "gpu-kanvas", label: "Graphics — 2DKanvas (2D)", body: sectionGraphicsKanvas },
   { id: "display", label: "Display Engine", body: sectionDisplay },
-  { id: "ai-hnpu", label: "AI — HNPU", body: sectionHnpu },
-  { id: "ai-lpnpu", label: "AI — LPNPU", body: sectionLpnpu },
+  { id: "ai-hnpu", label: "AI — HNPU", body: sectionHnpu, guard: (m) => m.hasNpu },
+  { id: "ai-lpnpu", label: "AI — LPNPU", body: sectionLpnpu, guard: (m) => m.hasNpu },
   { id: "ai-gna", label: "AI — GNA (Audio NPU)", body: sectionGna },
   { id: "audio-klangkerne", label: "Audio — Klangkerne", body: sectionKlangkerne },
   { id: "audio-sort", label: "Audio — SoRT (Sound Ray Tracing)", body: sectionSort },
@@ -571,18 +585,16 @@ const SECTIONS = [
 function buildTileConfig(m) {
   const tiles = [{ id: "kachekore" }];
   if (m.computeTiles > 0) tiles.push({ id: "compute", count: m.computeTiles, coresPerTile: m.uhpPerTile + m.dpPerTile + m.spePerTile });
-  tiles.push(
-    { id: "lpisland" },
-    { id: "druid", xeCores: m.druidXeCores, model: m.druidModel },
-    { id: "bionzxr" },
-    { id: "hnpu" }
-  );
+  if (m.hasLpIsland) tiles.push({ id: "lpisland" });
+  if (m.hasDruid) tiles.push({ id: "druid", xeCores: m.druidXeCores, model: m.druidModel });
+  if (m.hasBionz) tiles.push({ id: "bionzxr" });
+  if (m.hasNpu) tiles.push({ id: "hnpu" });
   if (m.gpuTiles > 0) tiles.push({ id: "gpu", count: m.gpuTiles, xe5: m.xe5PerTile, model: m.gpuModel });
-  tiles.push(
-    { id: "kanvas2d" }, { id: "zam", capacityGB: m.zamMaxCapacityGB }, { id: "klangkerne" },
-    { id: "io" }, { id: "psm" }, { id: "killers1" }, { id: "ipu" },
-    { id: "mfx" }, { id: "gna" }, { id: "display" }, { id: "threaddirector" }
-  );
+  tiles.push({ id: "kanvas2d" });
+  if (m.hasZam) tiles.push({ id: "zam", capacityGB: m.zamMaxCapacityGB });
+  tiles.push({ id: "klangkerne" }, { id: "io" }, { id: "psm" }, { id: "killers1" });
+  if (m.hasIpu) tiles.push({ id: "ipu" });
+  tiles.push({ id: "mfx" }, { id: "gna" }, { id: "display" }, { id: "threaddirector" });
   return tiles;
 }
 
