@@ -77,13 +77,13 @@ const TIER_TABLE = {
   I7: { line: "I", n: 7, computeTiles: 1, cpt: { uhp: 8, dp: 4, spe: 0 }, uhe: 0, lpe: 0, druid: "D360", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 0, gna: 5, tdpBase: 65, ipuMp: 64, bionz: 0, kacheGB: 3 },
   I9: { line: "I", n: 9, computeTiles: 1, cpt: { uhp: 8, dp: 8, spe: 0 }, uhe: 0, lpe: 0, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 0, gna: 5, tdpBase: 85, ipuMp: 64, bionz: 0, kacheGB: 4 },
 
-  U3: { line: "U", n: 3, computeTiles: 1, cpt: { uhp: 2, dp: 2, spe: 8 }, uhe: 4, lpe: 4, druid: "D310", elemModel: "E580", elemXe5: 150, gpuLow: 0, gpuHigh: 1, hnpu: 96, lpnpu: 20, gna: 5, tdpBase: 15, ipuMp: 64, bionz: 2, kacheGB: 2 },
-  U5: { line: "U", n: 5, computeTiles: 1, cpt: { uhp: 4, dp: 2, spe: 12 }, uhe: 4, lpe: 4, druid: "D330", elemModel: "E770", elemXe5: 176, gpuLow: 0, gpuHigh: 1, hnpu: 160, lpnpu: 24, gna: 6, tdpBase: 18, ipuMp: 96, bionz: 3, kacheGB: 3 },
-  U7: { line: "U", n: 7, computeTiles: 1, cpt: { uhp: 6, dp: 2, spe: 16 }, uhe: 4, lpe: 4, druid: "D360", elemModel: "E980", elemXe5: 200, gpuLow: 0, gpuHigh: 1, hnpu: 208, lpnpu: 28, gna: 6, tdpBase: 22, ipuMp: 128, bionz: 4, kacheGB: 3 },
-  U9: { line: "U", n: 9, computeTiles: 1, cpt: { uhp: 8, dp: 4, spe: 20 }, uhe: 4, lpe: 4, druid: "D390", elemModel: "E1080", elemXe5: 220, gpuLow: 0, gpuHigh: 1, hnpu: 256, lpnpu: 32, gna: 7, tdpBase: 28, ipuMp: 160, bionz: 4, kacheGB: 4 },
+  U3: { line: "U", n: 3, computeTiles: 1, cpt: { uhp: 2, dp: 2, spe: 8 }, uhe: 4, lpe: 4, druid: "D310", elemModel: "E580", elemXe5: 150, gpuLow: 0, gpuHigh: 1, hnpu: 96, lpnpu: 20, gna: 5, tdpBase: 15, ipuMp: 64, bionz: 2, kacheGB: 2, ramGB: 64 },
+  U5: { line: "U", n: 5, computeTiles: 1, cpt: { uhp: 4, dp: 2, spe: 12 }, uhe: 4, lpe: 4, druid: "D330", elemModel: "E770", elemXe5: 176, gpuLow: 0, gpuHigh: 1, hnpu: 160, lpnpu: 24, gna: 6, tdpBase: 18, ipuMp: 96, bionz: 3, kacheGB: 3, ramGB: 128 },
+  U7: { line: "U", n: 7, computeTiles: 1, cpt: { uhp: 6, dp: 2, spe: 16 }, uhe: 4, lpe: 4, druid: "D360", elemModel: "E980", elemXe5: 200, gpuLow: 0, gpuHigh: 1, hnpu: 208, lpnpu: 28, gna: 6, tdpBase: 22, ipuMp: 128, bionz: 4, kacheGB: 3, ramGB: 256 },
+  U9: { line: "U", n: 9, computeTiles: 1, cpt: { uhp: 8, dp: 4, spe: 20 }, uhe: 4, lpe: 4, druid: "D390", elemModel: "E1080", elemXe5: 220, gpuLow: 0, gpuHigh: 1, hnpu: 256, lpnpu: 32, gna: 7, tdpBase: 28, ipuMp: 160, bionz: 4, kacheGB: 4, ramGB: 512 },
 
-  X7: { line: "X", n: 7, computeTiles: 2, cpt: { uhp: 8, dp: 6, spe: 72 }, uhe: 16, lpe: 16, druid: "D390", elemModel: "E1080", elemXe5: 220, gpuLow: 1, gpuHigh: 2, hnpu: 256, lpnpu: 88, gna: 8, tdpBase: 45, ipuMp: 201, bionz: 8, lpDruidLabel: "LP", kacheGB: 3 },
-  X9: { line: "X", n: 9, computeTiles: 4, cpt: { uhp: 8, dp: 6, spe: 72 }, uhe: 16, lpe: 16, druid: "D390", elemModel: "E1080", elemXe5: 220, gpuLow: 2, gpuHigh: 4, hnpu: 256, lpnpu: 88, gna: 8, tdpBase: 55, ipuMp: 201, bionz: 8, lpDruidLabel: "LP", kacheGB: 4 },
+  X7: { line: "X", n: 7, computeTiles: 2, cpt: { uhp: 8, dp: 6, spe: 72 }, uhe: 16, lpe: 16, druid: "D390", elemModel: "E1080", elemXe5: 220, gpuLow: 1, gpuHigh: 2, hnpu: 256, lpnpu: 88, gna: 8, tdpBase: 45, ipuMp: 201, bionz: 8, lpDruidLabel: "LP", kacheGB: 3, ramGB: 1024 },
+  X9: { line: "X", n: 9, computeTiles: 4, cpt: { uhp: 8, dp: 6, spe: 72 }, uhe: 16, lpe: 16, druid: "D390", elemModel: "E1080", elemXe5: 220, gpuLow: 2, gpuHigh: 4, hnpu: 256, lpnpu: 88, gna: 8, tdpBase: 55, ipuMp: 201, bionz: 8, lpDruidLabel: "LP", kacheGB: 4, ramGB: 2048 },
 
   /* Atom 500 (A) / Atom Ultra 500 (P) — the phone/mobile SoC tier. No Compute
      Tile, no Elementalist GPU, no Kache Kore (see hasKacheKore), LPDDR6X as
@@ -163,7 +163,21 @@ const SUFFIX_TABLE = {
      sense (Atom never carries UHP cores, so V8 HyperBOOST/Unleashed AFFINITY
      never engage regardless) — DX distinguishes itself by radio capability,
      not power ceiling. */
-  DX: { label: "Flagship Dual-ISP", form: "Phone", unlocked: false, tdpMult: 0.85, wifi: true, cellular: true, dualWifi: true, vertical: "Phone (DX — Dual-ISP Flagship)" }
+  DX: { label: "Flagship Dual-ISP", form: "Phone", unlocked: false, tdpMult: 0.85, wifi: true, cellular: true, dualWifi: true, vertical: "Phone (DX — Dual-ISP Flagship)" },
+  /* RAM-tier add-ons — since Atom's LPDDR6X is Foveros-stacked directly on
+     the package (not a phone-OEM motherboard choice like real phones),
+     different RAM capacities are genuinely different chip SKUs, Apple-
+     M-series style. Each pairs with its base suffix's power/radio profile
+     (tdpMult/wifi/cellular/dualWifi all inherited) and only adds a
+     `ramTier` multiplier — see zamMaxCapacityGB's phone branch. */
+  UL: { label: "Ultra-Low-Power Mobile", form: "Mobile", unlocked: false, tdpMult: 0.35, wifi: true, cellular: false, vertical: "Mobile (U — Ultra-Low-Power)", ramTier: 1.5 },
+  UXL: { label: "Ultra-Low-Power Mobile", form: "Mobile", unlocked: false, tdpMult: 0.35, wifi: true, cellular: false, vertical: "Mobile (U — Ultra-Low-Power)", ramTier: 2 },
+  VL: { label: "Efficiency Mobile", form: "Mobile", unlocked: false, tdpMult: 0.3, wifi: true, cellular: true, vertical: "Mobile (V — Efficiency / Always-Connected)", ramTier: 1.5 },
+  VXL: { label: "Efficiency Mobile", form: "Mobile", unlocked: false, tdpMult: 0.3, wifi: true, cellular: true, vertical: "Mobile (V — Efficiency / Always-Connected)", ramTier: 2 },
+  HL: { label: "Mobile", form: "Mobile", unlocked: false, tdpMult: 0.50, wifi: true, cellular: false, vertical: "Mobile (H — Standard Power)", ramTier: 1.5 },
+  HXL: { label: "Mobile", form: "Mobile", unlocked: false, tdpMult: 0.50, wifi: true, cellular: false, vertical: "Mobile (H — Standard Power)", ramTier: 2 },
+  DXL: { label: "Flagship Dual-ISP", form: "Phone", unlocked: false, tdpMult: 0.85, wifi: true, cellular: true, dualWifi: true, vertical: "Phone (DX — Dual-ISP Flagship)", ramTier: 1.5 },
+  DXXL: { label: "Flagship Dual-ISP", form: "Phone", unlocked: false, tdpMult: 0.85, wifi: true, cellular: true, dualWifi: true, vertical: "Phone (DX — Dual-ISP Flagship)", ramTier: 2 }
 };
 
 function round(v, d) { const m = Math.pow(10, d || 0); return Math.round(v * m) / m; }
@@ -278,16 +292,27 @@ function buildModel(dirName) {
   const totalSystemTOPS = hnpuTOPS + lpnpuTOPS + gnaTOPS;
 
   /* ZAM (Tile/ZAM): 2× dual-channel controllers, 2–3 TB/s each, ~8ns Kache
-     Kore access. ZAM alone caps at 1 TB; Core Ultra 500 / Xeon 500 add a 3rd
-     dual-channel DDR6/LPDDR6X controller for up to 1 TB more (2 TB combined).
-     Core 500 is ZAM-only (on-package, fanless); Core i500 is the classic-CPU
-     tier — no ZAM at all, conventional DDR6 only. Atom / Atom Ultra are
-     LPDDR6X-primary at phone-realistic capacities (8/12/16/24GB by series) —
-     no Kache Kore means ZAM's latency profile isn't worth it at any scale,
-     so this branch stays far below Core 500's 32GB floor. */
+     Kore access. Core 500 is ZAM-only (on-package, fanless) and keeps its
+     existing smooth `Math.max(32, n*8)` formula (32/40/56/72GB — already
+     tie-free across C3/C5/C7/C9). Core i500 is the classic-CPU tier — no
+     ZAM at all, conventional DDR6 only. Core Ultra 500 / Core Xeon 500 use
+     explicit per-tier `ramGB` constants instead of a shared bucketed
+     formula (the old formula tied U3/U5 at 256GB each) — Ultra runs a
+     clean 64/128/256/512GB doubling ladder (U3→U9), and Xeon is pulled
+     into its own ladder starting above Ultra's ceiling (1024/2048GB,
+     X7→X9) so the top of the stack always stays unambiguously on top.
+     Atom / Atom Ultra are LPDDR6X-primary at phone-realistic baseline
+     capacities (8/12/16/24GB by series, Atom Ultra +4GB) — no Kache Kore
+     means ZAM's latency profile isn't worth it at any scale, so even the
+     baseline stays far below Core 500's 32GB floor. Atom's RAM-tier
+     suffixes (UL/UXL/VL/VXL/HL/HXL/DXL/DXXL) multiply that baseline via
+     `suffix.ramTier` — real RAM-capacity SKU variability, since LPDDR6X
+     is Foveros-stacked directly on the Atom package rather than a
+     phone-OEM motherboard choice. */
   const zamMaxCapacityGB = !hasZam ? 0
-    : (line === "A" || line === "P") ? [8, 12, 16, 24][[3, 5, 7, 9].indexOf(tier.n)] + (line === "P" ? 4 : 0)
-    : computeTiles ? Math.min(1024, 128 * Math.pow(2, Math.min(tier.n === 9 ? 3 : tier.n === 7 ? 2 : 1, 3))) : Math.max(32, tier.n * 8);
+    : (line === "A" || line === "P")
+      ? round((([8, 12, 16, 24][[3, 5, 7, 9].indexOf(tier.n)] + (line === "P" ? 4 : 0)) * (suffix.ramTier || 1)) / 4) * 4
+    : computeTiles ? tier.ramGB : Math.max(32, tier.n * 8);
   const zamControllers = "2× dual-channel";
   /* Bandwidth scales with suffix power envelope, not tile count — the base 2-controller
      config is universal; lower-power SKUs run the controllers at a reduced clock. */

@@ -1,38 +1,84 @@
 /* ==========================================================================
    Eventide Tile Size Reference — the LITERAL physical size of each tile on
-   the die, in real millimeters (converted to px via MM_PX for rendering).
+   the die, in real NANOMETERS (converted to px via NM_PX for rendering).
 
-   This is the single source of truth. The die-map renderer packs tiles by
-   these true areas with NO gaps (an area-preserving treemap): every region
-   of the package is exactly as large as the total silicon area of the tiles
-   inside it, so nothing ever floats over empty substrate. Because the sizes
-   are absolute, a small SKU renders as a physically smaller chip than the
-   X9-599HKX — that is just true.
+   This is the single source of truth, and it is honored EXACTLY: every
+   tile renders at precisely this box, on every SKU, every time — no
+   stretching to fit a layout. (The renderer used to treat these sizes as
+   proportional weights for a treemap split, which meant a "fixed" tile
+   like PSM or Thread Director rendered at a different literal size on
+   every SKU depending on what shared its row/column. spec-engine.js now
+   does real shelf-packing against these exact boxes instead.)
+
+   Sizing has three independent inputs, all real-world-motivated:
+     1. Function/complexity — a bigger, busier tile (Compute, Elementalist
+        GPU) is just physically bigger than a small fixed-function one
+        (PSM, GNA).
+     2. Core count — tiles whose transistor count scales with a real
+        parameter (Compute cores, GPU Xe5 count, LP Island UHE+LPE count,
+        Atom's MFX/BionzXR core counts) scale by sqrt(count) — area
+        tracks the parameter, edge length tracks its square root. Same
+        input always produces the same exact box (pure functions).
+     3. Process node density (NODE_DENSITY below) — Intel's real node
+        roadmap shows the most advanced node isn't always the densest in
+        practice: real 14A's headline advantage over 18A is power
+        delivery (2nd-gen "PowerDirect" backside power), not raw density,
+        which is why fabs keep I/O-class logic on cheaper/older nodes
+        even when a denser one exists (see PR discussion for sources).
+        Here: 04A (Compute/HNPU/Elementalist GPU) is the density
+        baseline; 06E (LP Island/Druid/BionzXR/LPNPU) is modestly larger
+        per unit function; 14A-E (every ancillary tile — I/O, PSM,
+        Display, GNA, Killer S1, Klangkerne, IPU, MFX, 2DKanvas, Thread
+        Director) is the least dense and sized up accordingly.
 
    Only two die areas are stated in the deep dives:
      - Klangkerne base die: 18 mm^2 (Tile/Klangkerne)
      - SoRT die: 7.2 mm^2 (Tile/Klangkerne)
-   Everything else is an authored estimate in mm, calibrated so the biggest
+   Everything else is an authored estimate, calibrated so the biggest
    thing on the package is a single Elementalist GPU tile (an E1080 packs
-   thousands of shader ALUs + XMX + RTU — it dwarfs a Compute Tile, even one
-   carrying 86 cores), and so relative sizes read true.
+   thousands of shader ALUs + XMX + RTU — it dwarfs a Compute Tile, even
+   one carrying 86 cores), and so relative sizes read true.
    ========================================================================== */
 (function (global) {
   "use strict";
 
   var MM_PX = 19; // render scale: 1mm of die edge = 19px (flagship ~fills the card; smaller SKUs render proportionally smaller)
+  var NM_PX = MM_PX / 1000000; // px per nanometer
 
-  function mm2(w, h) { return { w: w * MM_PX, h: h * MM_PX }; }
+  function nm2(w, h) { return { w: w * NM_PX, h: h * NM_PX }; }
+
+  /* ---- Process-node density multiplier. Applied uniformly to every
+     tile's computed box (formula-derived or fixed) based on its
+     tile-catalog.js `node` string. Node strings in the catalog aren't
+     perfectly normalized (some carry the full "Intel 04A (0.4nm-class...)"
+     description, some just "Intel 04A", ZAM is "Foveros-mounted"), so this
+     matches by substring rather than exact string. ---- */
+  var NODE_DENSITY = {
+    "04A": 1.0,   // densest — Compute, HNPU, Elementalist GPU
+    "06E": 1.15,  // efficiency node — LP Island, Druid, BionzXR, LPNPU
+    "14A-E": 1.4  // least dense — every ancillary/fixed-function tile
+  };
+  function nodeDensityFor(nodeStr) {
+    if (!nodeStr) return 1.0;
+    if (nodeStr.indexOf("04A") !== -1) return NODE_DENSITY["04A"];
+    if (nodeStr.indexOf("06E") !== -1) return NODE_DENSITY["06E"];
+    if (nodeStr.indexOf("14A-E") !== -1) return NODE_DENSITY["14A-E"];
+    return 1.0; // Foveros-mounted (ZAM/LPDDR6X) and other non-node silicon
+  }
+  function applyDensity(box, nodeStr) {
+    var f = nodeDensityFor(nodeStr);
+    return { w: box.w * f, h: box.h * f };
+  }
 
   /* ---- Elementalist (Arc E-series) GPU tiles — the largest tiles on the
      package. E1080 (220 Xe5-cores, GPU_CLASS 8) is the reference; other
      classes scale by sqrt(xe5 / 220): area tracks core count, edge length
      tracks its square root. ---- */
-  var E1080_MM = { w: 15.5, h: 14.5 };
+  var E1080_NM = { w: 15500000, h: 14500000 };
   var E1080_XE5 = 220;
   function elementalistSize(xe5PerTile) {
     var f = Math.sqrt(Math.max(xe5PerTile, 1) / E1080_XE5);
-    return mm2(E1080_MM.w * f, E1080_MM.h * f);
+    return nm2(E1080_NM.w * f, E1080_NM.h * f);
   }
 
   /* ---- Compute Tile — real silicon (86 cores across 3 architectures +
@@ -40,49 +86,48 @@
      than an E1080: an E1080's shader/RT/XMX count is an order of magnitude
      more transistors. 86-core tile is the anchor; smaller lines scale by
      sqrt(cores / 86). ---- */
-  var COMPUTE_ANCHOR_MM = { w: 8.4, h: 8.8 };
+  var COMPUTE_ANCHOR_NM = { w: 8400000, h: 8800000 };
   var COMPUTE_ANCHOR_CORES = 86;
   function computeTileSize(coresPerTile) {
     var f = Math.max(Math.sqrt(Math.max(coresPerTile, 1) / COMPUTE_ANCHOR_CORES), 0.5);
-    return mm2(COMPUTE_ANCHOR_MM.w * f, COMPUTE_ANCHOR_MM.h * f);
+    return nm2(COMPUTE_ANCHOR_NM.w * f, COMPUTE_ANCHOR_NM.h * f);
   }
 
   /* ---- Arc Druid (LP iGPU, Xe4E). D390 (~14 Xe4E-cores) is the largest
      configured class — a small always-on tile. ---- */
-  var DRUID_ANCHOR_MM = { w: 5.0, h: 4.6 };
+  var DRUID_ANCHOR_NM = { w: 5000000, h: 4600000 };
   var DRUID_ANCHOR_CORES = 14;
   function druidSize(xeCores) {
     var f = Math.sqrt(Math.max(xeCores, 1) / DRUID_ANCHOR_CORES);
-    return mm2(DRUID_ANCHOR_MM.w * f, DRUID_ANCHOR_MM.h * f);
+    return nm2(DRUID_ANCHOR_NM.w * f, DRUID_ANCHOR_NM.h * f);
   }
 
   /* ---- Kache Kore — 4GB of shared bLLC at the physical center of the
      package. "Somewhat big" — real SRAM area, a clear centerpiece, sized
      between a Compute Tile and an E1080. ---- */
-  var KACHE_KORE_SIZE = mm2(11.5, 11.0);
+  var KACHE_KORE_NM = { w: 11500000, h: 11000000 };
 
   /* ---- LP Island — scales by total core count (UHE + LPE) instead of a
      flat constant, so a phone-scale 2+4-core Atom part renders visibly
      smaller than a 16+16-core Xeon 500 LP Island rather than identically.
-     Anchored at 32 cores (X-line's UHE+LPE total) == the previous fixed
-     6.6x8.0mm size, so X-line's rendered die is unchanged; everything else
-     scales down by sqrt(cores/32), floored at 0.4x so it never vanishes. ---- */
-  var LP_ISLAND_ANCHOR_MM = { w: 6.6, h: 8.0 };
+     Anchored at 32 cores (X-line's UHE+LPE total); everything else scales
+     down by sqrt(cores/32), floored at 0.4x so it never vanishes. ---- */
+  var LP_ISLAND_ANCHOR_NM = { w: 6600000, h: 8000000 };
   var LP_ISLAND_ANCHOR_CORES = 32;
   function lpIslandSize(totalCores) {
     var f = Math.max(Math.sqrt(Math.max(totalCores, 1) / LP_ISLAND_ANCHOR_CORES), 0.4);
-    return mm2(LP_ISLAND_ANCHOR_MM.w * f, LP_ISLAND_ANCHOR_MM.h * f);
+    return nm2(LP_ISLAND_ANCHOR_NM.w * f, LP_ISLAND_ANCHOR_NM.h * f);
   }
 
   /* ---- MFX — scales by core count only when the caller supplies one
      (Atom tiers only; every other line omits it and keeps the fixed
      default below, unchanged). Anchored at 6 cores == that fixed default,
      so Atom's 2-core MFX renders at sqrt(2/6) ~= 0.58x. ---- */
-  var MFX_ANCHOR_MM = { w: 4.8, h: 5.4 };
+  var MFX_ANCHOR_NM = { w: 4800000, h: 5400000 };
   var MFX_ANCHOR_CORES = 6;
   function mfxSize(cores) {
     var f = Math.sqrt(Math.max(cores, 1) / MFX_ANCHOR_CORES);
-    return mm2(MFX_ANCHOR_MM.w * f, MFX_ANCHOR_MM.h * f);
+    return nm2(MFX_ANCHOR_NM.w * f, MFX_ANCHOR_NM.h * f);
   }
 
   /* ---- BionzXR — scales by core count only when the caller supplies one
@@ -91,75 +136,84 @@
      fixed default below (X-line's max), so a 1-core BionzXR renders at
      sqrt(1/8) ~= 0.35x — "much much smaller." Every other line keeps the
      fixed default, unchanged. ---- */
-  var BIONZ_ANCHOR_MM = { w: 6.0, h: 6.8 };
+  var BIONZ_ANCHOR_NM = { w: 6000000, h: 6800000 };
   var BIONZ_ANCHOR_CORES = 8;
   function bionzSize(cores) {
     var f = Math.sqrt(Math.max(cores, 1) / BIONZ_ANCHOR_CORES);
-    return mm2(BIONZ_ANCHOR_MM.w * f, BIONZ_ANCHOR_MM.h * f);
+    return nm2(BIONZ_ANCHOR_NM.w * f, BIONZ_ANCHOR_NM.h * f);
   }
 
-  /* ---- Fixed-size tiles (not varied by SKU tier in the deep dives) ---- */
+  /* ---- Fixed-size tiles (not varied by SKU tier). Every one of these is
+     rendered at this EXACT box, before node-density is applied, on every
+     single SKU that carries it — see sizeOf(). ---- */
   var SIZES = {
-    lpisland:       mm2(6.6, 8.0),
-    bionzxr:        mm2(6.0, 6.8),
-    hnpu:           mm2(6.8, 8.0),
-    kanvas2d:       mm2(5.6, 6.6),
-    mfx:            mm2(4.8, 5.4),
-    klangkerne:     mm2(5.2, 4.2),   // ~18mm^2-ish, legible floor
-    io:             mm2(4.4, 5.2),
-    psm:            mm2(4.2, 5.0),
-    killers1:       mm2(4.6, 5.2),
-    ipu:            mm2(4.4, 5.0),
-    gna:            mm2(3.8, 4.6),
-    display:        mm2(4.2, 4.8),
-    threaddirector: mm2(4.4, 5.0)
+    lpisland:       nm2(6600000, 8000000),
+    bionzxr:        nm2(6000000, 6800000),
+    hnpu:           nm2(6800000, 8000000),
+    kanvas2d:       nm2(5600000, 6600000),
+    mfx:            nm2(4800000, 5400000),
+    klangkerne:     nm2(5200000, 4200000),   // ~18mm^2-ish, legible floor
+    io:             nm2(4400000, 5200000),
+    psm:            nm2(4200000, 5000000),
+    killers1:       nm2(4600000, 5200000),
+    ipu:            nm2(4400000, 5000000),
+    gna:            nm2(3800000, 4600000),
+    display:        nm2(4200000, 4800000),
+    threaddirector: nm2(4400000, 5000000)
   };
 
   /* ---- Compact phone-scale variants — used only when the tile config
      explicitly flags `compact: true` (Atom's IO tile always; Atom's Killer
      S1 only on single-radio SKUs — the DX flagship's dual instances keep
      the full-size default above, matching Core-series parity). ---- */
-  var IO_COMPACT_MM = { w: 2.5, h: 2.9 };     // ~0.56x the default — phone has no/little PCIe
-  var KILLERS1_COMPACT_MM = { w: 3.1, h: 3.5 }; // ~0.67x the default — single-radio S1
+  var IO_COMPACT_NM = { w: 2500000, h: 2900000 };     // ~0.56x the default — phone has no/little PCIe
+  var KILLERS1_COMPACT_NM = { w: 3100000, h: 3500000 }; // ~0.67x the default — single-radio S1
 
-  /* ---- ZAM — the one tile defined by the PACKAGE, not its own footprint:
-     at full capacity (4 populated modules) its row spans the full package
-     width, so module width is computed at layout time from the real
-     package width. Only height + the per-module-GB constant are fixed.
-     LPDDR6X (Atom) SKUs pass a much smaller moduleGB (soldered LPDDR6X
-     packages, not ZAM's 256GB stacks) so their module count reads true at
-     phone-realistic 8-28GB capacities instead of always rounding to 1. ---- */
-  var ZAM_MODULE_GB = 256;
-  var ZAM_ROW_H = 4.4 * MM_PX;
+  /* ---- ZAM / LPDDR6X memory modules — ONE fixed real physical box, the
+     same literal size on every SKU and both memory families (Core's ZAM,
+     Atom's LPDDR6X share the box — same Foveros TSV-stack mounting
+     mechanism per the tile-catalog fiction). Density (GB per module)
+     varies by product line/generation — that's `moduleGB`, supplied by
+     the caller — but the housing itself never stretches; only the
+     module COUNT (capacityGB / moduleGB) changes what you see. This
+     mirrors how real RAM packages work: a stick's physical size doesn't
+     grow with the density of the dies stacked inside it. ---- */
+  var ZAM_MODULE_NM = { w: 4600000, h: 5200000 };
+  var ZAM_MODULE_GB = 256; // Core-derived default density; Atom passes its own (phone-realistic) moduleGB
+  function zamModuleBox() { return nm2(ZAM_MODULE_NM.w, ZAM_MODULE_NM.h); }
   function zamModules(capacityGB, moduleGB) {
     return Math.max(1, Math.round(capacityGB / (moduleGB || ZAM_MODULE_GB)));
   }
 
   function sizeOf(id, entry) {
-    if (id === "gpu") return elementalistSize(entry.t.xe5);
-    if (id === "druid") return druidSize(entry.t.xeCores);
-    if (id === "compute") return computeTileSize(entry.t.coresPerTile);
-    if (id === "kachekore") return KACHE_KORE_SIZE;
-    if (id === "lpisland") return lpIslandSize(entry.t.cores);
-    if (id === "mfx" && entry.t.cores != null) return mfxSize(entry.t.cores);
-    if (id === "bionzxr" && entry.t.cores != null) return bionzSize(entry.t.cores);
-    if (id === "io" && entry.t.compact) return mm2(IO_COMPACT_MM.w, IO_COMPACT_MM.h);
-    if (id === "killers1" && entry.t.compact) return mm2(KILLERS1_COMPACT_MM.w, KILLERS1_COMPACT_MM.h);
-    return SIZES[id] || mm2(4.2, 4.8);
+    var box;
+    if (id === "gpu") box = elementalistSize(entry.t.xe5);
+    else if (id === "druid") box = druidSize(entry.t.xeCores);
+    else if (id === "compute") box = computeTileSize(entry.t.coresPerTile);
+    else if (id === "kachekore") box = nm2(KACHE_KORE_NM.w, KACHE_KORE_NM.h);
+    else if (id === "lpisland") box = lpIslandSize(entry.t.cores);
+    else if (id === "mfx" && entry.t.cores != null) box = mfxSize(entry.t.cores);
+    else if (id === "bionzxr" && entry.t.cores != null) box = bionzSize(entry.t.cores);
+    else if (id === "io" && entry.t.compact) box = nm2(IO_COMPACT_NM.w, IO_COMPACT_NM.h);
+    else if (id === "killers1" && entry.t.compact) box = nm2(KILLERS1_COMPACT_NM.w, KILLERS1_COMPACT_NM.h);
+    else box = SIZES[id] || nm2(4200000, 4800000);
+    return applyDensity(box, entry.meta && entry.meta.node);
   }
 
   global.EventideTileSizes = {
     MM_PX: MM_PX,
+    NM_PX: NM_PX,
     elementalistSize: elementalistSize,
     druidSize: druidSize,
     computeTileSize: computeTileSize,
     lpIslandSize: lpIslandSize,
     mfxSize: mfxSize,
     bionzSize: bionzSize,
-    KACHE_KORE_SIZE: KACHE_KORE_SIZE,
+    KACHE_KORE_SIZE: nm2(KACHE_KORE_NM.w, KACHE_KORE_NM.h),
     SIZES: SIZES,
     sizeOf: sizeOf,
+    zamModuleBox: zamModuleBox,
     zamModules: zamModules,
-    ZAM_ROW_H: ZAM_ROW_H
+    ZAM_MODULE_GB: ZAM_MODULE_GB
   };
 })(window);

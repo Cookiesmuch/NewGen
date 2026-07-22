@@ -16,36 +16,70 @@
   }
 
   /* ------------------------------------------------------------------
-   * Gap-free true-area floorplan. Tiles are laid out with an area-
-   * preserving treemap: the package is recursively split into rectangles,
-   * each split partitioning its parent COMPLETELY and in proportion to
-   * the true silicon area (from tile-sizes.js) of the tiles inside it. A
-   * region is therefore never bigger than its contents, so nothing floats
-   * over empty substrate — the result reads as a solid die, and each
-   * tile's rendered AREA equals its true area (aspect ratio flexes to
-   * tessellate, exactly like a real floorplan).
+   * Real fixed-size floorplan. Every tile renders at its EXACT declared
+   * box from tile-sizes.js — no stretching, ever. (The previous version
+   * used a proportional treemap that only consumed a tile's true area as
+   * a splitting *weight*; the actual rendered rectangle came from
+   * dividing up the parent's allocated space, which meant a fixed-size
+   * tile like PSM or Thread Director rendered at a different literal
+   * size on every SKU depending on what shared its row/column. That's
+   * gone — this is real shelf-packing against exact boxes instead.)
    *
-   * Arrangement (per the 599HKX reference): GPU (2x2 E1080) is the big
-   * block on the left; to its right, Kache Kore anchors the middle of a
-   * left column with the D390/2DKanvas/media strip above it and
-   * Klangkerne below; the Compute tiles sit in the top-right with the
-   * remaining I/O tiles filling in beneath them. ZAM is the one tile that
-   * spans the whole package width, as a module row along the bottom.
+   * Two composition primitives:
+   *   shelf(...cells) — lays cells left-to-right at their exact widths;
+   *     shelf height = the tallest cell, shorter ones top-align (real
+   *     gap below them, not stretched to fill).
+   *   stack(...cells) — lays cells top-to-bottom at their exact heights;
+   *     stack width = the widest cell, narrower ones left-align.
+   * Both collapse to their single child when only one is non-null, so
+   * absent tiles (SKUs that don't carry a given tile) disappear cleanly
+   * without leaving a gap where they'd have been.
+   *
+   * Grouping mirrors the previous arrangement (GPU block on the left;
+   * Kache-Kore/media column, cores/AI column, Compute/IO column to its
+   * right) but every column's width/height is now just the true sum of
+   * its real content — a sparse SKU produces a smaller die, not a
+   * stretched one. Columns of different heights leave real (visible)
+   * empty substrate at the bottom of the shorter ones, which is honestly
+   * more realistic than forcing a perfect rectangle — real die shots
+   * have plenty of visible scribe-line/interconnect area between blocks.
+   *
+   * ZAM/LPDDR6X renders as a row of real fixed-size modules below the
+   * NoC, at its own true width (module count × the fixed module box) —
+   * not stretched to match the NoC's width either. The package's outer
+   * bounding box just grows to fit whichever of the two is wider.
    * ------------------------------------------------------------------ */
-  var INSET = 3;        // half of the ~6px substrate reveal between neighbours
-  var M = 20;           // outer margin to the package substrate edge
+  var GAP = 6;   // real gap between adjacent tiles (substrate reveal)
+  var M = 20;    // outer margin to the package substrate edge
 
-  /* ---- treemap primitives: a node is a leaf {kind:'leaf',...} or a
-     split {kind:'row'|'col', kids:[...]}; weight = total true area. ---- */
-  function grp(kind, kids) {
-    kids = kids.filter(Boolean);
-    if (!kids.length) return null;
-    if (kids.length === 1) return kids[0];
-    var w = 0; kids.forEach(function (k) { w += k.weight; });
-    return { kind: kind, kids: kids, weight: w };
+  function shelf() {
+    var cells = [].slice.call(arguments).filter(Boolean);
+    if (!cells.length) return null;
+    if (cells.length === 1) return cells[0];
+    var w = 0, h = 0;
+    cells.forEach(function (c, i) { w += c.w + (i > 0 ? GAP : 0); h = Math.max(h, c.h); });
+    return {
+      w: w, h: h,
+      place: function (x, y) {
+        var off = x;
+        cells.forEach(function (c) { c.place(off, y); off += c.w + GAP; });
+      }
+    };
   }
-  function rowN() { return grp("row", [].slice.call(arguments)); }
-  function colN() { return grp("col", [].slice.call(arguments)); }
+  function stack() {
+    var cells = [].slice.call(arguments).filter(Boolean);
+    if (!cells.length) return null;
+    if (cells.length === 1) return cells[0];
+    var w = 0, h = 0;
+    cells.forEach(function (c, i) { w = Math.max(w, c.w); h += c.h + (i > 0 ? GAP : 0); });
+    return {
+      w: w, h: h,
+      place: function (x, y) {
+        var off = y;
+        cells.forEach(function (c) { c.place(x, off); off += c.h + GAP; });
+      }
+    };
+  }
 
   function buildLayout(tiles) {
     var S = window.EventideTileSizes;
@@ -55,109 +89,87 @@
       if (meta) byId[t.id] = { t: t, meta: meta };
     });
 
-    function leaf(id, index, count) {
+    var placed = [];
+
+    function leafCell(id) {
       var e = byId[id];
       if (!e) return null;
       var sz = S.sizeOf(id, e);
       return {
-        kind: "leaf", id: id, meta: e.meta, model: e.t.model,
-        index: index || 0, count: count || 1, weight: sz.w * sz.h
+        w: sz.w, h: sz.h,
+        place: function (x, y) {
+          placed.push({ id: id, meta: e.meta, model: e.t.model, index: 0, count: 1, x: x, y: y, w: sz.w, h: sz.h });
+        }
       };
     }
-    // multi-instance tile (gpu / compute) as a 2-column grid of leaves
-    function gridN(id) {
+    // multi-instance tile (gpu / compute / killers1) as a 2-column grid of exact-size leaves
+    function gridCell(id) {
       var e = byId[id];
       if (!e) return null;
       var n = e.t.count || 1;
-      var leaves = [];
-      for (var i = 0; i < n; i++) leaves.push(leaf(id, i, n));
-      if (n === 1) return leaves[0];
-      var rows = [];
-      for (var r = 0; r < Math.ceil(n / 2); r++) rows.push(rowN.apply(null, leaves.slice(r * 2, r * 2 + 2)));
-      return colN.apply(null, rows);
-    }
-
-    var placed = [];
-    function emit(node, r) {
-      placed.push({
-        id: node.id, meta: node.meta, index: node.index, count: node.count, model: node.model,
-        x: r.x + INSET, y: r.y + INSET, w: Math.max(1, r.w - 2 * INSET), h: Math.max(1, r.h - 2 * INSET)
-      });
-    }
-    function layoutNode(r, node) {
-      if (!node) return;
-      if (node.kind === "leaf") { emit(node, r); return; }
-      var total = node.weight, off, i, k, ext;
-      if (node.kind === "row") {
-        off = r.x;
-        for (i = 0; i < node.kids.length; i++) {
-          k = node.kids[i]; ext = r.w * k.weight / total;
-          layoutNode({ x: off, y: r.y, w: ext, h: r.h }, k); off += ext;
+      var sz = S.sizeOf(id, e);
+      var cols = n === 1 ? 1 : 2;
+      var rows = Math.ceil(n / cols);
+      var w = cols * sz.w + (cols - 1) * GAP;
+      var h = rows * sz.h + (rows - 1) * GAP;
+      return {
+        w: w, h: h,
+        place: function (x, y) {
+          for (var i = 0; i < n; i++) {
+            var c = i % cols, r = Math.floor(i / cols);
+            placed.push({
+              id: id, meta: e.meta, model: e.t.model, index: i, count: n,
+              x: x + c * (sz.w + GAP), y: y + r * (sz.h + GAP), w: sz.w, h: sz.h
+            });
+          }
         }
-      } else {
-        off = r.y;
-        for (i = 0; i < node.kids.length; i++) {
-          k = node.kids[i]; ext = r.h * k.weight / total;
-          layoutNode({ x: r.x, y: off, w: r.w, h: ext }, k); off += ext;
-        }
-      }
+      };
     }
 
     // ---- GPU block: 2x2 (or 1x1) grid of E1080s, the big block on the left ----
-    var gpuNode = gridN("gpu");
+    var gpuCell = gridCell("gpu");
 
-    // ---- Right block tree: Kache-Kore column | I/O-media column | Compute column ----
-    var col1 = colN(
-      rowN(leaf("druid"), leaf("kanvas2d")),      // media strip, above the cache
-      leaf("kachekore"),                          // centrepiece, centre of the column
-      rowN(leaf("klangkerne"), leaf("mfx"))       // below the cache
+    // ---- Right block: Kache-Kore column | cores/AI column | Compute column ----
+    var col1 = stack(
+      shelf(leafCell("druid"), leafCell("kanvas2d")),  // media strip, above the cache
+      leafCell("kachekore"),                           // centrepiece, centre of the column
+      shelf(leafCell("klangkerne"), leafCell("mfx"))   // below the cache
     );
-    var col2 = colN(
-      rowN(leaf("lpisland"), leaf("hnpu")),       // cores/AI, upper-middle
-      rowN(leaf("bionzxr"), leaf("io")),
-      rowN(leaf("psm"), gridN("killers1"))        // killers1 renders 2 tiles on dual-ISP flagship SKUs
+    var col2 = stack(
+      shelf(leafCell("lpisland"), leafCell("hnpu")),   // cores/AI, upper-middle
+      shelf(leafCell("bionzxr"), leafCell("io")),
+      shelf(leafCell("psm"), gridCell("killers1"))     // killers1 renders 2 tiles on dual-ISP flagship SKUs
     );
-    var col3 = colN(
-      gridN("compute"),                           // Compute tiles, top-right
-      rowN(leaf("ipu"), leaf("gna")),             // fill beneath compute
-      rowN(leaf("display"), leaf("threaddirector"))
+    var col3 = stack(
+      gridCell("compute"),                             // Compute tiles, top-right
+      shelf(leafCell("ipu"), leafCell("gna")),         // fill beneath compute
+      shelf(leafCell("display"), leafCell("threaddirector"))
     );
-    var rightTree = rowN(col1, col2, col3);
+    var rightTree = shelf(col1, col2, col3);
+    var fullTree = shelf(gpuCell, rightTree);
 
-    // ---- One unified area-preserving treemap: GPU on the left, everything
-    // else to its right. Every region gets width/height in proportion to its
-    // true silicon area, partitioning the package completely — so the whole
-    // NoC is gap-free at a stable landscape aspect no matter the GPU count
-    // (a 1-GPU part is just a smaller, differently-proportioned die, not a
-    // short-wide sliver). ----
-    var fullTree = rowN(gpuNode, rightTree);
-    var totalArea = fullTree ? fullTree.weight : 1;
-    var ASPECT = 1.95; // NoC width : height
-    var nocH = Math.sqrt(totalArea / ASPECT);
-    var nocW = totalArea / nocH;
+    var nocW = fullTree ? fullTree.w : 0;
+    var nocH = fullTree ? fullTree.h : 0;
+    if (fullTree) fullTree.place(M, M);
 
-    var x0 = M, y0 = M;
-    if (fullTree) layoutNode({ x: x0, y: y0, w: nocW, h: nocH }, fullTree);
-
-    // ---- ZAM: a module row below the whole NoC. Module width is fixed at
-    // nocW/4, so 1TB (4 modules) spans the full package width edge-to-edge,
-    // and lower capacities are simply fewer modules of that same size,
-    // left-aligned (no empty sockets drawn — less memory just means a
-    // physically smaller memory strip). ----
+    // ---- ZAM/LPDDR6X: real fixed-size modules in a row below the NoC,
+    // at their own true width — see comment above. ----
     var zamEntry = byId.zam;
-    var zamModuleCount = zamEntry ? Math.min(4, S.zamModules(zamEntry.t.capacityGB, zamEntry.t.moduleGB)) : 0;
-    var zamRowH = zamEntry ? S.ZAM_ROW_H : 0;
-    var zamModuleW = zamEntry ? nocW / 4 : 0;
+    var zamBox = S.zamModuleBox();
+    var zamCount = zamEntry ? S.zamModules(zamEntry.t.capacityGB, zamEntry.t.moduleGB) : 0;
     if (zamEntry) {
-      var zamY = y0 + nocH;
-      for (var s = 0; s < zamModuleCount; s++) {
-        emit({ id: "zam", meta: zamEntry.meta, model: zamEntry.t.model, index: s, count: zamModuleCount },
-          { x: x0 + s * zamModuleW, y: zamY, w: zamModuleW, h: zamRowH });
+      var zamY = M + nocH + GAP;
+      for (var s = 0; s < zamCount; s++) {
+        placed.push({
+          id: "zam", meta: zamEntry.meta, model: zamEntry.t.model, index: s, count: zamCount,
+          x: M + s * (zamBox.w + GAP), y: zamY, w: zamBox.w, h: zamBox.h
+        });
       }
     }
 
-    var totalW = nocW + M * 2;
-    var totalH = nocH + (zamEntry ? zamRowH : 0) + M * 2;
+    var zamRowW = zamCount ? zamCount * zamBox.w + (zamCount - 1) * GAP : 0;
+    var totalW = Math.max(nocW, zamRowW) + M * 2;
+    var totalH = nocH + (zamEntry ? GAP + zamBox.h : 0) + M * 2;
     return { placed: placed, ghostSlots: [], width: totalW, height: totalH };
   }
 
