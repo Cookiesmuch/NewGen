@@ -69,7 +69,7 @@ function sectionCpu(m) {
     ["Total UHP Cores (Solar Eclipse)", m.uhpTotal ? fmt(m.uhpTotal) : "Not present"],
     ["Total DP Cores (Sunset Cove)", m.dpTotal ? fmt(m.dpTotal) : "Not present"],
     ["Total SPE Cores (Venusmont)", m.speTotal ? fmt(m.speTotal) : (m.computeTiles ? "Not present <span class=\"note\">· Core i500 Compute Tile is UHP + DP only</span>" : "Not present")],
-    ["Total UHE Cores (Lunar Eclipse)", m.hasLpIsland ? m.uheCores : "Not present <span class=\"note\">· no LP Island on Core i500</span>"],
+    ["Total UHE Cores (Lunar Eclipse)", !m.hasLpIsland ? "Not present <span class=\"note\">· no LP Island on Core i500</span>" : m.uheCores || "Not present <span class=\"note\">· this Atom tier is LPE-only</span>"],
     ["Total LPE Cores (Darkmont)", m.hasLpIsland ? m.lpeCores : "Not present"],
     ["UHP Base / Max Turbo", m.uhpTotal ? `${m.uhpBase} GHz / ${m.uhpTurbo} GHz` : "—"],
     ["UHP V8 HyperBOOST (peak)", m.uhpTotal ? `${m.hyperboost} GHz <span class="note">· all 8 UHP cores, Ford-inspired V8 firing sequence 1-4-6-3-8-5-7-2, 8–40ms burst window, Unleashed AFFINITY™ only — requires external PSU + cooler, auto-disabled on battery</span>` : "—"],
@@ -129,9 +129,9 @@ function sectionComputeTile(m) {
 function sectionLpIsland(m) {
   return intro("The LP Island is present on every Eventide SKU — even fanless, GPU-less parts — and is the last domain to power down. It bundles efficiency cores, the always-on Arc Druid iGPU, BionzXR media encode, and LPNPU inferencing into a single tile.") +
     rows([
-      ["UHE Cores (Lunar Eclipse)", m.uheCores],
+      ["UHE Cores (Lunar Eclipse)", m.uheCores || "Not present <span class=\"note\">· this Atom tier is LPE-only</span>"],
       ["LPE Cores (Darkmont)", m.lpeCores],
-      ["UHE Base / Max Turbo", `${m.uheBase} GHz / ${m.uheTurbo} GHz`],
+      ["UHE Base / Max Turbo", m.uheCores ? `${m.uheBase} GHz / ${m.uheTurbo} GHz` : null],
       ["LPE Base / Max Turbo", `${m.lpeBase} GHz / ${m.lpeTurbo} GHz`],
       ["Process Node", "Intel 06E (0.6nm-class FinFlex GAA)"],
       ["L3 (LP Island, shared)", m.l3LPIsland + " MB"],
@@ -739,7 +739,7 @@ function render(dirName, m, summary) {
   ];
   const badgesHtml = badges.map((b) => `<span class="ev-badge ${b.cls}">${b.text}</span>`).join("\n        ");
 
-  const maxTurboStat = m.computeTiles ? m.uhpTurbo + " GHz" : m.uheTurbo + " GHz";
+  const maxTurboStat = m.computeTiles ? m.uhpTurbo + " GHz" : (m.uheTurbo || m.lpeTurbo) + " GHz";
   const cacheStat = m.hasKacheKore ? `~${m.totalSRAM} MB + ${(m.l4KacheGB + " GB")}` : `~${m.totalSRAM} MB SRAM`;
 
   const sectionsHtml = SECTIONS.map((s) => {

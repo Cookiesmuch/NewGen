@@ -88,24 +88,41 @@ const TIER_TABLE = {
   /* Atom 500 (A) / Atom Ultra 500 (P) — the phone/mobile SoC tier. No Compute
      Tile, no Elementalist GPU, no Kache Kore (see hasKacheKore), LPDDR6X as
      primary memory (see zamMaxCapacityGB), no HNPU (see hasHnpu — phone never
-     carries the 04A-node HNPU complex, only the always-on 06E LPNPU). 2× UHE
-     (Lunar Eclipse) is fixed per the phone architecture research; LPE
-     (Darkmont) count spreads 4-8 by series so the cheapest tier (A3) is a
-     genuinely budget 2+4 part, not clustered with the rest at 6-8. BionzXR
+     carries the 04A-node HNPU complex, only the always-on 06E LPNPU). BionzXR
      is Atom Ultra-only (bionz:0 on every A-tier) and capped at a single core
      even there — a phone camera doesn't need Core Ultra/Xeon's multi-core
      BionzXR block. mfxCores:2 on every Atom tier renders a visibly smaller
      MFX tile than Core's (see tile-sizes.js). Atom Ultra runs a bigger Druid
-     class and adds the dual-Killer-S1 flagship suffix (see killerS1Count). */
-  A3: { line: "A", n: 3, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 4, druid: "D310", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 4, tdpBase: 3, ipuMp: 48, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
-  A5: { line: "A", n: 5, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 6, druid: "D330", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 4, tdpBase: 4, ipuMp: 64, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
-  A7: { line: "A", n: 7, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 6, druid: "D360", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 5, ipuMp: 96, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
-  A9: { line: "A", n: 9, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 6, ipuMp: 128, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
+     class and adds the dual-Killer-S1 flagship suffix (see killerS1Count).
 
-  P3: { line: "P", n: 3, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 6, druid: "D330", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 5, ipuMp: 64, bionz: 1, mfxCores: 2, tdpFloor: 0.05 },
-  P5: { line: "P", n: 5, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, druid: "D360", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 6, ipuMp: 96, bionz: 1, mfxCores: 2, tdpFloor: 0.05 },
-  P7: { line: "P", n: 7, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 6, tdpBase: 7, ipuMp: 128, bionz: 1, mfxCores: 2, tdpFloor: 0.05 },
-  P9: { line: "P", n: 9, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 6, tdpBase: 8, ipuMp: 160, bionz: 1, mfxCores: 2, tdpFloor: 0.05 }
+     Unlike every other line, Atom's core clocks are NOT fixed per-core-type
+     constants (see CORE_SPECS) — each tier carries its own uheTurbo/lpeTurbo
+     override, forming a real clock ladder across the 8 series (real phone
+     SoC families bin by max clock, not just core count). buildModel() only
+     applies these overrides when present, so every Core-derived tier is
+     completely unaffected and keeps CORE_SPECS' fixed clocks exactly as
+     before. The ladder runs A3 (2.6GHz, LPE-only floor — see below) → A5
+     (3.4) → A7 (3.7) → A9 (4.0) → P3 (4.3) → P5 (4.6) → P7 (4.7, foldable
+     — see below) → P9 (5.0GHz, flagship peak).
+
+     A3 is the floor of the whole Atom stack: uhe:0 — no Lunar Eclipse cores
+     at all, just Darkmont (LPE) running the entire chip. The cheapest,
+     most efficient config in the lineup; lpeTurbo is correspondingly the
+     lowest clock anywhere on Atom.
+
+     P7 is the foldable-tuned config: exactly 7 total physical cores (2 UHE
+     + 5 LPE) — a deliberately smaller core count than its P5/P9 siblings,
+     trading raw multi-core throughput for the thinner thermal envelope a
+     folding chassis needs, while still running Ultra-class UHE clocks. */
+  A3: { line: "A", n: 3, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 0, lpe: 6, lpeTurbo: 2.6, druid: "D310", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 4, tdpBase: 3, ipuMp: 48, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
+  A5: { line: "A", n: 5, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 6, uheTurbo: 3.4, druid: "D330", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 4, tdpBase: 4, ipuMp: 64, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
+  A7: { line: "A", n: 7, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 6, uheTurbo: 3.7, druid: "D360", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 5, ipuMp: 96, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
+  A9: { line: "A", n: 9, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, uheTurbo: 4.0, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 6, ipuMp: 128, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
+
+  P3: { line: "P", n: 3, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 6, uheTurbo: 4.3, druid: "D330", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 5, ipuMp: 64, bionz: 1, mfxCores: 2, tdpFloor: 0.05 },
+  P5: { line: "P", n: 5, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, uheTurbo: 4.6, druid: "D360", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 6, ipuMp: 96, bionz: 1, mfxCores: 2, tdpFloor: 0.05 },
+  P7: { line: "P", n: 7, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 5, uheTurbo: 4.7, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 6, tdpBase: 6, ipuMp: 128, bionz: 1, mfxCores: 2, tdpFloor: 0.05 },
+  P9: { line: "P", n: 9, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, uheTurbo: 5.0, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 6, tdpBase: 8, ipuMp: 160, bionz: 1, mfxCores: 2, tdpFloor: 0.05 }
 };
 
 const BRAND_TEMPLATE = {
@@ -213,9 +230,9 @@ function buildModel(dirName) {
   const speBase = speTotal ? spe.base : null;
   const speTurbo = speTotal ? spe.turbo : null;
   const uheBase = uheCores ? uhe.base : null;
-  const uheTurbo = uheCores ? uhe.turbo : null;
+  const uheTurbo = uheCores ? (tier.uheTurbo || uhe.turbo) : null;
   const lpeBase = lpeCores ? lpe.base : null;
-  const lpeTurbo = lpeCores ? lpe.turbo : null;
+  const lpeTurbo = lpeCores ? (tier.lpeTurbo || lpe.turbo) : null;
 
   const l3PerComputeTile = computeTiles ? COMPUTE_TILE_L3_MB : 0;
   const l3Total = l3PerComputeTile * computeTiles;

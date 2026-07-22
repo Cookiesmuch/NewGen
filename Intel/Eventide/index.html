@@ -4128,6 +4128,9 @@
     Intel Atom returns as Eventide's phone/mobile SoC tier — the same LP Island, Arc Druid and Thread Director
     architecture as Core 500, rescaled for a phone chassis. No Compute Tile, no Elementalist GPU, no Kache Kore —
     just 2DKR-first efficiency and, on Atom Ultra 500, a signature dual-Killer-S1 8-band WiFi bonding trick.
+    Unlike the rest of Eventide, Atom bins by clock as well as core count: an 8-tier ladder running from the
+    LPE-only Atom 500 A3 floor (2.6 GHz, no Lunar Eclipse cores at all) up to the Atom Ultra 500 P9 flagship
+    (5.0 GHz) — with a dedicated 7-core config (P7, 2 UHE + 5 LPE) tuned for foldables along the way.
   </p>
 
   <div class="sku-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 620px;">
@@ -4136,7 +4139,8 @@
       <div class="sku-header"><div class="sku-tier-row"><img class="sku-logo" src="assets/logos/atom500.svg" alt="" onerror="this.style.display='none'"><div class="sku-tier">Atom 500</div></div><div class="sku-name">Mainstream Phone</div></div>
       <div class="sku-body" style="background: var(--surface-dark); color: rgba(255,255,255,0.85);">
         <div class="sku-feature"><div class="sku-dot no"></div>No Compute Tile, no Elementalist GPU</div>
-        <div class="sku-feature"><div class="sku-dot yes"></div>2× Lunar Eclipse (UHE) + 4-8× Darkmont (LPE)</div>
+        <div class="sku-feature"><div class="sku-dot yes"></div>0-2× Lunar Eclipse (UHE, 2.6-4.0 GHz) + 6-8× Darkmont (LPE)</div>
+        <div class="sku-feature"><div class="sku-dot partial"></div>A3: LPE-only floor SKU — no UHE cores at all</div>
         <div class="sku-feature"><div class="sku-dot yes"></div>Compact LPiGPU (Arc Druid) + 2DKR compositor</div>
         <div class="sku-feature"><div class="sku-dot yes"></div>LPNPU AI (88 TOPS, always-on)</div>
         <div class="sku-feature"><div class="sku-dot no"></div>No HNPU, no Kache Kore, no BionzXR</div>
@@ -4151,7 +4155,8 @@
       <div class="sku-header"><div class="sku-tier-row"><img class="sku-logo" src="assets/logos/atomultra500.svg" alt="" onerror="this.style.display='none'"><div class="sku-tier">Atom Ultra 500</div></div><div class="sku-name">Flagship Phone</div></div>
       <div class="sku-body" style="background: var(--surface-dark); color: rgba(255,255,255,0.85);">
         <div class="sku-feature"><div class="sku-dot no"></div>No Compute Tile, no Elementalist GPU</div>
-        <div class="sku-feature"><div class="sku-dot yes"></div>2× Lunar Eclipse (UHE) + 6-8× Darkmont (LPE)</div>
+        <div class="sku-feature"><div class="sku-dot yes"></div>2× Lunar Eclipse (UHE, 4.3-5.0 GHz) + 5-8× Darkmont (LPE)</div>
+        <div class="sku-feature"><div class="sku-dot partial"></div>P7: 7-core foldable config (2 UHE + 5 LPE)</div>
         <div class="sku-feature"><div class="sku-dot yes"></div>Bigger LPiGPU (Arc Druid) class + 2DKR</div>
         <div class="sku-feature"><div class="sku-dot yes"></div>LPNPU AI (88 TOPS, always-on)</div>
         <div class="sku-feature"><div class="sku-dot no"></div>No HNPU, no Kache Kore</div>

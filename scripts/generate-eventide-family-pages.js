@@ -139,10 +139,11 @@ const FAMILIES = [
     sub: "The Eventide architecture in a phone SoC — LP Island, Arc Druid, 2DKanvas, Thread Director — with no Compute Tile, no Elementalist, and no Kache Kore.",
     accent: "#3B82F6", accent2: "#22D3EE", bg1: "#0A1628", bg2: "#050B14",
     logo: "atom500.svg",
-    stats: [["2+6-8", "UHE + LPE cores"], ["0.15W", "Idle floor"], ["88T", "LPNPU AI"]],
+    stats: [["2.6-4.0", "GHz clock ladder (A3→A9)"], ["0.05W", "Idle floor"], ["88T", "LPNPU AI"]],
     features: [
       ["no", "No Compute Tile, no Elementalist GPU, no Kache Kore"],
-      ["yes", "2× Lunar Eclipse (UHE) + 6-8× Darkmont (LPE)"],
+      ["yes", "0-2× Lunar Eclipse (UHE) + 6-8× Darkmont (LPE)"],
+      ["partial", "A3 is LPE-only — no UHE cores at all, the floor of the whole Atom stack"],
       ["yes", "Arc® Druid LP iGPU + 2DKanvas frame-level routing"],
       ["yes", "LPNPU AI, 88 TOPS always-on — the phone tier's sole NPU"],
       ["no", "No HNPU — the 04A-node NPU complex has no home on this die"],
@@ -157,7 +158,7 @@ const FAMILIES = [
       ["2DKanvas", "/Intel/Eventide/GPU/2DKanvas"],
       ["Thread Director", "/Intel/Eventide/Technology/ThreadDirector"]
     ],
-    use: "Everyday flagship-class phones — extreme battery life, no compromise on GPU or AI."
+    use: "Everyday mainstream phones — extreme battery life, from the LPE-only budget floor up to A9."
   },
   {
     slug: "AtomUltra500",
@@ -165,13 +166,14 @@ const FAMILIES = [
     name: "Atom Ultra 500",
     eyebrow: "Product Family · Phone · Flagship",
     headline: "Two radios.<br>One phone.",
-    sub: "Atom's flagship tier adds a bigger Arc Druid class and the signature DX suffix: dual Killer S1 controllers running independent quad-band WiFi 7 MLO stacks — 8 bands total.",
+    sub: "Atom's flagship tier adds a bigger Arc Druid class, UHE clocks up to 5.0GHz, and the signature DX suffix: dual Killer S1 controllers running independent quad-band WiFi 7 MLO stacks — 8 bands total.",
     accent: "#22D3EE", accent2: "#3B82F6", bg1: "#0A1628", bg2: "#050B14",
     logo: "atomultra500.svg",
-    stats: [["2×", "Killer S1 (DX suffix)"], ["8", "WiFi 7 bands total"], ["2+8", "UHE + LPE cores"]],
+    stats: [["5.0", "GHz peak (P9 flagship)"], ["7", "cores on P7 (foldable)"], ["8", "WiFi 7 bands, DX suffix"]],
     features: [
       ["no", "No Compute Tile, no Elementalist GPU, no Kache Kore"],
-      ["yes", "2× Lunar Eclipse (UHE) + 8× Darkmont (LPE)"],
+      ["yes", "2× Lunar Eclipse (UHE, 4.3-5.0GHz) + 5-8× Darkmont (LPE)"],
+      ["partial", "P7 is a dedicated 7-core config (2 UHE + 5 LPE) tuned for foldables"],
       ["yes", "Bigger Arc® Druid class than Atom 500 + 2DKanvas"],
       ["yes", "LPNPU AI, 88 TOPS always-on"],
       ["no", "No HNPU on this line"],

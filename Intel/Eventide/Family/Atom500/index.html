@@ -93,21 +93,22 @@ body { background: var(--a5-bg2); }
       <div class="a5-sub">The Eventide architecture in a phone SoC — LP Island, Arc Druid, 2DKanvas, Thread Director — with no Compute Tile, no Elementalist, and no Kache Kore.</div>
 
       <div class="a5-stats">
-        <div class="a5-stat" style="animation-delay:0.5s"><div class="a5-stat-num">2+6-8</div><div class="a5-stat-label">UHE + LPE cores</div></div>
-        <div class="a5-stat" style="animation-delay:0.58s"><div class="a5-stat-num">0.15W</div><div class="a5-stat-label">Idle floor</div></div>
+        <div class="a5-stat" style="animation-delay:0.5s"><div class="a5-stat-num">2.6-4.0</div><div class="a5-stat-label">GHz clock ladder (A3→A9)</div></div>
+        <div class="a5-stat" style="animation-delay:0.58s"><div class="a5-stat-num">0.05W</div><div class="a5-stat-label">Idle floor</div></div>
         <div class="a5-stat" style="animation-delay:0.66s"><div class="a5-stat-num">88T</div><div class="a5-stat-label">LPNPU AI</div></div>
       </div>
 
       <div class="a5-section-label">Tile Composition</div>
       <div class="a5-feature-grid" id="a5-features">
         <div class="a5-feature-wrap" style="transition-delay:0s"><div class="a5-feature"><div class="a5-dot no"></div>No Compute Tile, no Elementalist GPU, no Kache Kore</div></div>
-        <div class="a5-feature-wrap" style="transition-delay:0.05s"><div class="a5-feature"><div class="a5-dot yes"></div>2× Lunar Eclipse (UHE) + 6-8× Darkmont (LPE)</div></div>
-        <div class="a5-feature-wrap" style="transition-delay:0.1s"><div class="a5-feature"><div class="a5-dot yes"></div>Arc® Druid LP iGPU + 2DKanvas frame-level routing</div></div>
-        <div class="a5-feature-wrap" style="transition-delay:0.15000000000000002s"><div class="a5-feature"><div class="a5-dot yes"></div>LPNPU AI, 88 TOPS always-on — the phone tier's sole NPU</div></div>
-        <div class="a5-feature-wrap" style="transition-delay:0.2s"><div class="a5-feature"><div class="a5-dot no"></div>No HNPU — the 04A-node NPU complex has no home on this die</div></div>
-        <div class="a5-feature-wrap" style="transition-delay:0.25s"><div class="a5-feature"><div class="a5-dot yes"></div>LPDDR6X primary memory — no ZAM, no DDR6</div></div>
-        <div class="a5-feature-wrap" style="transition-delay:0.30000000000000004s"><div class="a5-feature"><div class="a5-dot yes"></div>BionzXR + QuickSync ISP camera pipeline</div></div>
-        <div class="a5-feature-wrap" style="transition-delay:0.35000000000000003s"><div class="a5-feature"><div class="a5-dot partial"></div>Single Killer S1 tile — quad-band WiFi 7</div></div>
+        <div class="a5-feature-wrap" style="transition-delay:0.05s"><div class="a5-feature"><div class="a5-dot yes"></div>0-2× Lunar Eclipse (UHE) + 6-8× Darkmont (LPE)</div></div>
+        <div class="a5-feature-wrap" style="transition-delay:0.1s"><div class="a5-feature"><div class="a5-dot partial"></div>A3 is LPE-only — no UHE cores at all, the floor of the whole Atom stack</div></div>
+        <div class="a5-feature-wrap" style="transition-delay:0.15000000000000002s"><div class="a5-feature"><div class="a5-dot yes"></div>Arc® Druid LP iGPU + 2DKanvas frame-level routing</div></div>
+        <div class="a5-feature-wrap" style="transition-delay:0.2s"><div class="a5-feature"><div class="a5-dot yes"></div>LPNPU AI, 88 TOPS always-on — the phone tier's sole NPU</div></div>
+        <div class="a5-feature-wrap" style="transition-delay:0.25s"><div class="a5-feature"><div class="a5-dot no"></div>No HNPU — the 04A-node NPU complex has no home on this die</div></div>
+        <div class="a5-feature-wrap" style="transition-delay:0.30000000000000004s"><div class="a5-feature"><div class="a5-dot yes"></div>LPDDR6X primary memory — no ZAM, no DDR6</div></div>
+        <div class="a5-feature-wrap" style="transition-delay:0.35000000000000003s"><div class="a5-feature"><div class="a5-dot yes"></div>BionzXR + QuickSync ISP camera pipeline</div></div>
+        <div class="a5-feature-wrap" style="transition-delay:0.4s"><div class="a5-feature"><div class="a5-dot partial"></div>Single Killer S1 tile — quad-band WiFi 7</div></div>
       </div>
 
       <div class="a5-section-label">Built From</div>
@@ -119,7 +120,7 @@ body { background: var(--a5-bg2); }
         <div class="a5-chip" data-deepdive-path="/Intel/Eventide/Technology/ThreadDirector" style="transition-delay:0.2s">Thread Director <span class="a5-chip-arrow">→</span></div>
       </div>
 
-      <div class="a5-use" id="a5-use">Everyday flagship-class phones — extreme battery life, no compromise on GPU or AI.</div>
+      <div class="a5-use" id="a5-use">Everyday mainstream phones — extreme battery life, from the LPE-only budget floor up to A9.</div>
     </div>
   </div>
   <script>
