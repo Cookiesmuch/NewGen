@@ -93,6 +93,42 @@
     return out;
   }
 
+  /* Pack `units` into a fixed-height-`binH` strip around the carved `pre`
+     regions, at the MINIMUM feasible width — so the cluster is as narrow/dense
+     as the tiles allow, with no dead margin on the right. Grows a bin until
+     everything fits, then binary-searches the width down. */
+  function packStripMinWidth(units, binH, pre, minW) {
+    if (!units.length) return { res: [] };
+    var area = 0;
+    units.forEach(function (u) { area += (u.w + GAP) * (u.h + GAP); });
+    var hi = Math.max(minW, area / binH);
+    var top = null;
+    for (var g = 0; g < 40 && !top; g++) { top = packMaxRects(units, hi, binH, pre); if (!top) hi *= 1.12; }
+    if (!top) { // couldn't fit at all — fall back to a single row
+      var res = [], rx = minW; units.forEach(function (u) { res.push({ unit: u, x: rx, y: 0 }); rx += u.w + GAP; });
+      return { res: res };
+    }
+    var lo = minW, best = top, hiW = hi;
+    for (var it = 0; it < 22; it++) {
+      var mid = (lo + hiW) / 2;
+      if (mid <= minW + 0.5) break;
+      var r = packMaxRects(units, mid, binH, pre);
+      if (r) { best = r; hiW = mid; } else { lo = mid; }
+    }
+    return { res: best };
+  }
+
+  // one tile of a multi-instance block (GPU / Compute) as a placement unit, so
+  // the block can be arranged manually (GPU grid; Compute split above/below Kache)
+  function tileUnit(id, entry, sz, index, count, placed) {
+    return {
+      w: sz.w, h: sz.h,
+      place: function (x, y) {
+        placed.push({ id: id, meta: entry.meta, model: entry.t.model, index: index, count: count, x: x, y: y, w: sz.w, h: sz.h });
+      }
+    };
+  }
+
   // visible extent of a packed result (un-inflated tile sizes)
   function clusterBounds(res) {
     var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
@@ -157,7 +193,7 @@
        its corner against Kache, and every other tile is packed by the MaxRects
        heuristic into the remaining height-bounded strip. Atom (no GPU) just
        packs everything generically. ---- */
-    var gpu = gridCell("gpu");
+    var gpuEntry = byId.gpu;
     var compute = gridCell("compute");
     var kache = leafCell("kachekore");
     var smallIds = ["killers1", "druid", "lpisland", "hnpu", "bionzxr", "kanvas2d",
@@ -171,39 +207,65 @@
     var nocW = 0, nocH = 0;
     var placements = []; // {unit, x, y} in cluster coords (origin 0,0)
 
-    if (gpu) {
-      /* ---- Structured wide Core floorplan ---- */
-      var H = Math.max(gpu.h, kache ? kache.h : 0, compute ? compute.h : 0);
-      placements.push({ unit: gpu, x: 0, y: (H - gpu.h) / 2 });
-      var stripX = gpu.w + GAP;         // strip = everything right of the GPU
-      var pre = [];                     // inflated regions carved before packing smalls
+    if (gpuEntry) {
+      /* ---- Structured wide Core floorplan ----
+         GPU block on the left (defines the chip height). Kache Kore sits against
+         its right edge, vertically centred between the E1080 rows. The Compute
+         tiles split into a row ABOVE Kache and a row BELOW it — each compute
+         tile is ~the height of the gap the centred cache leaves above/below
+         itself, so this fills that column snugly. Every remaining tile is then
+         dense-packed (minimum width) into the height-bounded strip to the right,
+         flowing into the notch beside Kache too. ---- */
+      var gpuTile = S.sizeOf("gpu", gpuEntry);
+      var gN = gpuEntry.t.count || 1;
+      var computeEntry = byId.compute;
+      var cTile = computeEntry ? S.sizeOf("compute", computeEntry) : null;
+      var cN = computeEntry ? (computeEntry.t.count || 1) : 0;
+      var cTopN = Math.ceil(cN / 2), cBotN = cN - cTopN;
+      var kW = kache ? kache.w : 0, kH = kache ? kache.h : 0;
+
+      // chip height is driven by the centred-Kache + compute-rows column…
+      var H = Math.max(kH, cTile ? cTile.h : 0);
+      if (cTile && kache) H = Math.max(H, 2 * (cTile.h + GAP) + kH);
+      // …and the GPU tiles are arranged into a grid whose stacked height matches
+      // it (so a 2-tile GPU stacks 1×2 tall instead of sitting short and wide)
+      var gpuRows = Math.max(1, Math.min(gN, Math.round(H / (gpuTile.h + GAP)) || 1));
+      var gpuCols = Math.ceil(gN / gpuRows);
+      var gpuW = gpuCols * gpuTile.w + (gpuCols - 1) * GAP;
+      var gpuH = gpuRows * gpuTile.h + (gpuRows - 1) * GAP;
+      H = Math.max(H, gpuH);
+
+      var gpuY0 = (H - gpuH) / 2;
+      for (var gi = 0; gi < gN; gi++) {
+        var gc = gi % gpuCols, gr = Math.floor(gi / gpuCols);
+        placements.push({ unit: tileUnit("gpu", gpuEntry, gpuTile, gi, gN, placed),
+                          x: gc * (gpuTile.w + GAP), y: gpuY0 + gr * (gpuTile.h + GAP) });
+      }
+
+      var bx = gpuW + GAP;       // bin = everything right of the GPU
+      var pre = [];              // inflated regions carved out before packing smalls
+
       if (kache) {
-        var ky = (H - kache.h) / 2;     // vertically centred → between the two E1080 rows
-        placements.push({ unit: kache, x: stripX, y: ky });
-        pre.push({ x: 0, y: ky, w: kache.w + GAP, h: kache.h + GAP });
+        var ky = (H - kH) / 2;   // vertically centred → between the E1080 rows
+        placements.push({ unit: kache, x: bx, y: ky });
+        pre.push({ x: 0, y: ky, w: kW + GAP, h: kH + GAP });
       }
-      if (compute) {
-        var cx = kache ? kache.w + GAP : 0; // top, just right of Kache (corner against it)
-        placements.push({ unit: compute, x: stripX + cx, y: 0 });
-        pre.push({ x: cx, y: 0, w: compute.w + GAP, h: compute.h + GAP });
+      if (cTile) {
+        for (var ci = 0; ci < cN; ci++) {
+          var top = ci < cTopN;
+          var col = top ? ci : (ci - cTopN);
+          var cxp = col * (cTile.w + GAP);
+          var cyp = top ? 0 : (H - cTile.h);
+          placements.push({ unit: tileUnit("compute", computeEntry, cTile, ci, cN, placed), x: bx + cxp, y: cyp });
+          pre.push({ x: cxp, y: cyp, w: cTile.w + GAP, h: cTile.h + GAP });
+        }
       }
-      // pack the small tiles into the height-H strip, flowing around Kache+Compute
-      var stripArea = 0;
-      smalls.forEach(function (u) { stripArea += (u.w + GAP) * (u.h + GAP); });
-      if (kache) stripArea += (kache.w + GAP) * (kache.h + GAP);
-      if (compute) stripArea += (compute.w + GAP) * (compute.h + GAP);
-      var minStripW = (kache ? kache.w + GAP : 0) + (compute ? compute.w + GAP : 0);
-      var stripW = Math.max(stripArea / H / 0.72, minStripW);
-      var sres = null;
-      for (var a = 0; a < 90 && !sres; a++) {
-        sres = packMaxRects(smalls, stripW, H, pre);
-        if (!sres) stripW *= 1.05;
-      }
-      if (!sres) { // fallback: lay the leftover smalls in a row under Kache/Compute
-        sres = []; var rx0 = minStripW;
-        smalls.forEach(function (u) { sres.push({ unit: u, x: rx0, y: 0 }); rx0 += u.w + GAP; });
-      }
-      sres.forEach(function (p) { placements.push({ unit: p.unit, x: stripX + p.x, y: p.y }); });
+
+      var minBinW = Math.max(kW + GAP,
+                             cTopN ? cTopN * cTile.w + (cTopN - 1) * GAP + GAP : 0,
+                             cBotN ? cBotN * cTile.w + (cBotN - 1) * GAP + GAP : 0);
+      var packed = packStripMinWidth(smalls, H, pre, minBinW);
+      packed.res.forEach(function (p) { placements.push({ unit: p.unit, x: bx + p.x, y: p.y }); });
     } else {
       /* ---- Atom (or any GPU-less config): generic tight pack ---- */
       var units = [];

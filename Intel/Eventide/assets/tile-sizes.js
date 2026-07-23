@@ -183,17 +183,17 @@
 
        ZAM_MODULE_NM  — Core / Core Ultra / Xeon 500. CALIBRATED so the
          flagship X9-599HKX's full 2 TB config (8× 256 GB modules) spans
-         the flagship's wide cluster width (~1625px — the Core floorplan is
-         deliberately landscape, as tall as the E1080 cluster). That
-         flagship 8-die line is the stated basis for how big ZAM is; every
-         other Core-line SKU uses this same fixed module, so its shorter
-         memory row simply covers less of the package (base die takes the
-         remainder). 8·w + 7·GAP == 1625px  =>  w ≈ 1.04e7 nm.
+         the flagship's dense wide cluster width (~1442px — the Core
+         floorplan is deliberately landscape, as tall as the E1080 cluster).
+         That flagship 8-die line is the stated basis for how big ZAM is;
+         every other Core-line SKU uses this same fixed module, so its
+         shorter memory row simply covers less of the package (base die
+         takes the remainder). 8·w + 7·GAP == 1442px  =>  w ≈ 9.21e6 nm.
        LPDDR6X_MODULE_NM — Atom / Atom Ultra 500. A smaller phone-class
          package (a phone's LPDDR stack is physically far smaller than a
          server ZAM die-stack), sized so a dense Atom's row reads in scale
          with its small logic die rather than dwarfing it. ---- */
-  var ZAM_MODULE_NM     = { w: 10414000, h: 6500000 };  // Core ZAM — flagship-calibrated (8 span X9-599HKX cluster)
+  var ZAM_MODULE_NM     = { w: 9210000, h: 6500000 };  // Core ZAM — flagship-calibrated (8 span X9-599HKX cluster)
   var LPDDR6X_MODULE_NM = { w: 5300000, h: 5200000 };  // Atom LPDDR6X — phone-class package
   var ZAM_MODULE_GB = 256; // Core-derived default density; Atom passes its own (phone-realistic) moduleGB
   function zamModuleBox(model) {
