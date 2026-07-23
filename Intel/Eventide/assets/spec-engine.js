@@ -18,9 +18,9 @@
   /* ------------------------------------------------------------------
    * Real fixed-size floorplan. Every tile renders at its EXACT declared
    * box from tile-sizes.js — no stretching, ever — and the tiles are
-   * packed as tightly as possible around a centre-pinned Kache Kore by a
-   * MaxRects bin-packer (see below), then mounted on a continuous base
-   * die / interposer that spans the whole package. Wherever no tile sits,
+   * packed as tightly as possible by a MaxRects bin-packer (see below),
+   * then mounted on a continuous base die / interposer that spans the
+   * whole package. Wherever no tile sits,
    * the textured base die shows through: that's real structural silicon,
    * exactly as on a Foveros package, not dead space — which is how the
    * die stays a clean rectangle with true tile sizes and no stretching.
@@ -33,13 +33,12 @@
   var M = 20;    // outer margin to the package substrate edge
 
   /* MaxRects bin-packer (Best-Short-Side-Fit). Packs a set of {w,h} units into
-     a bin as tightly as the free-rectangle heuristic allows, optionally around
-     an already-placed unit (Kache Kore, pinned to the bin centre). Units are
-     inflated by GAP during packing so a real substrate channel is left between
+     a bin as tightly as the free-rectangle heuristic allows. Units are inflated
+     by GAP during packing so a real substrate channel is left between
      neighbours; the returned coords use the true (un-inflated) size. Returns a
      placement list or null if something didn't fit (caller then grows the bin).
      ~20 units, runs once per render — cost is irrelevant. */
-  function packMaxRects(units, pinned, binW, binH, pinX, pinY) {
+  function packMaxRects(units, binW, binH) {
     var free = [{ x: 0, y: 0, w: binW, h: binH }];
     var out = [];
     function contains(a, b) {
@@ -65,15 +64,6 @@
       free = pruned;
     }
 
-    if (pinned) {
-      var kw = pinned.w + GAP, kh = pinned.h + GAP;
-      var wantX = (pinX != null) ? pinX : (binW / 2 - kw / 2);
-      var wantY = (pinY != null) ? pinY : (binH / 2 - kh / 2);
-      var kx = Math.max(0, Math.min(wantX, binW - kw));
-      var ky = Math.max(0, Math.min(wantY, binH - kh));
-      out.push({ unit: pinned, x: kx, y: ky });
-      carve({ x: kx, y: ky, w: kw, h: kh });
-    }
     // largest-first — big blocks (GPU, Compute) anchor corners, smalls fill in
     var sorted = units.slice().sort(function (a, b) {
       return (b.w + GAP) * (b.h + GAP) - (a.w + GAP) * (a.h + GAP);
@@ -155,10 +145,11 @@
 
     /* ---- Collect every functional tile as a packing unit. GPU / Compute /
        dual Killer S1 stay welded into their own grid blocks so related tiles
-       read as one cluster; everything else is an individual unit. Kache Kore
-       is pulled out and pinned to the die centre — it's the FOveros 2.0 fabric
-       hub every other tile traces into, so it belongs dead-centre. ---- */
-    var ids = ["gpu", "compute", "killers1", "druid", "lpisland", "hnpu", "bionzxr",
+       read as one cluster; everything else is an individual unit. Every tile
+       (Kache Kore included) is packed by the same MaxRects heuristic — no
+       special centre-pinning, so the packer is free to place the cache
+       wherever it packs tightest. ---- */
+    var ids = ["gpu", "compute", "killers1", "kachekore", "druid", "lpisland", "hnpu", "bionzxr",
                "kanvas2d", "klangkerne", "mfx", "io", "psm", "ipu", "gna",
                "display", "threaddirector"];
     var units = [];
@@ -166,47 +157,26 @@
       var u = (id === "gpu" || id === "compute" || id === "killers1") ? gridCell(id) : leafCell(id);
       if (u) units.push(u);
     });
-    var kache = leafCell("kachekore");
 
     var nocW = 0, nocH = 0;
-    if (units.length || kache) {
-      var packUnits = units;
-      var totalArea = (kache ? (kache.w + GAP) * (kache.h + GAP) : 0);
-      packUnits.forEach(function (u) { totalArea += (u.w + GAP) * (u.h + GAP); });
+    if (units.length) {
+      var totalArea = 0;
+      units.forEach(function (u) { totalArea += (u.w + GAP) * (u.h + GAP); });
       // seed a bin at a chip-like ~1.5 aspect, sized with slack for packing loss
       var aspect = 1.5, eff = 0.68;
       var binW = Math.sqrt(totalArea * aspect / eff);
       var binH = binW / aspect;
       // never smaller than the largest single unit
-      (kache ? packUnits.concat([kache]) : packUnits).forEach(function (u) {
-        binW = Math.max(binW, u.w + GAP); binH = Math.max(binH, u.h + GAP);
-      });
+      units.forEach(function (u) { binW = Math.max(binW, u.w + GAP); binH = Math.max(binH, u.h + GAP); });
 
       var result = null;
       for (var attempt = 0; attempt < 60 && !result; attempt++) {
-        result = packMaxRects(packUnits, kache, binW, binH, null, null);
+        result = packMaxRects(units, binW, binH);
         if (!result) { binW *= 1.05; binH *= 1.05; }
       }
-      /* First pass pins Kache Kore to the bin centre, but the big GPU/Compute
-         blocks skew the packed cluster off that centre. Iterate: re-pin Kache
-         at the current cluster's true centre and repack, converging it to the
-         middle of the die (it's the fabric hub — it should sit dead-centre). */
-      if (result && kache) {
-        for (var iter = 0; iter < 6; iter++) {
-          var bb = clusterBounds(result);
-          var kp = null;
-          for (var q = 0; q < result.length; q++) if (result[q].unit === kache) kp = result[q];
-          var kcx = kp.x + kache.w / 2, kcy = kp.y + kache.h / 2;
-          var tcx = bb.minX + bb.w / 2, tcy = bb.minY + bb.h / 2;
-          if (Math.abs(kcx - tcx) < 6 && Math.abs(kcy - tcy) < 6) break;
-          var r2 = packMaxRects(packUnits, kache, binW, binH, tcx - (kache.w + GAP) / 2, tcy - (kache.h + GAP) / 2);
-          if (!r2) break;
-          result = r2;
-        }
-      }
-      if (!result) { // pathological fallback: single row, no pinning
+      if (!result) { // pathological fallback: single row
         result = []; var rx = 0;
-        (kache ? [kache].concat(packUnits) : packUnits).forEach(function (u) { result.push({ unit: u, x: rx, y: 0 }); rx += u.w + GAP; });
+        units.forEach(function (u) { result.push({ unit: u, x: rx, y: 0 }); rx += u.w + GAP; });
       }
 
       var bbF = clusterBounds(result);
