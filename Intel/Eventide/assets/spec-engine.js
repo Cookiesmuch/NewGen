@@ -37,8 +37,11 @@
      by GAP during packing so a real substrate channel is left between
      neighbours; the returned coords use the true (un-inflated) size. Returns a
      placement list or null if something didn't fit (caller then grows the bin).
+     `preOccupied` (optional) is a list of inflated {x,y,w,h} regions already
+     taken (e.g. hand-placed anchor blocks) — carved out of the bin before the
+     units are packed, so the units flow around them.
      ~20 units, runs once per render — cost is irrelevant. */
-  function packMaxRects(units, binW, binH) {
+  function packMaxRects(units, binW, binH, preOccupied) {
     var free = [{ x: 0, y: 0, w: binW, h: binH }];
     var out = [];
     function contains(a, b) {
@@ -63,6 +66,8 @@
       }
       free = pruned;
     }
+
+    if (preOccupied) preOccupied.forEach(function (r) { carve(r); });
 
     // largest-first — big blocks (GPU, Compute) anchor corners, smalls fill in
     var sorted = units.slice().sort(function (a, b) {
@@ -146,42 +151,86 @@
     /* ---- Collect every functional tile as a packing unit. GPU / Compute /
        dual Killer S1 stay welded into their own grid blocks so related tiles
        read as one cluster; everything else is an individual unit. Every tile
-       (Kache Kore included) is packed by the same MaxRects heuristic — no
-       special centre-pinning, so the packer is free to place the cache
-       wherever it packs tightest. ---- */
-    var ids = ["gpu", "compute", "killers1", "kachekore", "druid", "lpisland", "hnpu", "bionzxr",
-               "kanvas2d", "klangkerne", "mfx", "io", "psm", "ipu", "gna",
-               "display", "threaddirector"];
-    var units = [];
-    ids.forEach(function (id) {
-      var u = (id === "gpu" || id === "compute" || id === "killers1") ? gridCell(id) : leafCell(id);
-      if (u) units.push(u);
+       and the whole cluster is a deliberate wide floorplan on the Core lines:
+       the GPU block anchors the full-height left edge, Kache Kore sits against
+       its right edge vertically centred, the Compute block sits top-right with
+       its corner against Kache, and every other tile is packed by the MaxRects
+       heuristic into the remaining height-bounded strip. Atom (no GPU) just
+       packs everything generically. ---- */
+    var gpu = gridCell("gpu");
+    var compute = gridCell("compute");
+    var kache = leafCell("kachekore");
+    var smallIds = ["killers1", "druid", "lpisland", "hnpu", "bionzxr", "kanvas2d",
+                    "klangkerne", "mfx", "io", "psm", "ipu", "gna", "display", "threaddirector"];
+    var smalls = [];
+    smallIds.forEach(function (id) {
+      var u = (id === "killers1") ? gridCell(id) : leafCell(id);
+      if (u) smalls.push(u);
     });
 
     var nocW = 0, nocH = 0;
-    if (units.length) {
-      var totalArea = 0;
-      units.forEach(function (u) { totalArea += (u.w + GAP) * (u.h + GAP); });
-      // seed a bin at a chip-like ~1.5 aspect, sized with slack for packing loss
-      var aspect = 1.5, eff = 0.68;
-      var binW = Math.sqrt(totalArea * aspect / eff);
-      var binH = binW / aspect;
-      // never smaller than the largest single unit
-      units.forEach(function (u) { binW = Math.max(binW, u.w + GAP); binH = Math.max(binH, u.h + GAP); });
+    var placements = []; // {unit, x, y} in cluster coords (origin 0,0)
 
-      var result = null;
-      for (var attempt = 0; attempt < 60 && !result; attempt++) {
-        result = packMaxRects(units, binW, binH);
-        if (!result) { binW *= 1.05; binH *= 1.05; }
+    if (gpu) {
+      /* ---- Structured wide Core floorplan ---- */
+      var H = Math.max(gpu.h, kache ? kache.h : 0, compute ? compute.h : 0);
+      placements.push({ unit: gpu, x: 0, y: (H - gpu.h) / 2 });
+      var stripX = gpu.w + GAP;         // strip = everything right of the GPU
+      var pre = [];                     // inflated regions carved before packing smalls
+      if (kache) {
+        var ky = (H - kache.h) / 2;     // vertically centred → between the two E1080 rows
+        placements.push({ unit: kache, x: stripX, y: ky });
+        pre.push({ x: 0, y: ky, w: kache.w + GAP, h: kache.h + GAP });
       }
-      if (!result) { // pathological fallback: single row
-        result = []; var rx = 0;
-        units.forEach(function (u) { result.push({ unit: u, x: rx, y: 0 }); rx += u.w + GAP; });
+      if (compute) {
+        var cx = kache ? kache.w + GAP : 0; // top, just right of Kache (corner against it)
+        placements.push({ unit: compute, x: stripX + cx, y: 0 });
+        pre.push({ x: cx, y: 0, w: compute.w + GAP, h: compute.h + GAP });
       }
+      // pack the small tiles into the height-H strip, flowing around Kache+Compute
+      var stripArea = 0;
+      smalls.forEach(function (u) { stripArea += (u.w + GAP) * (u.h + GAP); });
+      if (kache) stripArea += (kache.w + GAP) * (kache.h + GAP);
+      if (compute) stripArea += (compute.w + GAP) * (compute.h + GAP);
+      var minStripW = (kache ? kache.w + GAP : 0) + (compute ? compute.w + GAP : 0);
+      var stripW = Math.max(stripArea / H / 0.72, minStripW);
+      var sres = null;
+      for (var a = 0; a < 90 && !sres; a++) {
+        sres = packMaxRects(smalls, stripW, H, pre);
+        if (!sres) stripW *= 1.05;
+      }
+      if (!sres) { // fallback: lay the leftover smalls in a row under Kache/Compute
+        sres = []; var rx0 = minStripW;
+        smalls.forEach(function (u) { sres.push({ unit: u, x: rx0, y: 0 }); rx0 += u.w + GAP; });
+      }
+      sres.forEach(function (p) { placements.push({ unit: p.unit, x: stripX + p.x, y: p.y }); });
+    } else {
+      /* ---- Atom (or any GPU-less config): generic tight pack ---- */
+      var units = [];
+      if (kache) units.push(kache);
+      if (compute) units.push(compute);
+      smalls.forEach(function (u) { units.push(u); });
+      if (units.length) {
+        var totalArea = 0;
+        units.forEach(function (u) { totalArea += (u.w + GAP) * (u.h + GAP); });
+        var binW = Math.sqrt(totalArea * 1.5 / 0.68), binH = binW / 1.5;
+        units.forEach(function (u) { binW = Math.max(binW, u.w + GAP); binH = Math.max(binH, u.h + GAP); });
+        var result = null;
+        for (var attempt = 0; attempt < 60 && !result; attempt++) {
+          result = packMaxRects(units, binW, binH);
+          if (!result) { binW *= 1.05; binH *= 1.05; }
+        }
+        if (!result) { result = []; var rx = 0; units.forEach(function (u) { result.push({ unit: u, x: rx, y: 0 }); rx += u.w + GAP; }); }
+        var bb0 = clusterBounds(result);
+        result.forEach(function (p) { placements.push({ unit: p.unit, x: p.x - bb0.minX, y: p.y - bb0.minY }); });
+      }
+    }
 
-      var bbF = clusterBounds(result);
-      result.forEach(function (p) {
-        var px = p.x - bbF.minX, py = p.y - bbF.minY;
+    if (placements.length) {
+      var minX = Infinity, minY = Infinity;
+      placements.forEach(function (p) { minX = Math.min(minX, p.x); minY = Math.min(minY, p.y); });
+      placements.forEach(function (p) {
+        var px = p.x - minX, py = p.y - minY;
         nocW = Math.max(nocW, px + p.unit.w);
         nocH = Math.max(nocH, py + p.unit.h);
         p.unit.place(M + px, M + py);
