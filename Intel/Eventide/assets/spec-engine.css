@@ -1,0 +1,252 @@
+/* ==========================================================================
+   Eventide Spec Engine — shared theme + interactive die-map for SKU pages
+   Palette inspired by the ThreadDirector / ZAM / Klangkerne deep dives.
+   ========================================================================== */
+
+.ev-spec {
+  --ev-dusk: #0B0714;
+  --ev-dusk-2: #140A24;
+  --ev-panel: #150C26;
+  --ev-panel-2: #1B1030;
+  --ev-border: rgba(255,255,255,0.09);
+  --ev-gold: #F0B848;
+  --ev-gold-dim: #C8922A;
+  --ev-purple: #9333EA;
+  --ev-blue: #0068B5;
+  --ev-text: #F4F1EA;
+  --ev-text-dim: rgba(244,241,234,0.62);
+  --ev-text-faint: rgba(244,241,234,0.38);
+  font-family: var(--font-body, 'Space Grotesk', sans-serif);
+  background:
+    radial-gradient(ellipse 1400px 700px at 50% 0px, rgba(240,184,72,0.09) 0%, transparent 70%),
+    radial-gradient(ellipse 70% 45% at 18% 10%, rgba(147,51,234,0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 55% at 85% 85%, rgba(240,184,72,0.08) 0%, transparent 55%),
+    linear-gradient(180deg, var(--ev-dusk) 0%, #0D0818 55%, var(--ev-dusk) 100%);
+  color: var(--ev-text);
+  position: relative;
+  padding-bottom: 40px;
+}
+.ev-spec::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 63px, rgba(240,184,72,0.055) 63px, rgba(240,184,72,0.055) 64px),
+    repeating-linear-gradient(90deg, transparent, transparent 63px, rgba(240,184,72,0.055) 63px, rgba(240,184,72,0.055) 64px),
+    repeating-linear-gradient(0deg, transparent, transparent 15px, rgba(240,184,72,0.02) 15px, rgba(240,184,72,0.02) 16px),
+    repeating-linear-gradient(90deg, transparent, transparent 15px, rgba(240,184,72,0.02) 15px, rgba(240,184,72,0.02) 16px);
+}
+.ev-spec .ev-wrap { max-width: 1240px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 1; }
+
+/* ---------- Header ---------- */
+.ev-header { padding: 48px 0 22px; }
+.ev-eyebrow {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 11px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--ev-gold); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 12px;
+}
+.ev-eyebrow::before { content: ''; width: 26px; height: 2px; background: var(--ev-gold); flex: none; }
+.ev-title {
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: clamp(40px, 5.8vw, 68px);
+  line-height: .96; letter-spacing: .01em;
+  background: linear-gradient(180deg, #FFFFFF 0%, var(--ev-gold) 85%, var(--ev-gold-dim) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.ev-subtitle { margin-top: 10px; font-size: 14px; color: var(--ev-text-dim); max-width: 780px; line-height: 1.7; }
+.ev-badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.ev-badge {
+  font-family: var(--font-mono, monospace); font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  padding: 8px 14px; border-radius: 4px; border: 1px solid; white-space: nowrap;
+  background: rgba(240,184,72,0.05); transition: background .2s ease, border-color .2s ease;
+}
+.ev-badge:hover { filter: brightness(1.25); }
+.ev-badge.gold { color: var(--ev-gold); background: rgba(240,184,72,0.10); border-color: rgba(240,184,72,0.32); }
+.ev-badge.orange { color: #FFAE91; background: rgba(255,107,53,0.10); border-color: rgba(255,107,53,0.32); }
+.ev-badge.blue { color: #49B7FF; background: rgba(0,104,181,0.12); border-color: rgba(0,104,181,0.35); }
+.ev-badge.purple { color: #D8B4FE; background: rgba(147,51,234,0.12); border-color: rgba(147,51,234,0.35); }
+
+/* ---------- Key stats ---------- */
+.ev-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 28px 0;
+  background: rgba(21,12,38,0.55); border: 1px solid rgba(240,184,72,0.22); border-radius: 10px; overflow: hidden;
+}
+.ev-stat { padding: 26px 18px 22px; text-align: center; border-right: 1px solid rgba(240,184,72,0.14); }
+.ev-stat:last-child { border-right: none; }
+.ev-stat-num { font-family: var(--font-display, sans-serif); font-size: 40px; color: var(--ev-gold); line-height: 1; margin-bottom: 6px; }
+.ev-stat-label { font-family: var(--font-mono, monospace); font-size: 10px; color: var(--ev-text-faint); text-transform: uppercase; letter-spacing: .14em; }
+
+/* ---------- Die map ---------- */
+.ev-diemap-card {
+  background: linear-gradient(180deg, rgba(21,12,38,0.9), rgba(11,7,20,0.95));
+  border: 1px solid var(--ev-border); border-radius: 10px;
+  padding: 18px 18px 10px; margin-bottom: 26px; position: relative;
+}
+.ev-diemap-head { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 8px 10px; flex-wrap: wrap; gap: 8px; }
+.ev-diemap-title { font-family: var(--font-mono, monospace); font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.ev-diemap-hint { font-size: 11px; color: var(--ev-text-faint); }
+.ev-diemap-svg-wrap { width: 100%; overflow: visible; }
+/* Intentionally NOT width:100% — a smaller/GPU-less SKU's package is
+   genuinely a smaller die than the flagship's, and should render smaller,
+   not get stretched to fill the card at the same visual size. max-width
+   caps it on narrow viewports; otherwise it renders at its true pixel
+   footprint (1 die-unit == 1px), centered in the card. */
+.ev-diemap-svg { display: block; max-width: 100%; height: auto; margin: 0 auto; overflow: visible; }
+
+/* Package substrate — the flat rounded card every tile sits on, with a
+   BGA-style ball ring around the edge, matching the "chip on a package"
+   look of Intel's own die/package diagrams. */
+.ev-package-substrate { fill: rgba(255,255,255,0.018); stroke: rgba(255,255,255,0.10); stroke-width: 1.5; }
+.ev-package-ball { fill: rgba(255,255,255,0.14); }
+.ev-zam-ghost { fill: none; stroke: rgba(255,255,255,0.12); stroke-width: 1.2; stroke-dasharray: 4 4; }
+
+/* Fabric — the FOveros interconnect traces from every tile into Kache Kore,
+   drawn as static right-angled bus traces beneath the tiles. */
+.ev-fabric-trace { fill: none; stroke: var(--ev-gold); stroke-width: 1; opacity: .16; stroke-linecap: round; }
+.ev-fabric-trace.ev-fabric-lit { opacity: .55; stroke-width: 1.4; }
+.ev-fabric-hub { fill: none; stroke: var(--ev-gold); stroke-width: 1; opacity: .22; }
+
+.ev-tile-rect {
+  cursor: pointer;
+  transition: transform .28s cubic-bezier(.2,.8,.3,1.15), filter .28s ease, opacity .3s ease;
+  transform-box: fill-box; transform-origin: center;
+}
+.ev-tile-rect rect.ev-tile-fill { transition: fill-opacity .2s ease, stroke-width .2s ease; }
+.ev-tile-rect rect.ev-tile-accent { transition: height .2s ease; }
+.ev-tile-group:hover .ev-tile-rect,
+.ev-tile-group.ev-hover .ev-tile-rect { transform: translateY(-9px) scale(1.045); filter: drop-shadow(0 14px 18px rgba(0,0,0,0.55)); }
+.ev-tile-group.ev-hover .ev-tile-rect rect.ev-tile-fill { stroke-width: 2; fill-opacity: .3; }
+.ev-tile-group.ev-dim .ev-tile-rect { opacity: .22; filter: saturate(.35); }
+.ev-tile-group.ev-focused .ev-tile-rect { transform: translateY(-18px) scale(1.16); filter: drop-shadow(0 24px 26px rgba(0,0,0,0.65)); }
+.ev-tile-label { font-family: var(--font-display, sans-serif); font-size: 10.5px; font-weight: 600; fill: rgba(255,255,255,0.92); pointer-events: none; text-anchor: middle; letter-spacing: .01em; }
+.ev-tile-sublabel { font-family: var(--font-mono, monospace); font-size: 7px; letter-spacing: .06em; text-transform: uppercase; fill: rgba(255,255,255,0.42); pointer-events: none; text-anchor: middle; }
+
+/* stacked SoRT die — independently interactive, but lifts further/diagonally
+   since it is physically bonded on top of Klangkerne rather than flat on
+   the substrate. */
+.ev-tile-group.ev-stack-top .ev-tile-rect { transition: transform .32s cubic-bezier(.2,.8,.3,1.2), filter .32s ease; }
+.ev-tile-group.ev-stack-top:hover .ev-tile-rect,
+.ev-tile-group.ev-stack-top.ev-hover .ev-tile-rect { transform: translate(-13px,-22px) scale(1.1); filter: drop-shadow(0 18px 16px rgba(0,0,0,.6)); }
+.ev-tile-group.ev-stack-top.ev-focused .ev-tile-rect { transform: translate(-20px,-38px) scale(1.22); }
+/* When Klangkerne (the base die) is focused/hovered, nudge SoRT up too so the stack visibly separates. */
+.ev-diemap-card .ev-tile-group[data-tile="klangkerne"]:hover ~ .ev-tile-group.ev-stack-top .ev-tile-rect,
+.ev-diemap-card .ev-tile-group[data-tile="klangkerne"].ev-hover ~ .ev-tile-group.ev-stack-top .ev-tile-rect { transform: translate(-13px,-22px) scale(1.08); filter: drop-shadow(0 16px 14px rgba(0,0,0,.55)); }
+
+/* callout line + typing label */
+.ev-callout-path { fill: none; stroke: var(--ev-gold); stroke-width: 1.4; stroke-dasharray: 3 4; opacity: 0; pointer-events: none; }
+.ev-callout-path.on { opacity: .9; animation: ev-marching 0.9s linear infinite; }
+@keyframes ev-marching { to { stroke-dashoffset: -14; } }
+.ev-callout-text { font-family: var(--font-mono, monospace); font-size: 11px; font-weight: 600; fill: #fff; opacity: 0; pointer-events: none; }
+.ev-callout-text.on { opacity: 1; }
+.ev-callout-sub { font-family: var(--font-mono, monospace); font-size: 8.5px; fill: rgba(255,255,255,0.5); opacity: 0; pointer-events: none; }
+.ev-callout-sub.on { opacity: 1; }
+
+.ev-diemap-legend { display: flex; flex-wrap: wrap; gap: 10px 16px; padding: 10px 8px 4px; border-top: 1px solid var(--ev-border); margin-top: 6px; }
+.ev-legend-item { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--ev-text-faint); }
+.ev-legend-swatch { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+
+.ev-diemap-reset {
+  display: none; font-family: var(--font-mono, monospace); font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ev-gold); background: rgba(240,184,72,0.12); border: 1px solid rgba(240,184,72,0.35);
+  border-radius: 4px; padding: 6px 12px; cursor: pointer;
+}
+.ev-diemap-card.ev-has-focus .ev-diemap-reset { display: inline-block; }
+
+/* ---------- Focus detail card ---------- */
+.ev-focus-card { display: none; padding: 4px 8px 18px; }
+.ev-diemap-card.ev-has-focus .ev-focus-card { display: block; }
+.ev-diemap-card.ev-has-focus .ev-diemap-svg-wrap { opacity: 1; }
+.ev-focus-top { display: flex; gap: 14px; align-items: center; margin-bottom: 12px; }
+.ev-focus-swatch { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+.ev-focus-name { font-family: var(--font-display, sans-serif); font-size: 26px; color: #fff; line-height: 1; }
+.ev-focus-meta { font-family: var(--font-mono, monospace); font-size: 10px; color: var(--ev-text-faint); margin-top: 4px; }
+.ev-focus-tagline { font-size: 13px; font-style: italic; color: var(--ev-gold); margin: 8px 0 12px; }
+.ev-focus-detail { font-size: 12.5px; color: var(--ev-text-dim); line-height: 1.7; margin-bottom: 6px; padding-left: 16px; position: relative; }
+.ev-focus-detail::before { content: '—'; position: absolute; left: 0; color: var(--ev-gold-dim); }
+.ev-focus-specs { margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap: 1px; background: rgba(255,255,255,0.06); border-radius: 6px; overflow: hidden; }
+.ev-focus-spec-item { background: rgba(10,6,20,0.7); padding: 10px 12px; }
+.ev-focus-spec-label { font-size: 9.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--ev-text-faint); }
+.ev-focus-spec-val { font-size: 12px; color: #fff; margin-top: 2px; }
+
+/* ---------- Accordion (restyled dark) ---------- */
+.ev-spec-sheet { background: var(--ev-panel); border: 1px solid var(--ev-border); border-radius: 10px; overflow: hidden; }
+.ev-section { border-bottom: 1px solid var(--ev-border); }
+.ev-section:last-child { border-bottom: none; }
+.ev-section-head {
+  background: rgba(240,184,72,0.04); padding: 14px 22px; display: flex; align-items: center; gap: 12px;
+  cursor: pointer; user-select: none; border-left: 3px solid transparent; transition: border-color .2s ease, background .2s ease;
+}
+.ev-section-head:hover { background: rgba(240,184,72,0.08); }
+.ev-section-head:has(+ .ev-section-body.open) { border-left-color: var(--ev-gold); }
+.ev-section-head-label { font-family: var(--font-mono, monospace); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; color: var(--ev-gold); flex: 1; }
+.ev-section-head-sub { font-family: var(--font-mono, monospace); font-size: 9.5px; color: var(--ev-text-faint); letter-spacing: .05em; }
+.ev-section-head-icon { font-size: 11px; color: var(--ev-text-faint); transition: transform .2s; }
+.ev-section-head-icon.open { transform: rotate(180deg); color: var(--ev-gold); }
+.ev-section-body { display: none; }
+.ev-section-body.open { display: block; }
+.ev-section-intro { padding: 14px 22px 4px; font-size: 12.5px; color: var(--ev-text-dim); line-height: 1.7; max-width: 900px; }
+.ev-row { display: grid; grid-template-columns: 300px 1fr; border-bottom: 1px solid var(--ev-border); }
+.ev-row:last-child { border-bottom: none; }
+.ev-row:hover { background: rgba(240,184,72,0.03); }
+.ev-row-key { padding: 10px 20px; font-size: 12px; color: var(--ev-text-dim); border-right: 1px solid var(--ev-border); background: rgba(255,255,255,0.015); display: flex; align-items: center; gap: 6px; }
+.ev-row-val { padding: 10px 20px; font-size: 12px; color: var(--ev-text); font-weight: 500; }
+.ev-row-val .note { font-weight: 400; color: var(--ev-text-faint); font-size: 11px; }
+
+/* Capability cards — used for qualitative/technology sections. */
+.ev-cap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; padding: 18px 22px 22px; }
+.ev-cap-card { padding: 18px; border: 1px solid var(--ev-border); border-radius: 8px; background: rgba(255,255,255,0.02); position: relative; overflow: hidden; transition: border-color .2s ease, transform .2s ease; }
+.ev-cap-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--ev-gold), transparent); opacity: 0; transition: opacity .2s ease; }
+.ev-cap-card:hover { border-color: rgba(240,184,72,0.4); transform: translateY(-2px); }
+.ev-cap-card:hover::before { opacity: 1; }
+.ev-cap-icon { font-size: 20px; margin-bottom: 8px; }
+.ev-cap-name { font-family: var(--font-mono, monospace); font-size: 11px; font-weight: 600; letter-spacing: .04em; color: var(--ev-gold); text-transform: uppercase; margin-bottom: 8px; }
+.ev-cap-desc { font-size: 12px; line-height: 1.65; color: var(--ev-text-dim); }
+
+.ev-help-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(240,184,72,0.5);
+  color: var(--ev-gold); font-size: 9px; font-family: var(--font-mono, monospace); line-height: 1;
+  cursor: pointer; background: rgba(240,184,72,0.08); flex-shrink: 0; position: relative;
+}
+.ev-help-btn:hover { background: rgba(240,184,72,0.22); }
+.ev-help-pop {
+  display: none; position: absolute; z-index: 40; left: 0; top: 20px; width: 260px;
+  background: #1B1030; border: 1px solid rgba(240,184,72,0.4); border-radius: 6px;
+  padding: 10px 12px; font-size: 11px; line-height: 1.5; color: var(--ev-text-dim);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.5); font-weight: 400;
+}
+.ev-help-btn.open .ev-help-pop { display: block; }
+
+.ev-tdp-table { width: 100%; border-collapse: collapse; }
+.ev-tdp-table th, .ev-tdp-table td { padding: 9px 12px; font-size: 11px; text-align: left; border-bottom: 1px solid var(--ev-border); line-height: 1.5; }
+.ev-tdp-table th { font-family: var(--font-mono, monospace); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; color: var(--ev-text-faint); }
+.ev-tdp-table td.num { font-family: var(--font-mono, monospace); color: var(--ev-gold); font-weight: 600; white-space: nowrap; }
+.ev-tdp-note { padding: 10px 20px; font-size: 10.5px; color: var(--ev-text-faint); line-height: 1.6; }
+
+.ev-affinity-chart-wrap { padding: 18px 20px 6px; }
+.ev-affinity-chart { width: 100%; height: auto; display: block; }
+
+.ev-affinity-matrix-title { padding: 18px 20px 6px; font-family: var(--font-mono, monospace); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--ev-text-faint); }
+.ev-affinity-matrix { width: calc(100% - 40px); margin: 0 20px 20px; border-collapse: collapse; }
+.ev-affinity-matrix th, .ev-affinity-matrix td { padding: 8px 10px; font-size: 10.5px; text-align: center; border-bottom: 1px solid var(--ev-border); }
+.ev-affinity-matrix th { font-family: var(--font-mono, monospace); font-size: 8.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--ev-text-faint); }
+.ev-affrow-label { text-align: left !important; color: var(--ev-text-dim); font-size: 11px; }
+.ev-affdot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+.ev-affstate-na { color: rgba(255,255,255,0.25); }
+.ev-affstate-na .ev-affdot { background: rgba(255,255,255,0.15); }
+.ev-affstate-off { color: rgba(255,255,255,0.4); }
+.ev-affstate-off .ev-affdot { background: rgba(255,255,255,0.3); }
+.ev-affstate-idle { color: #7DD3FC; }
+.ev-affstate-idle .ev-affdot { background: #7DD3FC; }
+.ev-affstate-active { color: var(--ev-gold); }
+.ev-affstate-active .ev-affdot { background: var(--ev-gold); }
+.ev-affstate-boost { color: #E85D9E; font-weight: 700; }
+.ev-affstate-boost .ev-affdot { background: #E85D9E; box-shadow: 0 0 6px #E85D9E; }
+
+.ev-footer { max-width: 1240px; margin: 20px auto 0; padding: 0 40px; color: var(--ev-text-faint); font-size: 10.5px; line-height: 1.7; }
+
+@media (max-width: 900px) {
+  .ev-spec .ev-wrap, .ev-footer { padding: 0 18px; }
+  .ev-stats { grid-template-columns: repeat(2, 1fr); }
+  .ev-row { grid-template-columns: 160px 1fr; }
+}

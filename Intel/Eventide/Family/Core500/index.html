@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Core 500 — Eventide Family Overview</title>
+<link rel="stylesheet" href="../../../../assets/nav.css">
+<script src="../../../../assets/nav.js" defer></script>
+<link rel="stylesheet" href="../../deepdive.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+:root {
+  --c5-bg1: #1A0A2E; --c5-bg2: #0B0714;
+  --c5-accent: #F0B848; --c5-accent2: #9333EA;
+}
+body { background: var(--c5-bg2); }
+.c5-wrap {
+  min-height: 100vh;
+  padding: 100px 8vw 80px;
+  background: radial-gradient(120% 90% at 15% 0%, #F0B84822 0%, var(--c5-bg1) 55%, var(--c5-bg2) 100%);
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  overflow: hidden;
+}
+.c5-logo { width: 72px; height: 72px; border-radius: 16px; opacity: 0; animation: c5-fadeScale 0.7s ease forwards; }
+@keyframes c5-fadeScale { from { opacity: 0; transform: scale(0.7) rotate(-8deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+.c5-eyebrow {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--c5-accent); margin: 22px 0 10px; opacity: 0; animation: c5-riseIn 0.6s ease 0.15s forwards;
+}
+.c5-headline {
+  font-family: 'Bebas Neue', sans-serif; font-size: clamp(38px, 6vw, 74px); line-height: 0.98; letter-spacing: 0.01em;
+  max-width: 780px; opacity: 0; animation: c5-riseIn 0.6s ease 0.28s forwards;
+}
+.c5-sub {
+  max-width: 640px; margin-top: 18px; font-size: 15px; line-height: 1.7; color: rgba(255,255,255,0.72);
+  opacity: 0; animation: c5-riseIn 0.6s ease 0.42s forwards;
+}
+@keyframes c5-riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+.c5-stats { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 40px; }
+.c5-stat { opacity: 0; animation: c5-riseIn 0.55s ease forwards; }
+.c5-stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 34px; color: var(--c5-accent); line-height: 1; }
+.c5-stat-label { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 4px; max-width: 140px; }
+
+.c5-section-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(255,255,255,0.4); margin: 64px 0 18px;
+}
+.c5-feature-grid { display: grid; grid-template-columns: repeat(2, minmax(240px, 1fr)); gap: 6px 32px; max-width: 900px; }
+.c5-feature-wrap { }
+.c5-feature {
+  display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: rgba(255,255,255,0.82);
+  padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+  opacity: 0; transform: translateX(-10px); transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.c5-feature.on { opacity: 1; transform: translateX(0); }
+.c5-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.c5-dot.yes { background: #16A34A; box-shadow: 0 0 8px #16A34A88; }
+.c5-dot.no { background: #DC2626; }
+.c5-dot.partial { background: var(--c5-accent); }
+
+.c5-chip-row { display: flex; flex-wrap: wrap; gap: 10px; max-width: 900px; }
+.c5-chip {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; padding: 10px 16px; border-radius: 30px; cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.04); color: #fff;
+  transition: background 0.2s ease, border-color 0.2s ease, opacity 0.5s ease, transform 0.5s ease;
+  opacity: 0; transform: translateY(8px);
+}
+.c5-chip.on { opacity: 1; transform: translateY(0); }
+.c5-chip:hover { background: var(--c5-accent); border-color: var(--c5-accent); color: #0B0714; }
+.c5-chip-arrow { opacity: 0.6; }
+
+.c5-use {
+  margin-top: 56px; max-width: 700px; padding: 20px 24px; border-left: 3px solid var(--c5-accent);
+  background: rgba(255,255,255,0.03); font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.6;
+  opacity: 0; transition: opacity 0.6s ease;
+}
+.c5-use.on { opacity: 1; }
+
+@media (max-width: 720px) {
+  .c5-feature-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+  <a class="back-button" href="../../">← Back to Overview</a>
+  <div id="deepdive-container" class="deepdive-container">
+    <div class="c5-wrap">
+      <img class="c5-logo" src="../../assets/logos/core500.svg" alt="Core 500 logo">
+      <div class="c5-eyebrow">Product Family · Essential / Mainstream</div>
+      <div class="c5-headline">Fanless by design.<br>Nothing to spare.</div>
+      <div class="c5-sub">The entry point into Eventide — LP Island only, Arc Druid iGPU, and a die small enough to go fanless.</div>
+
+      <div class="c5-stats">
+        <div class="c5-stat" style="animation-delay:0.5s"><div class="c5-stat-num">0</div><div class="c5-stat-label">Compute Tiles</div></div>
+        <div class="c5-stat" style="animation-delay:0.58s"><div class="c5-stat-num">2</div><div class="c5-stat-label">Cores present (UHE + LPE)</div></div>
+        <div class="c5-stat" style="animation-delay:0.66s"><div class="c5-stat-num">88T</div><div class="c5-stat-label">LPNPU AI</div></div>
+      </div>
+
+      <div class="c5-section-label">Tile Composition</div>
+      <div class="c5-feature-grid" id="c5-features">
+        <div class="c5-feature-wrap" style="transition-delay:0s"><div class="c5-feature"><div class="c5-dot no"></div>No Compute Tile — LP Island only</div></div>
+        <div class="c5-feature-wrap" style="transition-delay:0.05s"><div class="c5-feature"><div class="c5-dot no"></div>No high-performance iGPU (no Elementalist)</div></div>
+        <div class="c5-feature-wrap" style="transition-delay:0.1s"><div class="c5-feature"><div class="c5-dot yes"></div>Low Power Island: Lunar Eclipse (UHE) + Darkmont (LPE)</div></div>
+        <div class="c5-feature-wrap" style="transition-delay:0.15000000000000002s"><div class="c5-feature"><div class="c5-dot yes"></div>Arc® Druid low-power iGPU + 2DKanvas compositor</div></div>
+        <div class="c5-feature-wrap" style="transition-delay:0.2s"><div class="c5-feature"><div class="c5-dot yes"></div>LPNPU AI, 88 TOPS always-on</div></div>
+        <div class="c5-feature-wrap" style="transition-delay:0.25s"><div class="c5-feature"><div class="c5-dot partial"></div>HNPU present in a low-power configuration</div></div>
+        <div class="c5-feature-wrap" style="transition-delay:0.30000000000000004s"><div class="c5-feature"><div class="c5-dot no"></div>No BionzXR media cores</div></div>
+        <div class="c5-feature-wrap" style="transition-delay:0.35000000000000003s"><div class="c5-feature"><div class="c5-dot yes"></div>Z-Angle Memory (ZAM), on-package, fanless</div></div>
+      </div>
+
+      <div class="c5-section-label">Built From</div>
+      <div class="c5-chip-row" id="c5-chips">
+        <div class="c5-chip" data-deepdive-path="/Intel/Eventide/CPU/LunarEclipse" style="transition-delay:0s">Lunar Eclipse (UHE) <span class="c5-chip-arrow">→</span></div>
+        <div class="c5-chip" data-deepdive-path="/Intel/Eventide/CPU/Darkmont" style="transition-delay:0.05s">Darkmont (LPE) <span class="c5-chip-arrow">→</span></div>
+        <div class="c5-chip" data-deepdive-path="/Intel/Eventide/GPU/Druid" style="transition-delay:0.1s">Arc Druid <span class="c5-chip-arrow">→</span></div>
+        <div class="c5-chip" data-deepdive-path="/Intel/Eventide/GPU/2DKanvas" style="transition-delay:0.15000000000000002s">2DKanvas <span class="c5-chip-arrow">→</span></div>
+        <div class="c5-chip" data-deepdive-path="/Intel/Eventide/Tile/ZAM" style="transition-delay:0.2s">ZAM <span class="c5-chip-arrow">→</span></div>
+      </div>
+
+      <div class="c5-use" id="c5-use">Fanless ultra-thin designs, extreme battery life, everyday computing.</div>
+    </div>
+  </div>
+  <script>
+  (function () {
+    "use strict";
+    function navigateToDeepdive(path) {
+      var rel = path.replace(/^\/Intel\/Eventide\//, '');
+      if (!rel.endsWith('/')) rel += '/';
+      window.location.href = '../../' + rel;
+    }
+    document.addEventListener('click', function (e) {
+      var el = e.target.closest('[data-deepdive-path]');
+      if (el) navigateToDeepdive(el.getAttribute('data-deepdive-path'));
+    });
+    function reveal(t) {
+      t.classList.add('on');
+      var feat = t.querySelector('.c5-feature');
+      if (feat) feat.classList.add('on');
+    }
+    var targets = document.querySelectorAll('#c5-features > *, #c5-chips > *, #c5-use');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) { reveal(entry.target); io.unobserve(entry.target); }
+        });
+      }, { threshold: 0.15 });
+      targets.forEach(function (t) { io.observe(t); });
+    } else {
+      targets.forEach(reveal);
+    }
+  })();
+  </script>
+</body>
+</html>
