@@ -118,6 +118,40 @@
     return { res: best };
   }
 
+  /* Densest free-form pack: sweeps a range of bin heights, min-widths each, and
+     keeps whichever gives the smallest bounding box (highest fill). Used for the
+     GPU-less clusters, where nothing pins the aspect ratio. */
+  /* Ranking cost for a candidate bounding box: mostly its area, but with a
+     penalty for extreme aspect ratios (and a mild one for portrait) so the
+     densest pack isn't a skinny tower — the die map card wants a landscape-ish
+     rectangle. */
+  function boxCost(w, h) {
+    if (w <= 0 || h <= 0) return Infinity;
+    var ar = Math.max(w, h) / Math.min(w, h);
+    var pen = 1 + 0.6 * Math.max(0, ar - 3.0); // only rein in skinny 3:1+ towers
+    return w * h * pen;
+  }
+
+  function packDense(units, pre) {
+    pre = pre || [];
+    if (!units.length) return { res: [], w: 0, h: 0 };
+    var maxH = 0, maxW = 0, sumH = 0, preRight = 0, preBottom = 0;
+    units.forEach(function (u) { maxH = Math.max(maxH, u.h + GAP); maxW = Math.max(maxW, u.w + GAP); sumH += u.h + GAP; });
+    pre.forEach(function (r) { preRight = Math.max(preRight, r.x + r.w); preBottom = Math.max(preBottom, r.y + r.h); sumH += r.h; });
+    maxH = Math.max(maxH, preBottom); maxW = Math.max(maxW, preRight);
+    var best = null, N = 16;
+    for (var i = 0; i < N; i++) {
+      var binH = Math.max(preBottom, maxH + (sumH - maxH) * (i / (N - 1)));
+      var r = packStripMinWidth(units, binH, pre, maxW).res;
+      if (!r || !r.length) continue;
+      var w = preRight, h = preBottom;
+      r.forEach(function (p) { w = Math.max(w, p.x + p.unit.w); h = Math.max(h, p.y + p.unit.h); });
+      var A = boxCost(w, h);
+      if (!best || A < best.A) best = { res: r, w: w, h: h, A: A };
+    }
+    return best || { res: [], w: 0, h: 0 };
+  }
+
   // one tile of a multi-instance block (GPU / Compute) as a placement unit, so
   // the block can be arranged manually (GPU grid; Compute split above/below Kache)
   function tileUnit(id, entry, sz, index, count, placed) {
@@ -207,6 +241,35 @@
     var nocW = 0, nocH = 0;
     var placements = []; // {unit, x, y} in cluster coords (origin 0,0)
 
+    /* ---- ZAM/LPDDR6X modules, computed up front so tiles can be packed
+       around them. A ZAM "block" is `zamCount` fixed modules arranged in
+       `cols` columns; a single full-width row (cols == count) is the classic
+       memory band, but on SKUs whose RAM is narrower than the tile cluster we
+       pack tiles into the strip beside it, and on RAM-heavy Atom parts we wrap
+       the modules into a squarer block so tiles fit around it — both cut the
+       dead space the fixed-size RAM used to leave. ---- */
+    var zamEntry = byId.zam;
+    var zamBox = S.zamModuleBox(zamEntry && zamEntry.t.model);
+    var zamCount = zamEntry ? S.zamModules(zamEntry.t.capacityGB, zamEntry.t.moduleGB) : 0;
+    var zamRowW = zamCount ? zamCount * zamBox.w + (zamCount - 1) * GAP : 0;
+    function zamBlockUnit(cols) {
+      cols = Math.max(1, Math.min(zamCount, cols || zamCount));
+      var perRow = Math.min(zamCount, cols);
+      var rows = Math.ceil(zamCount / cols);
+      return {
+        w: perRow * zamBox.w + (perRow - 1) * GAP,
+        h: rows * zamBox.h + (rows - 1) * GAP,
+        place: function (x, y) {
+          for (var s = 0; s < zamCount; s++) {
+            var c = s % cols, r = Math.floor(s / cols);
+            placed.push({ id: "zam", meta: zamEntry.meta, model: zamEntry.t.model, index: s, count: zamCount,
+              x: x + c * (zamBox.w + GAP), y: y + r * (zamBox.h + GAP), w: zamBox.w, h: zamBox.h });
+          }
+        }
+      };
+    }
+    var zamHandledInPack = false; // set when ZAM is placed inside the packing (not as a band below)
+
     if (gpuEntry) {
       /* ---- Structured wide Core floorplan ----
          GPU block on the left (defines the chip height). Kache Kore sits against
@@ -266,25 +329,110 @@
                              cBotN ? cBotN * cTile.w + (cBotN - 1) * GAP + GAP : 0);
       var packed = packStripMinWidth(smalls, H, pre, minBinW);
       packed.res.forEach(function (p) { placements.push({ unit: p.unit, x: bx + p.x, y: p.y }); });
+
+      /* ---- Fill beside the RAM ------------------------------------------
+         If the RAM row is narrower than this cluster it would leave a dead
+         strip beside it. Re-pack the small tiles into an L-region — the
+         height-H strip PLUS the band beside the bottom-left RAM row — so the
+         die packs into 2D instead of one wide short strip, flowing tiles in
+         beside the RAM and narrowing the whole package. The full-width-ZAM
+         flagship (RAM already spans the cluster) skips this and is untouched. */
+      if (zamCount) {
+        var clusterW0 = 0;
+        placements.forEach(function (p) { clusterW0 = Math.max(clusterW0, p.x + p.unit.w); });
+        // RAM columns, capped so the block never exceeds the cluster width: a
+        // narrow RAM stays a single row (fill beside it); a RAM that's wider
+        // than the cluster (the flagship-calibrated module makes lower X-parts'
+        // 8-module row overhang) wraps into rows instead of a too-wide band.
+        // The true flagship — RAM row == cluster width — keeps its single row.
+        var zCols = Math.max(1, Math.min(zamCount, Math.floor((clusterW0 + GAP + 0.5) / (zamBox.w + GAP))));
+        var singleRowFull = (zCols === zamCount) && (zamRowW >= clusterW0 - 1);
+        if (!singleRowFull) {
+          function areaOf(pl) { var w = 0, h = 0; pl.forEach(function (p) { w = Math.max(w, p.x + p.unit.w); h = Math.max(h, p.y + p.unit.h); }); return boxCost(w, h); }
+          function gpuPre() {
+            var pl = [], pr = [];
+            for (var g = 0; g < gN; g++) {
+              var gc = g % gpuCols, gr = Math.floor(g / gpuCols);
+              var gx = gc * (gpuTile.w + GAP), gy = gr * (gpuTile.h + GAP);
+              pl.push({ unit: tileUnit("gpu", gpuEntry, gpuTile, g, gN, placed), x: gx, y: gy });
+              pr.push({ x: gx, y: gy, w: gpuTile.w + GAP, h: gpuTile.h + GAP });
+            }
+            return { pl: pl, pre: pr };
+          }
+          /* Candidate A — flagship-style: GPU left, Kache centred, compute rows
+             flanking it, RAM as a band below, small tiles L-packed beside it.
+             Candidate B — GPU pinned, everything else dense-packed around it.
+             Both are tried across a few RAM-block shapes; the tightest wins. */
+          function buildA(cols) {
+            var g = gpuPre(), cand = g.pl.slice(), pre = g.pre.slice();
+            if (kache) { cand.push({ unit: kache, x: bx, y: ky }); pre.push({ x: bx, y: ky, w: kW + GAP, h: kH + GAP }); }
+            if (cTile) for (var c = 0; c < cN; c++) {
+              var t = c < cTopN, col = t ? c : (c - cTopN);
+              var cx = bx + col * (cTile.w + GAP), cy = t ? 0 : (H - cTile.h);
+              cand.push({ unit: tileUnit("compute", computeEntry, cTile, c, cN, placed), x: cx, y: cy });
+              pre.push({ x: cx, y: cy, w: cTile.w + GAP, h: cTile.h + GAP });
+            }
+            var zu = zamBlockUnit(cols);
+            cand.push({ unit: zu, x: 0, y: H + GAP });
+            pre.push({ x: 0, y: H + GAP, w: zu.w + GAP, h: zu.h });
+            var minW = 0; pre.forEach(function (r) { minW = Math.max(minW, r.x + r.w); });
+            packStripMinWidth(smalls, H + GAP + zu.h, pre, minW).res.forEach(function (p) { cand.push({ unit: p.unit, x: p.x, y: p.y }); });
+            return cand;
+          }
+          function buildB(cols) {
+            var g = gpuPre(), cand = g.pl.slice();
+            var rest = [];
+            if (kache) rest.push(kache);
+            if (cTile) for (var c = 0; c < cN; c++) rest.push(tileUnit("compute", computeEntry, cTile, c, cN, placed));
+            smalls.forEach(function (u) { rest.push(u); });
+            rest.push(zamBlockUnit(cols));
+            packDense(rest, g.pre).res.forEach(function (p) { cand.push({ unit: p.unit, x: p.x, y: p.y }); });
+            return cand;
+          }
+          var colOpts = {};
+          [zCols, Math.ceil(zamCount / 2), Math.ceil(zamCount / 3), Math.round(Math.sqrt(zamCount)), zamCount]
+            .forEach(function (c) { colOpts[Math.max(1, Math.min(zamCount, c))] = 1; });
+          var best = null;
+          Object.keys(colOpts).forEach(function (cs) {
+            [buildA(+cs), buildB(+cs)].forEach(function (cand) {
+              var a = areaOf(cand);
+              if (!best || a < best.a) best = { pl: cand, a: a };
+            });
+          });
+          placements = best.pl;
+          zamHandledInPack = true;
+        }
+      }
     } else {
-      /* ---- Atom (or any GPU-less config): generic tight pack ---- */
+      /* ---- Atom / i-series (any GPU-less config): densest free-form pack.
+         The RAM joins the tile set as one block (a single row when it's small,
+         wrapped squarer when it's a RAM-heavy part) so the height-sweep packs
+         everything — tiles and memory — into the tightest bounding box. ---- */
       var units = [];
       if (kache) units.push(kache);
       if (compute) units.push(compute);
       smalls.forEach(function (u) { units.push(u); });
-      if (units.length) {
-        var totalArea = 0;
-        units.forEach(function (u) { totalArea += (u.w + GAP) * (u.h + GAP); });
-        var binW = Math.sqrt(totalArea * 1.5 / 0.68), binH = binW / 1.5;
-        units.forEach(function (u) { binW = Math.max(binW, u.w + GAP); binH = Math.max(binH, u.h + GAP); });
-        var result = null;
-        for (var attempt = 0; attempt < 60 && !result; attempt++) {
-          result = packMaxRects(units, binW, binH);
-          if (!result) { binW *= 1.05; binH *= 1.05; }
-        }
-        if (!result) { result = []; var rx = 0; units.forEach(function (u) { result.push({ unit: u, x: rx, y: 0 }); rx += u.w + GAP; }); }
-        var bb0 = clusterBounds(result);
-        result.forEach(function (p) { placements.push({ unit: p.unit, x: p.x - bb0.minX, y: p.y - bb0.minY }); });
+
+      if (zamCount && units.length) {
+        // try a few RAM-block shapes (1 row … few rows) and keep whichever
+        // packs the whole die tightest
+        var colOpts = {};
+        [zamCount, Math.round(Math.sqrt(zamCount)), Math.ceil(zamCount / 2), Math.ceil(zamCount / 3), Math.ceil(zamCount / 4)]
+          .forEach(function (c) { colOpts[Math.max(1, Math.min(zamCount, c))] = 1; });
+        var bestPD = null;
+        Object.keys(colOpts).forEach(function (cs) {
+          var pd = packDense(units.concat([zamBlockUnit(+cs)]));
+          var A = boxCost(pd.w, pd.h);
+          if (!bestPD || A < bestPD.A) bestPD = { res: pd.res, A: A };
+        });
+        bestPD.res.forEach(function (p) { placements.push({ unit: p.unit, x: p.x, y: p.y }); });
+        zamHandledInPack = true;
+      } else if (zamCount) {
+        var zug = zamBlockUnit(Math.max(1, Math.round(Math.sqrt(zamCount))));
+        placements.push({ unit: zug, x: 0, y: 0 });
+        zamHandledInPack = true;
+      } else if (units.length) {
+        packDense(units).res.forEach(function (p) { placements.push({ unit: p.unit, x: p.x, y: p.y }); });
       }
     }
 
@@ -299,14 +447,11 @@
       });
     }
 
-    // ---- ZAM/LPDDR6X: fixed-size modules in a band below the tile cluster.
-    // The Core ZAM box is calibrated so the flagship's 8-module row spans the
-    // flagship's (now tightly-packed) cluster width; lower SKUs' shorter rows
-    // cover less, with base die taking the remainder — see tile-sizes.js. ----
-    var zamEntry = byId.zam;
-    var zamBox = S.zamModuleBox(zamEntry && zamEntry.t.model);
-    var zamCount = zamEntry ? S.zamModules(zamEntry.t.capacityGB, zamEntry.t.moduleGB) : 0;
-    if (zamEntry) {
+    /* ---- ZAM/LPDDR6X band below the cluster — ONLY for the full-width-RAM
+       case (the flagship, whose calibrated 8-module row spans the cluster).
+       Everywhere else the RAM was packed inside the cluster above (beside the
+       tiles), so there's nothing to append here. ---- */
+    if (zamEntry && !zamHandledInPack) {
       var zamY = M + nocH + GAP;
       for (var s2 = 0; s2 < zamCount; s2++) {
         placed.push({
@@ -316,9 +461,9 @@
       }
     }
 
-    var zamRowW = zamCount ? zamCount * zamBox.w + (zamCount - 1) * GAP : 0;
-    var totalW = Math.max(nocW, zamRowW) + M * 2;
-    var totalH = nocH + (zamEntry ? GAP + zamBox.h : 0) + M * 2;
+    var bandBelow = (zamEntry && !zamHandledInPack) ? GAP + zamBox.h : 0;
+    var totalW = Math.max(nocW, zamHandledInPack ? 0 : zamRowW) + M * 2;
+    var totalH = nocH + bandBelow + M * 2;
 
     return { placed: placed, ghostSlots: [], width: totalW, height: totalH };
   }
