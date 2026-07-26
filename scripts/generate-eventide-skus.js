@@ -101,11 +101,23 @@ function sectionCpu(m) {
   return rows(rowsArr);
 }
 
+function isPhoneLine(m) { return m.line === "A" || m.line === "P"; }
+
 function sectionSupplemental(m) {
+  /* Use conditions are per product line — each line targets a distinct chassis
+     class, from the phone/tablet Atom tiers up to the workstation X-line. */
+  const USE_CONDITIONS = {
+    C: "Tablet / Laptop",
+    I: "Laptop",
+    U: "Premium Laptop / Premium Tablet",
+    X: "Workstation Laptop / Workstation",
+    A: "Phone / Tablet",
+    P: "Phone / Tablet"
+  };
   return rows([
     ["Marketing Status", "Launched"],
     ["Embedded Options Available", "No"],
-    ["Use Conditions", m.tier.line === "X" ? "Server / Workstation" : "PC / Client"],
+    ["Use Conditions", USE_CONDITIONS[m.tier.line] || "PC / Client"],
     ["Datasheet", "Contact Intel / OEM"]
   ]);
 }
@@ -136,7 +148,7 @@ function sectionLpIsland(m) {
       ["Process Node", "Intel 06E (0.6nm-class FinFlex GAA)"],
       ["L3 (LP Island, shared)", m.l3LPIsland + " MB"],
       ["Integrated LP iGPU", `Arc® Druid ${m.druidModel} <span class="note">· see dedicated Graphics — Arc Druid section</span>`],
-      ["Integrated Media Engine", `QuickSync BionzXR, ${m.bionzCores} cores <span class="note">· see Media & Imaging section</span>`],
+      ["Integrated Media Engine", `QuickSync BionzXR, ${m.bionzCores} ${m.bionzCores === 1 ? "core" : "cores"} <span class="note">· see Media & Imaging section</span>`],
       ["Integrated NPU", `LPNPU, ${m.lpnpuTOPS} TOPS <span class="note">· see AI — LPNPU section</span>`],
       ["Minimum Assured Power (Supersaver)", m.tdp.floor + "W"]
     ]);
@@ -370,7 +382,7 @@ function sectionAudioPlatform(m) {
 
 function sectionMedia(m) {
   return rows([
-    ["QuickSync BionzXR Cores", m.hasBionz ? m.bionzCores + " cores (Intel 06E) — co-developed with Sony Semiconductor" : "Not present <span class=\"note\">· BionzXR is Core Ultra 500 / Xeon 500 only</span>"],
+    ["QuickSync BionzXR Cores", m.hasBionz ? m.bionzCores + (m.bionzCores === 1 ? " core" : " cores") + " (Intel 06E) — co-developed with Sony Semiconductor" : "Not present <span class=\"note\">· BionzXR is Core Ultra 500 / Xeon 500 and Atom Ultra 500 only</span>"],
     ["BionzXR Encode Codecs", m.hasBionz ? "AV2 (world-first hardware encoder), AV1, H.266/VVC, H.265, H.264, VRV1, VRV2, ProRes" : null],
     ["BionzXR Decode Codecs", m.hasBionz ? "All encode codecs + VP9, VP8, MPEG-4, VC-1" : null],
     ["Max Encode Resolution", m.hasBionz ? "8K120 ProRes; 8K240 AV1; 4K480 AV2" : null],
@@ -389,7 +401,9 @@ function sectionExpansion(m) {
     ["Thunderbolt Version", m.tbVersion + " <span class=\"note\">· 160 Gbps symmetric / 240 Gbps boost; supports Intel×Sony eDP 2.0 tunnel</span>"],
     ["Thunderbolt Ports", m.tbVersion.includes("6") ? "Up to 4" : "—"],
     ["USB Specification", m.usbSpec + ", USB 3.2 Gen 2×2"],
-    ["Intel® DirectStorage NVMe Path", "PCIe 6.0 NVMe · ~24 GB/s sustained via I/O tile"]
+    ["Intel® DirectStorage Storage Path", isPhoneLine(m)
+      ? "UFS 5.0 · ~7 GB/s sustained <span class=\"note\">· phone tiers use on-board UFS, not an NVMe slot</span>"
+      : "PCIe 6.0 NVMe · ~24 GB/s sustained via I/O tile"]
   ];
   if (m.tier.line === "X") rowsArr.push(["Scalability", "1S / 2S / 4S / 8S"]);
   return rows(rowsArr);
@@ -541,7 +555,9 @@ function affinityMatrix(m) {
     ["Elementalist GPU" + (m.gpuTiles > 1 ? " ×" + m.gpuTiles : ""), m.gpuTiles
       ? cell([["off", "Parked"], ["off", "Parked"], ["idle", "Idle"], ["active", "Active"], ["boost", "Max"]])
       : cell([["na", "—"], ["na", "—"], ["na", "—"], ["na", "—"], ["na", "—"]])],
-    ["HNPU", cell([["off", "Parked"], ["idle", "Idle"], ["active", "Active"], ["active", "Active"], ["boost", "Max"]])],
+    ["HNPU", m.hasHnpu
+      ? cell([["off", "Parked"], ["idle", "Idle"], ["active", "Active"], ["active", "Active"], ["boost", "Max"]])
+      : cell([["na", "—"], ["na", "—"], ["na", "—"], ["na", "—"], ["na", "—"]])],
     ["V8 HyperBOOST", m.computeTiles && m.unlocked
       ? cell([["off", "Off"], ["off", "Off"], ["off", "Off"], ["off", "Off"], ["boost", "10 GHz"]])
       : cell([["na", "—"], ["na", "—"], ["na", "—"], ["na", "—"], ["na", "—"]])]
@@ -559,18 +575,40 @@ function affinityTable(m) {
   const efficiencyHrs = round1(batteryWh / t.efficiency);
   const coolBalanced = m.suffix.form === "Desktop" ? "Stock air cooler" : isPhone ? "Passive phone chassis" : "Standard laptop fan";
   const coolPerf = m.suffix.form === "Desktop" ? "Tower air / AIO liquid" : isPhone ? "Phone vapor chamber, throttles under sustained load" : "Active laptop cooling, fans audible";
+  /* Behaviour copy is per-line: the phone tiers carry no Compute Tile, no
+     Elementalist GPU and no HNPU, so the Core-derived wording ("Compute Tiles
+     and iGPU active", "Compute, GPU and HNPU boosted") would describe silicon
+     that isn't on the package. Plug context differs too — a phone runs off a
+     charger, never a laptop adapter or a power-delivery dock. */
+  const plugCtx = isPhone ? "Charger" : "Adapter";
+  const idleGated = isPhone
+    ? "LP Island only — UHE/LPE cores idle-parked, screen dimmed, media and radio blocks power-gated. The assured minimum running power on battery."
+    : "LP Island only — UHE/LPE cores idle-parked, screen dimmed, Compute/GPU tiles fully power-gated. The assured minimum running power on battery.";
+  const effCopy = isPhone
+    ? "LP Island active for everyday light use — MFX/IPU and the LPNPU wake on demand under Thread Director."
+    : "LP Island active for everyday light use — Compute Tiles and GPU tiles stay parked unless woken by Thread Director.";
+  const balCopy = isPhone
+    ? "Sustained cTDP with the UHE cores and Arc Druid iGPU active under typical mixed phone load."
+    : "Sustained cTDP with Compute Tiles and iGPU active under typical mixed load.";
+  const perfCopy = isPhone
+    ? "Sustained Max Turbo across all active tiles — UHE cores, Druid iGPU and the LPNPU boosted, thermally gated by Thread Director."
+    : "Sustained Max Turbo across all active tiles — Compute, GPU and HNPU boosted, thermally gated by Thread Director.";
+  const unleashedCopy = t.unlocked
+    ? "Dock-fed ceiling with liquid-assisted cooling. Scales with Compute Tile and Elementalist GPU tile count — requires a compatible power-delivery dock."
+    : isPhone
+      ? "Not exposed on the phone tiers — Atom carries no UHP cores, so V8 HyperBOOST and Unleashed AFFINITY™ never engage. Performance is the sustained ceiling."
+      : "Locked multiplier — this SKU does not expose an Unleashed AFFINITY™ tier. Performance is the sustained ceiling.";
   const trs = [
-    ["Supersaver", t.floor + "W", "Battery", "LP Island only — UHE/LPE cores idle-parked, screen dimmed, Compute/GPU tiles fully power-gated. The assured minimum running power on battery.", `~${supersaverHrs}h on a ${batteryWh}Wh battery`, "Fanless"],
-    ["Efficiency", t.efficiency + "W", "Battery", "LP Island active for everyday light use — Compute Tiles and GPU tiles stay parked unless woken by Thread Director.", `~${efficiencyHrs}h on a ${batteryWh}Wh battery`, "Fanless / passive"],
-    ["Balanced", t.balanced + "W", "Adapter", "Sustained cTDP with Compute Tiles and iGPU active under typical mixed load.", "Plugged in — not battery-optimized", coolBalanced],
-    ["Performance", t.performance + "W", "Adapter", "Sustained Max Turbo across all active tiles — Compute, GPU and HNPU boosted, thermally gated by Thread Director.", "Plugged in — sustained ceiling", coolPerf],
-    ["Unleashed", t.unleashed ? t.unleashed + "W" : "Not available", "Docked", t.unlocked
-      ? "Dock-fed ceiling with liquid-assisted cooling. Scales with Compute Tile and Elementalist GPU tile count — requires a compatible power-delivery dock."
-      : "Locked multiplier — this SKU does not expose an Unleashed AFFINITY™ tier. Performance is the sustained ceiling.", t.unlocked ? "Dock power delivery only" : "Not applicable", t.unlocked ? "Liquid-assisted power-delivery dock required" : "—"]
+    ["Supersaver", t.floor + "W", "Battery", idleGated, `~${supersaverHrs}h on a ${batteryWh}Wh battery`, "Fanless"],
+    ["Efficiency", t.efficiency + "W", "Battery", effCopy, `~${efficiencyHrs}h on a ${batteryWh}Wh battery`, "Fanless / passive"],
+    ["Balanced", t.balanced + "W", plugCtx, balCopy, isPhone ? "On charger — not battery-optimized" : "Plugged in — not battery-optimized", coolBalanced],
+    ["Performance", t.performance + "W", plugCtx, perfCopy, isPhone ? "On charger — sustained ceiling" : "Plugged in — sustained ceiling", coolPerf],
+    ["Unleashed", t.unleashed ? t.unleashed + "W" : "Not available", t.unlocked ? "Docked" : (isPhone ? "—" : "Docked"), unleashedCopy,
+      t.unlocked ? "Dock power delivery only" : "Not applicable", t.unlocked ? "Liquid-assisted power-delivery dock required" : "—"]
   ].map((r) => `<tr><td>${r[0]}</td><td class="num">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td></tr>`).join("");
   return `${affinityChart(m)}
 <table class="ev-tdp-table"><thead><tr><th>AFFINITY™ Profile</th><th>Package Power</th><th>Context</th><th>Behavior</th><th>Runtime / Duty</th><th>Cooling Requirement</th></tr></thead><tbody>${trs}</tbody></table>
-<div class="ev-tdp-note">Package power is derived from tile composition (Compute Tiles, Elementalist GPU tiles, HNPU throughput) under Intel's AFFINITY™ power-profile model. Supersaver's ${m.tdp.floor}W floor is the assured minimum running power while on battery with the display active; it is not a full system-off state. Unleashed requires a compatible cooling + power-delivery dock and is only exposed on unlocked SKUs. Battery-life figures assume a representative 70Wh pack and do not model display or radio power.</div>
+<div class="ev-tdp-note">Package power is derived from tile composition (${isPhone ? "LP Island core count, Arc Druid class, LPNPU throughput" : "Compute Tiles, Elementalist GPU tiles, HNPU throughput"}) under Intel's AFFINITY™ power-profile model. Supersaver's ${m.tdp.floor}W floor is the assured minimum running power while on battery with the display active; it is not a full system-off state. ${isPhone ? "Unleashed is not exposed on the phone tiers." : "Unleashed requires a compatible cooling + power-delivery dock and is only exposed on unlocked SKUs."} Battery-life figures assume a representative ${batteryWh}Wh ${isPhone ? "phone" : "laptop"} pack and do not model display or radio power.</div>
 <div class="ev-affinity-matrix-title">Tile Power State by AFFINITY™ Profile</div>
 ${affinityMatrix(m)}`;
 }

@@ -65,7 +65,14 @@ const SHADERS_PER_XE5 = 512;
    gpuLow/gpuHigh = Elementalist (E1080-class) tile count for a non-"X"
    suffix vs. an "X" suffix (HX/HKX). "X" means "higher end GPU" per the
    SKU Suffix Reference — that is the ONLY thing that changes the
-   Elementalist tile count (HK has fewer than HKX, by design). */
+   Elementalist tile count (HK has fewer than HKX, by design).
+
+   SPE (Venusmont) is physically laid out as 9-core CLUSTERS — one cluster
+   shares an L1/L2 slice (see CORE_SPECS.spe) and occupies roughly the die
+   area of a single UHP/DP core. So cpt.spe must always be a whole multiple
+   of 9: Core Ultra runs 1/2/3/4 clusters (9/18/27/36) across U3→U9 and Xeon
+   runs 8 clusters (72) per Compute Tile. Any other value would describe a
+   partial cluster, which cannot be built. */
 const TIER_TABLE = {
   C3: { line: "C", n: 3, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 2, druid: "D310", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 24, lpnpu: 88, gna: 4, tdpBase: 9, ipuMp: 0, bionz: 0, kacheGB: 0.5 },
   C5: { line: "C", n: 5, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 3, lpe: 3, druid: "D330", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 32, lpnpu: 88, gna: 4, tdpBase: 12, ipuMp: 0, bionz: 0, kacheGB: 1 },
@@ -77,10 +84,10 @@ const TIER_TABLE = {
   I7: { line: "I", n: 7, computeTiles: 1, cpt: { uhp: 8, dp: 4, spe: 0 }, uhe: 0, lpe: 0, druid: "D360", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 0, gna: 5, tdpBase: 65, ipuMp: 64, bionz: 0, kacheGB: 3 },
   I9: { line: "I", n: 9, computeTiles: 1, cpt: { uhp: 8, dp: 8, spe: 0 }, uhe: 0, lpe: 0, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 0, gna: 5, tdpBase: 85, ipuMp: 64, bionz: 0, kacheGB: 4 },
 
-  U3: { line: "U", n: 3, computeTiles: 1, cpt: { uhp: 2, dp: 2, spe: 8 }, uhe: 4, lpe: 4, druid: "D310", elemModel: "E580", elemXe5: 150, gpuLow: 0, gpuHigh: 1, hnpu: 96, lpnpu: 20, gna: 5, tdpBase: 15, ipuMp: 64, bionz: 2, kacheGB: 2, ramGB: 64 },
-  U5: { line: "U", n: 5, computeTiles: 1, cpt: { uhp: 4, dp: 2, spe: 12 }, uhe: 4, lpe: 4, druid: "D330", elemModel: "E770", elemXe5: 176, gpuLow: 0, gpuHigh: 1, hnpu: 160, lpnpu: 24, gna: 6, tdpBase: 18, ipuMp: 96, bionz: 3, kacheGB: 3, ramGB: 128 },
-  U7: { line: "U", n: 7, computeTiles: 1, cpt: { uhp: 6, dp: 2, spe: 16 }, uhe: 4, lpe: 4, druid: "D360", elemModel: "E980", elemXe5: 200, gpuLow: 0, gpuHigh: 1, hnpu: 208, lpnpu: 28, gna: 6, tdpBase: 22, ipuMp: 128, bionz: 4, kacheGB: 3, ramGB: 256 },
-  U9: { line: "U", n: 9, computeTiles: 1, cpt: { uhp: 8, dp: 4, spe: 20 }, uhe: 4, lpe: 4, druid: "D390", elemModel: "E1080", elemXe5: 220, gpuLow: 0, gpuHigh: 1, hnpu: 256, lpnpu: 32, gna: 7, tdpBase: 28, ipuMp: 160, bionz: 4, kacheGB: 4, ramGB: 512 },
+  U3: { line: "U", n: 3, computeTiles: 1, cpt: { uhp: 2, dp: 2, spe: 9 }, uhe: 4, lpe: 4, druid: "D310", elemModel: "E580", elemXe5: 150, gpuLow: 0, gpuHigh: 1, hnpu: 96, lpnpu: 20, gna: 5, tdpBase: 15, ipuMp: 64, bionz: 2, kacheGB: 2, ramGB: 64 },
+  U5: { line: "U", n: 5, computeTiles: 1, cpt: { uhp: 4, dp: 2, spe: 18 }, uhe: 4, lpe: 4, druid: "D330", elemModel: "E770", elemXe5: 176, gpuLow: 0, gpuHigh: 1, hnpu: 160, lpnpu: 24, gna: 6, tdpBase: 18, ipuMp: 96, bionz: 3, kacheGB: 3, ramGB: 128 },
+  U7: { line: "U", n: 7, computeTiles: 1, cpt: { uhp: 6, dp: 2, spe: 27 }, uhe: 4, lpe: 4, druid: "D360", elemModel: "E980", elemXe5: 200, gpuLow: 0, gpuHigh: 1, hnpu: 208, lpnpu: 28, gna: 6, tdpBase: 22, ipuMp: 128, bionz: 4, kacheGB: 3, ramGB: 256 },
+  U9: { line: "U", n: 9, computeTiles: 1, cpt: { uhp: 8, dp: 4, spe: 36 }, uhe: 4, lpe: 4, druid: "D390", elemModel: "E1080", elemXe5: 220, gpuLow: 0, gpuHigh: 1, hnpu: 256, lpnpu: 32, gna: 7, tdpBase: 28, ipuMp: 160, bionz: 4, kacheGB: 4, ramGB: 512 },
 
   X7: { line: "X", n: 7, computeTiles: 2, cpt: { uhp: 8, dp: 6, spe: 72 }, uhe: 16, lpe: 16, druid: "D390", elemModel: "E1080", elemXe5: 220, gpuLow: 1, gpuHigh: 2, hnpu: 256, lpnpu: 88, gna: 8, tdpBase: 45, ipuMp: 201, bionz: 8, lpDruidLabel: "LP", kacheGB: 3, ramGB: 1024 },
   X9: { line: "X", n: 9, computeTiles: 4, cpt: { uhp: 8, dp: 6, spe: 72 }, uhe: 16, lpe: 16, druid: "D390", elemModel: "E1080", elemXe5: 220, gpuLow: 2, gpuHigh: 4, hnpu: 256, lpnpu: 88, gna: 8, tdpBase: 55, ipuMp: 201, bionz: 8, lpDruidLabel: "LP", kacheGB: 4, ramGB: 2048 },
