@@ -13,11 +13,12 @@
     <circle cx="44" cy="30" r="1.6" opacity="0.35"/>
   </g>
   <!-- simple atom orbit glyph -->
-  <g transform="translate(18,34)" fill="none" stroke="#3B82F6" stroke-width="1.6">
+  <g transform="translate(18,30)" fill="none" stroke="#3B82F6" stroke-width="1.6">
     <ellipse rx="13" ry="5"/>
     <ellipse rx="13" ry="5" transform="rotate(60)"/>
     <ellipse rx="13" ry="5" transform="rotate(120)"/>
   </g>
-  <circle cx="18" cy="34" r="2.6" fill="#22D3EE"/>
-  <text x="10" y="56" font-family="'Bebas Neue',Arial,sans-serif" font-size="14" fill="#FFFFFF" letter-spacing="0.5">ATOM 500</text>
+  <circle cx="18" cy="30" r="2.6" fill="#22D3EE"/>
+  <text x="8" y="50" font-family="'Bebas Neue',Arial,sans-serif" font-size="15" fill="#FFFFFF" letter-spacing="0.5">ATOM</text>
+  <text x="8" y="60" font-family="'Bebas Neue',Arial,sans-serif" font-size="13" fill="#22D3EE" letter-spacing="0.6">500</text>
 </svg>

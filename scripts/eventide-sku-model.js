@@ -110,19 +110,30 @@ const TIER_TABLE = {
      most efficient config in the lineup; lpeTurbo is correspondingly the
      lowest clock anywhere on Atom.
 
-     P7 is the foldable-tuned config: exactly 7 total physical cores (2 UHE
-     + 5 LPE) — a deliberately smaller core count than its P5/P9 siblings,
-     trading raw multi-core throughput for the thinner thermal envelope a
-     folding chassis needs, while still running Ultra-class UHE clocks. */
-  A3: { line: "A", n: 3, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 0, lpe: 6, lpeTurbo: 2.6, druid: "D310", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 4, tdpBase: 3, ipuMp: 48, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
-  A5: { line: "A", n: 5, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 6, uheTurbo: 3.4, druid: "D330", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 4, tdpBase: 4, ipuMp: 64, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
-  A7: { line: "A", n: 7, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 6, uheTurbo: 3.7, druid: "D360", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 5, ipuMp: 96, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
-  A9: { line: "A", n: 9, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, uheTurbo: 4.0, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 6, ipuMp: 128, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
+     Core-count ladders are set so Atom Ultra is a genuine step above Atom at
+     EVERY matching tier (A3<P3, A5<P5, A7<P7, A9<P9) — Ultra never merely
+     ties its Atom counterpart:
+       Atom       A3 0+6=6   A5 1+6=7   A7 2+6=8    A9 3+5=8
+       Atom Ultra P3 2+5=7   P5 2+6=8   P7 2+8=10   P9 4+6=10
+     Within each line the top two tiers can share a total while shifting the
+     mix toward big cores (A9 has 3 UHE vs A7's 2; P9 has 4 UHE vs P7's 2),
+     which is how real phone SoCs bin their flagship parts. Ultra also wins
+     on clocks, BionzXR, Druid class, RAM and price (see priceUsd).
 
-  P3: { line: "P", n: 3, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 6, uheTurbo: 4.3, druid: "D330", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 5, ipuMp: 64, bionz: 1, mfxCores: 2, tdpFloor: 0.05 },
-  P5: { line: "P", n: 5, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, uheTurbo: 4.6, druid: "D360", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 6, ipuMp: 96, bionz: 1, mfxCores: 2, tdpFloor: 0.05 },
-  P7: { line: "P", n: 7, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 5, uheTurbo: 4.7, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 6, tdpBase: 6, ipuMp: 128, bionz: 1, mfxCores: 2, tdpFloor: 0.05 },
-  P9: { line: "P", n: 9, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, uheTurbo: 5.0, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 6, tdpBase: 8, ipuMp: 160, bionz: 1, mfxCores: 2, tdpFloor: 0.05 }
+     The 9-core config (3 UHE + 6 LPE) is not a tier of its own — it is the
+     foldable-tuned Atom Ultra 9, reached via the HF suffix (see
+     SUFFIX_TABLE.HF's coreOverride): one fewer prime core than the 10-core
+     P9 flagship, trading peak multi-core throughput for the thinner thermal
+     envelope a folding chassis needs, while keeping Ultra-class clocks. */
+  A3: { line: "A", n: 3, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 0, lpe: 6, lpeTurbo: 2.6, druid: "D310", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 4, tdpBase: 3, ipuMp: 48, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
+  A5: { line: "A", n: 5, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 1, lpe: 6, uheTurbo: 3.4, druid: "D330", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 4, tdpBase: 4, ipuMp: 64, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
+  A7: { line: "A", n: 7, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 6, uheTurbo: 3.7, druid: "D360", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 5, ipuMp: 96, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
+  A9: { line: "A", n: 9, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 3, lpe: 5, uheTurbo: 4.0, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 6, ipuMp: 128, bionz: 0, mfxCores: 2, tdpFloor: 0.05 },
+
+  P3: { line: "P", n: 3, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 5, uheTurbo: 4.3, druid: "D330", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 5, ipuMp: 64, bionz: 1, mfxCores: 2, tdpFloor: 0.05 },
+  P5: { line: "P", n: 5, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 6, uheTurbo: 4.6, druid: "D360", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 5, tdpBase: 6, ipuMp: 96, bionz: 1, mfxCores: 2, tdpFloor: 0.05 },
+  P7: { line: "P", n: 7, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 2, lpe: 8, uheTurbo: 4.7, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 6, tdpBase: 6, ipuMp: 128, bionz: 1, mfxCores: 2, tdpFloor: 0.05 },
+  P9: { line: "P", n: 9, computeTiles: 0, cpt: { uhp: 0, dp: 0, spe: 0 }, uhe: 4, lpe: 6, uheTurbo: 5.0, druid: "D390", elemModel: null, elemXe5: 0, gpuLow: 0, gpuHigh: 0, hnpu: 0, lpnpu: 88, gna: 6, tdpBase: 8, ipuMp: 160, bionz: 1, mfxCores: 2, tdpFloor: 0.05 }
 };
 
 const BRAND_TEMPLATE = {
@@ -146,38 +157,50 @@ const SUFFIX_TABLE = {
   /* tdpMult is calibrated so HKX = 1.0 — the flagship Core™ Xeon® 9 599HKX is the
      reference SKU throughout the Eventide deep dives (55W Balanced / 175W Performance
      on-adapter / 2,000W Unleashed-docked; 256 TOPS HNPU). Every other suffix scales
-     relative to it. Core clocks themselves are FIXED (see CORE_SPECS) — suffix does
-     not change them; only unlocked (K) SKUs can reach Unleashed AFFINITY, where V8
-     HyperBOOST and the top Elementalist tile count actually engage. */
-  U: { label: "Ultra-Low-Power Mobile", form: "Mobile", unlocked: false, tdpMult: 0.35, wifi: true, cellular: false, vertical: "Mobile (U — Ultra-Low-Power)" },
-  H: { label: "Mobile", form: "Mobile", unlocked: false, tdpMult: 0.50, wifi: true, cellular: false, vertical: "Mobile (H — Standard Power)" },
-  HX: { label: "High-Performance Mobile", form: "Mobile", unlocked: false, tdpMult: 0.75, wifi: true, cellular: false, vertical: "Mobile (HX — High Performance)" },
-  HK: { label: "Unlocked Mobile", form: "Mobile", unlocked: true, tdpMult: 0.85, wifi: true, cellular: false, vertical: "Mobile (HK — Unlocked)" },
-  HKX: { label: "Unlocked Mobile Xtreme", form: "Mobile", unlocked: true, tdpMult: 1.0, wifi: true, cellular: false, vertical: "Mobile (HKX — Overclocked, Unlocked, Xtreme)" },
-  V: { label: "Efficiency Mobile", form: "Mobile", unlocked: false, tdpMult: 0.3, wifi: true, cellular: true, vertical: "Mobile (V — Efficiency / Always-Connected)" },
-  F: { label: "Desktop (No Integrated Graphics)", form: "Desktop", unlocked: false, tdpMult: 0.8, wifi: false, cellular: false, noGpu: true, vertical: "Desktop (F — Requires Discrete Graphics)" },
-  T: { label: "Low-Power Desktop", form: "Desktop", unlocked: false, tdpMult: 0.4, wifi: false, cellular: false, vertical: "Desktop (T — Power-Optimized)" },
+     relative to it. Only unlocked (K) SKUs can reach Unleashed AFFINITY, where V8
+     HyperBOOST and the top Elementalist tile count actually engage.
+
+     clockMult bins the TURBO clock per suffix (base clocks stay fixed
+     architectural constants). Silicon is binned by achievable frequency, so two
+     parts of the same tier with different power/cooling envelopes do not boost
+     alike: a 0.35x-TDP U part gives up turbo headroom, while an unlocked HKX
+     part is the top bin. Applied to every line's turbo figures in buildModel();
+     the reference flagship HKX stays at 1.0 so its published clocks are
+     unchanged. */
+  U: { label: "Ultra-Low-Power Mobile", form: "Mobile", unlocked: false, tdpMult: 0.35, clockMult: 0.90, wifi: true, cellular: false, vertical: "Mobile (U — Ultra-Low-Power)" },
+  H: { label: "Mobile", form: "Mobile", unlocked: false, tdpMult: 0.50, clockMult: 0.95, wifi: true, cellular: false, vertical: "Mobile (H — Standard Power)" },
+  HX: { label: "High-Performance Mobile", form: "Mobile", unlocked: false, tdpMult: 0.75, clockMult: 0.98, wifi: true, cellular: false, vertical: "Mobile (HX — High Performance)" },
+  HK: { label: "Unlocked Mobile", form: "Mobile", unlocked: true, tdpMult: 0.85, clockMult: 0.99, wifi: true, cellular: false, vertical: "Mobile (HK — Unlocked)" },
+  HKX: { label: "Unlocked Mobile Xtreme", form: "Mobile", unlocked: true, tdpMult: 1.0, clockMult: 1.0, wifi: true, cellular: false, vertical: "Mobile (HKX — Overclocked, Unlocked, Xtreme)" },
+  V: { label: "Efficiency Mobile", form: "Mobile", unlocked: false, tdpMult: 0.3, clockMult: 0.88, wifi: true, cellular: true, vertical: "Mobile (V — Efficiency / Always-Connected)" },
+  F: { label: "Desktop (No Integrated Graphics)", form: "Desktop", unlocked: false, tdpMult: 0.8, clockMult: 0.97, wifi: false, cellular: false, noGpu: true, vertical: "Desktop (F — Requires Discrete Graphics)" },
+  T: { label: "Low-Power Desktop", form: "Desktop", unlocked: false, tdpMult: 0.4, clockMult: 0.86, wifi: false, cellular: false, vertical: "Desktop (T — Power-Optimized)" },
   /* DX — Atom Ultra 500's flagship suffix: dual Killer S1 controllers running
      independent quad-band WiFi 7 MLO stacks (8 bands total), the phone
      tier's signature feature. Not "unlocked" in the desktop-overclocking
      sense (Atom never carries UHP cores, so V8 HyperBOOST/Unleashed AFFINITY
      never engage regardless) — DX distinguishes itself by radio capability,
      not power ceiling. */
-  DX: { label: "Flagship Dual-ISP", form: "Phone", unlocked: false, tdpMult: 0.85, wifi: true, cellular: true, dualWifi: true, vertical: "Phone (DX — Dual-ISP Flagship)" },
+  DX: { label: "Flagship Dual-ISP", form: "Phone", unlocked: false, tdpMult: 0.85, clockMult: 1.0, wifi: true, cellular: true, dualWifi: true, vertical: "Phone (DX — Dual-ISP Flagship)" },
+  /* HF — the foldable-tuned Atom Ultra 9. coreOverride drops one prime core
+     (3 UHE + 6 LPE = 9 cores, vs the 10-core P9 flagship's 4+6), trading peak
+     multi-core throughput for the thinner sustained thermal envelope a folding
+     chassis needs, and clocks a touch below the flagship bin to match. */
+  HF: { label: "Foldable", form: "Phone", unlocked: false, tdpMult: 0.72, clockMult: 0.96, wifi: true, cellular: true, coreOverride: { uhe: 3, lpe: 6 }, vertical: "Phone (HF — Foldable)" },
   /* RAM-tier add-ons — since Atom's LPDDR6X is Foveros-stacked directly on
      the package (not a phone-OEM motherboard choice like real phones),
      different RAM capacities are genuinely different chip SKUs, Apple-
      M-series style. Each pairs with its base suffix's power/radio profile
      (tdpMult/wifi/cellular/dualWifi all inherited) and only adds a
      `ramTier` multiplier — see zamMaxCapacityGB's phone branch. */
-  UL: { label: "Ultra-Low-Power Mobile", form: "Mobile", unlocked: false, tdpMult: 0.35, wifi: true, cellular: false, vertical: "Mobile (U — Ultra-Low-Power)", ramTier: 1.5 },
-  UXL: { label: "Ultra-Low-Power Mobile", form: "Mobile", unlocked: false, tdpMult: 0.35, wifi: true, cellular: false, vertical: "Mobile (U — Ultra-Low-Power)", ramTier: 2 },
-  VL: { label: "Efficiency Mobile", form: "Mobile", unlocked: false, tdpMult: 0.3, wifi: true, cellular: true, vertical: "Mobile (V — Efficiency / Always-Connected)", ramTier: 1.5 },
-  VXL: { label: "Efficiency Mobile", form: "Mobile", unlocked: false, tdpMult: 0.3, wifi: true, cellular: true, vertical: "Mobile (V — Efficiency / Always-Connected)", ramTier: 2 },
-  HL: { label: "Mobile", form: "Mobile", unlocked: false, tdpMult: 0.50, wifi: true, cellular: false, vertical: "Mobile (H — Standard Power)", ramTier: 1.5 },
-  HXL: { label: "Mobile", form: "Mobile", unlocked: false, tdpMult: 0.50, wifi: true, cellular: false, vertical: "Mobile (H — Standard Power)", ramTier: 2 },
-  DXL: { label: "Flagship Dual-ISP", form: "Phone", unlocked: false, tdpMult: 0.85, wifi: true, cellular: true, dualWifi: true, vertical: "Phone (DX — Dual-ISP Flagship)", ramTier: 1.5 },
-  DXXL: { label: "Flagship Dual-ISP", form: "Phone", unlocked: false, tdpMult: 0.85, wifi: true, cellular: true, dualWifi: true, vertical: "Phone (DX — Dual-ISP Flagship)", ramTier: 2 }
+  UL: { label: "Ultra-Low-Power Mobile", form: "Mobile", unlocked: false, tdpMult: 0.35, clockMult: 0.91, wifi: true, cellular: false, vertical: "Mobile (U — Ultra-Low-Power)", ramTier: 1.5 },
+  UXL: { label: "Ultra-Low-Power Mobile", form: "Mobile", unlocked: false, tdpMult: 0.35, clockMult: 0.92, wifi: true, cellular: false, vertical: "Mobile (U — Ultra-Low-Power)", ramTier: 2 },
+  VL: { label: "Efficiency Mobile", form: "Mobile", unlocked: false, tdpMult: 0.3, clockMult: 0.89, wifi: true, cellular: true, vertical: "Mobile (V — Efficiency / Always-Connected)", ramTier: 1.5 },
+  VXL: { label: "Efficiency Mobile", form: "Mobile", unlocked: false, tdpMult: 0.3, clockMult: 0.90, wifi: true, cellular: true, vertical: "Mobile (V — Efficiency / Always-Connected)", ramTier: 2 },
+  HL: { label: "Mobile", form: "Mobile", unlocked: false, tdpMult: 0.50, clockMult: 0.96, wifi: true, cellular: false, vertical: "Mobile (H — Standard Power)", ramTier: 1.5 },
+  HXL: { label: "Mobile", form: "Mobile", unlocked: false, tdpMult: 0.50, clockMult: 0.97, wifi: true, cellular: false, vertical: "Mobile (H — Standard Power)", ramTier: 2 },
+  DXL: { label: "Flagship Dual-ISP", form: "Phone", unlocked: false, tdpMult: 0.85, clockMult: 1.01, wifi: true, cellular: true, dualWifi: true, vertical: "Phone (DX — Dual-ISP Flagship)", ramTier: 1.5 },
+  DXXL: { label: "Flagship Dual-ISP", form: "Phone", unlocked: false, tdpMult: 0.85, clockMult: 1.02, wifi: true, cellular: true, dualWifi: true, vertical: "Phone (DX — Dual-ISP Flagship)", ramTier: 2 }
 };
 
 function round(v, d) { const m = Math.pow(10, d || 0); return Math.round(v * m) / m; }
@@ -228,25 +251,32 @@ function buildModel(dirName) {
   const uhpTotal = tier.cpt.uhp * computeTiles;
   const dpTotal = tier.cpt.dp * computeTiles;
   const speTotal = tier.cpt.spe * computeTiles;
-  const uheCores = tier.uhe;
-  const lpeCores = tier.lpe;
+  /* A suffix may re-bin the island core counts (HF's foldable 3+6) — otherwise
+     the tier's own counts stand. */
+  const uheCores = (suffix.coreOverride && suffix.coreOverride.uhe != null) ? suffix.coreOverride.uhe : tier.uhe;
+  const lpeCores = (suffix.coreOverride && suffix.coreOverride.lpe != null) ? suffix.coreOverride.lpe : tier.lpe;
   const totalPhysicalCores = uhpTotal + dpTotal + speTotal + uheCores + lpeCores;
   /* Only DP (Sunset Cove) has SMT (P-SMT, 2T/core) — UHP, SPE, UHE, LPE do not. */
   const totalThreads = uhpTotal + dpTotal * 2 + speTotal + uheCores + lpeCores;
 
   const unlocked = suffix.unlocked;
   const uhp = CORE_SPECS.uhp, dp = CORE_SPECS.dp, spe = CORE_SPECS.spe, uhe = CORE_SPECS.uhe, lpe = CORE_SPECS.lpe;
+  /* Turbo clocks are binned per suffix (see SUFFIX_TABLE.clockMult) so two SKUs
+     of the same tier with different power envelopes don't boost identically.
+     Base clocks stay the fixed architectural constants. */
+  const cm = suffix.clockMult != null ? suffix.clockMult : 1.0;
+  const binTurbo = (v) => (v == null ? null : round(v * cm, 1));
   const uhpBase = uhpTotal ? uhp.base : null;
-  const uhpTurbo = uhpTotal ? uhp.turbo : null;
-  const hyperboost = uhpTotal ? uhp.hyperboost : null;
+  const uhpTurbo = uhpTotal ? binTurbo(uhp.turbo) : null;
+  const hyperboost = uhpTotal ? binTurbo(uhp.hyperboost) : null;
   const dpBase = dpTotal ? dp.base : null;
-  const dpTurbo = dpTotal ? dp.turbo : null;
+  const dpTurbo = dpTotal ? binTurbo(dp.turbo) : null;
   const speBase = speTotal ? spe.base : null;
-  const speTurbo = speTotal ? spe.turbo : null;
+  const speTurbo = speTotal ? binTurbo(spe.turbo) : null;
   const uheBase = uheCores ? uhe.base : null;
-  const uheTurbo = uheCores ? (tier.uheTurbo || uhe.turbo) : null;
+  const uheTurbo = uheCores ? binTurbo(tier.uheTurbo || uhe.turbo) : null;
   const lpeBase = lpeCores ? lpe.base : null;
-  const lpeTurbo = lpeCores ? (tier.lpeTurbo || lpe.turbo) : null;
+  const lpeTurbo = lpeCores ? binTurbo(tier.lpeTurbo || lpe.turbo) : null;
 
   const l3PerComputeTile = computeTiles ? COMPUTE_TILE_L3_MB : 0;
   const l3Total = l3PerComputeTile * computeTiles;
@@ -373,10 +403,29 @@ function buildModel(dirName) {
   const unleashedRaw = Math.round(150 + computeTiles * 100 + gpuTiles * 350 + 50);
   const unleashed = unlocked ? Math.min(2000, unleashedRaw) : null;
 
+  /* Phone tiers price off what actually varies on a phone SoC — prime/efficiency
+     core mix, soldered LPDDR6X capacity, camera ISP, radio count and clock bin —
+     rather than the Core-derived formula (whose computeTiles/gpuTiles/HNPU terms
+     are all zero on Atom, which used to collapse Atom and Atom Ultra of the same
+     series onto the *identical* price). Atom Ultra then applies a flat premium
+     multiplier on top, so an Ultra part is always a clear step above its Atom
+     counterpart in price the same way it now is in cores, clocks and RAM. */
+  const phoneBase = 52
+    + tier.n * 15
+    + uheCores * 16
+    + lpeCores * 5
+    + zamMaxCapacityGB * 1.15
+    + bionzCores * 45
+    + (killerS1Count > 1 ? 45 : 0)
+    + (cellularPresent ? 18 : 0)
+    + (suffix.clockMult != null ? (suffix.clockMult - 0.85) * 210 : 0);
+
   const priceUsd = round(
     line === "X"
       ? 1200 + tier.n * 120 + computeTiles * 900 + gpuTiles * 700 + (unlocked ? 800 : 0)
-      : 89 + tier.n * 34 + computeTiles * 55 + gpuTiles * 260 + hnpuTOPS * 0.4 + (unlocked ? 60 : 0),
+      : (line === "A" || line === "P")
+        ? phoneBase * (line === "P" ? 1.9 : 1.0) + (line === "P" ? 65 : 0)
+        : 89 + tier.n * 34 + computeTiles * 55 + gpuTiles * 260 + hnpuTOPS * 0.4 + (unlocked ? 60 : 0),
     0);
 
   return {

@@ -276,6 +276,7 @@
                 { label: 'Atom™ Ultra 9 594DX', path: '/Intel/Eventide/SKU/P9-594DX' },
                 { label: 'Atom™ Ultra 9 595HL', path: '/Intel/Eventide/SKU/P9-595HL' },
                 { label: 'Atom™ Ultra 9 596HXL', path: '/Intel/Eventide/SKU/P9-596HXL' },
+                { label: 'Atom™ Ultra 9 599HF', path: '/Intel/Eventide/SKU/P9-599HF' },
                 { label: 'Atom™ Ultra 9 597DXL', path: '/Intel/Eventide/SKU/P9-597DXL' },
                 { label: 'Atom™ Ultra 9 598DXXL', path: '/Intel/Eventide/SKU/P9-598DXXL' }
               ]
