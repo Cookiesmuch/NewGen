@@ -228,7 +228,7 @@
       node: "Intel 14A-E",
       color: "#2E86FF",
       zone: "band3-c",
-      repeatKey: null,
+      repeatKey: "killerS1Count",
       tagline: "Eight bands. One intelligence.",
       short: "Intel × OPPO co-engineered Wi-Fi 7 / Bluetooth / cellular tile with adaptive multi-band arbitration.",
       detail: [

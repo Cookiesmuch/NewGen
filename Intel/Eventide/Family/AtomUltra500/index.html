@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atom Ultra 500 — Eventide Family Overview</title>
+<link rel="stylesheet" href="../../../../assets/nav.css">
+<script src="../../../../assets/nav.js" defer></script>
+<link rel="stylesheet" href="../../deepdive.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+:root {
+  --au5-bg1: #0A1628; --au5-bg2: #050B14;
+  --au5-accent: #22D3EE; --au5-accent2: #3B82F6;
+}
+body { background: var(--au5-bg2); }
+.au5-wrap {
+  min-height: 100vh;
+  padding: 100px 8vw 80px;
+  background: radial-gradient(120% 90% at 15% 0%, #22D3EE22 0%, var(--au5-bg1) 55%, var(--au5-bg2) 100%);
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  overflow: hidden;
+}
+.au5-logo { width: 72px; height: 72px; border-radius: 16px; opacity: 0; animation: au5-fadeScale 0.7s ease forwards; }
+@keyframes au5-fadeScale { from { opacity: 0; transform: scale(0.7) rotate(-8deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+.au5-eyebrow {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--au5-accent); margin: 22px 0 10px; opacity: 0; animation: au5-riseIn 0.6s ease 0.15s forwards;
+}
+.au5-headline {
+  font-family: 'Bebas Neue', sans-serif; font-size: clamp(38px, 6vw, 74px); line-height: 0.98; letter-spacing: 0.01em;
+  max-width: 780px; opacity: 0; animation: au5-riseIn 0.6s ease 0.28s forwards;
+}
+.au5-sub {
+  max-width: 640px; margin-top: 18px; font-size: 15px; line-height: 1.7; color: rgba(255,255,255,0.72);
+  opacity: 0; animation: au5-riseIn 0.6s ease 0.42s forwards;
+}
+@keyframes au5-riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+.au5-stats { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 40px; }
+.au5-stat { opacity: 0; animation: au5-riseIn 0.55s ease forwards; }
+.au5-stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 34px; color: var(--au5-accent); line-height: 1; }
+.au5-stat-label { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 4px; max-width: 140px; }
+
+.au5-section-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(255,255,255,0.4); margin: 64px 0 18px;
+}
+.au5-feature-grid { display: grid; grid-template-columns: repeat(2, minmax(240px, 1fr)); gap: 6px 32px; max-width: 900px; }
+.au5-feature-wrap { }
+.au5-feature {
+  display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: rgba(255,255,255,0.82);
+  padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+  opacity: 0; transform: translateX(-10px); transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.au5-feature.on { opacity: 1; transform: translateX(0); }
+.au5-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.au5-dot.yes { background: #16A34A; box-shadow: 0 0 8px #16A34A88; }
+.au5-dot.no { background: #DC2626; }
+.au5-dot.partial { background: var(--au5-accent); }
+
+.au5-chip-row { display: flex; flex-wrap: wrap; gap: 10px; max-width: 900px; }
+.au5-chip {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; padding: 10px 16px; border-radius: 30px; cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.04); color: #fff;
+  transition: background 0.2s ease, border-color 0.2s ease, opacity 0.5s ease, transform 0.5s ease;
+  opacity: 0; transform: translateY(8px);
+}
+.au5-chip.on { opacity: 1; transform: translateY(0); }
+.au5-chip:hover { background: var(--au5-accent); border-color: var(--au5-accent); color: #0B0714; }
+.au5-chip-arrow { opacity: 0.6; }
+
+.au5-use {
+  margin-top: 56px; max-width: 700px; padding: 20px 24px; border-left: 3px solid var(--au5-accent);
+  background: rgba(255,255,255,0.03); font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.6;
+  opacity: 0; transition: opacity 0.6s ease;
+}
+.au5-use.on { opacity: 1; }
+
+@media (max-width: 720px) {
+  .au5-feature-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+  <a class="back-button" href="../../">← Back to Overview</a>
+  <div id="deepdive-container" class="deepdive-container">
+    <div class="au5-wrap">
+      <img class="au5-logo" src="../../assets/logos/atomultra500.svg" alt="Atom Ultra 500 logo">
+      <div class="au5-eyebrow">Product Family · Phone · Flagship</div>
+      <div class="au5-headline">Two radios.<br>One phone.</div>
+      <div class="au5-sub">Atom's flagship tier adds a bigger Arc Druid class, UHE clocks up to 5.0GHz, and the signature DX suffix: dual Killer S1 controllers running independent quad-band WiFi 7 MLO stacks — 8 bands total.</div>
+
+      <div class="au5-stats">
+        <div class="au5-stat" style="animation-delay:0.5s"><div class="au5-stat-num">5.0</div><div class="au5-stat-label">GHz peak (P9 flagship)</div></div>
+        <div class="au5-stat" style="animation-delay:0.58s"><div class="au5-stat-num">7</div><div class="au5-stat-label">cores on P7 (foldable)</div></div>
+        <div class="au5-stat" style="animation-delay:0.66s"><div class="au5-stat-num">8</div><div class="au5-stat-label">WiFi 7 bands, DX suffix</div></div>
+      </div>
+
+      <div class="au5-section-label">Tile Composition</div>
+      <div class="au5-feature-grid" id="au5-features">
+        <div class="au5-feature-wrap" style="transition-delay:0s"><div class="au5-feature"><div class="au5-dot no"></div>No Compute Tile, no Elementalist GPU, no Kache Kore</div></div>
+        <div class="au5-feature-wrap" style="transition-delay:0.05s"><div class="au5-feature"><div class="au5-dot yes"></div>2× Lunar Eclipse (UHE, 4.3-5.0GHz) + 5-8× Darkmont (LPE)</div></div>
+        <div class="au5-feature-wrap" style="transition-delay:0.1s"><div class="au5-feature"><div class="au5-dot partial"></div>P7 is a dedicated 7-core config (2 UHE + 5 LPE) tuned for foldables</div></div>
+        <div class="au5-feature-wrap" style="transition-delay:0.15000000000000002s"><div class="au5-feature"><div class="au5-dot yes"></div>Bigger Arc® Druid class than Atom 500 + 2DKanvas</div></div>
+        <div class="au5-feature-wrap" style="transition-delay:0.2s"><div class="au5-feature"><div class="au5-dot yes"></div>LPNPU AI, 88 TOPS always-on</div></div>
+        <div class="au5-feature-wrap" style="transition-delay:0.25s"><div class="au5-feature"><div class="au5-dot no"></div>No HNPU on this line</div></div>
+        <div class="au5-feature-wrap" style="transition-delay:0.30000000000000004s"><div class="au5-feature"><div class="au5-dot yes"></div>LPDDR6X primary memory, higher capacity than Atom 500</div></div>
+        <div class="au5-feature-wrap" style="transition-delay:0.35000000000000003s"><div class="au5-feature"><div class="au5-dot yes"></div>BionzXR + QuickSync ISP camera pipeline</div></div>
+        <div class="au5-feature-wrap" style="transition-delay:0.4s"><div class="au5-feature"><div class="au5-dot yes"></div>DX suffix: 2× Killer S1 controllers, independent quad-band MLO — 8 bands total, phone appears as two devices</div></div>
+      </div>
+
+      <div class="au5-section-label">Built From</div>
+      <div class="au5-chip-row" id="au5-chips">
+        <div class="au5-chip" data-deepdive-path="/Intel/Eventide/Tile/KillerS1" style="transition-delay:0s">Killer S1 <span class="au5-chip-arrow">→</span></div>
+        <div class="au5-chip" data-deepdive-path="/Intel/Eventide/GPU/Druid" style="transition-delay:0.05s">Arc Druid <span class="au5-chip-arrow">→</span></div>
+        <div class="au5-chip" data-deepdive-path="/Intel/Eventide/GPU/2DKanvas" style="transition-delay:0.1s">2DKanvas <span class="au5-chip-arrow">→</span></div>
+        <div class="au5-chip" data-deepdive-path="/Intel/Eventide/Technology/ThreadDirector" style="transition-delay:0.15000000000000002s">Thread Director <span class="au5-chip-arrow">→</span></div>
+        <div class="au5-chip" data-deepdive-path="/Intel/Eventide/CPU/Darkmont" style="transition-delay:0.2s">Darkmont (LPE) <span class="au5-chip-arrow">→</span></div>
+      </div>
+
+      <div class="au5-use" id="au5-use">The top phone tier — dual-ISP WiFi bonding is the signature, headline feature.</div>
+    </div>
+  </div>
+  <script>
+  (function () {
+    "use strict";
+    function navigateToDeepdive(path) {
+      var rel = path.replace(/^\/Intel\/Eventide\//, '');
+      if (!rel.endsWith('/')) rel += '/';
+      window.location.href = '../../' + rel;
+    }
+    document.addEventListener('click', function (e) {
+      var el = e.target.closest('[data-deepdive-path]');
+      if (el) navigateToDeepdive(el.getAttribute('data-deepdive-path'));
+    });
+    function reveal(t) {
+      t.classList.add('on');
+      var feat = t.querySelector('.au5-feature');
+      if (feat) feat.classList.add('on');
+    }
+    var targets = document.querySelectorAll('#au5-features > *, #au5-chips > *, #au5-use');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) { reveal(entry.target); io.unobserve(entry.target); }
+        });
+      }, { threshold: 0.15 });
+      targets.forEach(function (t) { io.observe(t); });
+    } else {
+      targets.forEach(reveal);
+    }
+  })();
+  </script>
+</body>
+</html>

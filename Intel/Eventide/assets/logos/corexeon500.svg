@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Core Xeon 500 logo">
+  <defs>
+    <linearGradient id="bg-corexeon500" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F0B848"/>
+      <stop offset="100%" stop-color="#7A5010"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="url(#bg-corexeon500)"/>
+  <g fill="#1A0A2E">
+    <circle cx="44" cy="12" r="1.6"/><circle cx="50" cy="12" r="1.6"/><circle cx="56" cy="12" r="1.6"/>
+    <circle cx="44" cy="18" r="1.6" opacity="0.85"/><circle cx="50" cy="18" r="1.6" opacity="0.85"/><circle cx="56" cy="18" r="1.6" opacity="0.85"/>
+    <circle cx="44" cy="24" r="1.6" opacity="0.6"/><circle cx="50" cy="24" r="1.6" opacity="0.6"/>
+    <circle cx="44" cy="30" r="1.6" opacity="0.35"/>
+  </g>
+  <text x="6" y="42" font-family="'Bebas Neue',Arial,sans-serif" font-size="17" fill="#1A0A2E" letter-spacing="0.2">XEON</text>
+  <text x="8" y="56" font-family="'Bebas Neue',Arial,sans-serif" font-size="15" fill="#1A0A2E" letter-spacing="0.5">500</text>
+</svg>
