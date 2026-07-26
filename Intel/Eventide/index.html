@@ -773,6 +773,23 @@
   .sku-select-card:hover { border-color: rgba(96,180,255,0.42); background: linear-gradient(165deg, rgba(96,180,255,0.13) 0%, rgba(96,180,255,0.03) 100%); transform: translateY(-1px); box-shadow: 0 8px 18px rgba(0,0,0,0.24); }
   .sku-select-card.active { border-color: rgba(240,184,72,0.66); background: linear-gradient(165deg, rgba(240,184,72,0.16) 0%, rgba(240,184,72,0.05) 100%); box-shadow: 0 0 0 1px rgba(240,184,72,0.24) inset, 0 8px 18px rgba(0,0,0,0.3); }
   .sku-select-art { width: 42px; height: 42px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.06); object-fit: contain; padding: 5px; flex-shrink: 0; }
+
+  /* Family logo + per-SKU badges: tier number top-left, suffix top-right. The
+     badges are overlaid in the DOM rather than baked into the SVGs, so one
+     logo file per family still serves every SKU in that family. */
+  .sku-art-wrap { position: relative; flex-shrink: 0; line-height: 0; }
+  .sku-art-wrap .sku-art-tier,
+  .sku-art-wrap .sku-art-suffix {
+    position: absolute; top: -5px;
+    font-family: var(--font-mono, monospace); font-weight: 700; line-height: 1;
+    background: rgba(8,5,16,0.92); color: #F0B848;
+    border: 1px solid rgba(240,184,72,0.55); border-radius: 4px;
+    padding: 2px 3.5px; letter-spacing: 0.02em; pointer-events: none; white-space: nowrap;
+  }
+  .sku-art-wrap .sku-art-tier { left: -5px; }
+  .sku-art-wrap .sku-art-suffix { right: -5px; color: #7FD0FF; border-color: rgba(127,208,255,0.5); }
+  .sku-select-wrap .sku-art-tier, .sku-select-wrap .sku-art-suffix { font-size: 8.5px; }
+  .sku-overview-wrap .sku-art-tier, .sku-overview-wrap .sku-art-suffix { font-size: 10px; padding: 2.5px 4.5px; }
   .sku-select-name { font-size: 13px; line-height: 1.2; color: #fff; font-weight: 600; }
   .sku-select-family { font-family: var(--font-mono); font-size: 9px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
   .sku-select-price { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; color: rgba(240,184,72,0.95); margin-top: 4px; }
@@ -4184,6 +4201,7 @@
     <div class="suffix-pill" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.12);"><div class="suffix-code" style="color: var(--atom-cyan);">DX</div><div class="suffix-desc" style="color: rgba(255,255,255,0.65);">Flagship dual-ISP (Atom Ultra 500 only)</div></div>
     <div class="suffix-pill" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.12);"><div class="suffix-code" style="color: var(--atom-cyan);">DXL</div><div class="suffix-desc" style="color: rgba(255,255,255,0.65);">Flagship dual-ISP, +RAM tier (Atom Ultra 500 only)</div></div>
     <div class="suffix-pill" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.12);"><div class="suffix-code" style="color: var(--atom-cyan);">DXXL</div><div class="suffix-desc" style="color: rgba(255,255,255,0.65);">Flagship dual-ISP, max RAM tier (Atom Ultra 500 only)</div></div>
+    <div class="suffix-pill" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.12);"><div class="suffix-code" style="color: var(--atom-cyan);">HF</div><div class="suffix-desc" style="color: rgba(255,255,255,0.65);">Foldable — 9-core 3+6 (Atom Ultra 9 only)</div></div>
   </div>
 
 </div>
@@ -4379,7 +4397,7 @@
   <div class="sku-selector-shell">
     <div class="sku-filter-row">
       <div class="sku-filter-box"><div class="sku-filter-label">Series</div><select class="sku-filter-select" id="sku-filter-series-atom"><option value="all">All Series</option><option value="3">Series 3</option><option value="5">Series 5</option><option value="7">Series 7</option><option value="9">Series 9</option></select></div>
-      <div class="sku-filter-box"><div class="sku-filter-label">Suffix</div><select class="sku-filter-select" id="sku-filter-suffix-atom"><option value="all">All Suffixes</option><option value="U">U</option><option value="UL">UL</option><option value="UXL">UXL</option><option value="V">V</option><option value="VL">VL</option><option value="VXL">VXL</option><option value="H">H</option><option value="HL">HL</option><option value="HXL">HXL</option><option value="DX">DX</option><option value="DXL">DXL</option><option value="DXXL">DXXL</option></select></div>
+      <div class="sku-filter-box"><div class="sku-filter-label">Suffix</div><select class="sku-filter-select" id="sku-filter-suffix-atom"><option value="all">All Suffixes</option><option value="U">U</option><option value="UL">UL</option><option value="UXL">UXL</option><option value="V">V</option><option value="VL">VL</option><option value="VXL">VXL</option><option value="H">H</option><option value="HL">HL</option><option value="HXL">HXL</option><option value="DX">DX</option><option value="DXL">DXL</option><option value="DXXL">DXXL</option><option value="HF">HF</option></select></div>
       <div class="sku-filter-box sku-price-filter-box"><div class="sku-filter-label">Price Range (USD)</div><div class="sku-dual-range" id="sku-dual-range-atom"><div class="sku-dual-range-track"></div><div class="sku-dual-range-fill" id="sku-price-range-fill-atom"></div><input type="range" min="0" max="1000" step="1" value="0" class="sku-price-range sku-price-range-min" id="sku-filter-price-min-atom"><input type="range" min="0" max="1000" step="1" value="1000" class="sku-price-range sku-price-range-max" id="sku-filter-price-max-atom"></div><div class="sku-price-values"><span id="sku-price-min-val-atom">$85</span><span>to</span><span id="sku-price-max-val-atom">$500</span></div></div>
     </div>
 
@@ -4512,6 +4530,22 @@ let EVENTIDE_SKU_DATA = [];
 
 function formatUsd(value) { return '$' + Number(value).toLocaleString('en-US'); }
 
+/* Family logo for a SKU, with its tier number badged top-left and its suffix
+   top-right — so a library chip identifies line, series and suffix at a glance. */
+const SKU_LOGO_BY_FAMILY = {
+  core: 'core500', i: 'corei500', u: 'coreultra500',
+  x: 'corexeon500', atom: 'atom500', atomultra: 'atomultra500'
+};
+function skuLogoMarkup(sku, variant) {
+  const file = SKU_LOGO_BY_FAMILY[sku.familyKey] || 'core500';
+  const cls = variant === 'overview' ? 'sku-overview' : 'sku-select';
+  return `<span class="sku-art-wrap ${cls}-wrap">
+      <img class="${cls}-art" src="assets/logos/${file}.svg" alt="${sku.family} ${sku.id}" onerror="this.style.visibility='hidden'">
+      <span class="sku-art-tier">${sku.series}</span>
+      <span class="sku-art-suffix">${sku.suffix}</span>
+    </span>`;
+}
+
 function formatCache(cache) {
   if (!cache) return '';
   const bllc = cache.hasKacheKore ? `${cache.bllcGB} GB bLLC` : 'No Kache Kore';
@@ -4533,7 +4567,7 @@ function renderSkuOverview(sku, overviewId) {
 
   overview.innerHTML = `
     <div class="sku-overview-head">
-      <img class="sku-overview-art" src="Media/SKU.${sku.image}.stick.svg" alt="${sku.name} family art" onerror="this.style.visibility='hidden'">
+      ${skuLogoMarkup(sku, 'overview')}
       <div>
         <div class="sku-overview-tier">${sku.family}</div>
         <div class="sku-overview-name">${sku.name}</div>
@@ -4697,7 +4731,7 @@ function setupSkuSelector(cfg) {
 
     grid.innerHTML = data.map((sku) => `
       <button type="button" class="sku-select-card${sku.id === selectedSkuId ? ' active' : ''}" data-sku-id="${sku.id}" aria-pressed="${sku.id === selectedSkuId ? 'true' : 'false'}">
-        <img class="sku-select-art" src="Media/SKU.${sku.image}.stick.svg" alt="${sku.family} ${sku.id} art" onerror="this.style.visibility='hidden'">
+        ${skuLogoMarkup(sku, 'select')}
         <div><div class="sku-select-name">${sku.name}</div><div class="sku-select-family">${sku.family} · ${sku.suffix}</div><div class="sku-select-price">${formatUsd(sku.msrp)} MSRP</div></div>
       </button>
     `).join('');
